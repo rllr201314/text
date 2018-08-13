@@ -1,4 +1,5 @@
 <template>
+    <!-- 拍卖页 -->
     <div class="auction-wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="swiper-info">
@@ -38,28 +39,7 @@
                     </div>
                 </div>
                 <!-- 商品信息 -->
-                <div class="goods-info">
-                    <div class="goods-info-title">
-                        <img src="../../static/img/goods_ico.png" alt="">
-                        <span>商品信息</span>
-                    </div>
-                    <div class="goods-info-content">
-                        <div class="goods-info-content-left">
-                            <div class="goods-basic-left">基本信息</div>
-                            <div class="goods-level-left">等级</div>
-                            <div class="goods-school-left">门派</div>
-                            <div class="goods-authent-left">实名认证</div> 
-                            <div class="goods-des-left">商品描述</div>
-                        </div>
-                        <div class="goods-info-content-right">
-                            <div class="goods-basic-right" v-text="goodsInfo.goods_info.basic"></div>
-                            <div class="goods-level-right" v-text="goodsInfo.goods_info.level"></div>
-                            <div class="goods-school-right" v-text="goodsInfo.goods_info.school"></div>
-                            <div class="goods-authent-right" v-text="goodsInfo.goods_info.authent"></div> 
-                            <div class="goods-des-right" v-text="goodsInfo.goods_info.des"></div>
-                        </div>
-                    </div>
-                </div>
+                <GoodInfo v-bind:goodsInfo="goodsInfo.goods_info"></GoodInfo>
                 <!-- 拍卖流程 -->
                 <div class="auction-flow">
                     <div class="auction-flow-title">
@@ -136,6 +116,7 @@
     import Header from '@/components/home-page/Header'//头部
     import Swiper from '@/components/home-page/Swiper'//轮播图
     import Footer from '@/components/home-page/Footer'//底部
+    import GoodInfo from '@/components/auction-details/GoodsInfo'//产品详情
     export default {
         name: "AuctionPage",
         data(){
@@ -182,7 +163,9 @@
                         success_status:'成交',
                         time:'刚刚'
                     }],
+                    // 商品信息
                     goods_info:{
+                        isShowTitle:true,//是否显示商品信息头部
                         basic:'安卓一区>一区群英荟萃',
                         level:'96级',
                         school:'方寸山',
@@ -197,6 +180,7 @@
         components:{
             Header,
             Swiper,//轮播图
+            GoodInfo,//商品信息
             Footer,
         },
         mounted(){
@@ -387,37 +371,7 @@
         color:#45C773;
         font-size:.24rem;
     }
-    /* 商品信息 */
-    .goods-info{
-        font-size:.26rem;
-        padding:.2rem 0 .1rem;
-        border-bottom:.01rem solid #E5E5E5;
-    }
-    .goods-info-title{
-        color:#333333;
-    }
-    .goods-info-title img{
-        width:.23rem;
-        height:.23rem;
-        vertical-align: middle;
-    }
-    .goods-info-title span{
-        vertical-align: middle;
-    }
-    .goods-info-content{
-        color:#666666;
-        padding:.2rem .15rem;
-    }
-    .goods-info-content-left,.goods-info-content-right{
-        display:inline-block;
-        vertical-align: top;
-    }
-    .goods-info-content-left{
-        width:1.19rem;
-    }
-    .goods-info-content-right{
-        width:5.5rem;
-    }
+   
     /* 拍卖流程------- */
     .auction-flow{
         padding:.3rem 0 .2rem;

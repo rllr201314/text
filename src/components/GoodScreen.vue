@@ -1,6 +1,7 @@
 <template>
+    <!-- 商品列表 商品筛选  -->
     <div class="good-screen-wrap">
-        <Header v-bind:showTitle="showTitle"></Header>
+        <Header v-bind:showTitle="copmonentsData.showTitle"></Header>
         <div class="screen-title">
             <div class="screen-title-top">
                 <div class="title-top-cell" v-for="(item,index) in screenTop" @click="topScreen(item.flag,index)">
@@ -15,26 +16,8 @@
                 </div>
             </div>
         </div>
-        <div class="screen-goods-wrap">
-            <div class="goods-strip" v-for="(item,index) in goodsList">
-                <div class="goods-strip-title">
-                    <div class="boutique" v-if="item.isBoutique">精</div>
-                    <div class="goods-type" v-text="item.goods_type"></div>
-                    <div class="account-type" v-text="item.account_type"></div>
-                    <div class="area" v-text="item.area"></div>
-                </div>
-                <div class="goods-strip-content">
-                    <div class="goods-des" v-text="item.goods_des"></div>
-                    <div class="goods-ico">
-                        <img v-for="itemImg in item.goods_safe" :src="itemImg" alt="">
-                    </div>
-                </div>
-                <div class="goods-strip-bottom">
-                    <div class="goods-price" v-text="item.goods_price"></div>
-                    <div class="bargain" v-if="item.isBargain">可议价</div>
-                </div>
-            </div>
-        </div>
+        <!-- 商品列表 -->
+        <GoodsList v-bind:goodsList="copmonentsData.goodsList"></GoodsList>
         <!-- 账号 -->
         <div class="screen-box account-type-box" v-show="screenInfoAll[0].isShow">
             <div class="account-type-strip" v-for="(item,index) in account_info" :class="item.ischeck?'red-color':'black-color'" v-text="item.name" @click="seleAccount(index)" ></div>
@@ -66,7 +49,7 @@
             <div class="screen-type-strip">
                 <div class="screen-strip-left input-price-left">价格范围</div>
                 <div class="screen-strip-right input-price-right">
-                    <input class="downPrice" type="text"><span>——</span><input class="upPrice" type="text">元
+                    <input class="downPrice" type="number"><span>——</span><input class="upPrice" type="number">元
                 </div>
             </div>
             <div class="screen-type-strip">
@@ -154,17 +137,35 @@
 
 <script>
     import Header from '@/components/home-page/Header' //头部
+    import GoodsList from '@/components/auction-details/GoodsList' //商品列表
     export default {
         name: "GoodScreen",
         data(){
             return{
-                // 给header组件传的值
-                showTitle:{
-                    showBack:false,
-                    showLogo:3,//显示头部inp
-                    showShare:3,//1搜索2分享3菜单
-                    showBg:true,
-                    title:"",
+                // 组件的数据
+                copmonentsData:{
+                    // Header
+                    showTitle:{
+                        showBack:false,
+                        showLogo:3,//显示头部inp
+                        showShare:3,//1搜索2分享3菜单
+                        showBg:true,
+                        title:"",
+                    },
+                    // 商品列表
+                    goodsList:{
+                        showSafe:true,
+                        goodsInfo:[{
+                            isBoutique:true,
+                            goods_type:'成品号',
+                            account_type:'安卓',
+                            area:'安卓一区',
+                            goods_des:'贵6小号可议价，手快有手慢无',
+                            goods_safe:['./static/img/goodscreen/safe_ico.png','./static/img/goodscreen/stages_ico.png','./static/img/goodscreen/verify.png'],
+                            goods_price:'￥600',
+                            isBargain:true
+                        }]
+                    },
                 },
                 // 筛选---之上
                 screenTop:[{
@@ -230,71 +231,6 @@
                 },{
                     name:'Shade',
                     isShow:false,//是否显示遮罩
-                }],
-                // 商品列表
-                goodsList:[{
-                    isBoutique:true,
-                    goods_type:'成品号',
-                    account_type:'安卓',
-                    area:'安卓一区',
-                    goods_des:'贵6小号可议价，手快有手慢无',
-                    goods_safe:['./static/img/goodscreen/safe_ico.png','./static/img/goodscreen/stages_ico.png','./static/img/goodscreen/verify.png'],
-                    goods_price:'￥600',
-                    isBargain:true
-                },{
-                    isBoutique:false,
-                    goods_type:'成品号',
-                    account_type:'苹果',
-                    area:'安卓一区',
-                    goods_des:'贵6小号可议价，手快有手慢无',
-                    goods_safe:['./static/img/goodscreen/stages_ico.png','./static/img/goodscreen/verify.png'],
-                    goods_price:'￥6000',
-                    isBargain:true
-                },{
-                    isBoutique:false,
-                    goods_type:'成品号',
-                    account_type:'苹果',
-                    area:'安卓一区',
-                    goods_des:'贵6小号可议价，手快有手慢无',
-                    goods_safe:['./static/img/goodscreen/stages_ico.png','./static/img/goodscreen/verify.png'],
-                    goods_price:'￥6000',
-                    isBargain:true
-                },{
-                    isBoutique:false,
-                    goods_type:'成品号',
-                    account_type:'苹果',
-                    area:'安卓一区',
-                    goods_des:'贵6小号可议价，手快有手慢无',
-                    goods_safe:['./static/img/goodscreen/stages_ico.png','./static/img/goodscreen/verify.png'],
-                    goods_price:'￥6000',
-                    isBargain:true
-                },{
-                    isBoutique:false,
-                    goods_type:'成品号',
-                    account_type:'苹果',
-                    area:'安卓一区',
-                    goods_des:'贵6小号可议价，手快有手慢无',
-                    goods_safe:['./static/img/goodscreen/stages_ico.png','./static/img/goodscreen/verify.png'],
-                    goods_price:'￥6000',
-                    isBargain:true
-                },{
-                    isBoutique:false,
-                    goods_type:'成品号',
-                    account_type:'苹果',
-                    area:'安卓一区',
-                    goods_des:'贵6小号可议价，手快有手慢无',
-                    goods_safe:['./static/img/goodscreen/stages_ico.png','./static/img/goodscreen/verify.png'],
-                    goods_price:'￥6000',
-                    isBargain:true
-                },{
-                    isBoutique:false,
-                    goods_type:'成品号',
-                    account_type:'苹果',
-                    area:'安卓一区',
-                    goods_des:'贵6小号可议价，手快有手慢无',
-                    goods_safe:['./static/img/goodscreen/stages_ico.png','./static/img/goodscreen/verify.png'],
-                    goods_price:'￥6000',
-                    isBargain:true
                 }],
                 // 账号类型
                 account_info:[{
@@ -736,6 +672,7 @@
         },
         components:{
             Header,
+            GoodsList,
         }
     }
 </script>
@@ -789,106 +726,7 @@
         line-height: .5rem;
     }
 
-    /* 商品列表 =======================================scroll*/
-    .screen-goods-wrap{
-        max-height: 10.55rem;
-        overflow-y:scroll;
-    }
-    /* 单条商品 */
-    .goods-strip{
-        background:#FFFFFF;
-        padding:.3rem .2rem;
-        margin-bottom:.2rem;
-    }
-    /* 头部------ */
-    .goods-strip-title{
-        color:#FFFFFF;
-        font-size:.24rem;
-        line-height:.36rem;
-        margin-bottom:.2rem;
-    }
-    /* 精品 */
-    .boutique{
-        text-align:center;
-        background:#FE7649;
-        width:.36rem;
-        height:.36rem;
-        display:inline-block;
-        margin-right:.1rem;
-    }
-    .goods-type{
-        text-align:center;
-        width:.93rem;
-        height: .36rem;
-        background:-webkit-linear-gradient(#FEAB49,#FFCC4B);
-        background:-o-linear-gradient(#FEAB49,#FFCC4B);
-        background:-moz-linear-gradient(#FEAB49,#FFCC4B);
-        background:linear-gradient(to right, #FEAB49 , #FFCC4B);
-        display:inline-block;
-        margin-right:.1rem;
-    }
-    .account-type{
-        text-align:center;
-        width:.7rem;
-        height:.36rem;
-        background:-webkit-linear-gradient(120deg,rgba(104,224,218,1),rgba(104,223,222,1),rgba(132,240,178,1),rgba(73,209,202,1));
-        background:-o-linear-gradient(120deg,rgba(104,224,218,1),rgba(104,223,222,1),rgba(132,240,178,1),rgba(73,209,202,1));
-        background:-moz-linear-gradient(120deg,rgba(104,224,218,1),rgba(104,223,222,1),rgba(132,240,178,1),rgba(73,209,202,1));
-        background:linear-gradient(120deg,rgba(104,224,218,1),rgba(104,223,222,1),rgba(132,240,178,1),rgba(73,209,202,1));
-        display:inline-block;
-        margin-right:.1rem;
-    }
-    .area{
-        font-size:.26rem;
-        color:#999999;
-        display:inline-block;
-    }
-    /* 详情 -- 保障*/
-    .goods-strip-content{
-        margin-bottom:.15rem;
-    }
-    .goods-des{
-        width:5rem;
-        overflow:hidden; /*超出的部分隐藏起来。*/ 
-        white-space:nowrap;/*不显示的地方用省略号...代替*/
-        text-overflow:ellipsis;/* 支持 IE */
-        display:inline-block;
-        font-size:.3rem;
-        line-height:.31rem;
-        color:#333333;
-    }
-    .goods-ico{
-        float:right;
-        text-align: right;
-    }
-    .goods-ico img{
-        width:.36rem;
-        height: .36rem;
-        margin-left:.12rem;
-    }
-    /* 底部 价格 */
-    .goods-strip-bottom div{
-        display:inline-block;
-    }
-    .goods-price{
-        font-size:.36rem;
-        color:#FA5856;
-        vertical-align: middle;
-    }
-    .bargain{
-        width:.8rem;
-        margin-left:.1rem;
-        line-height: .35rem;
-        text-align:center;
-        font-size:.2rem;
-        color:#999999;
-        border: .01rem solid #B5B5B5;
-        border-top-left-radius: .18rem;
-        border-top-right-radius: .18rem;
-        border-bottom-left-radius: .18rem;
-        border-bottom-right-radius: .18rem;
-        vertical-align: middle;
-    }
+    
     /* 遮罩 */
     .goodscreen-shade{
         position:fixed;
@@ -1060,6 +898,10 @@
         vertical-align: top;
         margin-bottom: .3rem;
     }
+    .screen-strip-right input::-webkit-outer-spin-button,.raise-price input::-webkit-inner-spin-button{
+        -webkit-appearance: none !important;
+    }
+    input[type="number"]{-moz-appearance: textfield}
     /* 价格输入 */
     .input-price-left{
         line-height: .6rem;

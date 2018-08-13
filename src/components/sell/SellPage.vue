@@ -1,16 +1,17 @@
 <template>
+    <!-- 出售页 -->
     <div class="sell-page-wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="sell-page-content">
             <div class="search">
-                <img class="search-ico" src="../../static/img/search_ico.png" alt="">
+                <img class="search-ico" src="../../../static/img/search_ico.png" alt="">
                 <input class="search-input" type="text" placeholder="请输入游戏名称">
-                <img class="empty-ico" src="../../static/img/empty_ico.png" alt="" @click="emptyFun()">
+                <img class="empty-ico" src="../../../static/img/empty_ico.png" alt="" @click="emptyFun()">
             </div>
             <div class="search-history">
                 <div class="search-history-title">
                     <div class="search-histoty-title-text">近期搜索</div>
-                    <img src="../../static/img/delete_ico.png" alt="">
+                    <img src="../../../static/img/delete_ico.png" alt="">
                 </div>
                 <div class="search-history-content">
                     <div class="search-history-tag" v-for="(item,index) in historyNameList" v-text="item.name"></div>
@@ -18,7 +19,7 @@
             </div>
             <div class="game-classfiy-wrap">
                 <div class="game-classfiy-top">
-                    <div class="game-classfiy-top-cell" v-for="item in gameClassfiy" v-text="item"></div>
+                    <div class="game-classfiy-top-cell" v-for="item in gameClassfiy" v-text="item.name" :class="item.sele?'red-bg':''"></div>
                 </div>
                 <div class="game-classfiy-bottom">
                     <div class="game-classfiy-bottom-list" v-for="item in gameList">
@@ -45,7 +46,7 @@
             return{
                 showTitle:{
                     showBack:false,
-                    showLogo:false,//显示头部log
+                    showLogo:2,//显示头部log
                     showShare:3,//1搜索2分享3菜单
                     showBg:true,//是否显示背景
                     title:"我要卖",
@@ -61,7 +62,12 @@
                 },{
                     name:'梦幻西游',
                 }],
-                gameClassfiy:['热','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
+                gameClassfiy:[{name:'热',sele:true},{name:'A',sele:false},{name:'B',sele:false},{name:'C',sele:false},
+                            {name:'D',sele:false},{name:'E',sele:false},{name:'F',sele:false},
+                            {name:'G',sele:false},{name:'H',sele:false},{name:'I',sele:false},{name:'J',sele:false},{name:'K',sele:false},
+                            {name:'L',sele:false},{name:'M',sele:false},{name:'N',sele:false},{name:'O',sele:false},{name:'P',sele:false},
+                            {name:'Q',sele:false},{name:'R',sele:false},{name:'S',sele:false},{name:'T',sele:false},{name:'U',sele:false},
+                            {name:'V',sele:false},{name:'W',sele:false},{name:'X',sele:false},{name:'Y',sele:false},{name:'Z',sele:false}],
                 gameList:[{
                     gameListSrc:'./static/img/mh_ico.png',
                     gameListTit:'梦幻西游',
@@ -107,12 +113,14 @@
     }
     /*搜索*/
     .search{
+        width:7.1rem;
+        height:.76rem;
         text-align: center;
         -webkit-box-shadow: .06rem .05rem .09rem #D6D6D6;
         -moz-box-shadow: .06rem .05rem .09rem #D6D6D6;
         box-shadow: .06rem .05rem .09rem #D6D6D6;
         position: relative;
-        margin-bottom:.3rem;
+        margin:0 auto .3rem;
     }
     .search-input{
         width:7.1rem;
@@ -182,14 +190,13 @@
     }
     .game-classfiy-top .game-classfiy-top-cell{
         display: inline-block;
-        padding: .3rem .25rem;
+        width: .6rem;
+        height:.6rem;
+        line-height: .6rem;
         text-align: center;
     }
-    .game-classfiy-top .game-classfiy-top-cell:nth-child(1){
-        width:.48rem;
-        height:.48rem;
-        box-sizing:	content-box;
-        padding:0;
+    .red-bg{
+        color:#ffffff;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
         border-radius: 50%;
@@ -200,7 +207,6 @@
         background:-o-linear-gradient(#FD915F,#FC534A);
         background:-moz-linear-gradient(#FD915F,#FC534A);
         background:linear-gradient(to right, #FD915F , #FC534A);
-        text-align: center;
     }
 
     .game-classfiy-bottom-list{

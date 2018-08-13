@@ -1,4 +1,5 @@
 <template>
+    <!-- 首页 -->
   <div class="wrap">
       <div class="top">
           <Header v-bind:showTitle="showTitle"></Header>

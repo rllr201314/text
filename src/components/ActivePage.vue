@@ -1,4 +1,5 @@
 <template>
+    <!-- 活动页 -->
     <div class="active-wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="active-content">
