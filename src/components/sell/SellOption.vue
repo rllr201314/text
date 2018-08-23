@@ -274,7 +274,7 @@
         font-size:.26rem;
         color:#666666;
     }
-    `.right-opt{
+    .right-opt{
         width:3rem;
         text-align: right;
         float:right;
@@ -290,7 +290,7 @@
     }
     .right-opt span{
         vertical-align: middle;
-    }`
+    }
 
 
 

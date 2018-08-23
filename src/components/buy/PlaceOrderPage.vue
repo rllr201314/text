@@ -545,7 +545,6 @@
         position:fixed;
         left:calc(50% - 2rem);
         top:45%;
-
     }
     .stageBox-cell{
         line-height: .9rem;

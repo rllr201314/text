@@ -1,4 +1,5 @@
 <template>
+    <!-- 客服热线 -->
     <div class="hotline-content">
         <img class="hotline-img" src="../../../static/img/phone_ico.png" alt="">
         <span>客服热线：</span>

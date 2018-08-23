@@ -2,7 +2,9 @@
     <div v-bind:class="showTitle.showBg?'rebBg':'header'">
             <!--左边按钮-->
             <img  v-if="showTitle.showBack" class="user-tit-img" src="../../../static/img/userLog.png" alt="">
-            <span v-else class="mui-icon mui-icon-back toBack"></span>
+            <!-- <span v-else class="mui-icon mui-icon-back toBack"></span> -->
+            
+            <img v-else class="back-tit-img" src="../../../static/img/header/back_ico.png" alt="">
             <!--中间标题-->
             <img v-if="showTitle.showLogo == 1" class="titImg" src="../../../static/img/tit_content_img.png" alt="">
             <div v-else-if="showTitle.showLogo == 2" class="titText" v-html="showTitle.title"></div>
@@ -15,6 +17,7 @@
             <img v-if="showTitle.showShare === 1" class="head_right_search" src="../../../static/img/searchLogo.png" alt="">
             <img v-else-if="showTitle.showShare === 2" class="head_right_share" src="../../../static/img/share_ico.png" alt="">
             <img v-else-if="showTitle.showShare === 3" class="head_right_share" src="../../../static/img/menu_ico.png" alt="" @click="cliMenu">
+            <img v-else-if="showTitle.showShare === 4" class="head_right_add" src="../../../static/img/header/hAdd_ico.png" alt="">
             <div class="showMenu" v-show="showMenu">
                 <div class="tohome">
                     <img src="../../../static/img/header-menu/tohome_ico.png" alt="">
@@ -81,6 +84,7 @@
     line-height: .7rem;
     text-align: center;
     position: relative;
+    color:#333333;
 }
 .rebBg{
     padding:0.1rem 0;
@@ -91,10 +95,13 @@
     background:linear-gradient(to right, #FD915F , #FC534A);
     text-align: center;
     position: relative;
+    color:#333333;
 }
-.toBack{
+.back-tit-img{
+    width: .16rem;
+    height:.29rem;
     position: absolute;
-    top:.25rem;
+    top:.35rem;
     left:.2rem;
 }
 .user-tit-img{
@@ -128,6 +135,13 @@
     height:.28rem;
     position: absolute;
     top:.3rem;
+    right:.25rem;
+}
+.head_right_add{
+    width:.29rem;
+    height:.29rem;
+    position: absolute;
+    top:.33rem;
     right:.25rem;
 }
     /*搜索*/
@@ -187,7 +201,7 @@
     color:#FFFFFF;
     background:url(../../../static/img/header-menu/menubg.png) no-repeat;
     background-size: 2.28rem 5.46rem;
-    position:fixed;
+    position: absolute;
     right: .2rem;
     top:.9rem;
     text-align:left;

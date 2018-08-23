@@ -1,4 +1,5 @@
 <template>
+    <!-- 保险 -->
     <div class="insurance-wrap">
         <img src="../../../static/img/safe_cont.png" alt="">
         <div class="insurance-text">

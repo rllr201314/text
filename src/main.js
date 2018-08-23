@@ -3,15 +3,15 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import axios from 'axios'
 
-//注册全局组件--x
-// import Header from '@/components/Header'
-// import Footer from '@/components/Footer'
-// Vue.component({
-//     'Header':Header,
-//     'Footer':Footer
-// })
 
+axios.defaults.baseURL = 'http://192.168.1.253:8800';
+// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+// console.log(axios);
+Vue.prototype.$axios = axios;
+// console.log(Vue);
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

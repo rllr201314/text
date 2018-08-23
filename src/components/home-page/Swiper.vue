@@ -1,4 +1,5 @@
 <template>
+    <!-- 详情轮播图 -->
     <div class="swiper-wrap">
         <div class="swiper-container" id="swiper-content">
             <div class="swiper-wrapper">

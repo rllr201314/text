@@ -6,11 +6,11 @@
           <SwiperContent></SwiperContent>
       </div>
       <div class="content">
-          <LastSale></LastSale>
+          <LastSale v-bind:flow="{sale:true,safe:false}"></LastSale>
           <UserOperation></UserOperation>
           <GameDivision></GameDivision>
           <HotGame></HotGame>
-          <LastSale></LastSale>
+          <LastSale v-bind:flow="{sale:false,safe:true}"></LastSale>
           <Notice></Notice>
           <InsuranceCell></InsuranceCell>
       </div>
@@ -68,6 +68,7 @@ export default {
                 title:"",
             },
             isShowShage:false,//是否显示遮罩和活动弹框
+            
             activeData:[{
                 logImg:'./static/img/mh_cont.png',
                 tit:'竞拍：100级万寸神宠',
@@ -85,6 +86,8 @@ export default {
     methods: {
         showActive(){
             this.isShowShage = !this.isShowShage;
+        },
+        countDown(times){
         }
     },
     components: {
@@ -99,6 +102,41 @@ export default {
         HotLine,//客服热线
         UserHelp,//用户帮助
         Footer
+    },
+    mounted(){
+        // 活动倒计时----
+        // var time = null;
+        // var second=5; 
+        // var minute=0; 
+        // var hour=0; 
+        // var day=0; 
+        // var flag=false; 
+        // function countDown(){ 
+        //     second-=1; 
+        //     if(second==0){ 
+        //     minute=minute-1; 
+        //     second=60; 
+        //         if(minute<0){ 
+        //             hour=hour-1; 
+        //             minute=59; 
+        //             if(hour<0){ 
+        //                 day-=1; 
+        //                 hour=23; 
+        //                 if(day<0){ 
+        //                     flag=true; 
+        //                 } 
+        //             } 
+        //         } 
+        //     } 
+        //     if(flag){ 
+        //         console.log("活动结束！");
+        //         clearInterval(time);
+        //     }else{
+        //         console.log("距离活动时间还剩："+day+"天"+hour+"小时"+minute+"分"+second+"秒")
+        //     } 
+        // } 
+        // time=setInterval(countDown,1000); 
+              
     }
 
 

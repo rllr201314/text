@@ -1,4 +1,5 @@
 <template>
+    <!-- 公告 -->
     <div class="notice-wrap">
         <div class="notice-top">
             <div class="notice-title">公告</div>

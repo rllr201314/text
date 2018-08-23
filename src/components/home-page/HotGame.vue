@@ -1,4 +1,5 @@
 <template>
+    <!-- 热门游戏 -->
     <div class="hot-game-wrap">
         <div class="hot-game-title">
             <div class="title-txt">热门游戏</div>

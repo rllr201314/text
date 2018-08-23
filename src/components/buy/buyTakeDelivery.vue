@@ -177,6 +177,7 @@
     .blue-color{
         color:#4AC0F4;
         font-size:.28rem;
+        margin-left:.1rem;
     }
     .green-color{
         color:#FFFFFF;

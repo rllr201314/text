@@ -1,4 +1,5 @@
 <template>
+    <!-- 专区模块 -->
     <div class="game-division">
         <div class="division-cell cell-mh">
             <div class="division-big">

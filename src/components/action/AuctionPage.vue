@@ -43,32 +43,32 @@
                 <!-- 拍卖流程 -->
                 <div class="auction-flow">
                     <div class="auction-flow-title">
-                        <img src="../../static/img/auc_ico.png" alt="">
+                        <img src="../../../static/img/auc_ico.png" alt="">
                         <span>拍卖流程</span>
                     </div>
                     <div class="auction-flow-content">
                         <div class="auction-flow-cell pay-deposit-cell">
-                            <img src="../../static/img/pay_deposit_ico.png" alt="">
+                            <img src="../../../static/img/pay_deposit_ico.png" alt="">
                             <div>支付押金</div>
                         </div>
-                        <img class="arrow" src="../../static/img/arrow.png" alt="">
+                        <img class="arrow" src="../../../static/img/arrow.png" alt="">
                         <div class="auction-flow-cell auction-cell">
-                            <img src="../../static/img/auction_ico.png" alt="">
+                            <img src="../../../static/img/auction_ico.png" alt="">
                             <div>竞拍</div>
                         </div>
-                        <img class="arrow" src="../../static/img/arrow.png" alt="">
+                        <img class="arrow" src="../../../static/img/arrow.png" alt="">
                         <div class="auction-flow-cell pay-cell">
-                            <img src="../../static/img/pay_ico.png" alt="">
+                            <img src="../../../static/img/pay_ico.png" alt="">
                             <div>支付/退押金</div>
                         </div>
-                        <img class="arrow" src="../../static/img/arrow.png" alt="">
+                        <img class="arrow" src="../../../static/img/arrow.png" alt="">
                         <div class="auction-flow-cell in-tie-cell">
-                            <img src="../../static/img/in_tie_ico.png" alt="">
+                            <img src="../../../static/img/in_tie_ico.png" alt="">
                             <div>换绑</div>
                         </div>
-                        <img class="arrow" src="../../static/img/arrow.png" alt="">
+                        <img class="arrow" src="../../../static/img/arrow.png" alt="">
                         <div class="auction-flow-cell trade-success-cell">
-                            <img src="../../static/img/trade_success_ico.png" alt="">
+                            <img src="../../../static/img/trade_success_ico.png" alt="">
                             <div>交易成功</div>
                         </div>
                     </div>
@@ -101,9 +101,9 @@
             <div class="join-content">
                 <div class="raise-price" v-if="goodsInfo.auction_status > 1 && goodsInfo.auction_status < 4">
                     <div class="raise-price-title">请输入加价金额(单位:元）</div>
-                    <img src="../../static/img/sub_price.png" alt="" class="addbtn">
+                    <img src="../../../static/img/sub_price.png" alt="" class="addbtn">
                     <input type="number">
-                    <img src="../../static/img/add_price.png" alt="" class="addbtn">
+                    <img src="../../../static/img/add_price.png" alt="" class="addbtn">
                 </div>
                 <div class="raise-success" v-if="goodsInfo.auction_status == 4">恭喜您拍得该商品!</div>
             </div>
@@ -251,17 +251,17 @@
         z-index: 99;
     }
     .auction-status-top-red{
-        background-image:url(../../static/img/red_radius.png);
+        background-image:url(../../../static/img/red_radius.png);
         background-size:.67rem 1.7rem;
         background-position: 100%;
     }
     .auction-status-top-green{
-        background-image:url(../../static/img/green_radius.png);
+        background-image:url(../../../static/img/green_radius.png);
         background-size:.67rem 1.7rem;
         background-position: 100%;
     }
     .auction-status-top-gray{
-        background-image:url(../../static/img/gray_radius.png);
+        background-image:url(../../../static/img/gray_radius.png);
         background-size:.67rem 2rem;
         background-position: 100%;
     }

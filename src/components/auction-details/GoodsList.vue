@@ -1,6 +1,6 @@
 <template>
     <div class="screen-goods-wrap">
-        <div class="goods-strip" v-for="(item,index) in goodsList.goods_info">
+        <div class="goods-strip" v-for="(item,index) in goodsList.goodsInfo">
             <div class="goods-strip-title">
                 <div class="boutique" v-if="item.isBoutique">精</div>
                 <div class="goods-type" v-text="item.goods_type"></div>
@@ -9,8 +9,10 @@
             </div>
             <div class="goods-strip-content">
                 <div class="goods-des" v-text="item.goods_des"></div>
-                <div class="goods-ico" v-if="goodsList.show_safe">
-                    <img v-for="itemImg in item.goods_safe" :src="itemImg" alt="">
+                <div class="goods-ico">
+                    <img v-if="item.safe" src="../../../static/img/goodscreen/safe_ico.png" alt="">
+                    <img v-if="item.stage" src="../../../static/img/goodscreen/stages_ico.png" alt="">
+                    <img v-if="item.verify" src="../../../static/img/goodscreen/verify.png" alt="">
                 </div>
             </div>
             <div class="goods-strip-bottom">
@@ -18,7 +20,7 @@
                 <div class="bargain" v-if="item.isBargain">可议价</div>
             </div>
         </div>
-        <div class="more-info" v-if="!goodsList.show_safe">查看更多</div>
+        <div class="more-info" v-if="!goodsList.showSafe">查看更多</div>
     </div>
 </template>
 <script>
