@@ -2,22 +2,25 @@
     <div class="screen-goods-wrap">
         <div class="goods-strip" v-for="(item,index) in goodsList.goodsInfo">
             <div class="goods-strip-title">
-                <div class="boutique" v-if="item.isBoutique">精</div>
-                <div class="goods-type" v-text="item.goods_type"></div>
-                <div class="account-type" v-text="item.account_type"></div>
-                <div class="area" v-text="item.area"></div>
+                <div class="boutique" v-if="item.is_recommend == 1">精</div>
+                <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
+                <div class="goods-type" v-else-if="item.deal_type_id == 2">代练号</div>
+                <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                <div class="area" v-text="item.area_name"></div>
             </div>
             <div class="goods-strip-content">
-                <div class="goods-des" v-text="item.goods_des"></div>
+                <div class="goods-des" v-text="item.goods_title"></div>
                 <div class="goods-ico">
-                    <img v-if="item.safe" src="../../../static/img/goodscreen/safe_ico.png" alt="">
-                    <img v-if="item.stage" src="../../../static/img/goodscreen/stages_ico.png" alt="">
-                    <img v-if="item.verify" src="../../../static/img/goodscreen/verify.png" alt="">
+                    <img v-if="item.is_safe == 1" src="../../../static/img/goodscreen/safe_ico.png" alt="">
+                    <img v-if="item.is_stage == 1" src="../../../static/img/goodscreen/stages_ico.png" alt="">
+                    <img v-if="item.is_check == 1" src="../../../static/img/goodscreen/verify.png" alt="">
                 </div>
             </div>
             <div class="goods-strip-bottom">
                 <div class="goods-price" v-text="item.goods_price"></div>
-                <div class="bargain" v-if="item.isBargain">可议价</div>
+                <div class="bargain" v-if="item.sell_type == 2">可议价</div>
             </div>
         </div>
         <div class="more-info" v-if="!goodsList.showSafe">查看更多</div>
@@ -31,10 +34,10 @@
 </script>
 <style scoped>
     /* 商品列表 =======================================scroll*/
-    .screen-goods-wrap{
+    /* .screen-goods-wrap{
         max-height: 10.55rem;
         overflow-y:scroll;
-    }
+    } */
     /* 单条商品 */
     .goods-strip{
         background:#FFFFFF;
@@ -70,7 +73,8 @@
     }
     .account-type{
         text-align:center;
-        width:.7rem;
+        /* width:.7rem; */
+        padding:0 .1rem;
         height:.36rem;
         background:-webkit-linear-gradient(120deg,rgba(104,224,218,1),rgba(104,223,222,1),rgba(132,240,178,1),rgba(73,209,202,1));
         background:-o-linear-gradient(120deg,rgba(104,224,218,1),rgba(104,223,222,1),rgba(132,240,178,1),rgba(73,209,202,1));
@@ -117,13 +121,13 @@
         vertical-align: middle;
     }
     .bargain{
-        width:.8rem;
         margin-left:.1rem;
         line-height: .35rem;
         text-align:center;
         font-size:.2rem;
         color:#999999;
-        border: .01rem solid #B5B5B5;
+        padding:.02rem .06rem;
+        border: 1px solid #B5B5B5;
         border-top-left-radius: .18rem;
         border-top-right-radius: .18rem;
         border-bottom-left-radius: .18rem;

@@ -1,34 +1,34 @@
 <template>
-  <!-- 注册 -->
-  <div class="register-wrap">
-    <Header v-bind:showTitle='comData.showTitle'></Header>
-    <div class="register-content">
-      <div class="register-cell">
-        <div class="register-strip">
-          <img class="phone-ico" src="../../../../static/img/my-center/phone_ico.png" alt="">
-          <input type="number" placeholder="请输入您的手机号" v-model="registerData.phoneNum">
+    <!-- 注册 -->
+    <div class="register-wrap">
+        <Header v-bind:showTitle='comData.showTitle'></Header>
+        <div class="register-content">
+            <div class="register-cell">
+                <div class="register-strip">
+                    <img class="phone-ico" src="../../../../static/img/my-center/phone_ico.png" alt="">
+                    <input type="number" placeholder="请输入您的手机号" v-model="registerData.phoneNum">
+                </div>
+                <div class="register-strip">
+                    <img class="code-ico" src="../../../../static/img/my-center/code_ico.png" alt="">
+                    <input type="number" placeholder="请输入验证码" v-model="verify_code">
+                    <span class="get-code" @click="getCode" v-text="hintCode"></span>
+                </div>
+                <div class="register-strip">
+                    <img class="pass-ico" src="../../../../static/img/my-center/password_ico.png" alt="">
+                    <input type="password" placeholder="密码为6-16位数字、字母组合" v-model="password">
+                </div>
+            </div>
+            <div class="protocol">
+                <img :src="registerData.protocol?'../../../../static/img/goodscreen/okcheck.png':'../../../../static/img/goodscreen/nocheck.png'" alt="" @click="seleProtocol">
+                <div>
+                    我已阅读
+                    <span class="red-color">《看个号用户基础服务协议》</span>
+                </div>
+            </div>
+            <div class="nextBtn" @click="loginFn('register')">登录</div>
+            <div class="goLogin" @click="loginFn('login')">登录已有帐号</div>
         </div>
-        <div class="register-strip">
-          <img class="code-ico" src="../../../../static/img/my-center/code_ico.png" alt="">
-          <input type="number" placeholder="请输入验证码">
-          <span class="get-code" @click="getCode">获取验证码</span>
-        </div>
-        <div class="register-strip">
-          <img class="pass-ico" src="../../../../static/img/my-center/password_ico.png" alt="">
-          <input type="password" placeholder="请输入8~20个字符作为密码">
-        </div>
-      </div>
-      <div class="protocol">
-        <img :src="registerData.protocol?'../../../../static/img/goodscreen/okcheck.png':'../../../../static/img/goodscreen/nocheck.png'" alt="">
-        <div>
-          我已阅读
-          <span class="red-color">《看个号用户基础服务协议》</span>
-        </div>
-      </div>
-      <div class="nextBtn">登录</div>
-      <div class="goLogin">登录已有帐号</div>
     </div>
-  </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
@@ -48,6 +48,10 @@ export default {
                     title: "注册"
                 }
             },
+            hintCode: "获取验证码",
+            isGetCode: true,
+            password: "",
+            verify_code: "",
             registerData: {
                 protocol: true, //是否阅读协议
                 phoneNum: ""
@@ -55,21 +59,147 @@ export default {
         };
     },
     methods: {
+        seleProtocol() {
+            this.registerData.protocol = !this.registerData.protocol;
+        },
         getCode() {
             var that = this;
-            var phone = that.registerData.phoneNum;
-            var reg = /^1[3-9][0-9]{9}$/g;
-            if (phone.match(reg)) {
-            } else {
-                mui.alert("您输入的手机号不正确", "提示", "确定", "", "div");
+            if (that.isGetCode) {
+                var phone = that.registerData.phoneNum;
+                var reg = /^1[3-9][0-9]{9}$/g;
+                if (phone == "") {
+                    mui.alert("手机号码不能为空", "提示", "确定", "", "div");
+                } else if (!phone.match(reg)) {
+                    mui.alert(
+                        "您输入的手机号不正确",
+                        "提示",
+                        "确定",
+                        "",
+                        "div"
+                    );
+                } else {
+                    that.$axios
+                        .post("/api/verify_code", {
+                            mobile: phone
+                        })
+                        .then(function(response) {
+                            console.log(response.data);
+                            var res = response;
+                            if (res.status == 200) {
+                                if (res.data.code == 200) {
+                                    that.hintCode = 60;
+                                    that.isGetCode = false;
+                                    var time = setInterval(function() {
+                                        that.hintCode--;
+                                        if (that.hintCode <= 0) {
+                                            clearInterval(time);
+                                            that.isGetCode = true;
+                                            that.hintCode = "获取验证码";
+                                        }
+                                    }, 1000);
+                                    mui.alert(res.data.msg,"提示","确认","","");
+                                } else {
+                                    mui.alert(res.data.msg,"提示","确认","","");
+                                }
+                            }
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
+                }
+            }
+        },
+        loginFn(opt) {
+            const that = this;
+            if (opt == "register") {
+                var mobile = that.registerData.phoneNum;
+                var verify_code = that.verify_code;
+                var password = that.password;
+                var phoneReg = /^1[3-9][0-9]{9}$/g;
+                var passReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
+                console.log(mobile);
+                if (mobile == "") {
+                    mui.alert("手机号码不能为空", "提示", "确定", "", "div");
+                } else if (!mobile.match(phoneReg)) {
+                    mui.alert(
+                        "您输入的手机号不正确",
+                        "提示",
+                        "确定",
+                        "",
+                        "div"
+                    );
+                } else if (verify_code == "" || verify_code.length < 6) {
+                    mui.alert(
+                        "您输入的验证码不正确",
+                        "提示",
+                        "确定",
+                        "",
+                        "div"
+                    );
+                } else if (password == "") {
+                    mui.alert("密码不能为空", "提示", "确定", "", "div");
+                } else if (!password.match(passReg)) {
+                    mui.alert(
+                        "密码为6-16位数字、字母组合",
+                        "提示",
+                        "确定",
+                        "",
+                        "div"
+                    );
+                } else {
+                    that.$axios
+                        .post("/api/do_register", {
+                            mobile: mobile,
+                            verify_code: verify_code,
+                            password: password
+                        })
+                        .then(function(response) {
+                            console.log(response);
+                            var res = response;
+                            if (res.status == 200) {
+                                if (res.data.code == 200) {
+                                    mui.alert(
+                                        res.data.msg,
+                                        "提示",
+                                        "确定",
+                                        function() {
+                                            that.$router.push({
+                                                name: "MyCenter"
+                                            });
+                                        },
+                                        "div"
+                                    );
+                                } else {
+                                    mui.alert(
+                                        res.data.msg,
+                                        "提示",
+                                        "确定",
+                                        "",
+                                        "div"
+                                    );
+                                    that.verify_code = "";
+                                    that.password = "";
+                                }
+                            }
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
+                }
+            } else if (opt == "login") {
+                that.$router.push({
+                    name: "AccountLogin"
+                });
             }
         }
     },
-    mounted(){
-        var route = this.$route;
-        var opt = route.params;
-        console.log(opt);
-        console.log(route);
+    mounted() {
+        // var route = this.$route;
+        // var opt = route.params;
+        // var that = this;
+        // console.log(that);
+        // console.log(opt);
+        // console.log(route);
     }
 };
 </script>
@@ -115,8 +245,9 @@ export default {
     color: #fe7649;
     font-size: 0.22rem;
     line-height: 0.6rem;
-    padding: 0 0.4rem;
-    border: 0.01rem solid #fe7649;
+    width: 1.9rem;
+    text-align: center;
+    border: 1px solid #fe7649;
     -webkit-border-radius: 0.15rem;
     -moz-border-radius: 0.15rem;
     border-radius: 0.15rem;
@@ -200,4 +331,6 @@ input[type="number"] {
     font-size: 0.26rem;
 }
 </style>
+
+
 

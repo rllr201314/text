@@ -3,8 +3,8 @@
     <div class="swiper-wrap">
         <div class="swiper-container" id="swiper-content">
             <div class="swiper-wrapper">
-                <div class="swiper-slide present-page" v-for="(item,index) in imgList">
-                    <img :src="item.name" alt="">
+                <div class="swiper-slide present-page" v-for="item in imgList">
+                    <img :src="item.img_url" alt="">
                 </div>
             </div>
             <div class="swiper-pagination"></div>
@@ -13,18 +13,14 @@
 </template>
 
 <script>
-    export default {
-        name: "Swiper",
-        data(){
-            return{
-                imgList:[
-                    {name:'static/img/swiper_cont.png'},
-                    {name:'static/img/today-recommend-1.png'},
-                    {name:'static/img/today-recommend-2.png'},
-                    {name:'static/img/today-recommend-1.png'}]
-            }
-        },
-        mounted(){
+export default {
+    name: "Swiper",
+    data() {
+        return {};
+    },
+    props: ["imgList"],
+    methods: {
+        swiper() {
             var mySwiper = new Swiper ('#swiper-content', {
                 loop:true,
                 autoplay : 3000,
@@ -33,16 +29,26 @@
                 pagination : '.swiper-pagination',
             })
         }
+    },
+    mounted() {
+        var that = this;
+        var time = setInterval(function(){
+            if(that.imgList != ''){
+                that.swiper();
+                clearInterval(time);
+            }
+        },300)
     }
+};
 </script>
 
 <style scoped>
-    .swiper-wrap{
-        width:100%;
-        height:4rem;
-    }
-    .present-page img{
-        width:100%;
-        height:4rem;
-    }
+.swiper-wrap {
+    width: 100%;
+    height: 4rem;
+}
+.present-page img {
+    width: 100%;
+    height: 4rem;
+}
 </style>

@@ -2,7 +2,7 @@
     <!-- 专区模块 -->
     <div class="game-division">
         <div class="division-cell cell-mh">
-            <div class="division-big">
+            <div class="division-big" @click="goArea('mh')">
                 <div class="division-left">
                     <div class="dCell-top">梦幻分期专区</div>
                     <div class="dCell-bottom">随心购 找回包赔</div>
@@ -11,7 +11,7 @@
             </div>
         </div>
         <div class="division-cell cell-dh">
-            <div class="division-big">
+            <div class="division-big" @click="goArea('dh')">
                 <div class="division-left">
                     <div class="dCell-top">大话化无专区</div>
                     <div class="dCell-bottom">寻找最大的优惠</div>
@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="division-cell cell-clx">
-            <div class="division-big">
+            <div class="division-big" @click="goArea('clx')">
                 <div class="division-left">
                     <div class="dCell-top">楚楚香首充专区</div>
                     <div class="dCell-bottom">随心购 找回包赔</div>
@@ -39,7 +39,19 @@
 
 <script>
     export default {
-        name: "GameDivision"
+        name: "GameDivision",
+        methods:{
+            goArea(flag){
+                var that = this;
+                if(flag == 'mh'){
+                    that.$router.push({name:'ActiveArea',params:{tit:'梦幻西游活动专区'}})
+                }else if(flag == 'dh'){
+                    that.$router.push({name:'ActiveArea',params:{tit:'大话西游活动专区'}})
+                }else if(flag == 'clx'){
+                    that.$router.push({name:'ActiveArea',params:{tit:'楚留香活动专区'}})
+                }
+            }
+        }
     }
 </script>
 

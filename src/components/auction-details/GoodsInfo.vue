@@ -9,14 +9,14 @@
                 <div class="goods-basic-left">基本信息</div>
                 <div class="goods-level-left">等级</div>
                 <div class="goods-school-left">门派</div>
-                <div class="goods-authent-left">实名认证</div> 
+                <!-- <div class="goods-authent-left">实名认证</div>  -->
                 <div class="goods-des-left">商品描述</div>
             </div>
             <div class="goods-info-content-right">
                 <div class="goods-basic-right" v-text="goodsInfo.basic"></div>
                 <div class="goods-level-right" v-text="goodsInfo.level"></div>
                 <div class="goods-school-right" v-text="goodsInfo.school"></div>
-                <div class="goods-authent-right" v-text="goodsInfo.authent"></div> 
+                <!-- <div class="goods-authent-right" v-text="goodsInfo.authent"></div>  -->
                 <div class="goods-des-right" v-text="goodsInfo.des"></div>
             </div>
         </div>                      

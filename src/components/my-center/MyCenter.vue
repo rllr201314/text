@@ -3,14 +3,41 @@
     <div class="mycenter-wrap">
         <div class="mycenter-top">
             <Header v-bind:showTitle="comData.showTitle"></Header>
-            <div class="user-info">
+            <div class="user-login" v-if="myData.userStatus == 1">
                 <div class="user-log">
                     <img src="../../../static/img/mh_ico.png" alt="">
                 </div>
                 <div class="user-status">
-                    <span class="user-login">登录</span>
+                    <span class="user-login" @click="goSele('login')">登录</span>
                     <span class="vertical">|</span>
-                    <span class="user-register">注册</span>
+                    <span class="user-register" @click="goSele('register')">注册</span>
+                </div>
+            </div>
+            <div class="user-info" v-if="myData.userStatus == 2">
+                <div class="left-user-info">
+                    <img src="../../../static/img/my-center/user_log.png" alt="">
+                </div>
+                <div class="right-user-info">
+                    <div class="user-phone">
+                        <span v-text="myData.phoneNum"></span>
+                        <img src="../../../static/img/my-center/user_flag.png" alt="">
+                    </div>
+                    <div class="right-user-info-strip">
+                        <span>购买成功</span>
+                        <span v-text="myData.buyNum"></span>
+                    </div>
+                    <div class="right-user-info-strip">
+                        <span>出售成功</span>
+                        <span v-text="myData.sellNum"></span>
+                    </div>
+                </div>
+                <div class="sign">
+                    <img class="sign-img" src="../../../static/img/my-center/sign.png" alt="">
+                    <div class="sign-box">
+                        <span v-text="myData.integral"></span>
+                        <span>积分</span>
+                        <img class="sign-right-img" src="../../../static/img/my-center/sign_right.png" alt="">
+                    </div>
                 </div>
             </div>
         </div>
@@ -22,13 +49,13 @@
                         <div class="user-type" @click="seleUserType('sell')" :class="myData.userTypeOpt.usertype?'':'red-color'">我是卖家</div>
                     </div>
                     <div class="operation-content" v-show="myData.userTypeOpt.usertype">
-                        <div class="cell" v-for="item in myData.userTypeOpt.buyTit" :class="item.name">
+                        <div class="cell" v-for="item in myData.userTypeOpt.buyTit" :class="item.name" @click="goSele(item.link)">
                             <img :src="item.imgSrc" alt="">
                             <div v-text="item.val"></div>
                         </div>
                     </div>
                     <div class="operation-content" v-show="!myData.userTypeOpt.usertype">
-                        <div class="cell" v-for="item in myData.userTypeOpt.sellTit" :class="item.name">
+                        <div class="cell" v-for="item in myData.userTypeOpt.sellTit" :class="item.name" @click="goSele(item.link)">
                             <img :src="item.imgSrc" alt="">
                             <div v-text="item.val"></div>
                         </div>
@@ -38,13 +65,13 @@
                 <img class="r-loop" src="../../../static/img/my-center/lloop.png" alt="">
                 <div class="operation-box">
                     <div class="operation-content" v-show="myData.userTypeOpt.usertype">
-                        <div class="cell" v-for="item in myData.userTypeOpt.buyCon" :class="item.name">
+                        <div class="cell" v-for="item in myData.userTypeOpt.buyCon" :class="item.name" @click="goSele(item.link)">
                             <img :src="item.imgSrc" alt="">
                             <span v-text="item.val"></span>
                         </div>
                     </div>
                     <div class="operation-content" v-show="!myData.userTypeOpt.usertype">
-                        <div class="cell" v-for="item in myData.userTypeOpt.sellCon" :class="item.name">
+                        <div class="cell" v-for="item in myData.userTypeOpt.sellCon" :class="item.name" @click="goSele(item.link)">
                             <img :src="item.imgSrc" alt="">
                             <span v-text="item.val"></span>
                         </div>
@@ -58,12 +85,12 @@
                         <img src="../../../static/img/goodscreen/vertical.png" alt="">
                         <span>资产管理</span>
                     </div>
-                    <div class="title-right">
+                    <div class="title-right" @click="goSele('withdrawDeposit')">
                         <img src="../../../static/img/my-center/draw.png" alt="">
                         <span>提现</span>
                     </div>
                 </div>
-                <div class="box-content">
+                <div class="box-content" @click="goSele('assetsManage')">
                     <div class="box-content-cell">
                         <div class="manage-des">可用余额</div>
                         <div class="manage-detail" v-text="myData.manageData.usableBalance"></div>
@@ -80,65 +107,86 @@
                     </div>
                 </div>
             </div>
-            <div class="strip-wrap">
+            <div class="strip-wrap" @click="goSele('commissionManage')">
                 <div class="sell-strip">
                     <div class="left-strip price">
                         <img src="../../../static/img/my-center/price.png" alt="">
                         <span>轻松赚佣金</span>
                     </div>
-                    <div class="right-opt" >
+                    <div class="right-opt">
                         <span class="red-bg" v-text="myData.comNews"></span>
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                
-                <div class="sell-strip">
+
+                <div class="sell-strip" @click="goSele('collect')">
                     <div class="left-strip collect">
                         <img src="../../../static/img/my-center/collect.png" alt="">
                         <span>我的收藏</span>
                     </div>
-                    <div class="right-opt" >
+                    <div class="right-opt">
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                
-                <div class="sell-strip">
+
+                <div class="sell-strip" @click="goSele('browseRecord')">
                     <div class="left-strip his">
                         <img src="../../../static/img/my-center/his.png" alt="">
                         <span>浏览记录</span>
                     </div>
-                    <div class="right-opt" >
+                    <div class="right-opt">
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                
-                <div class="sell-strip">
+
+                <div class="sell-strip" @click="goSele('pact')">
                     <div class="left-strip pacd">
                         <img src="../../../static/img/my-center/pacd.png" alt="">
                         <span>电子合同</span>
                     </div>
-                    <div class="right-opt" >
+                    <div class="right-opt">
                         <span class="red-bg" v-text="myData.pactNews"></span>
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                
-                <div class="sell-strip">
+
+                <div class="sell-strip" @click="goSele('authenticity')">
                     <div class="left-strip see">
                         <img src="../../../static/img/my-center/see.png" alt="">
                         <span>客服真伪验证</span>
                     </div>
-                    <div class="right-opt" >
+                    <div class="right-opt">
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                
+
                 <div class="sell-strip">
                     <div class="left-strip service">
                         <img src="../../../static/img/my-center/service.png" alt="">
                         <span>联系客服</span>
                     </div>
-                    <div class="right-opt" >
+                    <div class="right-opt">
+                        <img src="../../../static/img/order/next.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="strip-wrap">
+                <div class="sell-strip" @click="goSele('changePassword')">
+                    <div class="left-strip write" >
+                        <img src="../../../static/img/my-center/write.png" alt="">
+                        <span>修改密码</span>
+                    </div>
+                    <div class="right-opt">
+                        <img src="../../../static/img/order/next.png" alt="">
+                    </div>
+                </div>
+
+                <div class="sell-strip">
+                    <div class="left-strip quit">
+                        <img src="../../../static/img/my-center/quit.png" alt="">
+                        <span>退出登录</span>
+                    </div>
+                    <div class="right-opt">
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
@@ -147,420 +195,606 @@
     </div>
 </template>
 <script>
-    import Header from '@/components/home-page/Header'
-    export default {
-        name:'MyCenter',
-        components:{
-            Header,
-        },
-        data(){
-            return {
-                comData:{
-                    showTitle:{
-                        showBack:false,
-                        showLogo:2,//显示头部title文字
-                        showShare:3,//1搜索2分享3菜单
-                        showBg:false,//是否显示背景
-                        title:"个人中心",
-                    }
-                },
-                myData:{
-                    userTypeOpt:{
-                        usertype:true,//true是买家 false是卖家
-                        buyTit:[{
-                            key:1,
-                            name:'unpaid',
-                            imgSrc:'./static/img/my-center/unpaid.png',
-                            val:'待支付'
-                        },{
-                            key:2,
-                            name:'trading',
-                            imgSrc:'./static/img/my-center/trading.png',
-                            val:'交易中'
-                        },{
-                            key:3,
-                            name:'receiv',
-                            imgSrc:'./static/img/my-center/receiv.png',
-                            val:'待收货'
-                        },{
-                            key:4,
-                            name:'tradsuccess',
-                            imgSrc:'./static/img/my-center/tradsuccess.png',
-                            val:'交易成功'
-                        },{
-                            key:5,
-                            name:'order',
-                            imgSrc:'./static/img/my-center/order.png',
-                            val:'全部订单'
-                        }],
-                        sellTit:[{
-                            key:1,
-                            name:'trading',
-                            imgSrc:'./static/img/my-center/trading.png',
-                            val:'交易中'
-                        },{
-                            key:2,
-                            name:'deliver',
-                            imgSrc:'./static/img/my-center/deliver.png',
-                            val:'已发货'
-                        },{
-                            key:3,
-                            name:'tradsuccess',
-                            imgSrc:'./static/img/my-center/tradsuccess.png',
-                            val:'交易成功'
-                        },{
-                            key:4,
-                            name:'deal',
-                            imgSrc:'./static/img/my-center/deal.png',
-                            val:'交易失败'
-                        },{
-                            key:5,
-                            name:'order',
-                            imgSrc:'./static/img/my-center/order.png',
-                            val:'全部订单'
-                        }],
-                        buyCon:[{
-                            key:1,
-                            name:'voucher',
-                            imgSrc:'./static/img/my-center/voucher.png',
-                            val:'代金券'
-                        },{
-                            key:2,
-                            name:'bidd',
-                            imgSrc:'./static/img/my-center/bidd.png',
-                            val:'我的竞拍'
-                        },{
-                            key:3,
-                            name:'bill',
-                            imgSrc:'./static/img/my-center/bill.png',
-                            val:'分期账单'
-                        },{
-                            key:4,
-                            name:'bargain',
-                            imgSrc:'./static/img/my-center/bargain.png',
-                            val:'我要出售'
-                        }],
-                        sellCon:[{
-                            key:1,
-                            name:'sell',
-                            imgSrc:'./static/img/my-center/sell.png',
-                            val:'我的竞拍'
-                        },{
-                            key:2,
-                            name:'goods',
-                            imgSrc:'./static/img/my-center/goods.png',
-                            val:'我的商品'
-                        },{
-                            key:3,
-                            name:'news',
-                            imgSrc:'./static/img/my-center/news.png',
-                            val:'议价消息'
-                        }]
-                    },
-                    manageData:{
-                        usableBalance:"1000.2元",
-                        frostBalance:'666元',
-                        cashPledge:'888元'
-                    },
-                    comNews:19,
-                    pactNews:99,
+import Header from "@/components/home-page/Header";
+export default {
+    name: "MyCenter",
+    components: {
+        Header
+    },
+    data() {
+        return {
+            comData: {
+                showTitle: {
+                    showBack: false,
+                    showLogo: 2, //显示头部title文字
+                    showShare: 3, //1搜索2分享3菜单
+                    showBg: false, //是否显示背景
+                    title: "个人中心",
+                    goBack:1,
                 }
+            },
+            myData: {
+                userStatus: 2,
+                userTypeOpt: {
+                    usertype: true, //true是买家 false是卖家
+                    buyTit: [
+                        {
+                            key: 1,
+                            name: "unpaid",
+                            imgSrc: "./static/img/my-center/unpaid.png",
+                            val: "待支付",
+                            link:'b_unpaid',
+                        },
+                        {
+                            key: 2,
+                            name: "trading",
+                            imgSrc: "./static/img/my-center/trading.png",
+                            val: "交易中",
+                            link:'b_trading',
+                        },
+                        {
+                            key: 3,
+                            name: "receiv",
+                            imgSrc: "./static/img/my-center/receiv.png",
+                            val: "待收货",
+                            link:'b_receiv',
+                        },
+                        {
+                            key: 4,
+                            name: "tradsuccess",
+                            imgSrc: "./static/img/my-center/tradsuccess.png",
+                            val: "交易成功",
+                            link:'b_tradsuccess',
+                        },
+                        {
+                            key: 5,
+                            name: "order",
+                            imgSrc: "./static/img/my-center/order.png",
+                            val: "全部订单",
+                            link:'b_order',
+                        }
+                    ],
+                    sellTit: [
+                        {
+                            key: 1,
+                            name: "trading",
+                            imgSrc: "./static/img/my-center/trading.png",
+                            val: "交易中",
+                            link:'s_trading'
+                        },
+                        {
+                            key: 2,
+                            name: "deliver",
+                            imgSrc: "./static/img/my-center/deliver.png",
+                            val: "已发货",
+                            link:'s_wait'
+                        },
+                        {
+                            key: 3,
+                            name: "tradsuccess",
+                            imgSrc: "./static/img/my-center/tradsuccess.png",
+                            val: "交易成功",
+                            link:'s_tradsuccess'  
+                        },
+                        {
+                            key: 4,
+                            name: "deal",
+                            imgSrc: "./static/img/my-center/deal.png",
+                            val: "交易失败",
+                            link:'s_fail'
+                        },
+                        {
+                            key: 5,
+                            name: "order",
+                            imgSrc: "./static/img/my-center/order.png",
+                            val: "全部订单",
+                            link:'s_order',
+                        }
+                    ],
+                    buyCon: [
+                        {
+                            key: 1,
+                            name: "voucher",
+                            imgSrc: "./static/img/my-center/voucher.png",
+                            val: "代金券",
+                            link:'voucher',
+                        },
+                        {
+                            key: 2,
+                            name: "bidd",
+                            imgSrc: "./static/img/my-center/bidd.png",
+                            val: "我的竞拍",
+                            link:'myAuction',
+                        },
+                        {
+                            key: 3,
+                            name: "bill",
+                            imgSrc: "./static/img/my-center/bill.png",
+                            val: "分期账单",
+                            link:'bill',
+                        },
+                        {
+                            key: 4,
+                            name: "bargain",
+                            imgSrc: "./static/img/my-center/bargain.png",
+                            val: "发起的议价",
+                            link:'bargain',
+                        }
+                    ],
+                    sellCon: [
+                        {
+                            key: 1,
+                            name: "sell",
+                            imgSrc: "./static/img/my-center/sell.png",
+                            val: "我要出售",
+                            link:'sell',
+                        },
+                        {
+                            key: 2,
+                            name: "goods",
+                            imgSrc: "./static/img/my-center/goods.png",
+                            val: "我的商品",
+                            link:'myGoods',
+                        },
+                        {
+                            key: 3,
+                            name: "news",
+                            imgSrc: "./static/img/my-center/news.png",
+                            val: "议价消息",
+                            link:'messageAll',
+                        }
+                    ]
+                },
+                manageData: {
+                    usableBalance: "1000.2元",
+                    frostBalance: "666元",
+                    cashPledge: "888元"
+                },
+                comNews: 19,
+                pactNews: 99,
+                phoneNum: "",
+                sellNum: "2345",
+                buyNum: "2345",
+                integral: "2345"
+            }
+        };
+    },
+    methods: {
+        seleUserType(flag) {
+            if (flag == "buy") {
+                this.myData.userTypeOpt.usertype = true;
+            } else if (flag == "sell") {
+                this.myData.userTypeOpt.usertype = false;
             }
         },
-        methods:{
-            seleUserType(flag){
-                if(flag == 'buy'){
-                    this.myData.userTypeOpt.usertype = true;
-                }else if(flag == 'sell'){
-                    this.myData.userTypeOpt.usertype = false;
-                }
+
+
+
+        // 路由跳转
+        goSele(flag){
+            var that_r = this.$router;
+            if(flag == 'login'){
+                that_r.push({name:'AccountLogin',params:{redirect: that_r.currentRoute.name}})
+            }else if(flag == 'register'){
+                that_r.push({name:'Register'})
+            }
+            // 修改密码
+            else if(flag == 'changePassword'){
+                that_r.push({name:'ChangePassword'})
+            }else if(flag == 'authenticity'){//客服鉴别
+                that_r.push({name:'Authenticity'})
+            }else if(flag == 'pact'){//合同
+                that_r.push({name:'Pact'})
+            }else if(flag == 'browseRecord'){//浏览记录
+                that_r.push({name:'BrowseRecord'})
+            }else if(flag == 'collect'){//收藏
+                that_r.push({name:'Collect'})
+            }else if(flag == 'commissionManage'){//佣金管理
+                that_r.push({name:'CommissionManage'})
+            }else if(flag == 'assetsManage'){//资产管理
+                that_r.push({name:'AssetsManage'})
+            }else if(flag == 'withdrawDeposit'){//提现
+                that_r.push({name:'WithdrawDeposit'})
+            }
+            // 买家 头部导航栏
+            else if(flag == 'b_unpaid'){//待支付
+                that_r.push({name:'BuyUnpaidStatus'})
+            }else if(flag == 'b_trading'){//交易中
+                that_r.push({name:'BuyTradingStatus'})
+            }else if(flag == 'b_receiv'){//待收货
+                that_r.push({name:'BuyWaitReceiveStatus'})
+            }else if(flag == 'b_tradsuccess'){//交易成功
+                that_r.push({name:'BuyTradeSuccessStatus'})
+            }else if(flag == 'b_order'){//全部订单
+                that_r.push({name:'BuyOrderAll'})
+            }
+            // 卖家 头部导航栏
+            else if(flag == 's_trading'){//交易中
+                that_r.push({name:'SellTradingStatus'})
+            }else if(flag == 's_wait'){//已发货
+                that_r.push({name:'SellWaitReceiveStatus'})
+            }else if(flag == 's_tradsuccess'){//交易成功
+                that_r.push({name:'SellTradeSuccessStatus'})
+            }else if(flag == 's_fail'){//交易失败
+                that_r.push({name:'SellFailureDealStatus'})
+            }else if(flag == 's_order'){//全部订单
+                that_r.push({name:'SellOrderAll'})
+            }
+            // 买家 底部导航栏
+            else if(flag == 'voucher'){//代金券
+                that_r.push({name:'Voucher'})
+            }else if(flag == 'myAuction'){//我的竞拍
+                that_r.push({name:'MyAuction'})
+            }else if(flag == 'bill'){//分期账单
+                that_r.push({name:'BillInstallment'})
+            }else if(flag == 'bargain'){//发起的议价
+                that_r.push({name:'BargainRecord'})
+            }
+            // 卖家 底部导航栏
+            else if(flag == 'sell'){//我要卖
+                that_r.push({name:'Sell'})
+            }else if(flag == 'myGoods'){//我的商品
+                that_r.push({name:'MyGoods'})
+            }else if(flag == 'messageAll'){//议价消息
+                that_r.push({name:'MessageAll'})
             }
         }
+    },
+    mounted() {
+        var that = this;
+        var token = this.$store.state.token;
+        if(token == undefined || token == ''){
+            that.myData.userStatus = 1;
+        }else{
+            that.myData.userStatus = 2;
+            that.myData.phoneNum = that.$store.state.mobile;
+        }
     }
+};
 </script>
 <style scoped>
-    .mycenter-wrap{
-        max-width:12rem;
-        margin:0 auto;
-        position: relative;
-    }
-    .mycenter-top{
-        background-image:url(../../../static/img/my-center/h-bg.png);
-        background-repeat:no-repeat;
-        background-size:100% 3.8rem;
-        padding-bottom:.9rem;
-    }
-    .user-info{
-        font-size:.3rem;
-        color:#333333;
-        text-align:center;
-    }
-    .user-log{
-        width:1rem;
-        height:1rem;
-        -webkit-border-radius: 50%;
-        -moz-border-radius: 50%;
-        border-radius: 50%;
-        overflow: hidden;
-        margin:.3rem auto;
-    }
-    .user-log img{
-        width:1rem;
-        height:1rem;
-    }
-    .user-status span{
-        display:inline-block;
-    }
-    .vertical{
-        margin:0 .2rem;
-    }
-    /* 内容部分 */
-    .mycenter-content{
-        padding:0 .2rem;
-        position: absolute;
-        left:0;
-        top:3.2rem;
-        right:0;
-    }
-    .suspend-box{
-        font-size:.24rem;
-        position: relative;
-    }
-    .l-loop{
-        width:.12rem;
-        height:.54rem;
-        position:absolute;
-        top:2.14rem;
-        left:.5rem;
-    }
-    .r-loop{
-        width:.12rem;
-        height:.54rem;
-        position:absolute;
-        top:2.14rem;
-        right:.5rem;
-    }
-    .operation-box{
-        background:#FFFFFF;
-        -webkit-border-radius: .1rem;
-        -moz-border-radius: .1rem;
-        border-radius: .1rem;
-        -webkit-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        -moz-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        box-shadow: .06rem .05rem .09rem #D6D6D6;
-        margin-bottom:.2rem;
-    }
+.mycenter-wrap {
+    max-width: 12rem;
+    margin: 0 auto;
+    position: relative;
+}
+.mycenter-top {
+    background-image: url(../../../static/img/my-center/h-bg.png);
+    background-repeat: no-repeat;
+    background-size: 100% 3.8rem;
+    padding-bottom: 0.9rem;
+}
+.user-login {
+    font-size: 0.3rem;
+    color: #333333;
+    text-align: center;
+}
+.user-log {
+    width: 1rem;
+    height: 1rem;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0.3rem auto;
+}
+.user-log img {
+    width: 1rem;
+    height: 1rem;
+}
+.user-status span {
+    display: inline-block;
+    color: #ffffff;
+}
+.vertical {
+    margin: 0 0.2rem;
+}
+/* 内容部分 */
+.mycenter-content {
+    padding: 0 0.2rem;
+    position: absolute;
+    left: 0;
+    top: 3.2rem;
+    right: 0;
+}
+.suspend-box {
+    font-size: 0.24rem;
+    position: relative;
+}
+.l-loop {
+    width: 0.12rem;
+    height: 0.54rem;
+    position: absolute;
+    top: 2.14rem;
+    left: 0.5rem;
+}
+.r-loop {
+    width: 0.12rem;
+    height: 0.54rem;
+    position: absolute;
+    top: 2.14rem;
+    right: 0.5rem;
+}
+.operation-box {
+    background: #ffffff;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    margin-bottom: 0.2rem;
+}
 
-    /* 选择用户状态 */
-    .operation-title{
-        border-bottom:.01rem solid #E5E5E5;
-        text-align:center;
-    }
-    .operation-title div{
-        display:inline-block;
-        width:49.2%;
-        line-height:.7rem;
-    }
-    .operation-content{
-        display:flex;
-        justify-content: space-around;
-        align-items: center;
-        padding:.3rem 0;
-    }
-    .cell{
-        color:#666666;
-        text-align: center;
-    }
-    .cell div{
-        margin-top:.05rem;
-    }
-    .unpaid img{
-        width:.37rem;
-        height:.37rem;
-    }
-    .trading img{
-        width:.34rem;
-        height:.33rem;
-    }
-    .receiv img{
-        width:.35rem;
-        height:.35rem;
-    }
-    .tradsuccess img{
-        width:.34rem;
-        height:.33rem;
+/* 选择用户状态 */
+.operation-title {
+    border-bottom: 0.01rem solid #e5e5e5;
+    text-align: center;
+}
+.operation-title div {
+    display: inline-block;
+    width: 49.2%;
+    line-height: 0.7rem;
+}
+.operation-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.3rem 0;
+}
+.cell {
+    color: #666666;
+    text-align: center;
+}
+.cell div {
+    margin-top: 0.05rem;
+}
+.unpaid img {
+    width: 0.37rem;
+    height: 0.37rem;
+}
+.trading img {
+    width: 0.34rem;
+    height: 0.33rem;
+}
+.receiv img {
+    width: 0.35rem;
+    height: 0.35rem;
+}
+.tradsuccess img {
+    width: 0.34rem;
+    height: 0.33rem;
+}
+.order img {
+    width: 0.3rem;
+    height: 0.35rem;
+}
+.deal img {
+    width: 0.36rem;
+    height: 0.36rem;
+}
+.deliver img {
+    width: 0.51rem;
+    height: 0.3rem;
+}
+.red-color {
+    color: #fe7649;
+    border-bottom: 0.03rem solid #fe7649;
+}
+.voucher img {
+    width: 0.3rem;
+    height: 0.21rem;
+}
+.bidd img {
+    width: 0.25rem;
+    height: 0.25rem;
+}
+.bill img {
+    width: 0.24rem;
+    height: 0.26rem;
+}
+.bargain img {
+    width: 0.23rem;
+    height: 0.25rem;
+}
+.sell img {
+    width: 0.22rem;
+    height: 0.21rem;
+}
+.goods img {
+    width: 0.2rem;
+    height: 0.23rem;
+}
+.news img {
+    width: 0.25rem;
+    height: 0.25rem;
+}
 
-    }
-    .order img{
-        width:.3rem;
-        height:.35rem;
-    }
-    .deal img{
-        width:.36rem;
-        height:.36rem;
-    }
-    .deliver img{
-        width:.51rem;
-        height:.3rem;
-    }
-    .red-color{
-        color:#FE7649;
-        border-bottom:.03rem solid #FE7649;
-    }
-    .voucher img{
-        width:.3rem;
-        height:.21rem;
-    }
-    .bidd img{
-        width:.25rem;
-        height:.25rem;
-    }
-    .bill img{
-        width:.24rem;
-        height:.26rem;
-    }
-    .bargain img{
-        width:.23rem;
-        height:.25rem;
-    }
-    .sell img{
-        width:.22rem;
-        height:.21rem;
-    }
-    .goods img{
-        width:.2rem;
-        height:.23rem;
-    }
-    .news img{
-        width:.25rem;
-        height:.25rem;
-    }
+/* 资产管理 */
+.box-title {
+    line-height: 0.7rem;
+    border-bottom: 0.01rem solid #e5e5e5;
+    padding-right: 0.2rem;
+}
+.title-left {
+    display: inline-block;
+}
+.title-left span {
+    display: inline-block;
+    color: #333333;
+    font-size: 0.28rem;
+}
+.title-left img {
+    width: 0.13rem;
+    height: 0.29rem;
+    margin-left: 0.17rem;
+    vertical-align: middle;
+}
+.title-right {
+    float: right;
+}
+.title-right img {
+    width: 0.25rem;
+    height: 0.28rem;
+    vertical-align: middle;
+}
+.title-right span {
+    font-size: 0.24rem;
+    color: #999999;
+}
+.box-content {
+    display: flex;
+    justify-content: space-around;
+    padding: 0.3rem 0 0.28rem;
+    text-align: center;
+    align-items: center;
+}
+.manage-des {
+    font-size: 0.24rem;
+    color: #999999;
+}
+.manage-detail {
+    font-size: 0.28rem;
+    color: #333333;
+}
+.vertical-bg {
+    width: 0.02rem;
+    height: 0.45rem;
+    background: #e5e5e5;
+}
 
+.strip-wrap {
+    font-size: 0.26rem;
+    color: #666666;
+    background: #ffffff;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    margin-bottom: 0.2rem;
+    padding-left: 0.2rem;
+}
+.sell-strip {
+    line-height: 0.9rem;
+    border-bottom: 0.01rem solid #e5e5e5;
+    padding-right: 0.2rem;
+}
+.sell-strip img {
+    vertical-align: middle;
+}
+.sell-strip span {
+    vertical-align: middle;
+}
+.left-strip {
+    display: inline-block;
+}
+.left-strip img {
+    margin-right: 0.1rem;
+}
+.right-opt {
+    float: right;
+}
+.right-opt img {
+    width: 0.13rem;
+    height: 0.24rem;
+    margin-left: 0.2rem;
+}
+.red-bg {
+    display: inline-block;
+    line-height: 0.34rem;
+    padding: 0 0.1rem;
+    background: #fa5856;
+    color: #ffffff;
+    border-bottom-left-radius: 0.5rem;
+    border-top-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+.price img {
+    width: 0.25rem;
+    height: 0.27rem;
+}
+.collect img {
+    width: 0.3rem;
+    height: 0.29rem;
+}
+.his img {
+    width: 0.28rem;
+    height: 0.28rem;
+}
+.pacd img {
+    width: 0.23rem;
+    height: 0.27rem;
+}
+.see img {
+    width: 0.33rem;
+    height: 0.21rem;
+}
+.service img {
+    width: 0.27rem;
+    height: 0.25rem;
+}
+.write img {
+    width: 0.25rem;
+    height: 0.23rem;
+}
+.quit img {
+    width: 0.26rem;
+    height: 0.27rem;
+}
 
-    /* 资产管理 */
-     .box-title{
-        line-height:.7rem;
-        border-bottom:.01rem solid #E5E5E5;
-        padding-right:.2rem;
-    }
-    .title-left{
-        display: inline-block;
-    }
-    .title-left span{
-        display: inline-block;
-        color:#333333;
-        font-size:.28rem;
-    }
-    .title-left img{
-        width:.13rem;
-        height:.29rem;
-        margin-left:.17rem;
-        vertical-align: middle;
-    }
-    .title-right{
-        float:right;
-    }
-    .title-right img{
-        width:.25rem;
-        height:.28rem;
-        vertical-align: middle;
-    }
-    .title-right span{
-        font-size:.24rem;
-        color:#999999;
-    }
-    .box-content{
-        display: flex;
-        justify-content:space-around;
-        padding:.3rem 0 .28rem;
-        text-align: center;
-        align-items: center;
-    }
-    .manage-des{
-        font-size:.24rem;
-        color:#999999;
-    }
-    .manage-detail{
-        font-size:.28rem;
-        color:#333333;
-    }
-    .vertical-bg{
-        width:.02rem;
-        height:.45rem;
-        background: #E5E5E5;
-    }
-
-    .strip-wrap{
-        font-size:.26rem;
-        color:#666666;
-        background:#FFFFFF;
-        -webkit-border-radius: .1rem;
-        -moz-border-radius: .1rem;
-        border-radius: .1rem;
-        -webkit-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        -moz-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        box-shadow: .06rem .05rem .09rem #D6D6D6;
-        margin-bottom:.2rem;
-        padding-left:.2rem;
-    }
-    .sell-strip{
-        line-height: .9rem;
-        border-bottom:.01rem solid #E5E5E5;
-        padding-right:.2rem;
-    }
-    .sell-strip img{
-        vertical-align: middle;
-    }
-    .sell-strip span{
-        vertical-align: middle;
-    }
-    .left-strip{
-        display: inline-block;
-    }
-    .left-strip img{
-        margin-right:.1rem;
-    }
-    .right-opt{
-        float:right;
-    }
-    .right-opt img{
-        width:.13rem;
-        height:.24rem;
-        margin-left:.2rem;
-    }
-    .red-bg{
-        display: inline-block;
-        line-height:.34rem;
-        padding:0 .1rem;
-        background:#FA5856;
-        color:#FFFFFF;
-        border-bottom-left-radius: .5rem;
-        border-top-left-radius: .5rem;
-        border-bottom-right-radius: .5rem;
-        border-top-right-radius: .5rem;
-    }
-    .price img{
-        width:.25rem;
-        height:.27rem;
-    }
-    .collect img{
-        width:.3rem;
-        height:.29rem;
-    }
-    .his img{
-        width:.28rem;
-        height:.28rem;
-    }
-    .pacd img{
-        width:.23rem;
-        height:.27rem;
-    }
-    .see img{
-        width:.33rem;
-        height:.21rem;
-    }
-    .service img{
-        width:.27rem;
-        height:.25rem;
-    }
+.user-info {
+    padding: 0 0.3rem;
+    position: relative;
+    padding-top: 0.5rem;
+}
+.left-user-info,
+.right-user-info {
+    display: inline-block;
+    vertical-align: top;
+}
+.left-user-info img {
+    width: 1rem;
+    height: 1rem;
+}
+.user-phone {
+    font-size: 0.26rem;
+    color: #ffffff;
+}
+.right-user-info {
+    margin-left: 0.26rem;
+    padding-top: 0.16rem;
+    font-size: 0.22rem;
+    color: #ffdfdb;
+}
+.user-phone img {
+    width: 0.28rem;
+    height: 0.28rem;
+    vertical-align: middle;
+}
+.user-phone span {
+    vertical-align: middle;
+}
+.sign {
+    height: 1.8rem;
+    text-align: center;
+    display: inline-block;
+    color: #ffffff;
+    font-size: 0.26rem;
+    position: absolute;
+    top: 0.4rem;
+    right: 0.1rem;
+}
+.sign-img {
+    width: 1.8rem;
+    height: 1.8rem;
+}
+.sign-box {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
 </style>

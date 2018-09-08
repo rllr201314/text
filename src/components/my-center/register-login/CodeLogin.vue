@@ -4,23 +4,23 @@
             <Header v-bind:showTitle="comData.showTitle"></Header>
         </div>
         <div class="login-content">
-           <div class="login-cell">
+            <div class="login-cell">
                 <div class="login-strip">
-                   <img class="phone-ico" src="../../../../static/img/my-center/phone_ico.png" alt="">
-                   <input type="number" placeholder="请输入您的手机号">
-               </div>
-               <div class="login-strip">
-                   <img class="pass-ico" src="../../../../static/img/my-center/code_ico.png" alt="">
-                   <input type="password" placeholder="请输入验证码">
-                   <span class="get-code">获取验证码</span>
-               </div>   
-           </div>
-           <div class="login-bottom">
-               <span class="phone-login">手机短信登录</span>
-               <span class="go-register">立即注册</span>
+                    <img class="phone-ico" src="../../../../static/img/my-center/phone_ico.png" alt="">
+                    <input type="number" placeholder="请输入您的手机号" v-model="phone">
+                </div>
+                <div class="login-strip login-info">
+                    <img class="pass-ico" src="../../../../static/img/my-center/code_ico.png" alt="">
+                    <input type="number" placeholder="请输入验证码" v-model="verify_code">
+                    <span class="get-code" @click="getCode" v-text="hintCode"></span>
+                </div>
+            </div>
+            <div class="login-bottom">
+                <span class="phone-login" @click="goAccount">账号登录</span>
+                <span class="go-register" @click="goRegister">立即注册</span>
             </div>
         </div>
-        <div class="nextBtn">登录</div>
+        <div class="nextBtn" @click="loginFn">登录</div>
         <div class="login-type">
             <div class="login-type-title">
                 <img src="../../../../static/img/goods-details/left_solid.png" alt="">
@@ -35,174 +35,305 @@
     </div>
 </template>
 <script>
-    import Header from '@/components/home-page/Header'
-    export default {
-        name:'CodeLogin',
-        components:{
-            Header,
+import Header from "@/components/home-page/Header";
+export default {
+    name: "CodeLogin",
+    components: {
+        Header
+    },
+    data() {
+        return {
+            comData: {
+                showTitle: {
+                    showBack: false,
+                    showLogo: 2, //显示头部title文字
+                    showShare: "", //1搜索2分享3菜单
+                    showBg: false, //是否显示背景
+                    title: "手机短信登录"
+                }
+            },
+            phone: "",
+            verify_code: "",
+            hintCode: "获取验证码",
+            isGetCode: true
+        };
+    },
+    mounted(){
+        var that =this;
+        
+                console.log(that.$router);
+    },
+    methods: {
+        // 手机登录
+        goAccount() {
+            var that = this;
+            that.$router.replace({ name: "AccountLogin",params: {
+                        redirect: that.$router.currentRoute.params.redirect
+                    }});
         },
-        data(){
-            return {
-                comData:{
-                    showTitle:{
-                        showBack:false,
-                        showLogo:2,//显示头部title文字
-                        showShare:'',//1搜索2分享3菜单
-                        showBg:false,//是否显示背景
-                        title:"手机短信登录",
-                    }
+        // 注册
+        goRegister() {
+            this.$router.push({ name: "Register" });
+        },
+        getCode() {
+            var that = this;
+            if (that.isGetCode) {
+                var phone = that.phone;
+                var reg = /^1[3-9][0-9]{9}$/g;
+                if (phone == "") {
+                    mui.alert("手机号码不能为空", "提示", "确定", "", "div");
+                } else if (!phone.match(reg)) {
+                    mui.alert("您输入的手机号不正确","提示","确定","","div");
+                } else {
+                    that.$axios.post("/api/sms_code", {
+                            mobile: phone
+                        })
+                        .then(function(response) {
+                            console.log(response.data);
+                            var res = response;
+                            if (res.status == 200) {
+                                if (res.data.code == 200) {
+                                    that.hintCode = 60;
+                                    that.isGetCode = false;
+                                    var time = setInterval(function() {
+                                        that.hintCode--;
+                                        if (that.hintCode <= 0) {
+                                            clearInterval(time);
+                                            that.isGetCode = true;
+                                            that.hintCode = "获取验证码";
+                                        }
+                                    }, 1000);
+                                    mui.alert(res.data.msg,"提示","确认","","");
+                                } else {
+                                    mui.alert(res.data.msg,"提示","确认","","");
+                                }
+                            }
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
                 }
             }
         },
-        methods:{
-
+        loginFn() {
+            const that = this;
+            var mobile = that.phone;
+            var verify_code = that.verify_code;
+            var phoneReg = /^1[3-9][0-9]{9}$/g;
+            if (mobile == "") {
+                mui.alert("手机号码不能为空", "提示", "确定", "", "div");
+            } else if (!mobile.match(phoneReg)) {
+                mui.alert("您输入的手机号不正确", "提示", "确定", "", "div");
+            } else if (verify_code == "" || verify_code.length < 6) {
+                mui.alert("您输入的验证码不正确", "提示", "确定", "", "div");
+            } else {
+                that.$axios.post("/api/sms_login", {
+                        mobile: mobile,
+                        verify_code: verify_code
+                    })
+                    .then(function(response) {
+                        console.log(response);
+                        var res = response;
+                        if (res.status == 200) {
+                            if (res.data.code == 200) {
+                                if (res.data.data.token) {
+                                    that.$store.commit(
+                                        "set_token",
+                                        res.data.data.token
+                                    );
+                                }
+                                if (mobile) {
+                                    that.$store.commit("set_mobile", mobile);
+                                }
+                                mui.alert(
+                                    res.data.msg,
+                                    "提示",
+                                    "确定",
+                                    function() {
+                                        if(that.$router.currentRoute.params.redirect != undefined){
+                                            that.$router.replace({
+                                                name: that.$router.currentRoute.params.redirect
+                                            });
+                                        }else{
+                                            that.$router.push({
+                                                name: "MyCenter"
+                                            });
+                                        }
+                                    },
+                                    "div"
+                                );
+                            } else {
+                                mui.alert(
+                                    res.data.msg,
+                                    "提示",
+                                    "确定",
+                                    "",
+                                    "div"
+                                );
+                                that.verify_code = "";
+                            }
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            }
         }
     }
+};
 </script>
 <style scoped>
-    .login-wrap{
-        max-width:7.5rem;
-        margin:0 auto;
-    }
-    .login-header{
-        width:100%;
-        height:5.24rem;
-        background:url(../../../../static/img/my-center/login_hbg.png) no-repeat;
-        background-size:100% 5.24rem;
-    }
-    .login-content{
-        padding:.3rem .2rem 0;
-    }
-    .login-cell{
-        padding:0 0 0 .3rem;
-        background: #FFFFFF;
-        -webkit-border-radius: .1rem;
-        -moz-border-radius: .1rem;
-        border-radius: .1rem;
-        -webkit-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        -moz-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        box-shadow: .06rem .05rem .09rem #D6D6D6;
-    }
-    .log_ico{
-        text-align: center;
-    }
-    .log_ico img{
-        width:.9rem;
-        height:.29rem;
-        margin-left:-.2rem;
-    }
-    
-    .login-strip{
-        border-bottom:.01rem solid #E5E5E5;
-        line-height: .9rem;
-    }
-    .phone-ico{
-        width:.23rem;
-        height:.3rem;
-        vertical-align: middle;
-    }
-    .pass-ico{
-        width:.27rem;
-        height:.31rem;
-        vertical-align: middle;
-    }
-    .get-code{
-        display: inline-block;
-        color:#FE7649;
-        font-size:.22rem;
-        line-height:.6rem;
-        padding:0 .4rem;
-        border:.01rem solid #FE7649;
-        -webkit-border-radius: .15rem;
-        -moz-border-radius: .15rem;
-        border-radius: .15rem;
-    }
-    .login-bottom{
-        line-height: .7rem;
-        font-size:.24rem;
-        color:#999999;
-        padding-right:.3rem;
-    }
-    .phone-login{
-        text-decoration: underline;
-    }
-    .go-register{
-        float:right;
-        color:#FE7649;
-    }
+.login-wrap {
+    max-width: 7.5rem;
+    margin: 0 auto;
+}
+.login-header {
+    width: 100%;
+    height: 5.24rem;
+    background: url(../../../../static/img/my-center/login_hbg.png) no-repeat;
+    background-size: 100% 5.24rem;
+}
+.login-content {
+    padding: 0.3rem 0.2rem 0;
+}
+.login-cell {
+    padding: 0 0 0 0.3rem;
+    background: #ffffff;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+}
+.log_ico {
+    text-align: center;
+}
+.log_ico img {
+    width: 0.9rem;
+    height: 0.29rem;
+    margin-left: -0.2rem;
+}
 
-    /* 下一步 */
-    .nextBtn{
-        color:#FFFFFF;
-        font-size:.28rem;
-        margin:.4rem auto 0;
-        width:6.5rem;
-        text-align: center;
-        line-height: .8rem;
-        -webkit-border-radius: .1rem;
-        -moz-border-radius: .1rem;
-        border-radius: .1rem;
-        -webkit-box-shadow: .06rem .05rem .09rem #FD915F;
-        -moz-box-shadow: .06rem .05rem .09rem #FD915F;
-        box-shadow: .06rem .05rem .09rem #FD915F;
-        background:-webkit-linear-gradient(#FD915F,#FC534A);
-        background:-o-linear-gradient(#FD915F,#FC534A);
-        background:-moz-linear-gradient(#FD915F,#FC534A);
-        background:linear-gradient(to right, #FD915F , #FC534A);
-    }
+.login-strip {
+    border-bottom: 0.01rem solid #e5e5e5;
+    line-height: 0.9rem;
+}
+/* .login-info{
+    height: .9rem;
+    line-height: 0.9rem;
+    display:flex;
+    justify-content: flex-start;
+} */
+.phone-ico {
+    width: 0.23rem;
+    height: 0.3rem;
+    vertical-align: middle;
+}
+.pass-ico {
+    width: 0.27rem;
+    height: 0.31rem;
+    vertical-align: middle;
+}
+.get-code {
+    display: inline-block;
+    color: #fe7649;
+    font-size: 0.22rem;
+    line-height: 0.6rem;
+    width: 1.9rem;
+    text-align: center;
+    border: 1px solid #fe7649;
+    -webkit-border-radius: 0.15rem;
+    -moz-border-radius: 0.15rem;
+    border-radius: 0.15rem;
+    vertical-align: middle;
+}
+.login-bottom {
+    line-height: 0.7rem;
+    font-size: 0.24rem;
+    color: #999999;
+    padding-right: 0.3rem;
+}
+.phone-login {
+    text-decoration: underline;
+}
+.go-register {
+    float: right;
+    color: #fe7649;
+}
 
+/* 下一步 */
+.nextBtn {
+    color: #ffffff;
+    font-size: 0.28rem;
+    margin: 0.4rem auto 0;
+    width: 6.5rem;
+    text-align: center;
+    line-height: 0.8rem;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    background: -webkit-linear-gradient(#fd915f, #fc534a);
+    background: -o-linear-gradient(#fd915f, #fc534a);
+    background: -moz-linear-gradient(#fd915f, #fc534a);
+    background: linear-gradient(to right, #fd915f, #fc534a);
+}
 
-    .login-type{
-        margin-top:2rem;
-        text-align: center;
-    }
-    .login-type-title{
-        color:#999999;
-        font-size:.24rem;
-        margin-bottom:.2rem;
-    }
-    .login-type-title img{
-        width:1.17rem;
-        height:.02rem;
-        vertical-align: middle;
-    }
-    .login-type-content img{
-        width:.6rem;
-        height:.6rem;
-    }
-    .wechat{
-        margin-right:.4rem;
-    }
+.login-type {
+    margin-top: 2rem;
+    text-align: center;
+}
+.login-type-title {
+    color: #999999;
+    font-size: 0.24rem;
+    margin-bottom: 0.2rem;
+}
+.login-type-title img {
+    width: 1.17rem;
+    height: 0.02rem;
+    vertical-align: middle;
+}
+.login-type-content img {
+    width: 0.6rem;
+    height: 0.6rem;
+}
+.wechat {
+    margin-right: 0.4rem;
+}
 
-
-
-     /* ==========input========= */
-    input{
-        margin:0;
-        padding:.1rem;
-        font-size:.24rem;
-        border:none;
-        width:4.2rem;
-        height:.6rem;
-    }
-    input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{
-        -webkit-appearance: none !important;
-    }
-    input[type="number"]{-moz-appearance: textfield}
-    ::-webkit-input-placeholder { 
-        color:#999999;
-        font-size:.26rem;
-    }
-    :-moz-placeholder {
-        color:#999999;
-        font-size:.26rem;
-    }
-    ::-moz-placeholder { 
-        color:#999999;
-        font-size:.26rem;
-    }
-    :-ms-input-placeholder {
-        color:#999999;
-        font-size:.26rem;
-    }
+/* ==========input========= */
+input {
+    margin: 0;
+    padding: 0.1rem;
+    font-size: 0.24rem;
+    border: none;
+    width: 4.2rem;
+    height: 0.6rem;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+::-webkit-input-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
+}
+:-moz-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
+}
+::-moz-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
+}
+:-ms-input-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
+}
 </style>

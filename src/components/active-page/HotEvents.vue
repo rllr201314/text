@@ -1,6 +1,6 @@
 <template>
     <div class="hot-active-wrap">
-        <div class="hot-active-title">
+        <div class="hot-active-title" v-if="showHotTitle">
             <div class="title-txt">热门活动</div>
         </div>
         <div class="hot-active-content">
@@ -35,6 +35,7 @@
 <script>
     export default {
         name: "HotEvents",
+        props:['showHotTitle'],
         data(){
             return{
                 activeList:[{
@@ -50,13 +51,6 @@
                     hours:2,
                     minute:34,
                     num_people:0,
-                    text:'竞品装备，全神宠系列竞品装备全神宠系列',
-                },{
-                    imgSrc:'../../../static/img/hot_active_ico.png',
-                    statusData:3,
-                    hours:2,
-                    minute:34,
-                    num_people:233,
                     text:'竞品装备，全神宠系列竞品装备全神宠系列',
                 }]
             }
@@ -95,6 +89,8 @@
     .hot-active-cell{
         padding:.2rem .2rem .3rem;
         border-bottom:.01rem solid #E5E5E5;
+        display:flex;
+        justify-content: flex-start;
     }
     .hot-active-cell-left,.hot-active-cell-right{
         display:inline-block;
@@ -111,18 +107,17 @@
     }
     /*右边*/
     .hot-active-cell-right{
-        width:3.99rem;
-        height:2.2rem;
+        padding-top:.1rem;
     }
     /*活动状态*/
     .active-title{
-        margin-bottom: .01rem;
+        width:100%;
+        margin-bottom: .1rem;
+        height:.4rem;
+        line-height: .4rem;
+        position: relative;
     }
-    .active-title::after{
-        display:block;
-        clear: both;
-        content: '';
-    }
+    
     .active-status-title{
         color:#666666;
         font-size:.24rem;
@@ -138,12 +133,15 @@
     }
     /*右边标题*/
     .active-status{
-        width:.64rem;
+        display: inline-block;
+        padding:2px;
         color:#FFFFFF;
         font-size:.2rem;
         text-align: center;
         line-height:.27rem;
-        float:right;
+        position:absolute;
+        top:2px;
+        right:0;
     }
     .active-status-going{
         background:#FF5E5E;
@@ -156,7 +154,7 @@
     }
     /*参与人数*/
     .participation-num{
-        margin-bottom: .05rem;
+        margin-bottom: .1rem;
     }
     .participation-num img{
         width:.16rem;
@@ -177,7 +175,8 @@
     .active-content{
         color:#333333;
         font-size:.26rem;
-        margin-bottom: .05rem;
+        line-height:.4rem;
+        margin-bottom: .1rem;
     }
     /*参与按钮*/
     .participation-btn{

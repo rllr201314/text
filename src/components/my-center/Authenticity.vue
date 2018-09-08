@@ -149,7 +149,7 @@
     .authent-strip-inp{
         margin-bottom:.3rem;
         line-height: .76rem;
-        border:.01rem solid #D2D2D2;
+        border:1px solid #D2D2D2;
         border-radius: .06rem;
     }
     .authent-strip-inp span{

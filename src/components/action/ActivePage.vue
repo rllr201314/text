@@ -4,7 +4,7 @@
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="active-content">
             <GameDivision></GameDivision>
-            <HotEvents></HotEvents>
+            <HotEvents v-bind:showHotTitle="showHotTitle"></HotEvents>
             <TodayRecommend></TodayRecommend>
         </div>
         <Hotline></Hotline>
@@ -30,6 +30,7 @@
                     showBg:true,//是否显示背景
                     title:"活动",
                 },
+                showHotTitle:true,
             }
         },
         components:{
@@ -44,6 +45,10 @@
 </script>
 
 <style scoped>
+.active-wrap {
+    max-width: 12rem;
+    margin:0 auto;
+}
 .active-content{
     padding:.2rem;
 }

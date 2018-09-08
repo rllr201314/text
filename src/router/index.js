@@ -1,80 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '@/store/index'
 
 
+if (sessionStorage.getItem('token')) {
+  store.commit('set_token', sessionStorage.getItem('token'))
+}
 
+if (sessionStorage.getItem('mobile')) {
+  store.commit('set_mobile', sessionStorage.getItem('mobile'))
+}
 
-import HomePage from '@/components/HomePage' //首页
-import GoodScreen from '@/components/GoodScreen' //商品列表筛选页
-import Details from '@/components/Details' //商品详情页
-import PlaceOrder from '@/components/buy/PlaceOrderPage' //商品下单
-import Pay from '@/components/buy/Pay' //支付
-import Arbitration from '@/components/buy/Arbitration' //申请仲裁
-
-// 买家
-import BuyTakeDelivery from '@/components/buy/buyTakeDelivery' //收货,五种状态
-// 买家
-import SellTakeDelivery from '@/components/sell/SellTakeDelivery' //收货,四种状态
-
-import SellPage from '@/components/sell/SellPage' //我要卖
-import SellOption from '@/components/sell/SellOption' //我要卖选择区服页
-import SellInfo from '@/components/sell/SellInfo' //我要卖填写信息页
-
-
-import MyCenter from '@/components/my-center/MyCenter' //个人中心
-import AccountLogin from '@/components/my-center/register-login/AccountLogin' // 账号登录
-import CodeLogin from '@/components/my-center/register-login/CodeLogin' // 验证码登录
-import Register from '@/components/my-center/register-login/Register' //注册
-import Authenticity from '@/components/my-center/Authenticity' //客服鉴定
-import MyAuction from '@/components/my-center/MyAuction' // 我的竞拍
-// 交易状态 买家
-import BuyOrderAll from '@/components/my-center/buyer/BuyOrderAll' //全部订单
-import UnpaidStatus from '@/components/my-center/buyer/UnpaidStatus' //未支付
-import WaitReceiveStatus from '@/components/my-center/buyer/WaitReceiveStatus' //待收货
-import TradingStatus from '@/components/my-center/buyer/TradingStatus' //交易中
-import ArbitrationStatus from '@/components/my-center/buyer/ArbitrationStatus' //仲裁中
-import FailureDealStatus from '@/components/my-center/buyer/FailureDealStatus' //交易失败
-import TradeSuccessStatus from '@/components/my-center/buyer/TradeSuccessStatus' //交易成功
-// 资产管理
-import AssetsManage from '@/components/my-center/assets-manage/AssetsManage' //资产管理
-import ReceiptsAll from '@/components/my-center/assets-manage/ReceiptsAll' //收支明细
-import ReceiptsInfo from '@/components/my-center/assets-manage/ReceiptsInfo' //收支明细详情
-import WithdrawDeposit from '@/components/my-center/assets-manage/WithdrawDeposit' //余额提现
-import CardManage from '@/components/my-center/assets-manage/CardManage' //银行卡管理
-import UserAuthentiction from '@/components/my-center/assets-manage/UserAuthentiction' //用户认证
-import Frost from '@/components/my-center/assets-manage/Frost' //冻结资产明细
-import CommissionManage from '@/components/my-center/CommissionManage' //佣金管理
-// 安全认证
-import SafePhone from '@/components/my-center/safety/SafePhone' //手机
-import SafeCard from '@/components/my-center/safety/SafeCard' //身份证
-import SafeUser from '@/components/my-center/safety/SafeUser' //人脸验证
-import SafeSuccess from '@/components/my-center/safety/SafeSuccess' //认证成功
-// 分期
-import PayInstallment from '@/components/my-center/PayInstallment' //分期支付
-import BillInstallment from '@/components/my-center/BillInstallment' //分期账单
-import Voucher from '@/components/my-center/Voucher' //代金券
-// 活动
-import ActivePage from '@/components/action/ActivePage' //活动页
-import AuctionPage from '@/components/action/AuctionPage' //竞拍页
-import AuctionPay from '@/components/action/AuctionPay' //竞拍支付页
-// 合同
-import Pact from '@/components/my-center/pact/Pact' //合同
-import Signature from '@/components/my-center/pact/Signature' //签名
-// 浏览
-import BrowseRecord from '@/components/my-center/record/BrowseRecord' //浏览记录
-import BargainRecord from '@/components/my-center/record/BargainRecord' //议价记录
-import Collect from '@/components/my-center/record/Collect' //议价记录
-
-import MyGoods from '@/components/my-center/MyGoods' //我的商品
-// 议价
-import MessageAll from '@/components/my-center/bargain-message/MessageAll'
-import MessageDetails from '@/components/my-center/bargain-message/MessageDetails'
-// 电子保单
-import GuaranteeSlip from '@/components/GuaranteeSlip'
-// 申请理赔
-import ApplySettlement from '@/components/ApplySettlement'
-
-import NoData from '@/components/multi/NoData' //没有数据
 
 Vue.use(Router)
 
@@ -82,24 +18,294 @@ export default new Router({
   mode: 'history',
   routes: [{
       path: '/',
+      redirect: {
+        name: 'HomePage'
+      }
+    },
+    {
+      path: '/index', //首页
       name: 'HomePage',
-      component: MyGoods
+      component: (resolve) => require(['@/components/HomePage'], resolve)
     },
     {
-      path: '/register',
-      name: 'Register',
-      component: Register
+      path: '/good-list', //商品列表
+      name: 'GoodScreen',
+      component: (resolve) => require(['@/components/GoodScreen'], resolve)
     },
     {
-      path: '/account-login',
+      path: '/details', //商品详情
+      name: 'Details',
+      component: (resolve) => require(['@/components/Details'], resolve)
+    },
+    {
+      path: '/place-order', //下单
+      name: 'PlaceOrderPage',
+      component: (resolve) => require(['@/components/buy/PlaceOrderPage'], resolve)
+    },
+    {
+      path: '/pay', //支付
+      name: 'Pay',
+      component: (resolve) => require(['@/components/buy/Pay'], resolve)
+    },
+    {
+      path: '/arbitration', //仲裁
+      name: 'Arbitration',
+      component: (resolve) => require(['@/components/buy/Arbitration'], resolve)
+    },
+    {
+      path: '/buy-status', //买家-交易状态
+      name: 'BuyTakeDelivery',
+      component: (resolve) => require(['@/components/buy/buyTakeDelivery'], resolve)
+    },
+    {
+      path: '/sell-status', //卖家-交易状态
+      name: 'SellTakeDelivery',
+      component: (resolve) => require(['@/components/sell/SellTakeDelivery'], resolve)
+    },
+    {
+      path: '/sell', //出售-选择游戏
+      name: 'Sell',
+      component: (resolve) => require(['@/components/sell/SellPage'], resolve),
+    }, {
+      path: '/sell-option', //出售-选择区服
+      name: 'SellOption',
+      component: (resolve) => require(['@/components/sell/SellOption'], resolve),
+    }, {
+      path: '/sell-info', //出售-商品信息
+      name: 'SellInfo',
+      component: (resolve) => require(['@/components/sell/SellInfo'], resolve),
+    },
+    // 个人中心
+    {
+      path: '/my-center',
+      name: 'MyCenter',
+      component: (resolve) => require(['@/components/my-center/MyCenter'], resolve),
+    }, {
+      path: '/my-goods', //我的商品
+      name: 'MyGoods',
+      component: (resolve) => require(['@/components/my-center/MyGoods'], resolve),
+    }, {
+      path: '/account-login', //手机号登陆
       name: 'AccountLogin',
-      component: AccountLogin
-    }, ,
-    {
-      path: '/codeLogin',
+      component: (resolve) => require(['@/components/my-center/register-login/AccountLogin'], resolve),
+    }, {
+      path: '/code-login', //验证码登陆
       name: 'CodeLogin',
-      component: CodeLogin
+      component: (resolve) => require(['@/components/my-center/register-login/CodeLogin'], resolve),
+    }, {
+      path: '/register', //注册
+      name: 'Register',
+      component: (resolve) => require(['@/components/my-center/register-login/Register'], resolve),
+    }, {
+      path: '/change-password', //修改密码
+      name: 'ChangePassword',
+      component: (resolve) => require(['@/components/my-center/register-login/ChangePassword'], resolve),
+    }, {
+      path: '/authenticity', //客服鉴定
+      name: 'Authenticity',
+      component: (resolve) => require(['@/components/my-center/Authenticity'], resolve),
+    }, {
+      path: '/my-auction', //我的竞拍
+      name: 'MyAuction',
+      component: (resolve) => require(['@/components/my-center/MyAuction'], resolve),
+    },
+    // 买家
+    {
+      path: '/buy-order', //买家订单
+      name: 'BuyOrderAll',
+      component: (resolve) => require(['@/components/my-center/buyer/BuyOrderAll'], resolve),
+    }, {
+      path: '/buy-unpaid', //未支付
+      name: 'BuyUnpaidStatus',
+      component: (resolve) => require(['@/components/my-center/buyer/BuyUnpaidStatus'], resolve),
+    }, {
+      path: '/buy-wait', //待收货
+      name: 'BuyWaitReceiveStatus',
+      component: (resolve) => require(['@/components/my-center/buyer/BuyWaitReceiveStatus'], resolve),
+    }, {
+      path: '/buy-trading', //交易中
+      name: 'BuyTradingStatus',
+      component: (resolve) => require(['@/components/my-center/buyer/BuyTradingStatus'], resolve),
+    }, {
+      path: '/buy-arbitration', //仲裁中
+      name: 'BuyArbitrationStatus',
+      component: (resolve) => require(['@/components/my-center/buyer/BuyArbitrationStatus'], resolve),
+    }, {
+      path: '/buy-fail', //交易失败
+      name: 'BuyFailureDealStatus',
+      component: (resolve) => require(['@/components/my-center/buyer/BuyFailureDealStatus'], resolve),
+    }, {
+      path: '/buy-trade', //交易成功
+      name: 'BuyTradeSuccessStatus',
+      component: (resolve) => require(['@/components/my-center/buyer/BuyTradeSuccessStatus'], resolve),
+    },
+    // 卖家
+    {
+      path: '/sell-order', //卖家订单
+      name: 'SellOrderAll',
+      component: (resolve) => require(['@/components/my-center/seller/SellOrderAll'], resolve),
+    }, {
+      path: '/sell-wait', //已发货
+      name: 'SellWaitReceiveStatus',
+      component: (resolve) => require(['@/components/my-center/seller/SellWaitReceiveStatus'], resolve),
+    }, {
+      path: '/sell-trading', //交易中
+      name: 'SellTradingStatus',
+      component: (resolve) => require(['@/components/my-center/seller/SellTradingStatus'], resolve),
+    }, {
+      path: '/sell-arbitration', //仲裁中
+      name: 'SellArbitrationStatus',
+      component: (resolve) => require(['@/components/my-center/seller/SellArbitrationStatus'], resolve),
+    }, {
+      path: '/sell-fail', //交易失败
+      name: 'SellFailureDealStatus',
+      component: (resolve) => require(['@/components/my-center/seller/SellFailureDealStatus'], resolve),
+    }, {
+      path: '/sell-trade', //交易成功
+      name: 'SellTradeSuccessStatus',
+      component: (resolve) => require(['@/components/my-center/seller/SellTradeSuccessStatus'], resolve),
+    },
+    // 资产管理
+    {
+      path: '/assets-manage', //资产管理
+      name: 'AssetsManage',
+      component: (resolve) => require(['@/components/my-center/assets-manage/AssetsManage'], resolve),
+    }, {
+      path: '/receipts', //收支明细
+      name: 'ReceiptsAll',
+      component: (resolve) => require(['@/components/my-center/assets-manage/ReceiptsAll'], resolve),
+    }, {
+      path: '/receipts-info', //收支明细详情
+      name: 'ReceiptsInfo',
+      component: (resolve) => require(['@/components/my-center/assets-manage/ReceiptsInfo'], resolve),
+    }, {
+      path: '/withdraw-deposit', //余额提现
+      name: 'WithdrawDeposit',
+      component: (resolve) => require(['@/components/my-center/assets-manage/WithdrawDeposit'], resolve),
+    }, {
+      path: '/card-manage', //银行卡管理
+      name: 'CardManage',
+      component: (resolve) => require(['@/components/my-center/assets-manage/CardManage'], resolve),
+    }, {
+      path: '/user-authentication',
+      name: 'UserAuthentication',
+      component: (resolve) => require(['@/components/my-center/assets-manage/UserAuthentication'], resolve),
+    }, {
+      path: '/Frost', //冻结资产明细
+      name: 'Frost',
+      component: (resolve) => require(['@/components/my-center/assets-manage/Frost'], resolve),
+    }, {
+      path: '/commission-manage', //佣金管理
+      name: 'CommissionManage',
+      component: (resolve) => require(['@/components/my-center/CommissionManage'], resolve),
+    },
+    // 安全认证
+    {
+      path: '/safe-phone',//手机
+      name: 'SafePhone',
+      component: (resolve) => require(['@/components/my-center/safety/SafePhone'], resolve),
+    }, {
+      path: '/safe-card',//身份证
+      name: 'SafeCard',
+      component: (resolve) => require(['@/components/my-center/safety/SafeCard'], resolve),
+    }, {
+      path: '/safe-user',//人脸
+      name: 'SafeUser',
+      component: (resolve) => require(['@/components/my-center/safety/SafeUser'], resolve),
+    }, {
+      path: '/safe-success',//验证成功
+      name: 'SafeSuccess',
+      component: (resolve) => require(['@/components/my-center/safety/SafeSuccess'], resolve),
+    },
+    // 分期
+    {
+      path: '/installment',//分期支付
+      name: 'PayInstallment',
+      component: (resolve) => require(['@/components/my-center/PayInstallment'], resolve),
+    }, {
+      path: '/bill-installment',//分期账单
+      name: 'BillInstallment',
+      component: (resolve) => require(['@/components/my-center/BillInstallment'], resolve),
+    }, {
+      path: '/voucher',//代金券
+      name: 'Voucher',
+      component: (resolve) => require(['@/components/my-center/Voucher'], resolve),
+    },
+    // 活动
+    {
+      path: '/active',//活动页
+      name: 'ActivePage',
+      component: (resolve) => require(['@/components/action/ActivePage'], resolve),
+    },{
+      path: '/active-area',//活动页
+      name: 'ActiveArea',
+      component: (resolve) => require(['@/components/action/ActiveArea'], resolve),
+    },{
+      path: '/auction',//竞拍页
+      name: 'AuctionPage',
+      component: (resolve) => require(['@/components/action/AuctionPage'], resolve),
+    }, {
+      path: '/auction-pay', //竞拍支付
+      name: 'AuctionPay',
+      component: (resolve) => require(['@/components/action/AuctionPay'], resolve),
+    },
+    // 合同
+    {
+      path: '/pact',//合同
+      name: 'Pact',
+      component: (resolve) => require(['@/components/my-center/pact/Pact'], resolve),
+    }, {
+      path: '/signature',//签名
+      name: 'Signature',
+      component: (resolve) => require(['@/components/my-center/pact/Signature'], resolve),
+    },
+    // 记录
+    {
+      path: '/browse-record',//浏览记录
+      name: 'BrowseRecord',
+      component: (resolve) => require(['@/components/my-center/record/BrowseRecord'], resolve),
+    }, {
+      path: '/bargain-record',//议价记录
+      name: 'BargainRecord',
+      component: (resolve) => require(['@/components/my-center/record/BargainRecord'], resolve),
+    }, {
+      path: '/collect',//收藏
+      name: 'Collect',
+      component: (resolve) => require(['@/components/my-center/record/Collect'], resolve),
+    },
+    // 议价--收到的议价
+    {
+      path: '/message',
+      name: 'MessageAll',
+      component: (resolve) => require(['@/components/my-center/bargain-message/MessageAll'], resolve),
+    }, {
+      path: '/message-details',
+      name: 'MessageDetails',
+      component: (resolve) => require(['@/components/my-center/bargain-message/MessageDetails'], resolve),
+    },
+    // 电子保单
+    {
+      path: '/guarantee-slip',
+      name: 'GuaranteeSlip',
+      component: (resolve) => require(['@/components/GuaranteeSlip'], resolve),
+    },
+    // 申请理赔
+    {
+      path: '/apply-settlement',
+      name: 'ApplySettlement',
+      component: (resolve) => require(['@/components/ApplySettlement'], resolve),
     },
 
-  ]
+
+    {
+      path: '*',
+      component: (resolve) => require(['@/components/multi/NoData'], resolve)
+    },
+  ],
+  scrollBehavior(to, from,savedPosition) {
+    return {
+      x: 0,
+      y: 0
+    }
+  }
 })

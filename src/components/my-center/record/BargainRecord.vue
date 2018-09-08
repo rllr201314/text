@@ -3,18 +3,18 @@
     <div class="bargain-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="bargin-tit">
-            <div class="tit-box">
+            <div class="tit-box" @click="barginTypeFn('reply')">
                 <img :src="seleType.reply?'../../../../static/img/goodscreen/okcheck.png':'../../../../static/img/goodscreen/nocheck.png'" alt="">
                 <span>待回复</span>
             </div>
-            <div class="tit-box">
+            <div class="tit-box" @click="barginTypeFn('pay')">
                 <img :src="seleType.pay?'../../../../static/img/goodscreen/okcheck.png':'../../../../static/img/goodscreen/nocheck.png'" alt="">
                 <span>待支付</span>
             </div>
         </div>
-        <div class="bragin-con">
-            <div class="con-tit">今天</div>
-            <div class="goods-strip" v-for="(item,index) in goodsInfo">
+        <div class="bragin-con" v-for="val in goodsInfo">
+            <div class="con-tit" v-text="val.day">今天</div>
+            <div class="goods-strip" v-for="(item,index) in val.data">
                 <img v-if="item.isSell == 1" class="deal-status" src="../../../../static/img/my-center/clinch.png" alt="">
                 <img v-if="item.isSell == 2" class="deal-status" src="../../../../static/img/my-center/sale.png" alt="">
                 <div class="goods-top">
@@ -34,6 +34,8 @@
                     <div class="goods-strip-bottom">
                         <span>原价</span>
                         <span class="goods-price" v-text="item.goods_price"></span>
+                        <span v-if="item.isSell == 1" class="p-bBtn">前往支付</span>
+                        <span v-if="item.isSell == 3" class="p-bBtn" @click="bargainFn">发起议价</span>
                     </div>
                 </div>
                 <div class="goods-bot">
@@ -62,6 +64,17 @@
                 </div>
             </div>
         </div>
+        <div class="hoodle" v-show="showShade">
+            <img src="../../../../static/img/my-center/record/bargain_tit.png" alt="">
+            <div class="hoodle-con">
+                <input type="number" placeholder="请输入您的出价">
+            </div>
+            <div class="hoodle-btn">
+                <div class="okBtn" @click="goBargain">确认</div>
+                <div class="cancelBtn" @click="goBargain">取消</div>
+            </div>
+        </div>
+        <div class="shade" v-show="showShade"></div>
     </div>
 </template>
 <script>
@@ -82,43 +95,117 @@ export default {
                     title: "议价记录"
                 }
             },
+            showShade: false,
             seleType: {
                 reply: true,
                 pay: false
             },
-            accountData: {},
-            // 商品列表
             goodsInfo: [
                 {
-                    goods_type: "成品号",
-                    account_type: "安卓",
-                    area: "安卓一区",
-                    goods_des: "贵6小号可议价，手快有手慢无",
-                    safe: true,
-                    stages: true,
-                    verify: true,
-                    goods_price: "￥600",
-                    isSell: 1,
-                    bid:'￥6000',
-                    bindtwo:'￥6000',
-                    time:'2018-09-09 9:00'
+                    day: "今天",
+                    data: [
+                        {
+                            goods_type: "成品号",
+                            account_type: "安卓",
+                            area: "安卓一区",
+                            goods_des: "贵6小号可议价，手快有手慢无",
+                            safe: true,
+                            stages: true,
+                            verify: true,
+                            goods_price: "￥600",
+                            isSell: 1,
+                            bid: "￥6000",
+                            bindtwo: "￥6000",
+                            time: "2018-09-09 9:00"
+                        },
+                        {
+                            goods_type: "成品号",
+                            account_type: "安卓",
+                            area: "安卓一区",
+                            goods_des: "贵6小号可议价，手快有手慢无",
+                            safe: true,
+                            stages: false,
+                            verify: true,
+                            goods_price: "￥600",
+                            isSell: 3,
+                            bid: "￥6000",
+                            bindtwo: "￥6000",
+                            time: "2018-09-09 9:00"
+                        }
+                    ]
                 },
                 {
-                    goods_type: "成品号",
-                    account_type: "安卓",
-                    area: "安卓一区",
-                    goods_des: "贵6小号可议价，手快有手慢无",
-                    safe: true,
-                    stages: false,
-                    verify: true,
-                    goods_price: "￥600",
-                    isSell: 2,
-                    bid:'￥6000',
-                    bindtwo:'￥6000',
-                    time:'2018-09-09 9:00'
+                    day: "三天前",
+                    data: [
+                        {
+                            goods_type: "成品号",
+                            account_type: "安卓",
+                            area: "安卓一区",
+                            goods_des: "贵6小号可议价，手快有手慢无",
+                            safe: true,
+                            stages: false,
+                            verify: true,
+                            goods_price: "￥600",
+                            isSell: 2,
+                            bid: "￥6000",
+                            bindtwo: "￥6000",
+                            time: "2018-09-09 9:00"
+                        },
+                        {
+                            goods_type: "成品号",
+                            account_type: "安卓",
+                            area: "安卓一区",
+                            goods_des: "贵6小号可议价，手快有手慢无",
+                            safe: true,
+                            stages: false,
+                            verify: true,
+                            goods_price: "￥600",
+                            isSell: 3,
+                            bid: "￥6000",
+                            bindtwo: "￥6000",
+                            time: "2018-09-09 9:00"
+                        }
+                    ]
                 }
             ]
         };
+    },
+    methods: {
+        bargainFn(e) {
+            this.showShade = true;
+            var mo=function(e){e.preventDefault();};
+            document.body.style.overflow='hidden';
+            document.addEventListener("touchmove",mo,false);//禁止页面滑动
+        },
+        goBargain(e){
+            this.showShade = false;
+            var mo=function(e){e.preventDefault();};
+            document.body.style.overflow='';//出现滚动条
+            document.removeEventListener("touchmove",mo,false);
+        },
+        barginTypeFn(flag){
+            var that =this;
+            if(flag == 'pay'){
+                that.seleType.reply = false;
+                that.seleType.pay = true;
+            }else{
+                that.seleType.reply = true;
+                that.seleType.pay = false;
+            }
+        },
+        getdiscuss(){
+            var that = this;
+            that.$axios.post('api/goods_discuss',{
+                is_agree:1,
+            }).then(function(res){
+                console.log(res)
+            }).catch(function(err){
+                console.log(err)
+            })
+        },
+    },
+    mounted(){
+        this.getdiscuss()
     }
 };
 </script>
@@ -262,6 +349,28 @@ export default {
 .goods-strip-bottom {
     font-size: 0.26rem;
     color: #666666;
+    position: relative;
+}
+.goods-strip-bottom span {
+    display: inline-block;
+    vertical-align: middle;
+}
+.p-bBtn {
+    padding:0 5px;
+    text-align:center;
+    line-height: 0.44rem;
+    font-size: 0.22rem;
+    text-align: center;
+    color: #ffffff;
+    background: #fe7649;
+    -webkit-border-radius: 0.04rem;
+    -moz-border-radius: 0.04rem;
+    border-radius: 0.04rem;
+    -webkit-box-shadow: 0 0.5px .4px #fe7649;
+    -moz-box-shadow: 0 0.5px .4px #fe7649;
+    box-shadow: 0 0.5px .4px #fe7649;
+    position: absolute;
+    left: calc(50% - 0.55rem);
 }
 .goods-price {
     color: #333333;
@@ -281,39 +390,128 @@ export default {
     vertical-align: middle;
 }
 
-.sell-cell-strip{
-    display:flex;
-    line-height: .6rem;
+.sell-cell-strip {
+    display: flex;
+    line-height: 0.6rem;
     justify-content: space-around;
-    align-items:center;
+    align-items: center;
 }
-.strip-left{
-    font-size:.26rem;
-    color:#666666;
+.strip-left {
+    font-size: 0.26rem;
+    color: #666666;
 }
-.bid{
-    color:#333333;
-    margin-left:.4rem;
+.bid {
+    color: #333333;
+    margin-left: 0.4rem;
 }
 .strip-con {
-    min-width:.84rem;
-    line-height: .27rem;
-    height: .27rem;
-    font-size:.2rem;
-    color:#ffffff;
+    min-width: 0.84rem;
+    padding:2px;
+    line-height: 0.27rem;
+    font-size: 0.2rem;
+    color: #ffffff;
     text-align: center;
 }
-.green-bg{
-    background:#45C773;
+.green-bg {
+    background: #45c773;
 }
-.red-bg{
-    background:#FF5E5E;
+.red-bg {
+    background: #ff5e5e;
 }
-.gray-bg{
-    background:#C6C6C6;
+.gray-bg {
+    background: #c6c6c6;
 }
-.time{
-    color:#999999;
-    font-size:.24rem;
+.time {
+    color: #999999;
+    font-size: 0.24rem;
+}
+
+.hoodle {
+    width: 5rem;
+    position: fixed;
+    top: 35%;
+    left: calc(50% - 2.5rem);
+    z-index: 9;
+    background: #ffffff;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+}
+.hoodle img {
+    width: 5rem;
+    height: 1.64rem;
+}
+.hoodle-con {
+    text-align: center;
+    margin-top: 0.4rem;
+}
+.shade {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 6;
+}
+.hoodle-btn {
+    display: flex;
+    justify-content: space-around;
+    margin: 0.4rem 0;
+}
+.hoodle-btn div {
+    width: 1.89rem;
+    height: 0.6rem;
+    line-height: 0.6rem;
+    text-align: center;
+    font-size: 0.26rem;
+    color: #ffffff;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+.okBtn {
+    background: -webkit-linear-gradient(#fd915f, #fc534a);
+    background: -o-linear-gradient(#fd915f, #fc534a);
+    background: -moz-linear-gradient(#fd915f, #fc534a);
+    background: linear-gradient(to right, #fd915f, #fc534a);
+}
+.cancelBtn {
+    background: #c6c6c6;
+}
+/* ==========input========= */
+
+input {
+    margin: 0;
+    padding: 0.1rem;
+    font-size: 0.24rem;
+    /* border: none; */
+    width: 4.6rem;
+    height: 0.7rem;
+    vertical-align: middle;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+::-webkit-input-placeholder {
+    color: #999999;
+    font-size: 0.24rem;
+}
+:-moz-placeholder {
+    color: #999999;
+    font-size: 0.24rem;
+}
+::-moz-placeholder {
+    color: #999999;
+    font-size: 0.24rem;
+}
+:-ms-input-placeholder {
+    color: #999999;
+    font-size: 0.24rem;
 }
 </style>

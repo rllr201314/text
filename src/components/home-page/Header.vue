@@ -1,16 +1,15 @@
 <template>
     <div v-bind:class="showTitle.showBg?'rebBg':'header'">
-            <!--左边按钮-->
-            <img  v-if="showTitle.showBack" class="user-tit-img" src="../../../static/img/userLog.png" alt="">
-            <!-- <span v-else class="mui-icon mui-icon-back toBack"></span> -->
-            
-            <img v-else class="back-tit-img" src="../../../static/img/header/back_ico.png" alt="">
+            <!--左边按钮 个人中心-->
+            <img  v-if="showTitle.showBack" class="user-tit-img" src="../../../static/img/userLog.png" alt="" @click="seleLink('mycenter')"> 
+            <!-- 回退 -->
+            <img v-else class="back-tit-img" src="../../../static/img/header/back_ico.png" alt="" @click="seleLink('rollback')">
             <!--中间标题-->
             <img v-if="showTitle.showLogo == 1" class="titImg" src="../../../static/img/tit_content_img.png" alt="">
             <div v-else-if="showTitle.showLogo == 2" class="titText" v-html="showTitle.title"></div>
             <div v-else-if="showTitle.showLogo == 3" class="titInp" >
                 <img class="search-ico" src="../../../static/img/search_ico.png" alt="">
-                <input class="search-title" type="text" placeholder="请输入游戏名称">
+                <input class="search-title" type="text" placeholder="请输入搜索内容">
                 <img class="empty-ico" src="../../../static/img/empty_ico.png" alt="" @click="emptyFun()">
             </div>
             <!--右边按钮-->
@@ -19,27 +18,27 @@
             <img v-else-if="showTitle.showShare === 3" class="head_right_share" src="../../../static/img/menu_ico.png" alt="" @click="cliMenu">
             <img v-else-if="showTitle.showShare === 4" class="head_right_add" src="../../../static/img/header/hAdd_ico.png" alt="">
             <div class="showMenu" v-show="showMenu">
-                <div class="tohome">
+                <div class="tohome" @click="toPage('home')">
                     <img src="../../../static/img/header-menu/tohome_ico.png" alt="">
                     <span>首页</span>
                 </div>
-                <div class="tosell">
+                <div class="tosell" @click="toPage('sell')">
                     <img src="../../../static/img/header-menu/tosell_ico.png" alt="">
                     <span>我要卖</span>
                 </div>
-                <div class="take">
+                <div class="take"  @click="toPage('take')">
                     <img src="../../../static/img/header-menu/take_ico.png" alt="">
                     <span>收货</span>
                 </div>
-                <div class="user">
+                <div class="user"  @click="toPage('my')">
                     <img src="../../../static/img/header-menu/user_ico.png" alt="">
                     <span>个人中心</span>
                 </div>
-                <div class="service">
+                <div class="service" @click="toPage('')">
                     <img src="../../../static/img/header-menu/service_ico.png" alt="">
                     <span>在线咨询</span>
                 </div>
-                <div class="history">
+                <div class="history" @click="toPage('')">
                     <img src="../../../static/img/header-menu/history_ico.png" alt="">
                     <span>浏览历史</span>
                 </div>
@@ -73,6 +72,28 @@
             // 点击菜单
             cliMenu(){
                 this.showMenu = !this.showMenu;
+            },
+            seleLink(flag){
+                var that = this;
+                if(flag == 'rollback'){
+                    if(that.showTitle.goBack == 1){
+                        that.$router.push({name:'HomePage'});
+                    }else{
+                        that.$router.go(-1);
+                    }
+                }else if(flag == 'mycenter'){
+                    that.$router.push({name:'MyCenter'})
+                }
+            },
+            toPage(flag){
+                var that = this;
+                if(flag == 'home'){
+                    that.$router.push({name:'HomePage'})
+                }else if(flag == 'sell'){
+                    that.$router.push({name:'Sell'})
+                }else if(flag == 'my'){
+                    that.$router.push({name:'MyCenter'})
+                }
             }
         }
     }

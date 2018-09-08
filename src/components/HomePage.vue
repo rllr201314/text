@@ -161,14 +161,21 @@ export default {
     .open-active{
         width:1rem;
         height:1rem;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        border-radius: 50%;
+        overflow: hidden;
+        -webkit-box-shadow: 1px 3px 9px #FE7649;
+        -moz-box-shadow: 1px 3px 9px #FE7649;
+        box-shadow: 1px 3px 9px #FE7649;
         position:fixed;
         right:.2rem;
         top:50%;
         z-index: 10;
     }
     .open-active img{
-        width:1rem;
-        height:1rem;
+        width:100%;
+        height:100%;
     }
     /*活动弹框*/
     .active-page{

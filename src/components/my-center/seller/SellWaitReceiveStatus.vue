@@ -1,9 +1,9 @@
 <template>
-    <!-- 交易中 -->
-    <div class="trad-wrap">
+    <!-- 已发货 -->
+    <div class="wait-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
-        <div class="trad-content">
-            <div class="trad-cell" v-for="item in goodsData">
+        <div class="wait-content">
+            <div class="wait-cell" v-for="item in goodsData">
                 <div class="gameLog">
                     <img :src="item.log" alt="">
                 </div>
@@ -33,7 +33,7 @@
 <script>
     import Header from '@/components/home-page/Header'
     export default {
-        name:'TradingStatus',
+        name:'SellWaitReceiveStatus',
         components:{
             Header
         },
@@ -45,7 +45,7 @@
                         showLogo:2,//显示头部title文字
                         showShare:3,//1搜索2分享3菜单
                         showBg:true,//是否显示背景
-                        title:"交易中",
+                        title:"已发货",
                     }
                 },
                 goodsData:[{
@@ -54,35 +54,35 @@
                     history_time:'10分钟前',
                     des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
                     price:'￥13200',
-                    orderStatus:'待确认交易',
+                    orderStatus:'待收货',
                 },{
                     log:'./static/img/mh_ico.png',
                     orderNum:'123456789',
                     history_time:'10分钟前',
                     des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
                     price:'￥13200',
-                    orderStatus:'换绑中',
+                    orderStatus:'待收货',
                 },{
                     log:'./static/img/mh_ico.png',
                     orderNum:'123456789',
                     history_time:'10分钟前',
                     des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
                     price:'￥13200',
-                    orderStatus:'待确认交易',
+                    orderStatus:'待收货',
                 }]
             }
         }
     }
 </script>
 <style  scoped>
-    .trad-wrap{
+    .wait-wrap{
         max-width:12rem;
         margin:0 auto;
     }
-    .trad-content{
+    .wait-content{
         padding:.2rem;
     }
-    .trad-cell{
+    .wait-cell{
         /* padding-left:.2rem; */
         background:#FFFFFF;
         -webkit-border-radius: .1rem;
@@ -119,6 +119,7 @@
     }
     .history-time{
         float:right;
+        color:#999999;
     }
     .order-des{
         width:4rem;
@@ -129,20 +130,23 @@
         text-overflow: ellipsis;
         margin-bottom:.1rem;
     }
+    .price-status span{
+        vertical-align: middle;
+    }
     .good-price{
         color:#FF5E5E;
         font-size:.28rem;
+        margin-right:.1rem;
     }
     .order-status{
         font-size:.2rem;
-        background:#FE7649;
+        background:#FF5E5E;
         padding:.01rem .05rem;
         color:#FFFFFF;
         line-height: .3rem;
         text-align:center;
         vertical-align: middle;
     }
-    
     .order-operate{
         border-top:.01rem solid #E5E5E5;
         line-height: .8rem;

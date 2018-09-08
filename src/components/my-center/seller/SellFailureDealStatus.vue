@@ -1,5 +1,5 @@
 <template>
-    <!-- 待收货 -->
+    <!-- 交易失败 -->
     <div class="failure-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="failure-content">
@@ -17,13 +17,13 @@
                          <span class="order-status" v-text="item.orderStatus"></span>
                      </div>
                      <div class="causer">
-                         <span class="gray">仲裁事由</span>
+                         <span class="gray">原因</span>
                          <span v-text="item.causer"></span>
                      </div>
                 </div>
                 <div class="order-operate">
                     <div class="right-operate">
-                        <span class="pay">查看</span>
+                        <span class="pay">查看商品</span>
                     </div>
                 </div>
             </div>
@@ -33,7 +33,7 @@
 <script>
     import Header from '@/components/home-page/Header'
     export default {
-        name:'FailureDealStatus',
+        name:'SellFailureDealStatus',
         components:{
             Header
         },
@@ -122,6 +122,7 @@
     }
     .history-time{
         float:right;
+        color:#999999;
     }
     .order-des{
         width:4rem;
@@ -132,9 +133,13 @@
         text-overflow: ellipsis;
         margin-bottom:.1rem;
     }
+    .price-status span{
+        vertical-align: middle;
+    }
     .good-price{
         color:#FF5E5E;
         font-size:.28rem;
+        margin-right:.1rem;
     }
     .order-status{
         font-size:.2rem;

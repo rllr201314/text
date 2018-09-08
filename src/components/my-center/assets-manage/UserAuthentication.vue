@@ -50,7 +50,7 @@
 <script>
     import Header from '@/components/home-page/Header'
     export default {
-        name:'UserAuthentiction',
+        name:'UserAuthentication',
         components:{
             Header,
         },

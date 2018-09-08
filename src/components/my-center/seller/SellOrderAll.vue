@@ -46,7 +46,7 @@
 <script>
     import Header from '@/components/home-page/Header'
     export default {
-        name:'BuyOrderAll',
+        name:'SellOrderAll',
         components:{
             Header,
         },
@@ -58,7 +58,7 @@
                         showLogo:2,//显示头部title文字
                         showShare:3,//1搜索2分享3菜单
                         showBg:true,//是否显示背景
-                        title:"买家订单",
+                        title:"卖家订单",
                     }
                 },
 

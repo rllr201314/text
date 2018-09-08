@@ -19,17 +19,17 @@
             </div>
             <div class="game-classfiy-wrap">
                 <div class="game-classfiy-top">
-                    <div class="game-classfiy-top-cell" v-for="item in gameClassfiy" v-text="item.name" :class="item.sele?'red-bg':''"></div>
+                    <div class="game-classfiy-top-cell" v-for="item in gameClassfiy" v-text="item.name" :class="item.sele?'red-bg':''" @click="seleGameClass(item.name)"></div>
                 </div>
                 <div class="game-classfiy-bottom">
-                    <div class="game-classfiy-bottom-list" v-for="item in gameList">
+                    <div class="game-classfiy-bottom-list" v-for="item in gameList" @click="goSellOption(item)">
                         <div class="list-left">
-                            <img :src="item.gameListSrc" alt="">
+                            <img :src="item.game_logo" alt="">
                         </div>
                         <div class="list-right">
-                            <div class="list-info-title" v-text="item.gameListTit"></div>
-                            <div class="list-info-left" v-text="item.gameInfoLeft"></div>
-                            <div class="list-info-right" v-text="item.gameInfoRight"></div>
+                            <div class="list-info-title" v-text="item.game_name"></div>
+                            <div class="list-info-left">代练</div>
+                            <div class="list-info-right">成品号</div>
                         </div>
                     </div>
                 </div>
@@ -39,218 +39,305 @@
 </template>
 
 <script>
-    import Header from '@/components/home-page/Header'
-    export default {
-        name: "SellPage",
-        data(){
-            return{
-                showTitle:{
-                    showBack:false,
-                    showLogo:2,//显示头部log
-                    showShare:3,//1搜索2分享3菜单
-                    showBg:true,//是否显示背景
-                    title:"我要卖",
+import Header from "@/components/home-page/Header";
+export default {
+    name: "SellPage",
+    data() {
+        return {
+            showTitle: {
+                showBack: false,
+                showLogo: 2, //显示头部log
+                showShare: 3, //1搜索2分享3菜单
+                showBg: true, //是否显示背景
+                title: ""
+            },
+            user_type:'',//用户类型
+            historyNameList: [
+                {
+                    name: "梦幻西游"
                 },
-                historyNameList:[{
-                    name:'梦幻西游',
-                },{
-                    name:'梦幻西游之梦幻西游',
-                },{
-                    name:'梦幻西游',
-                },{
-                    name:'梦幻西游之梦幻西游',
-                },{
-                    name:'梦幻西游',
-                }],
-                gameClassfiy:[{name:'热',sele:true},{name:'A',sele:false},{name:'B',sele:false},{name:'C',sele:false},
-                            {name:'D',sele:false},{name:'E',sele:false},{name:'F',sele:false},
-                            {name:'G',sele:false},{name:'H',sele:false},{name:'I',sele:false},{name:'J',sele:false},{name:'K',sele:false},
-                            {name:'L',sele:false},{name:'M',sele:false},{name:'N',sele:false},{name:'O',sele:false},{name:'P',sele:false},
-                            {name:'Q',sele:false},{name:'R',sele:false},{name:'S',sele:false},{name:'T',sele:false},{name:'U',sele:false},
-                            {name:'V',sele:false},{name:'W',sele:false},{name:'X',sele:false},{name:'Y',sele:false},{name:'Z',sele:false}],
-                gameList:[{
-                    gameListSrc:'./static/img/mh_ico.png',
-                    gameListTit:'梦幻西游',
-                    gameInfoLeft:'代练',
-                    gameInfoRight:'成品号'
-                },{
-                    gameListSrc:'./static/img/mh_ico.png',
-                    gameListTit:'大话西游',
-                    gameInfoLeft:'代练',
-                    gameInfoRight:'成品号'
-                },{
-                    gameListSrc:'./static/img/mh_ico.png',
-                    gameListTit:'梦幻西游',
-                    gameInfoLeft:'代练',
-                    gameInfoRight:'成品号'
-                },{
-                    gameListSrc:'./static/img/mh_ico.png',
-                    gameListTit:'大话西游',
-                    gameInfoLeft:'代练',
-                    gameInfoRight:'成品号'
-                }]
+                {
+                    name: "梦幻西游之梦幻西游"
+                },
+                {
+                    name: "梦幻西游"
+                },
+                {
+                    name: "梦幻西游之梦幻西游"
+                },
+                {
+                    name: "梦幻西游"
+                }
+            ],
+            gameClassfiy: [
+                { name: "热", sele: true },
+                { name: "A", sele: false },
+                { name: "B", sele: false },
+                { name: "C", sele: false },
+                { name: "D", sele: false },
+                { name: "E", sele: false },
+                { name: "F", sele: false },
+                { name: "G", sele: false },
+                { name: "H", sele: false },
+                { name: "I", sele: false },
+                { name: "J", sele: false },
+                { name: "K", sele: false },
+                { name: "L", sele: false },
+                { name: "M", sele: false },
+                { name: "N", sele: false },
+                { name: "O", sele: false },
+                { name: "P", sele: false },
+                { name: "Q", sele: false },
+                { name: "R", sele: false },
+                { name: "S", sele: false },
+                { name: "T", sele: false },
+                { name: "U", sele: false },
+                { name: "V", sele: false },
+                { name: "W", sele: false },
+                { name: "X", sele: false },
+                { name: "Y", sele: false },
+                { name: "Z", sele: false }
+            ],
+            gameList: [],
+            gameClassAll: []
+        };
+    },
+    components: {
+        Header
+    },
+    methods: {
+        //一键清空
+        emptyFun() {
+            $(".search-input").val("");
+        },
+        // 选择游戏对应的字母
+        seleGameClass(opt) {
+            var that = this;
+            var gameClassfiy = that.gameClassfiy;
+            for (var i in gameClassfiy) {
+                if (opt == gameClassfiy[i].name) {
+                    gameClassfiy[i].sele = true;
+                    if (opt == "热") {
+                        that.gameList = that.gameClassAll.is_hot;
+                    } else {
+                        var other = that.gameClassAll.is_other;
+                        for (var j in other) {
+                            if (opt == j) {
+                                that.gameList = other[j];
+                                break;
+                            } else {
+                                that.gameList = [];
+                            }
+                        }
+                    }
+                    continue;
+                }
+                gameClassfiy[i].sele = false;
             }
         },
-        components:{
-            Header,
-        },
-        methods:{
-            //一键清空
-            emptyFun(){
-                $('.search-input').val('');
+        goSellOption(opt) {
+            var that = this;
+            var token = this.$store.state.token;
+            if(sessionStorage.getItem('buyOrsell') == 1){//买
+                that.$router.push({ name: "GoodScreen"});
+                sessionStorage.opt = opt.category_id;
+            }else if(sessionStorage.getItem('buyOrsell') == 2){//卖
+                if (token == undefined || token == "") {
+                    mui.alert('请先登陆','提示','确认',function(){
+                        that.$router.push({name:'AccountLogin',params: {
+                            redirect: that.$router.currentRoute.name,
+                        }})
+                    },'div')
+                } else {
+                    that.$router.push({ name: "SellOption", params: opt});
+                }   
             }
+            
         }
+    },
+    mounted() {
+        var that = this;
+        var user_type = sessionStorage.getItem('buyOrsell');
+        if(user_type == 1){
+            that.showTitle.title = '我要买'
+        }else if(user_type == 2){
+            that.showTitle.title = '我要卖'
+        }
+        that.user_type = user_type;
+
+        that.$axios
+            .post("/api/category")
+            .then(function(response) {
+                var res = response;
+                console.log(res);
+                if (res.status == 200) {
+                    if (res.data.code == 200) {
+                        that.gameList = res.data.data.is_hot;
+                        that.gameClassAll = res.data.data;
+                    }
+                }
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
     }
+};
 </script>
 
 <style scoped>
-    .sell-page-wrap{
-        max-width:12rem;
-        margin:0 auto;
-    }
-    .sell-page-content{
-        padding:.2rem;
-    }
-    /*搜索*/
-    .search{
-        width:7.1rem;
-        height:.76rem;
-        text-align: center;
-        -webkit-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        -moz-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        box-shadow: .06rem .05rem .09rem #D6D6D6;
-        position: relative;
-        margin:0 auto .3rem;
-    }
-    .search-input{
-        width:7.1rem;
-        height:.76rem;
-        padding:0 .52rem;
-        margin:0;
-    }
-    .search-ico{
-        width:.32rem;
-        height:.27rem;
-        position: absolute;
-        top:.25rem;
-        left:.23rem;
-    }
-    .empty-ico{
-        width:.23rem;
-        height:.24rem;
-        position: absolute;
-        top:.25rem;
-        right:.25rem;
-    }
-    /*搜索历史*/
-    .search-history-title div{
-        color:#333333;
-        font-size:.26rem;
-        display: inline-block;
-    }
-    .search-history-title img{
-        width:.26rem;
-        height:.26rem;
-        float: right;
-        margin:.1rem .1rem 0 0;
-    }
-    .search-history-content{
-        padding:.2rem 0;
-        font-size:.26rem;
-    }
-    .search-history-tag{
-        background:#FFFFFF;
-        color:#333333;
-        min-width:1.5rem;
-        text-align:center;
-        padding:.15rem .3rem;
-        display:inline-block;
-        margin:0 .2rem .2rem 0;
-        border-top-left-radius: .4rem;
-        border-bottom-left-radius: .4rem;
-        border-top-right-radius: .4rem;
-        border-bottom-right-radius: .4rem;
-    }
+.sell-page-wrap {
+    max-width: 12rem;
+    margin: 0 auto;
+}
+.sell-page-content {
+    padding: 0.2rem;
+}
+/*搜索*/
+.search {
+    width: 7.1rem;
+    height: 0.76rem;
+    text-align: center;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    position: relative;
+    margin: 0 auto 0.3rem;
+}
+.search-input {
+    width: 7.1rem;
+    height: 0.76rem;
+    font-size:.24rem;
+    color:#999999;
+    padding: 0 0.52rem;
+    margin: 0;
+}
+.search-ico {
+    width: 0.32rem;
+    height: 0.27rem;
+    position: absolute;
+    top: 0.25rem;
+    left: 0.23rem;
+}
+.empty-ico {
+    width: 0.23rem;
+    height: 0.24rem;
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+}
+/*搜索历史*/
+.search-history-title div {
+    color: #333333;
+    font-size: 0.26rem;
+    display: inline-block;
+}
+.search-history-title img {
+    width: 0.26rem;
+    height: 0.26rem;
+    float: right;
+    margin: 0.1rem 0.1rem 0 0;
+}
+.search-history-content {
+    padding: 0.2rem 0;
+    font-size: 0.26rem;
+}
+.search-history-tag {
+    background: #ffffff;
+    color: #333333;
+    min-width: 1.5rem;
+    text-align: center;
+    padding: 0.15rem 0.3rem;
+    display: inline-block;
+    margin: 0 0.2rem 0.2rem 0;
+    border-top-left-radius: 0.4rem;
+    border-bottom-left-radius: 0.4rem;
+    border-top-right-radius: 0.4rem;
+    border-bottom-right-radius: 0.4rem;
+}
 
-    /*游戏分类*/
-    .game-classfiy-wrap{
-        background:#FFFFFF;
-        -webkit-border-radius: .1rem;
-        -moz-border-radius: .1rem;
-        border-radius: .1rem;
-        -webkit-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        -moz-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        box-shadow: .06rem .05rem .09rem #D6D6D6;
-        padding:.2rem;
-    }
-    .game-classfiy-top{
-        /*height: 2.58rem;*/
-        font-size:.24rem;
-        color:#666666;
-    }
-    .game-classfiy-top .game-classfiy-top-cell{
-        display: inline-block;
-        width: .6rem;
-        height:.6rem;
-        line-height: .6rem;
-        text-align: center;
-    }
-    .red-bg{
-        color:#ffffff;
-        -webkit-border-radius: 50%;
-        -moz-border-radius: 50%;
-        border-radius: 50%;
-        -webkit-box-shadow: .01rem 0 .04rem #FC604E;
-        -moz-box-shadow: .01rem 0 .04rem #FC604E;
-        box-shadow: .01rem 0 .04rem #FC604E;
-        background:-webkit-linear-gradient(#FD915F,#FC534A);
-        background:-o-linear-gradient(#FD915F,#FC534A);
-        background:-moz-linear-gradient(#FD915F,#FC534A);
-        background:linear-gradient(to right, #FD915F , #FC534A);
-    }
+/*游戏分类*/
+.game-classfiy-wrap {
+    background: #ffffff;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    padding: 0.2rem;
+}
+.game-classfiy-top {
+    /*height: 2.58rem;*/
+    font-size: 0.24rem;
+    color: #666666;
+}
+.game-classfiy-top .game-classfiy-top-cell {
+    display: inline-block;
+    width: 0.6rem;
+    height: 0.6rem;
+    line-height: 0.6rem;
+    text-align: center;
+}
+.red-bg {
+    color: #ffffff;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    -webkit-box-shadow: 0.01rem 0 0.04rem #fc604e;
+    -moz-box-shadow: 0.01rem 0 0.04rem #fc604e;
+    box-shadow: 0.01rem 0 0.04rem #fc604e;
+    background: -webkit-linear-gradient(#fd915f, #fc534a);
+    background: -o-linear-gradient(#fd915f, #fc534a);
+    background: -moz-linear-gradient(#fd915f, #fc534a);
+    background: linear-gradient(to right, #fd915f, #fc534a);
+}
 
-    .game-classfiy-bottom-list{
-        border-top: .01rem solid #E5E5E5;
-        /*height:1.21rem;*/
-        padding:.2rem 0;
-    }
-    .list-left,.list-right{
-        display:inline-block;
-        vertical-align: top;
-    }
-    .list-left{
-        width:.86rem;
-        height:.87rem;
-    }
-    .list-left img{
-        width:.86rem;
-        height:.87rem;
-    }
-    .list-right{
-        width:5rem;
-    }
-    .list-info-title{
-        color:#333333;
-        font-size:.26rem;
-    }
-    .list-info-left,.list-info-right{
-        display:inline-block;
-        font-size:.24rem;
-        color: #ffffff;
-        text-align:center;
-        line-height:.36rem;
-        padding:0 .11rem;
-    }
-    .list-info-left{
-        background:-webkit-linear-gradient(#FD915F,#FF7064);
-        background:-o-linear-gradient(#FD915F,#FF7064);
-        background:-moz-linear-gradient(#FD915F,#FF7064);
-        background:linear-gradient(to right, #FD915F , #FF7064);
-    }
-    .list-info-right{
-        background:-webkit-linear-gradient(#FEAB49,#FFCC4B);
-        background:-o-linear-gradient(#FEAB49,#FFCC4B);
-        background:-moz-linear-gradient(#FEAB49,#FFCC4B);
-        background:linear-gradient(to right, #FEAB49 , #FFCC4B);
-    }
+.game-classfiy-bottom-list {
+    border-top: 0.01rem solid #e5e5e5;
+    /*height:1.21rem;*/
+    padding: 0.2rem 0;
+}
+.list-left,
+.list-right {
+    display: inline-block;
+    vertical-align: top;
+}
+.list-left {
+    width: 0.86rem;
+    height: 0.87rem;
+    margin-right: 0.2rem;
+}
+.list-left img {
+    width: 0.86rem;
+    height: 0.87rem;
+}
+.list-right {
+    width: 5rem;
+}
+.list-info-title {
+    color: #333333;
+    font-size: 0.26rem;
+}
+.list-info-left,
+.list-info-right {
+    display: inline-block;
+    font-size: 0.24rem;
+    color: #ffffff;
+    text-align: center;
+    line-height: 0.36rem;
+    padding: 0 0.11rem;
+}
+.list-info-left {
+    margin-right: 0.1rem;
+    background: -webkit-linear-gradient(#fd915f, #ff7064);
+    background: -o-linear-gradient(#fd915f, #ff7064);
+    background: -moz-linear-gradient(#fd915f, #ff7064);
+    background: linear-gradient(to right, #fd915f, #ff7064);
+}
+.list-info-right {
+    background: -webkit-linear-gradient(#feab49, #ffcc4b);
+    background: -o-linear-gradient(#feab49, #ffcc4b);
+    background: -moz-linear-gradient(#feab49, #ffcc4b);
+    background: linear-gradient(to right, #feab49, #ffcc4b);
+}
 </style>

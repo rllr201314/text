@@ -1,9 +1,9 @@
 <template>
-    <!-- 仲裁中 -->
-    <div class="tradeSuccess-wrap">
+    <!-- 交易失败 -->
+    <div class="failure-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
-        <div class="tradeSuccess-content">
-            <div class="tradeSuccess-cell" v-for="item in goodsData">
+        <div class="failure-content">
+            <div class="failure-cell" v-for="item in goodsData">
                 <div class="gameLog">
                     <img :src="item.log" alt="">
                 </div>
@@ -16,15 +16,14 @@
                          <span class="good-price" v-text="item.price"></span>
                          <span class="order-status" v-text="item.orderStatus"></span>
                      </div>
+                     <div class="causer">
+                         <span class="gray">原因</span>
+                         <span v-text="item.causer"></span>
+                     </div>
                 </div>
                 <div class="order-operate">
-                    <div class="left-operate">
-                        <img src="../../../../static/img/my-center/contact_service.png" alt="">
-                        <span>联系客服</span>
-                    </div>
                     <div class="right-operate">
-                        <span class="cancel">查看保单</span>
-                        <span class="pay">查看</span>
+                        <span class="pay">查看商品</span>
                     </div>
                 </div>
             </div>
@@ -34,7 +33,7 @@
 <script>
     import Header from '@/components/home-page/Header'
     export default {
-        name:'TradeSuccessStatus',
+        name:'BuyFailureDealStatus',
         components:{
             Header
         },
@@ -46,7 +45,7 @@
                         showLogo:2,//显示头部title文字
                         showShare:3,//1搜索2分享3菜单
                         showBg:true,//是否显示背景
-                        title:"交易成功",
+                        title:"交易失败",
                     }
                 },
                 goodsData:[{
@@ -55,35 +54,38 @@
                     history_time:'10分钟前',
                     des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
                     price:'￥13200',
-                    orderStatus:'仲裁中',
+                    orderStatus:'交易失败',
+                    causer:'自主取消订单',
                 },{
                     log:'./static/img/mh_ico.png',
                     orderNum:'123456789',
                     history_time:'10分钟前',
                     des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
                     price:'￥13200',
-                    orderStatus:'仲裁中',
+                    orderStatus:'交易失败',
+                    causer:'卖家不卖了',
                 },{
                     log:'./static/img/mh_ico.png',
                     orderNum:'123456789',
                     history_time:'10分钟前',
                     des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
                     price:'￥13200',
-                    orderStatus:'仲裁中',
+                    orderStatus:'交易失败',
+                    causer:'自主取消订单',
                 }]
             }
         }
     }
 </script>
 <style  scoped>
-    .tradeSuccess-wrap{
+    .failure-wrap{
         max-width:12rem;
         margin:0 auto;
     }
-    .tradeSuccess-content{
+    .failure-content{
         padding:.2rem;
     }
-    .tradeSuccess-cell{
+    .failure-cell{
         /* padding-left:.2rem; */
         background:#FFFFFF;
         -webkit-border-radius: .1rem;
@@ -120,6 +122,7 @@
     }
     .history-time{
         float:right;
+        color:#999999;
     }
     .order-des{
         width:4rem;
@@ -130,45 +133,47 @@
         text-overflow: ellipsis;
         margin-bottom:.1rem;
     }
+    .price-status span{
+        vertical-align: middle;
+    }
     .good-price{
         color:#FF5E5E;
         font-size:.28rem;
+        margin-right:.1rem;
     }
     .order-status{
         font-size:.2rem;
-        background:#45C773;
+        background:#C6C6C6;
         padding:.01rem .05rem;
         color:#FFFFFF;
         line-height: .3rem;
         text-align:center;
         vertical-align: middle;
     }
+    .causer{
+        margin-top:.1rem;
+        font-size:.26rem;
+        color:#333333;
+    }
+    .gray{
+        color:#999999;
+    }
+
     
     .order-operate{
         border-top:.01rem solid #E5E5E5;
         line-height: .8rem;
+        text-align: right;
     }
     .order-operate div{
         display: inline-block;
     }
-    .left-operate{
-        font-size:.24rem;
-        color:#666666;
-    }
-    .left-operate img{
-        width:.25rem;
-        height:.27rem;
-        vertical-align: middle;
-    }
-    .left-operate span{
-        vertical-align:middle;
-    }
+    
     .right-operate{
         font-size:.22rem;
         color:#FFFFFF;
-        float: right;
     }
-    .cancel,.pay{
+    .pay{
         width:1.1rem;
         line-height:.44rem;
         text-align:center;
@@ -176,14 +181,6 @@
         -webkit-border-radius: .04rem;
         -moz-border-radius: .04rem;
         border-radius: .04rem;
-    }
-    .pay{
         background:#FE7649;
-
     }
-    .cancel{
-        background:#C6C6C6;
-        margin-right:.2rem;
-    }
-    
 </style>

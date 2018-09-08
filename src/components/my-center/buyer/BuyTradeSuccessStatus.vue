@@ -1,9 +1,9 @@
 <template>
-    <!-- 仲裁中 -->
-    <div class="arbitration-wrap">
+    <!-- 交易成功 -->
+    <div class="tradeSuccess-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
-        <div class="arbitration-content">
-            <div class="arbitration-cell" v-for="item in goodsData">
+        <div class="tradeSuccess-content">
+            <div class="tradeSuccess-cell" v-for="item in goodsData">
                 <div class="gameLog">
                     <img :src="item.log" alt="">
                 </div>
@@ -16,10 +16,6 @@
                          <span class="good-price" v-text="item.price"></span>
                          <span class="order-status" v-text="item.orderStatus"></span>
                      </div>
-                     <div class="arbitration">
-                         <span class="gray">仲裁事由</span>
-                         <span v-text="item.arbitrationInfo"></span>
-                     </div>
                 </div>
                 <div class="order-operate">
                     <div class="left-operate">
@@ -27,7 +23,7 @@
                         <span>联系客服</span>
                     </div>
                     <div class="right-operate">
-                        <span class="cancel">取消仲裁</span>
+                        <span class="cancel">查看保单</span>
                         <span class="pay">查看</span>
                     </div>
                 </div>
@@ -38,7 +34,7 @@
 <script>
     import Header from '@/components/home-page/Header'
     export default {
-        name:'WaitReceiveStatus',
+        name:'BuyTradeSuccessStatus',
         components:{
             Header
         },
@@ -50,7 +46,7 @@
                         showLogo:2,//显示头部title文字
                         showShare:3,//1搜索2分享3菜单
                         showBg:true,//是否显示背景
-                        title:"仲裁中",
+                        title:"交易成功",
                     }
                 },
                 goodsData:[{
@@ -59,38 +55,36 @@
                     history_time:'10分钟前',
                     des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
                     price:'￥13200',
-                    arbitrationInfo:'账号有问题，需要退款',
-                    orderStatus:'仲裁中',
+                    orderStatus:'交易成功',
                 },{
                     log:'./static/img/mh_ico.png',
                     orderNum:'123456789',
                     history_time:'10分钟前',
                     des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
                     price:'￥13200',
-                    arbitrationInfo:'账号有问题，需要退款',
-                    orderStatus:'仲裁中',
+                    orderStatus:'交易成功',
                 },{
                     log:'./static/img/mh_ico.png',
                     orderNum:'123456789',
                     history_time:'10分钟前',
                     des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
                     price:'￥13200',
-                    arbitrationInfo:'账号有问题，需要退款',
-                    orderStatus:'仲裁中',
+                    orderStatus:'交易成功',
                 }]
             }
         }
     }
 </script>
 <style  scoped>
-    .arbitration-wrap{
+    .tradeSuccess-wrap{
         max-width:12rem;
         margin:0 auto;
     }
-    .arbitration-content{
+    .tradeSuccess-content{
         padding:.2rem;
     }
-    .arbitration-cell{
+    .tradeSuccess-cell{
+        /* padding-left:.2rem; */
         background:#FFFFFF;
         -webkit-border-radius: .1rem;
         -moz-border-radius: .1rem;
@@ -126,6 +120,7 @@
     }
     .history-time{
         float:right;
+        color:#999999;
     }
     .order-des{
         width:4rem;
@@ -136,9 +131,13 @@
         text-overflow: ellipsis;
         margin-bottom:.1rem;
     }
+    .price-status span{
+        vertical-align: middle;
+    }
     .good-price{
         color:#FF5E5E;
         font-size:.28rem;
+        margin-right:.1rem;
     }
     .order-status{
         font-size:.2rem;
@@ -191,12 +190,5 @@
         background:#C6C6C6;
         margin-right:.2rem;
     }
-    .arbitration{
-        margin-top:.1rem;
-        font-size:.26rem;
-        color:#333333;
-    }
-    .gray{
-        color:#999999;
-    }
+    
 </style>

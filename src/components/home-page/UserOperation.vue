@@ -1,7 +1,7 @@
 <template>
     <!-- 导航栏 -->
     <div class="user-opera">
-        <div class="cell user-account">
+        <div class="cell user-account" @click="seleOpt('buy')">
             <img src="../../../static/img/user_cont.png" alt="">
             <div>账号</div>
         </div>
@@ -13,11 +13,11 @@
             <img src="../../../static/img/stages_ico.png" alt="">
             <div>分期</div>
         </div>
-        <div class="cell user-activity">
+        <div class="cell user-activity" @click="seleOpt('active')">
             <img src="../../../static/img/activity_ico.png" alt="">
             <div>活动</div>
         </div>
-        <div class="cell user-sell">
+        <div class="cell user-sell" @click="seleOpt('sell')">
             <img src="../../../static/img/sell_cont.png" alt="">
             <div>我要卖</div>
         </div>
@@ -26,7 +26,21 @@
 
 <script>
     export default {
-        name: "UserOperation"
+        name: "UserOperation",
+        methods:{
+            seleOpt(flag){
+                var that = this;
+                if(flag == 'buy'){
+                    that.$router.push({name:'Sell'});
+                    sessionStorage.buyOrsell = 1;
+                }else if(flag == 'sell'){
+                    that.$router.push({name:'Sell'});
+                    sessionStorage.buyOrsell = 2;
+                }else if(flag == 'active'){
+                    that.$router.push({name:'ActivePage'})
+                }
+            }
+        }
     }
 </script>
 
