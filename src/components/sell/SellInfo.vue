@@ -48,11 +48,11 @@
                     <div class="sell-strip">
                         <div class="sell-strip-title">
                             <span>上传图片</span>
-                            <span class="red-color">（单张图片不能超过2M,最多可上传10张图片）</span>
+                            <span class="red-color">（单张图片不能超过2M,最多可上传9张图片）</span>
                         </div>
                         <div class="upimg-content">
                             <div class="img-cell" v-for="(item,index) in sellData.upimgAll.imgSrc">
-                                <img :src="item.base64" alt="">
+                                <img :src="item" alt="">
                                 <div class="delImg" @click="delImg(index)">
                                     <img src="../../../static/img/order/delete_img.png" alt="">
                                 </div>
@@ -315,6 +315,7 @@ export default {
                 isMax: false,
                 maxPrice: ""
             },
+            oldData:{},//编辑商品旧数据
             sellData: {
                 seleTag: [], //选择的标签
                 showTag: [], //确认选择的标签
@@ -323,7 +324,6 @@ export default {
                 // 标签内容
                 tagContent: [],
                 upimgAll: {
-                    upImg: [],
                     imgSrc: [],
                     imgData: {
                         accept: "image/gif, image/jpeg, image/png, image/jpg"
@@ -350,6 +350,7 @@ export default {
                     sell: []
                 }
             },
+            category_id:'',
             upData: {},
             requestData: {
                 deal_type: "",
@@ -374,7 +375,7 @@ export default {
                 password: "",
                 mobile: "",
                 wx: "",
-                images: ""
+                images: [],
             }
         };
     },
@@ -383,67 +384,47 @@ export default {
         addImg(event) {
             var that = this;
             var imgSrcArr = that.sellData.upimgAll.imgSrc;
-            var upImg = that.sellData.upimgAll.upImg;
             var imgLen = imgSrcArr.length;
-            if (imgLen >= 10) {
+            console.log(imgLen);
+            if (imgLen >= 9) {
                 mui.alert("图片选择到达上限", "提示", "确认", "", "div");
-            } else if (imgLen < 10) {
+            } else if (imgLen < 9) {
                 var imgArr = [];
                 var fileLen = event.target.files.length;
                 var allLen = imgLen + fileLen;
-                if (allLen > 10) {
-                    var addImg = 10 - imgLen;
+                if (allLen > 9) {
+                    var addImg = 9 - imgLen;
                     for (var i = 0; i < addImg; i++) {
                         imgArr.push(event.target.files[i]);
                     }
-                    mui.alert(
-                        "图片选择超过上限,只保存10张",
-                        "提示",
-                        "确认",
-                        "",
-                        "div"
-                    );
-                } else {
+                    mui.alert("图片选择超过上限,只保存9张","提示","确认","","div");
+                }else {
                     imgArr = event.target.files;
                 }
-                // console.log(upImg);
+                console.log(imgArr);
+                console.log(imgArr.length);
                 for (var i = 0; i < imgArr.length; i++) {
+                    console.log('-------');
                     let type = imgArr[i].type; //文件的类型，判断是否是图片
                     let size = imgArr[i].size; //文件的大小，判断图片的大小
-                    if (
-                        that.sellData.upimgAll.imgData.accept.indexOf(type) ==
-                        -1
-                    ) {
-                        mui.alert(
-                            "请选择我们支持的图片格式！",
-                            "提示",
-                            "确认",
-                            null,
-                            "div"
-                        );
+                    if (that.sellData.upimgAll.imgData.accept.indexOf(type) == -1) {
+                        mui.alert("请选择我们支持的图片格式！","提示","确认",null,"div");
                         return false;
                     }
                     if (size > 2097152) {
-                        mui.alert(
-                            "请选择2M以内的图片！",
-                            "提示",
-                            "确认",
-                            null,
-                            "div"
-                        );
+                        mui.alert("请选择2M以内的图片！","确认",null,"div");
                         return false;
                     }
-                    upImg.push(imgArr[i]);
                     var reader = new FileReader();
                     reader.readAsDataURL(imgArr[i]);
 
                     var fileName = imgArr[i].name;
                     reader.onload = function(e) {
-                        var imgMsg = {
-                            name: fileName, //获取文件名
-                            base64: this.result //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
-                        };
-                        imgSrcArr.push(imgMsg);
+                        // var imgMsg = {
+                        //     name: fileName, //获取文件名
+                        //     img_url: this.result //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
+                        // };
+                        imgSrcArr.push(this.result);
                     };
                 }
             }
@@ -451,9 +432,7 @@ export default {
         delImg(ind) {
             var that = this;
             var imgList = that.sellData.upimgAll.imgSrc;
-            var upImg = that.sellData.upimgAll.upImg;
             imgList.splice(ind, 1);
-            upImg.splice(ind, 1);
         },
         // 账号绑定
         seleSafe(flag) {
@@ -529,13 +508,7 @@ export default {
                             that.sellData.seleTag.push(tagContent[i]);
                             tagContent[i].ischeck = true;
                         } else {
-                            mui.alert(
-                                "最多只能选择五个标签哦！",
-                                "提示",
-                                "确认",
-                                "",
-                                "div"
-                            );
+                            mui.alert("最多只能选择五个标签哦！","提示","确认","","div");
                         }
                     }
                     break;
@@ -625,7 +598,7 @@ export default {
             var that = this;
             that.$axios
                 .post("/api/tag_content", {
-                    category_id: that.upData.category_id,
+                    category_id: that.category_id,
                     tag_type_id: tag_type_id
                 })
                 .then(function(res) {
@@ -655,17 +628,26 @@ export default {
                 });
         },
         // 发布商品
+        // addGoods(){
+        //     var that = this;
+        //     var img = that.sellData.upimgAll.imgSrc;
+        //     console.log(img);
+        //     var upimg = [];
+        //     for(var i in img){
+        //         upimg.push(img[i].img_url);
+        //     }
+        //     console.log(upimg);
+        //     that.$axios.post('/api/img_test',{
+        //         images:upimg
+        //     }).then((res)=>{
+        //         console.log(res)
+        //     }).catch((err)=>{
+        //         console.log(err)
+        //     })
+        // },
         addGoods() {
             var that = this;
-            // console.log(that.requestData);
-            var that_req = that.requestData;
-            that_req.deal_type = that.upData.deal_type; //商品类型
-            that_req.category_id = that.upData.category_id;
-            that_req.operation_id = that.upData.operation_id;
-            that_req.area_id = that.upData.area_id;
-            if (that.upData.server_id != "") {
-                that_req.server_id = that.upData.server_id;
-            }
+            var that_req = that.requestData;                              
             if (that_req.goods_title == "") {
                 mui.alert("请输入商品标题", "提示", "确认", "", "div");
                 return false;
@@ -675,13 +657,7 @@ export default {
                 return false;
             } else {
                 if (that_req.role_level > 999) {
-                    mui.alert(
-                        "请输入正确的游戏等级",
-                        "提示",
-                        "确认",
-                        "",
-                        "div"
-                    );
+                    mui.alert("请输入正确的游戏等级","提示","确认", "","div");
                     return false;
                 }
             }
@@ -697,13 +673,7 @@ export default {
                 mui.alert("请输入商品描述", "提示", "确认", "", "div");
                 return false;
             } else if (that_req.goods_description.length > 120) {
-                mui.alert(
-                    "商品描述最多可以输入120字",
-                    "提示",
-                    "确认",
-                    "",
-                    "div"
-                );
+                mui.alert("商品描述最多可以输入120字", "提示","确认","","div");
                 return false;
             }
 
@@ -718,13 +688,17 @@ export default {
                 }
                 that_req.tag = str.substring(1);
             }
-            var upImg = that.sellData.upimgAll.upImg;
-            if (upImg.length == 0) {
-                mui.alert("请选择商品图片", "提示", "确认", "", "div");
-                return false;
-            } else {
-                that_req.images = upImg;
-            }
+            // var upImg = that.sellData.upimgAll.imgSrc;
+            // if (upImg.length == 0) {
+            //     mui.alert("请选择商品图片", "提示", "确认", "", "div");
+            //     return false;
+            // } else {
+            //     for(var i in upImg){
+            //         that_req.images.push(upImg[i].img_url);
+            //     }
+            // }
+            that_req.images = that.sellData.upimgAll.imgSrc;
+
             // 账号类型
             if (that_req.account_type == "") {
                 mui.alert("请选择账号类型", "提示", "确认", "", "div");
@@ -754,22 +728,10 @@ export default {
                 }
             } else if (that_req.sell_type == 2) {
                 if (that_req.goods_price == "") {
-                    mui.alert(
-                        "请输入可议价最高价格",
-                        "提示",
-                        "确认",
-                        "",
-                        "div"
-                    );
+                    mui.alert("请输入可议价最高价格","确认","","div");
                     return false;
                 } else if (that_req.min_price == "") {
-                    mui.alert(
-                        "请输入可议价最低价格",
-                        "提示",
-                        "确认",
-                        "",
-                        "div"
-                    );
+                    mui.alert("请输入可议价最低价格","提示","确认","","div");
                     return false;
                 }
             }
@@ -820,13 +782,7 @@ export default {
             } else {
                 var phoneReg = /^1[3-9][0-9]{9}$/g;
                 if (!that_req.mobile.match(phoneReg)) {
-                    mui.alert(
-                        "您输入的手机号不正确",
-                        "提示",
-                        "确定",
-                        "",
-                        "div"
-                    );
+                    mui.alert("您输入的手机号不正确","提示","确定","","div");
                     return false;
                 }
             }
@@ -834,28 +790,31 @@ export default {
             if (that_req.wx == "") {
                 mui.alert("请输入微信账号", "提示", "确认", "", "div");
                 return false;
-            }
-            // console.log(that_req);
-            let config = {
-                headers: { "Content-Type": "multipart/form-data" }
-            };
-            let param = new FormData();
-            // for(var  i in that_req.images){
-            //     param.append('file',taht_req.images[i])
-            // }
-            // console.log(that_req.images);
-            for(var i in that_req){
-                if(i == 'images'){
-                    for(var x in that_req.images){
-                        // console.log("img")
-                         param.append('images[]',that_req.images[x])
-                    }
-                }else{
-                    param.append(i,that_req[i])
+            }else{
+                var reg = /[\u4e00-\u9fa5]/g;
+                if(that_req.wx.match(reg)){
+                    mui.alert("请输入正确微信账号", "提示", "确认", "", "div");
+                    return false;
                 }
             }
+            console.log(that_req);
+            // let config = {
+            //     headers: { "Content-Type": "multipart/form-data" }
+            // };
+            // let param = new FormData();
+            // console.log(that_req.images);
+            // for(var i in that_req){
+            //     if(i == 'images'){
+            //         for(var x in that_req.images){
+            //             // console.log("img")
+            //              param.append('images[]',that_req.images[x])
+            //         }
+            //     }else{
+            //         param.append(i,that_req[i])
+            //     }
+            // }
             that.$axios
-                .post("/api/add_goods", param, config)
+                .post("/api/add_goods",that_req)
                 .then(function(res) {
                     // console.log(res);
                     if (res.status == 200) {
@@ -877,9 +836,11 @@ export default {
                     console.log(err);
                 });
         },
+        // 判断合同还是保险
         judgeInfo(chargeInfo) {
             var that = this;
             var compact_rate = chargeInfo.compact_rate;
+
             var force_compact = chargeInfo.force_compact;
             var force_safe = chargeInfo.force_safe;
             var is_bind = chargeInfo.is_bind;
@@ -933,6 +894,215 @@ export default {
                     that.safeOrCompact.isMax = false;
                 }
             }
+        },
+        getTagType(){
+            var that = this;
+            // 请求标签大类
+            that.$axios
+                .post("/api/tag_type", {
+                    category_id: that.category_id
+                })
+                .then(function(res) {
+                    console.log(res);
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            var tagType = res.data.data;
+                            for (var i in tagType) {
+                                if (i == 0) {
+                                    tagType[0].ischeck = true;
+                                    continue;
+                                }
+                                tagType[i].ischeck = false;
+                            }
+                            that.sellData.tagType = tagType;
+                            that.getTagCon(tagType[0].tag_type_id);
+                        }else if(res.data.code == 401){
+                            // 登录状态过期
+                            mui.confirm("请先登陆","提示",["取消", "确认"],
+                                    function(e) {
+                                        if (e.index == 1) {
+                                            that.$router.push({
+                                                name: "AccountLogin",
+                                                params: {
+                                                    redirect:that.$router.currentRoute.name
+                                                }
+                                            });
+                                        } else {
+                                            that.$router.go(-1);
+                                        }
+                                    },"div");
+                        }
+                    }
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
+        },
+        getConfig(opt,flag){
+            var that = this;
+            // 请求选择参数
+            that.$axios
+                .post("/api/other_config", {
+                    category_id: opt.category_id,
+                    operation_id: opt.operation_id
+                })
+                .then(function(res) {
+                    console.log(res);
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            var data = res.data.data;
+                            if(flag == 1){
+                                var safe = data.account_bind; 
+                                for (var i in safe) {
+                                    safe[i].ischeck = false;
+                                }
+                                that.sellData.seleSafeData.safe = safe;//账号绑定
+                                var sellType = data.sell_type;
+                                for (var i in sellType) {
+                                    if (sellType[i].name == "一口价") {
+                                        that.requestData.sell_type = sellType[i].value;
+                                        sellType[i].ischeck = true;
+                                        continue;
+                                    }
+                                    sellType[i].ischeck = false;
+                                }
+                                that.sellData.sellType.sell = sellType; //是否议价
+                                that.sellData.sex = data.person_sex; //角色性别
+                                that.sellData.faction = data.faction; //职业
+                                that.sellData.accountType = data.account_type; //账号类型
+                                that.judgeInfo(data.chargeInfo);
+                            }else if(flag == 2){
+                                var oldData = that.oldData;
+
+                                var safe = data.account_bind;
+                                for(var i in safe){
+                                    safe[i].ischeck = false;
+                                    for(var j in oldData.account_bind){
+                                        if(safe[i].value == oldData.account_bind[j]){
+                                            safe[i].ischeck = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                that.sellData.seleSafeData.safe = safe;//账号绑定
+                                
+                                var sellType = res.data.data.sell_type;
+                                for (var i in sellType) {
+                                    if (sellType[i].value == oldData.sell_type) {
+                                        that.requestData.sell_type = sellType[i].value;
+                                        sellType[i].ischeck = true;
+                                        continue;
+                                    }
+                                    sellType[i].ischeck = false;
+                                }
+                                that.sellData.sellType.sell = sellType; //是否议价
+                                // 角色性别
+                                for(var i in data.person_sex){
+                                    if(data.person_sex[i].value = oldData.person_sex){
+                                        that.requestData.person_sex = data.person_sex[i].value;
+                                        that.seleData.sex = data.person_sex[i].name;
+                                    }
+                                }
+                                // 职业
+                                for(var i in data.faction){
+                                    if(data.faction[i].faction_id = oldData.faction_id){
+                                        that.requestData.faction_id = data.faction[i].faction_id;
+                                        that.seleData.faction = data.faction[i].faction_name;
+                                    }
+                                }
+                                // 账号类型
+                                for(var i in data.account_type){
+                                    if(data.account_type[i].value = oldData.account_type){
+                                        that.requestData.account_type = data.account_type[i].value;
+                                        that.seleData.accountType = data.account_type[i].name;
+                                    }
+                                }
+                                that.sellData.showTag = oldData.tag;
+                                that.sellData.seleTag = oldData.tag;
+                                // 图片
+                                for(var i in oldData.images){
+                                    that.sellData.upimgAll.imgSrc.push(oldData.images[i]);
+                                }
+                                that.judgeInfo(data.chargeInfo);
+                            }
+                        }else if(res.data.code == 401){
+                            // 登录状态过期
+                            mui.confirm("请先登陆","提示",["取消", "确认"],
+                                    function(e) {
+                                        if (e.index == 1) {
+                                            that.$router.push({
+                                                name: "AccountLogin",
+                                                params: {
+                                                    redirect:that.$router.currentRoute.name
+                                                }
+                                            });
+                                        } else {
+                                            that.$router.go(-1);
+                                        }
+                                    },"div");
+                        }
+                    }
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
+        },
+        getRedact(goods_id){
+            var that = this;
+            console.log(that.$router);
+            that.$axios.post('/api/get_goods',{
+                goods_id:goods_id
+            }).then((res) => {
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        console.log(res.data.data);
+                        var data = res.data.data;
+                        that.category_id = data.category_id;
+                        var that_req = that.requestData;
+                        that_req.deal_type = data.deal_type; //商品类型
+                        that_req.category_id = data.category_id;
+                        that_req.operation_id = data.operation_id;
+                        that_req.area_id = data.area_id;
+                        if (data.server_id != "") {
+                            that_req.server_id = data.server_id;
+                        }
+                        that_req.goods_price = parseInt(data.goods_price);
+                        that_req.min_price = parseInt(data.min_price);
+                        that_req.role_level = data.role_level;
+                        that_req.goods_title = data.goods_title;
+                        that_req.goods_description = data.goods_description;
+                        that_req.account = data.account;
+                        that_req.mobile = data.mobile;
+                        that_req.wx = data.wx;
+                        that_req.video_url = data.video_url;
+                        that.oldData = data;//编辑商品旧数据
+                        
+                        that.getConfig(that_req,2);//请求选择参数
+                        that.getTagType();//请求标签大类
+                    }else if(res.data.code == 401){
+                        // 登录状态过期
+                        mui.confirm("请先登陆","提示",["取消", "确认"],
+                                function(e) {
+                                    if (e.index == 1) {
+                                        that.$router.push({
+                                            name: "AccountLogin",
+                                            params: {
+                                                redirect:that.$router.currentRoute.name
+                                            }
+                                        });
+                                    } else {
+                                        that.$router.go(-1);
+                                    }
+                                },"div");
+                    }else{
+                        mui.alert(res.data.msg,'提示','确认',() =>{
+                            that.$router.go(-1);
+                        },'div')
+                    }
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
         }
     },
     mounted() {
@@ -941,7 +1111,6 @@ export default {
         if (getIos()) {
             $("#upImg").removeAttr("capture");
         }
-
         function getIos() {
             var ua = navigator.userAgent.toLowerCase();
             if (ua.match(/iPhone\sOS/i) == "iphone os") {
@@ -963,118 +1132,30 @@ export default {
             );
             return false;
         }
-        var opt = that.$route.params.upData;
-        // console.log(opt);
+        var opt = that.$route.query;
+        console.log(opt);
         // 判断有没有传参过来
-        if (opt == undefined) {
-            that.$router.go(-1);
-        } else {
-            that.upData = opt;
-            if (that.upData.deal_type == "") {
-                mui.alert(
-                    "请重新选择商品类型",
-                    "提示",
-                    "确认",
-                    function() {
-                        that.$router.go(-1);
-                    },
-                    "div"
-                );
-            } else if (that.upData.category_id == "") {
-                mui.alert(
-                    "请重新选择游戏",
-                    "提示",
-                    "确认",
-                    function() {
-                        that.$router.go(-1);
-                    },
-                    "div"
-                );
-            } else if (that.upData.operation_id == "") {
-                mui.alert(
-                    "请选择手机系统",
-                    "提示",
-                    "确认",
-                    function() {
-                        that.$router.go(-1);
-                    },
-                    "div"
-                );
-            } else if (that.upData.area_id == "") {
-                mui.alert(
-                    "请选择大区",
-                    "提示",
-                    "确认",
-                    function() {
-                        that.$router.go(-1);
-                    },
-                    "div"
-                );
-            }
-            // 请求选择参数
-            that.$axios
-                .post("/api/other_config", {
-                    category_id: opt.category_id,
-                    operation_id: opt.operation_id
-                })
-                .then(function(res) {
-                    // console.log(res);
-                    if (res.status == 200) {
-                        if (res.data.code == 200) {
-                            var safe = res.data.data.account_bind; //账号绑定
-                            for (var i in safe) {
-                                safe[i].ischeck = false;
-                            }
-                            that.sellData.seleSafeData.safe = safe;
-                            var sellType = res.data.data.sell_type; //是否议价
-                            for (var i in sellType) {
-                                if (sellType[i].name == "一口价") {
-                                    that.requestData.sell_type =
-                                        sellType[i].value;
-                                    sellType[i].ischeck = true;
-                                    continue;
-                                }
-                                sellType[i].ischeck = false;
-                            }
-                            that.sellData.sellType.sell = sellType;
 
-                            that.sellData.sex = res.data.data.person_sex; //角色性别
-                            that.sellData.faction = res.data.data.faction; //职业
-                            that.sellData.accountType =
-                                res.data.data.account_type; //账号类型
-                            that.judgeInfo(res.data.data.chargeInfo);
-                        }
-                    }
-                })
-                .catch(function(err) {
-                    console.log(err);
-                });
-            // 请求标签大类
-            that.$axios
-                .post("/api/tag_type", {
-                    category_id: opt.category_id
-                })
-                .then(function(res) {
-                    // console.log('---------');
-                    // console.log(res);
-                    if (res.status == 200) {
-                        if (res.data.code == 200) {
-                            var tagType = res.data.data;
-                            for (var i in tagType) {
-                                if (i == 0) {
-                                    tagType[0].ischeck = true;
-                                    continue;
-                                }
-                                tagType[i].ischeck = false;
-                            }
-                            that.sellData.tagType = tagType;
-                            that.getTagCon(tagType[0].tag_type_id);
-                        }
-                    }
-                })
-                .catch(function(err) {
-                    console.log(err);
-                });
+        if(JSON.stringify(opt) == "{}"){
+            that.$router.go(-1); 
+        } else {
+            if(opt.flag == 1){
+                that.category_id = opt.category_id;
+                that.requestData.category_id = opt.category_id;
+                that.requestData.deal_type = opt.deal_type;
+                that.requestData.operation_id = opt.operation_id;
+                that.requestData.area_id = opt.area_id;
+                that.requestData.server_id = opt.server_id;
+                that.getTagType();//获取标签大类
+                that.comData.showTitle.title = "我要卖";
+                that.getConfig(opt,opt.flag);//请求选择参数
+            }else if(opt.flag == 2){
+                console.log(opt.g);
+                that.getRedact(opt.g);
+                that.comData.showTitle.title = "编辑";
+            }else{
+                that.$router.go(-1); 
+            }
         }
     }
 };

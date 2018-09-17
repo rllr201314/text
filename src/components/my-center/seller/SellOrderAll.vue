@@ -3,38 +3,32 @@
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="orderAll-content">
             <div class="orderAll-cell">
-                <div class="orderAll-strip">
-                    <span class="orderAll-lefttext">未支付</span><span>(2)</span>
+                <div class="orderAll-strip" @click="toLink('trading')">
+                    <span class="orderAll-lefttext">交易中</span><span class="num">(<span  v-text="trading"></span>)</span>
                     <div class="right-opt" >
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                <div class="orderAll-strip">
-                    <span class="orderAll-lefttext">交易中</span>
+                <div class="orderAll-strip" @click="toLink('confirm')">
+                    <span class="orderAll-lefttext">待买家确认收货</span><span class="num">(<span  v-text="buyer_confirm"></span>)</span>
                     <div class="right-opt" >
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                <div class="orderAll-strip">
-                    <span class="orderAll-lefttext">待确认收货</span>
+                <div class="orderAll-strip" @click="toLink('arbitrate')">
+                    <span class="orderAll-lefttext">仲裁中</span><span class="num">(<span  v-text="trade_arbitrate"></span>)</span>
                     <div class="right-opt" >
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                <div class="orderAll-strip">
-                    <span class="orderAll-lefttext">仲裁中</span>
+                <div class="orderAll-strip" @click="toLink('success')">
+                    <span class="orderAll-lefttext">交易成功</span><span class="num">(<span  v-text="trade_success"></span>)</span>
                     <div class="right-opt" >
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                <div class="orderAll-strip">
-                    <span class="orderAll-lefttext">交易成功</span>
-                    <div class="right-opt" >
-                        <img src="../../../../static/img/order/next.png" alt="">
-                    </div>
-                </div>
-                <div class="orderAll-strip">
-                    <span class="orderAll-lefttext">交易失败</span>
+                <div class="orderAll-strip" @click="toLink('fail')">
+                    <span class="orderAll-lefttext">交易失败</span><span class="num">(<span  v-text="trade_fail"></span>)</span>
                     <div class="right-opt" >
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
@@ -61,8 +55,56 @@
                         title:"卖家订单",
                     }
                 },
-
+                trade_arbitrate:'',
+                buyer_confirm:'',
+                trade_fail:'',
+                trade_success:'',
+                trading:'',
             }
+        },
+        methods:{
+            toLink(flag){
+                var that_r = this.$router;
+                if (flag == "trading") {
+                    //交易中
+                    that_r.push({ name: "SellTradingStatus" });
+                } else if (flag == "confirm") {
+                    //待确认收货
+                    that_r.push({ name: "SellWaitReceiveStatus" });
+                } else if (flag == "success") {
+                    //交易成功
+                    that_r.push({ name: "SellTradeSuccessStatus" });
+                }else if (flag == "fail") {
+                    //交易失败
+                    that_r.push({ name: "SellFailureDealStatus" });
+                }else if (flag == "arbitrate") {
+                    //仲裁中
+                    that_r.push({ name: "SellArbitrationStatus" });
+                }
+            },
+
+            getData(){
+                var that =this;
+                that.$axios.post('/api/seller_order').then((res)=>{
+                    // console.log(res)
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            var data = res.data.data;
+                            that.trade_arbitrate = data.trade_arbitrate;
+                            that.buyer_confirm = data.buyer_confirm;
+                            that.trade_fail = data.trade_fail;
+                            that.trade_success = data.trade_success;
+                            that.trading = data.trading;
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            }
+        },
+        mounted(){
+            var that =this;
+            that.getData();
         }
     }
 </script>

@@ -107,7 +107,6 @@ export default {
                         var res = response;
                         if (res.status == 200) {
                             if (res.data.code == 200) {
-                                that.$store.mobile = mobile;
                                 mui.alert(
                                     res.data.msg,
                                     "提示",
@@ -134,11 +133,11 @@ export default {
     },
     mounted() {
         var that = this;
-        var mobile = that.$store.mobile;
+        var mobile = that.$store.state.mobile;
         if (mobile != undefined && mobile != "") {
             mobile = mobile.substr(0, 3) + "****" + mobile.substr(7);
             that.showPhone = mobile;
-            that.phoneNum = that.$store.mobile;
+            that.phoneNum = that.$store.state.mobile;
         }
     }
 };

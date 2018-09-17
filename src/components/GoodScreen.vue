@@ -1,8 +1,8 @@
 <template>
     <!-- 商品列表 商品筛选  -->
     <div class="good-screen-wrap">
-        <Header v-bind:showTitle="copmonentsData.showTitle"></Header>
-        <div class="screen-title">
+        <Header v-bind:showTitle="copmonentsData.showTitle" v-if="true"></Header>
+        <div class="screen-title" v-if="true">
             <div class="screen-title-top">
                 <div class="title-top-cell" v-for="(item,index) in screenTop" @click="topScreen(item.flag,index)">
                     <span class="title-top-title" v-text="item.tit_top_text"></span>
@@ -16,12 +16,10 @@
                 </div>
             </div>
         </div>
-
-        <!-- 商品列表 -->
-        <!-- <div class="goods-list"> -->
-        <my-scroll ref="myScroll" :page="page" :on-refresh="onRefresh" :on-pull="onPull" :get-scroll-top="getTop">
-            <div slot="scrollList">
-                <div class="goods-strip" v-for="(item,index) in goodsInfo" @click="goDetail(item.goods_id)">
+        <div id="minirefresh" class="minirefresh-wrap list-wrap">
+            <div class="minirefresh-scroll list">
+                <ul>
+                    <div class="goods-strip" v-for="(item,index) in goodsInfo" @click="goDetail(item.goods_id)">
                     <div class="goods-strip-title">
                         <div class="boutique" v-if="item.is_recommend == 1">精</div>
                         <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
@@ -44,9 +42,9 @@
                         <div class="bargain" v-if="item.sell_type == 2">可议价</div>
                     </div>
                 </div>
+                </ul>
             </div>
-        </my-scroll>
-        <!-- </div> -->
+        </div>
 
         <!-- 账号 -->
         <div class="screen-box account-type-box" v-show="screenInfoAll[0].isShow">
@@ -181,12 +179,15 @@
         </div>
         <!-- 遮罩 -->
         <div class="goodscreen-shade" v-show="screenInfoAll[7].isShow" @click="hiddenScreenFun()"></div>
+
+        <NoData v-if="showNoData"></NoData>
     </div>
 </template>
 
 <script>
 import Header from "@/components/home-page/Header"; //头部
 import myScroll from "@/components/pull/refresh"; //刷新
+import NoData from "@/components/multi/NoData"; //补上------------
 
 export default {
     name: "GoodScreen",
@@ -210,7 +211,9 @@ export default {
                 pageEnd: 1,
                 total: 10
             },
-            pages:'',//总页数
+            miniRefresh: null,
+            showNoData: false,
+            pages: "", //总页数
             goodsInfo: "",
             showBottom: false, //不显示下方筛选栏
             begin_price: "",
@@ -412,36 +415,6 @@ export default {
         };
     },
     methods: {
-        onRefresh(mun) {
-            //刷新回调
-            var that = this;
-            that.getGoodsInfo(that.request);
-            setTimeout(() => {
-                console.log("----------------------");
-                that.$refs.myScroll.setState(3);
-            }, 500);
-        },
-        onPull(mun) {
-            //加载回调
-            var that = this;
-            if (that.request.page < that.pages) {
-                console.log("*****----------------*****");
-                that.request.page++;
-                that.getGoodsInfo(that.request,'push');
-                setTimeout(() => {
-                    that.$refs.myScroll.setState(5);
-                }, 500);
-            } else {
-                that.$refs.myScroll.setState(7);
-            }
-        },
-        getTop(y) {
-            //滚动条位置
-        },
-
-
-
-
         // 上一栏选项
         topScreen(flag, index) {
             var screentop = this.screenTop;
@@ -844,6 +817,7 @@ export default {
             that.request.end_price = "";
             that.request.sort_price = "";
             that.request.sort_collection = "";
+            that.request.is_video = "";
             var accountBindAll = that.screen_info.accountBind;
             for (var i in accountBindAll) {
                 accountBindAll[i].ischeck = false;
@@ -971,43 +945,57 @@ export default {
                 areaAll[i].ischeck = false;
             }
         },
-        getGoodsInfo(request,flag) {
+        getGoodsInfo(request, flag) {
             var that = this;
-            if(flag){
-                console.log('push');
-                that.$axios
-                .post("/api/goods_info", request)
-                .then(function(res) {
-                    console.log(res);
-                    if (res.status == 200) {
-                        if (res.data.code == 200) {
-                            for(var i in res.data.data.data){
-                                that.goodsInfo.push(res.data.data.data[i]);
+            if (flag) {
+                console.log(flag);
+                if (that.request.page < that.pages) {
+                    that.$axios
+                        .post("/api/goods_info", request)
+                        .then(function(res) {
+                            if (res.status == 200) {
+                                if (res.data.code == 200) {
+                                    // that.$refs.myScroll.setState(5);
+                                    that.miniRefresh.endUpLoading(false);
+                                    for (var i in res.data.data.data) {
+                                        that.goodsInfo.push(
+                                            res.data.data.data[i]
+                                        );
+                                    }
+                                }
                             }
-                        }
-                    }
-                })
-                .catch(function(err) {
-                    console.log(err);
-                });
-            }else{
+                        })
+                        .catch(function(err) {
+                            console.log(err);
+                        });
+                }else{
+                    that.miniRefresh.endUpLoading(true);
+                }
+            } else {
                 that.page.counter = 1;
                 request.page = 1;
-                that.$refs.myScroll.setState(0);
+                // that.$refs.myScroll.setState(0);
                 that.$axios
-                .post("/api/goods_info", request)
-                .then(function(res) {
-                    console.log(res);
-                    if (res.status == 200) {
-                        if (res.data.code == 200) {
-                            that.goodsInfo = res.data.data.data;
-                            that.pages = res.data.data.last_page;
+                    .post("/api/goods_info", request)
+                    .then(function(res) {
+                        console.log(res);
+                        if (res.status == 200) {
+                            if (res.data.code == 200) {
+                                that.miniRefresh.endDownLoading();
+                                if (res.data.data.data == "") {
+                                    that.showNoData = true;
+                                    that.goodsInfo = "";
+                                } else {
+                                    that.goodsInfo = res.data.data.data;
+                                    that.pages = res.data.data.last_page;
+                                    that.showNoData = false;
+                                }
+                            }
                         }
-                    }
-                })
-                .catch(function(err) {
-                    console.log(err);
-                });
+                    })
+                    .catch(function(err) {
+                        console.log(err);
+                    });
             }
         },
         getGonfig(category_id) {
@@ -1060,6 +1048,8 @@ export default {
                             that.request.page = that.page.counter;
                             that.request.rows = that.page.total;
                             that.getGoodsInfo(that.request);
+                                    
+
                         }
                     }
                 })
@@ -1067,13 +1057,63 @@ export default {
                     console.log(err);
                 });
         },
-        goDetail(goods_id){
-            this.$router.push({name:'Details',query:{goods_id:goods_id}})
+        goDetail(goods_id) {
+            this.$router.push({
+                name: "Details",
+                query: { goods_id: goods_id }
+            });
+        },
+        // touchStart() {
+        //     console.log("aaa");
+        // },
+        // touchMove(e) {
+        //     console.log(e);
+        //     var that = this;
+        //     // console.log(this.$refs['mylist'].scrollTop)
+        //     // console.log($('#refreshContainer'))
+        //     console.log(that.mylist.scrollTop);
+        // },
+        // touchEnd() {
+        //     console.log("cc");
+        // },
+        refresh() {
+            this.miniRefresh = new MiniRefresh({
+                container: "#minirefresh",
+                down: {
+                    isAuto: true,
+                    callback: () => {
+                        this.request.page = 1;
+                        this.getGoodsInfo(this.request);
+                    }
+                },
+                up: {
+                    isAuto: false,
+                    loadFull: {
+                        isEnable: false
+                    },
+                    isShowUpLoading: true,
+                    callback: () => {
+                        this.request.page++;
+                        this.getGoodsInfo(this.request, "push");
+                    }
+                }
+            });
         }
     },
     components: {
         Header,
-        myScroll
+        myScroll,
+        NoData
+    },
+    // 修改列表页的meta值，false时再次进入页面会重新请求数据。
+    beforeRouteLeave(to, from, next) {
+        if (to.path == "/details") {
+            from.meta.keepAlive = true;
+            console.log(from);
+        } else {
+            from.meta.keepAlive = false;
+        }
+        next();
     },
     mounted() {
         var that = this;
@@ -1084,15 +1124,27 @@ export default {
         } else {
             that.$router.go(-1);
         }
+        that.refresh();
     }
 };
 </script>
 
 <style scoped>
+.good-screen-wrap {
+    max-width: 12rem;
+    margin: 0 auto;
+    /* position: relative; */
+}
+
 /* 筛选 */
 .screen-title {
     background: #ffffff;
     margin-bottom: 0.2rem;
+    position: fixed;
+    top: 0.88rem;
+    left: 0;
+    right: 0;
+    z-index: 66;
 }
 .screen-title-top,
 .screen-title-bottom {
@@ -1484,16 +1536,17 @@ input[type="number"] {
     font-size: 0.24rem;
 }
 
-.goods-list {
+.goodsList {
     /* max-height: 11.45rem; */
-    height: 11.45rem;
+    /* height: 100vh; */
+    margin-top: 0.8rem;
     /* overflow-y: scroll; */
 }
 /* 单条商品 */
 .goods-strip {
     background: #ffffff;
     padding: 0.3rem 0.2rem;
-    margin-bottom: 0.2rem;
+    margin-top: 0.2rem;
 }
 /* 头部------ */
 .goods-strip-title {
@@ -1608,5 +1661,16 @@ input[type="number"] {
     border-bottom-left-radius: 0.18rem;
     border-bottom-right-radius: 0.18rem;
     vertical-align: middle;
+}
+.list-wrap {
+    /* padding-top:.6rem; */
+    top: 1.68rem;
+}
+.list {
+    /* padding-top: 1.68rem; */
+    /* padding-bottom: 0.24rem; */
+    /* min-height: 100vh;
+    overflow-y: auto; */
+    background: #f6f8fe;
 }
 </style>

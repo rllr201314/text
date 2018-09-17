@@ -101,6 +101,9 @@ export default {
                     });
                 }, 500);
             }
+            if(index == 0){
+                this.aspect = 0;
+            }
         },
         touchStart(e) {
             //触摸事件
@@ -110,24 +113,26 @@ export default {
         touchMove(e) {
             //触摸滑动事件
             this.scrollPosition = this.myScroll.scrollTop; //获取滚动条位置
-            if (e.targetTouches[0].pageY > this.pageY) {
-                //向上滑动
-                this.aspect = 2;
-                if (this.myScroll.scrollTop == 0) {
-                    let diff =
-                        e.targetTouches[0].pageY -
-                        this.pageY -
-                        this.scrollPosition;
-                    this.top = Math.pow(diff, 0.9);
-                    let ranget = diff / document.body.clientHeight * 100; //计算在屏幕上滑动了多少
-                    if (ranget > 20) {
-                        this.state = 2;
-                    } else if (ranget < 15) {
-                        this.state = 6;
-                    }
-                    e.preventDefault();
-                }
-            } else if (this.state != 4) {
+            // if (e.targetTouches[0].pageY > this.pageY) {
+            //     //向上滑动
+            //     this.aspect = 2;
+            //     if (this.myScroll.scrollTop == 0) {
+            //         let diff =
+            //             e.targetTouches[0].pageY -
+            //             this.pageY -
+            //             this.scrollPosition;
+            //         this.top = Math.pow(diff, 0.9);
+            //         let ranget = diff / document.body.clientHeight * 100; //计算在屏幕上滑动了多少
+            //         if (ranget > 20) {
+            //             this.state = 2;
+            //         } else if (ranget < 15) {
+            //             this.state = 6;
+            //         }
+            //         e.preventDefault();
+            //     }
+            // } else 
+           if (this.state != 4) {
+               console.log('aaa')
                 //向上滑动
                 this.aspect = 1;
             }
@@ -147,6 +152,7 @@ export default {
             var that = this;
             let listHeight = that.myScrollList.offsetHeight; //列表总高度
             let listScrollTop = e.target.scrollTop + that.myScroll.offsetHeight; //当前滚动条位置
+            console.log(listHeight + '---' + listScrollTop);
             if (this.state == 0 && listHeight - listScrollTop < 100) {
                 this.bottomCallback();
             }
@@ -183,7 +189,6 @@ export default {
 .prohibit {
     /* max-width: 100%;
     max-height: 100%; */
-    height: 11rem;
     overflow: hidden;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;

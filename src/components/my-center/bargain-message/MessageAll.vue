@@ -3,53 +3,70 @@
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="search-wrap">
             <div class="search-left">
-                <div class="sele-type">
-                    <span>游戏类型</span>
+                <div class="sele-type" @click="showPopver('category')">
+                    <span v-text="seleOpt.category_text"></span>
                     <img src="../../../../static/img/goodscreen/downsolid.png" alt="">
                 </div>
-                <div class="sele-type">
-                    <span>未成交</span>
+                <div id="category" class="mui-popover">
+                    <ul class="mui-table-view">
+                        <li class="mui-table-view-cell" v-for="item in category_type" v-text="item.game_name" @click="showText('category',item.category_id)"></li>
+                    </ul>
+                </div>
+                <div class="sele-type" @click="showPopver('goods')">
+                    <span v-text="seleOpt.goods_text"></span>
                     <img src="../../../../static/img/goodscreen/downsolid.png" alt="">
+                </div>
+                <div id="goods" class="mui-popover">
+                    <ul class="mui-table-view">
+                        <li class="mui-table-view-cell" v-for="item in goods_type" v-text="item.name" @click="showText('goods',item.value)"></li>
+                    </ul>
                 </div>
                 <div>
-                    <input type="text" placeholder="请输入游戏名称">
+                    <input type="text" placeholder="请输入游戏名称" v-model="goods_title">
                 </div>
             </div>
-            <div class="search">搜索</div>
+            <div class="search" @click="getdiscuss('search')">搜索</div>
         </div>
 
-        <div class="goods-strip" v-for="(item,index) in goodsInfo">
+        <div class="goods-strip" v-for="item in goodsInfo" @click="goMessageDetails(item.goods_id)">
             <div class="goods-strip-title">
-                <div class="goods-type" v-text="item.goods_type"></div>
-                <div class="account-type" v-text="item.account_type"></div>
-                <div class="area" v-text="item.area"></div>
+                <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                <div class="goods-type" v-else>代练号</div>
+                <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                <div class="account-type" v-else>安卓混服</div>
+                <div class="area" v-text="item.platform_name"></div>
             </div>
             <div class="goods-strip-content">
-                <div class="goods-des" v-text="item.goods_des"></div>
-                <div class="goods-ico" >
-                    <img v-if="item.safe" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
-                    <img v-if="item.stage" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
-                    <img v-if="item.verify" src="../../../../static/img/goodscreen/verify.png" alt="">
+                <div class="goods-des" v-text="item.goods_title"></div>
+                <div class="goods-ico">
+                    <img v-if="item.is_safe == 2" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
+                    <img v-if="item.is_stage == 2" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
+                    <img v-if="item.is_check == 2" src="../../../../static/img/goodscreen/verify.png" alt="">
+                    <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
                 </div>
             </div>
             <div class="goods-strip-bottom">
                 <div class="goods-price red-color" v-text="item.goods_price"></div>
-                <div class="tran-price"  v-if="item.tran_price">
+                <div class="tran-price" v-if="item.order_state >= 2">
                     <span>成交价</span>
-                    <span class="red-color" v-text="item.tran_price"></span>
+                    <span class="red-color">￥<span v-text="item.goods_amount"></span></span>
                 </div>
                 <div class="hint">
-                    <div class="bargain" v-if="!item.tran_price">
-                        <span>收到的议价：</span><span v-text="item.bargainNum"></span>
+                    <div class="bargain" v-if="item.order_state < 2 || item.order_state == ''">
+                        <span>收到的议价：</span>
+                        <span v-text="item.msg_count"></span>
                     </div>
-                    <div class="sale" v-if="item.tran_price">已卖出</div>
+                    <div class="sale" v-if="item.order_state >= 2">已卖出</div>
                 </div>
             </div>
         </div>
+        <NoData v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import NoData from "@/components/multi/NoData";
 export default {
     name: "MessageAll",
     components: {
@@ -66,33 +83,131 @@ export default {
                     title: "收到的议价消息"
                 }
             },
+            showNoData:false,
             // 商品列表
-
-            goodsInfo: [
-                {
-                    goods_type: "成品号",
-                    account_type: "安卓",
-                    area: "安卓一区",
-                    goods_des: "贵6小号可议价，手快有手慢无",
-                    safe:true,
-                    stage:true,
-                    verify:false,
-                    goods_price: "￥600",
-                    tran_price:'$8888',
-                },
-                {
-                    goods_type: "成品号",
-                    account_type: "安卓",
-                    area: "安卓一区",
-                    goods_des: "贵6小号可议价，手快有手慢无",
-                    safe:true,
-                    stage:true,
-                    verify:true,
-                    goods_price: "￥600",
-                    bargainNum:'7',
-                }
-            ]
+            goodsInfo: [],
+            seleOpt:{
+                category_text:'游戏类型',
+                goods_text:'成交状态'
+            },
+            request: {},
+            goods_title: "",
+            category_type: [],
+            goods_type:[{
+                value:'',
+                name:'全部'
+            },{
+                value:1,
+                name:'已成交'
+            },{
+                value:2,
+                name:'未成交'
+            }],
+            c_id:'',
+            g_id:'',
         };
+    },
+    mounted() {
+        var that = this;
+        that.getCategory();
+        that.getdiscuss();
+    },
+    methods: {
+        // 获取列表
+        getdiscuss(flag) {
+            var that = this;
+            if (flag == "search") {
+                that.request.goods_status = that.g_id;
+                that.request.category_id = that.c_id;
+                that.request.goods_title = that.goods_title;
+            } else {
+                that.request = {};
+            }
+            that.$axios.post("/api/preview_discuss", that.request).then(function(res){
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.goodsInfo = res.data.data.data;
+                        if(res.data.data.data != ''){
+                            that.showNoData = false;
+                        }else{
+                            that.showNoData = true;
+                        }
+                    }else if(res.data.code == 401){
+                        mui.confirm("请先登陆","提示",["取消", "确认"],
+                                    function(e) {
+                                        if (e.index == 1) {
+                                            that.$router.push({
+                                                name: "AccountLogin",
+                                                params: {
+                                                    redirect:that.$router.currentRoute.name
+                                                }
+                                            });
+                                        } else {
+                                            that.$router.go(-1);
+                                        }
+                                    },"div");
+                    }
+                }
+            }).catch(function(err){
+                console.log(err);
+            });
+        },
+        // 获取游戏类型
+        getCategory() {
+            var that = this;
+            that.$axios
+                .post("/api/category")
+                .then(function(res) {
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            var category = res.data.data.is_hot;
+                            category.unshift({
+                                category_id:'',
+                                game_name:'全部'
+                            });
+                            that.category_type =category;
+                            console.log(that.category_type);
+                        }
+                    }
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
+        },
+        // 显示弹出框
+        showPopver(flag){
+            mui(`#${flag}`).popover('toggle');
+        },
+        // 选择隐藏弹框
+        showText(flag,val){
+            console.log(val);
+            var that = this;
+            mui(`#${flag}`).popover('toggle');
+            if(flag == 'category'){
+                var categoryArr = that.category_type;
+                for(var i in categoryArr){
+                    if(val == categoryArr[i].category_id){
+                        that.seleOpt.category_text = categoryArr[i].game_name;
+                        that.c_id = categoryArr[i].category_id;
+                        break;
+                    }
+                }
+            }else{
+                var goodArr = that.goods_type;
+                for(var i in goodArr){
+                    if(val == goodArr[i].value){
+                        that.seleOpt.goods_text = goodArr[i].name;
+                        that.g_id = goodArr[i].value;
+                        break;
+                    }
+                }
+            }
+        },
+        // 跳转议价详情
+        goMessageDetails(goods_id){
+            this.$router.push({name:'MessageDetails',query:{goods_id:goods_id}})
+        }
     }
 };
 </script>
@@ -128,6 +243,12 @@ export default {
     display: inline-block;
     position: relative;
 }
+#category,#goods{
+    width: 2.3rem;
+}
+#goods{
+    left:3.35rem;
+}
 .sele-type img {
     width: 0.2rem;
     height: 0.1rem;
@@ -153,109 +274,132 @@ export default {
     vertical-align: middle;
 }
 
-
-
 /* 单条商品 */
-    .goods-strip{
-        background:#FFFFFF;
-        padding:.3rem .2rem;
-        margin-bottom:.2rem;
-    }
-    /* 头部------ */
-    .goods-strip-title{
-        color:#FFFFFF;
-        font-size:.24rem;
-        line-height:.36rem;
-        margin-bottom:.2rem;
-    }
+.goods-strip {
+    background: #ffffff;
+    padding: 0.3rem 0.2rem;
+    margin-bottom: 0.2rem;
+}
+/* 头部------ */
+.goods-strip-title {
+    color: #ffffff;
+    font-size: 0.24rem;
+    line-height: 0.36rem;
+    margin-bottom: 0.2rem;
+}
 
-    .goods-type{
-        text-align:center;
-        width:.93rem;
-        height: .36rem;
-        background:-webkit-linear-gradient(#FEAB49,#FFCC4B);
-        background:-o-linear-gradient(#FEAB49,#FFCC4B);
-        background:-moz-linear-gradient(#FEAB49,#FFCC4B);
-        background:linear-gradient(to right, #FEAB49 , #FFCC4B);
-        display:inline-block;
-        margin-right:.1rem;
-    }
-    .account-type{
-        text-align:center;
-        width:.7rem;
-        height:.36rem;
-        background:-webkit-linear-gradient(120deg,rgba(104,224,218,1),rgba(104,223,222,1),rgba(132,240,178,1),rgba(73,209,202,1));
-        background:-o-linear-gradient(120deg,rgba(104,224,218,1),rgba(104,223,222,1),rgba(132,240,178,1),rgba(73,209,202,1));
-        background:-moz-linear-gradient(120deg,rgba(104,224,218,1),rgba(104,223,222,1),rgba(132,240,178,1),rgba(73,209,202,1));
-        background:linear-gradient(120deg,rgba(104,224,218,1),rgba(104,223,222,1),rgba(132,240,178,1),rgba(73,209,202,1));
-        display:inline-block;
-        margin-right:.1rem;
-    }
-    .area{
-        font-size:.26rem;
-        color:#999999;
-        display:inline-block;
-    }
-    /* 详情 -- 保障*/
-    .goods-strip-content{
-        margin-bottom:.15rem;
-    }
-    .goods-des{
-        width:5rem;
-        overflow:hidden; /*超出的部分隐藏起来。*/ 
-        white-space:nowrap;/*不显示的地方用省略号...代替*/
-        text-overflow:ellipsis;/* 支持 IE */
-        display:inline-block;
-        font-size:.3rem;
-        line-height:.31rem;
-        color:#333333;
-    }
-    .goods-ico{
-        float:right;
-        text-align: right;
-    }
-    .goods-ico img{
-        width:.36rem;
-        height: .36rem;
-        margin-left:.12rem;
-    }
-    /* 底部 价格 */
-    .goods-strip-bottom{
-        position: relative;
-    }
-    .goods-strip-bottom div{
-        display:inline-block;
-    }
-    .goods-price{
-        font-size:.36rem;
-        margin-right:.3rem;
-    }
-    .red-color{
-        color:#FA5856;
-    }
-    .tran-price{
-        font-size:.26rem;
-        color:#666666;
-    }
-    .tran-price span{
-        margin-left:.1rem;
-    }
-
-.hint{
+.goods-type {
+    text-align: center;
+    width: 0.93rem;
+    height: 0.36rem;
+    background: -webkit-linear-gradient(#feab49, #ffcc4b);
+    background: -o-linear-gradient(#feab49, #ffcc4b);
+    background: -moz-linear-gradient(#feab49, #ffcc4b);
+    background: linear-gradient(to right, #feab49, #ffcc4b);
     display: inline-block;
-    font-size:.2rem;
-    color:#FFFFFF;
-    line-height:.27rem;
-    position:absolute;
-    top:.1rem;right: 0;
+    margin-right: 0.1rem;
 }
-.bargain{
-    background:#FA5856;
-    padding:.01rem .05rem;
+.account-type {
+    text-align: center;
+    width: 0.7rem;
+    height: 0.36rem;
+    background: -webkit-linear-gradient(
+        120deg,
+        rgba(104, 224, 218, 1),
+        rgba(104, 223, 222, 1),
+        rgba(132, 240, 178, 1),
+        rgba(73, 209, 202, 1)
+    );
+    background: -o-linear-gradient(
+        120deg,
+        rgba(104, 224, 218, 1),
+        rgba(104, 223, 222, 1),
+        rgba(132, 240, 178, 1),
+        rgba(73, 209, 202, 1)
+    );
+    background: -moz-linear-gradient(
+        120deg,
+        rgba(104, 224, 218, 1),
+        rgba(104, 223, 222, 1),
+        rgba(132, 240, 178, 1),
+        rgba(73, 209, 202, 1)
+    );
+    background: linear-gradient(
+        120deg,
+        rgba(104, 224, 218, 1),
+        rgba(104, 223, 222, 1),
+        rgba(132, 240, 178, 1),
+        rgba(73, 209, 202, 1)
+    );
+    display: inline-block;
+    margin-right: 0.1rem;
 }
-.sale{
-    padding:.01rem .05rem;
-    background:#C6C6C6;
+.area {
+    font-size: 0.26rem;
+    color: #999999;
+    display: inline-block;
+}
+/* 详情 -- 保障*/
+.goods-strip-content {
+    margin-bottom: 0.15rem;
+}
+.goods-des {
+    width: 4.5rem;
+    overflow: hidden; /*超出的部分隐藏起来。*/
+    white-space: nowrap; /*不显示的地方用省略号...代替*/
+    text-overflow: ellipsis; /* 支持 IE */
+    display: inline-block;
+    font-size: 0.3rem;
+    line-height: 0.31rem;
+    color: #333333;
+}
+.goods-ico {
+    float: right;
+    text-align: right;
+}
+.goods-ico img {
+    width: 0.36rem;
+    height: 0.36rem;
+    margin-left: 0.12rem;
+}
+/* 底部 价格 */
+.goods-strip-bottom {
+    position: relative;
+}
+.goods-strip-bottom div {
+    display: inline-block;
+}
+.goods-price {
+    font-size: 0.36rem;
+    margin-right: 0.3rem;
+}
+.red-color {
+    color: #fa5856;
+}
+.tran-price {
+    font-size: 0.26rem;
+    color: #666666;
+}
+.tran-price span {
+    margin-left: 0.1rem;
+}
+
+.hint {
+    display: inline-block;
+    font-size: 0.2rem;
+    color: #ffffff;
+    line-height: 0.27rem;
+    position: absolute;
+    top: 0.1rem;
+    right: 0;
+}
+.bargain {
+    background: #fa5856;
+    padding: 1px 3px;
+}
+.sale {
+    padding: 1px 5px;
+    background: #c6c6c6;
 }
 /* ==========input========= */
 input {

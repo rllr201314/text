@@ -310,7 +310,6 @@ export default {
         goNext() {
             var that = this;
             var upData = that.upData;
-            // console.log(upData);
             if(upData.category_id == ''){
                 mui.alert('请重新选择游戏','提示','确认',function(){
                     that.$router.go(-1);
@@ -331,37 +330,92 @@ export default {
                 mui.alert('请选择区服','提示','确认','','div');
                 return false;
             }else{
-                that.$router.push({name:'SellInfo',params:{upData:upData}});
+                console.log(upData);
+                that.$router.push({name:'SellInfo',
+                    query:{
+                        flag:1,
+                        category_id:upData.category_id,
+                        deal_type:upData.deal_type,
+                        operation_id:upData.operation_id,
+                        area_id:upData.area_id,
+                        server_id:upData.server_id
+                    }
+                });
             }
+        },
+        getConfig(opt){
+            var that = this;
+            that.$axios
+                .post("/api/category")
+                .then(function(res) {
+                    console.log(res);
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            var resData = res.data.data.is_hot
+                            for(var i in resData){
+                                if(opt == resData[i].category_id){
+                                    that.sellOptData.gameLog = resData[i].game_logo;
+                                    that.sellOptData.gameName = resData[i].game_name;
+                                }
+                            }
+                            
+                        }
+                    }
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        },
+        getSysConfig(opt){
+            var that =this;
+             // 请求商品类型 和 手机系统
+            that.$axios
+                .post("/api/sys_config", {
+                    category_id: opt
+                })
+                .then(function(res) {
+                    console.log(res);
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            that.optionData.merchand = res.data.data.deal_type;
+                            that.optionData.mobile = res.data.data.platform;
+                        }else if(res.data.code == 401){
+                            mui.confirm("请先登陆","提示",["取消", "确认"],
+                                function(e) {
+                                    if (e.index == 1) {
+                                        that.$router.push({
+                                            name: "AccountLogin",
+                                            params: {
+                                                redirect:that.$router.currentRoute.name
+                                            }
+                                        });
+                                    } else {
+                                        that.$router.go(-1);
+                                    }
+                                },"div");
+                        }else{
+                            mui.alert(res.data.msg,'提示','确定',(e) => {
+                                that.$router.go(-1);
+                            },'div');
+                        }
+                    }
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
         }
     },
     mounted() {
         var that = this;
-        var optData = that.$route.params;
-        // console.log(optData);
-        if (JSON.stringify(optData) == "{}") {
-            // that.$router.push({name:'Sell'});
-            that.$router.go(-1);
+        var opt = that.$route.query.opt;
+        console.log(opt);
+        if(opt == undefined || opt == ''){
+            that.$router.go(-1); 
+        }else{
+            that.upData.category_id = opt;
+            that.getConfig(opt);
+            that.getSysConfig(opt);
         }
-        that.sellOptData.gameLog = optData.game_logo;
-        that.sellOptData.gameName = optData.game_name;
-        that.upData.category_id = optData.category_id;
-        // 请求商品类型 和 手机系统
-        that.$axios
-            .post("/api/sys_config", {
-                category_id: optData.category_id
-            })
-            .then(function(res) {
-                if (res.status == 200) {
-                    if (res.data.code == 200) {
-                        that.optionData.merchand = res.data.data.deal_type;
-                        that.optionData.mobile = res.data.data.platform;
-                    }
-                }
-            })
-            .catch(function(err) {
-                console.log(err);
-            });
     }
 };
 </script>

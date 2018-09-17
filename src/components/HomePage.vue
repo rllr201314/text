@@ -148,11 +148,12 @@ export default {
     .wrap{
         max-width:12rem;
         margin:0 auto;
+        padding-top:.88rem;
     }
     .top{
         background-image: url("../../static/img/bg_big.png");
         background-repeat: no-repeat;
-        background-size: 100% 3.82rem;
+        background-size: 100% 3rem;
     }
     .content{
         padding:.2rem;

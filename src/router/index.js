@@ -10,9 +10,12 @@ if (sessionStorage.getItem('token')) {
 if (sessionStorage.getItem('mobile')) {
   store.commit('set_mobile', sessionStorage.getItem('mobile'))
 }
-
+if (sessionStorage.getItem('i')) {
+  store.commit('changeLogin', sessionStorage.getItem('i'))
+}
 
 Vue.use(Router)
+
 
 export default new Router({
   mode: 'history',
@@ -30,7 +33,10 @@ export default new Router({
     {
       path: '/good-list', //商品列表
       name: 'GoodScreen',
-      component: (resolve) => require(['@/components/GoodScreen'], resolve)
+      component: (resolve) => require(['@/components/GoodScreen'], resolve),
+      meta: {
+        keepAlive: true // 需要被缓存
+      }
     },
     {
       path: '/details', //商品详情
@@ -80,6 +86,9 @@ export default new Router({
       path: '/my-center',
       name: 'MyCenter',
       component: (resolve) => require(['@/components/my-center/MyCenter'], resolve),
+      meta: {
+        auth: true
+      } // 设置当前路由需要校验 
     }, {
       path: '/my-goods', //我的商品
       name: 'MyGoods',
@@ -201,47 +210,47 @@ export default new Router({
     },
     // 安全认证
     {
-      path: '/safe-phone',//手机
+      path: '/safe-phone', //手机
       name: 'SafePhone',
       component: (resolve) => require(['@/components/my-center/safety/SafePhone'], resolve),
     }, {
-      path: '/safe-card',//身份证
+      path: '/safe-card', //身份证
       name: 'SafeCard',
       component: (resolve) => require(['@/components/my-center/safety/SafeCard'], resolve),
     }, {
-      path: '/safe-user',//人脸
+      path: '/safe-user', //人脸
       name: 'SafeUser',
       component: (resolve) => require(['@/components/my-center/safety/SafeUser'], resolve),
     }, {
-      path: '/safe-success',//验证成功
+      path: '/safe-success', //验证成功
       name: 'SafeSuccess',
       component: (resolve) => require(['@/components/my-center/safety/SafeSuccess'], resolve),
     },
     // 分期
     {
-      path: '/installment',//分期支付
+      path: '/installment', //分期支付
       name: 'PayInstallment',
       component: (resolve) => require(['@/components/my-center/PayInstallment'], resolve),
     }, {
-      path: '/bill-installment',//分期账单
+      path: '/bill-installment', //分期账单
       name: 'BillInstallment',
       component: (resolve) => require(['@/components/my-center/BillInstallment'], resolve),
     }, {
-      path: '/voucher',//代金券
+      path: '/voucher', //代金券
       name: 'Voucher',
       component: (resolve) => require(['@/components/my-center/Voucher'], resolve),
     },
     // 活动
     {
-      path: '/active',//活动页
+      path: '/active', //活动页
       name: 'ActivePage',
       component: (resolve) => require(['@/components/action/ActivePage'], resolve),
-    },{
-      path: '/active-area',//活动页
+    }, {
+      path: '/active-area', //活动页
       name: 'ActiveArea',
       component: (resolve) => require(['@/components/action/ActiveArea'], resolve),
-    },{
-      path: '/auction',//竞拍页
+    }, {
+      path: '/auction', //竞拍页
       name: 'AuctionPage',
       component: (resolve) => require(['@/components/action/AuctionPage'], resolve),
     }, {
@@ -251,25 +260,25 @@ export default new Router({
     },
     // 合同
     {
-      path: '/pact',//合同
+      path: '/pact', //合同
       name: 'Pact',
       component: (resolve) => require(['@/components/my-center/pact/Pact'], resolve),
     }, {
-      path: '/signature',//签名
+      path: '/signature', //签名
       name: 'Signature',
       component: (resolve) => require(['@/components/my-center/pact/Signature'], resolve),
     },
     // 记录
     {
-      path: '/browse-record',//浏览记录
+      path: '/browse-record', //浏览记录
       name: 'BrowseRecord',
       component: (resolve) => require(['@/components/my-center/record/BrowseRecord'], resolve),
     }, {
-      path: '/bargain-record',//议价记录
+      path: '/bargain-record', //议价记录
       name: 'BargainRecord',
       component: (resolve) => require(['@/components/my-center/record/BargainRecord'], resolve),
     }, {
-      path: '/collect',//收藏
+      path: '/collect', //收藏
       name: 'Collect',
       component: (resolve) => require(['@/components/my-center/record/Collect'], resolve),
     },
@@ -302,10 +311,11 @@ export default new Router({
       component: (resolve) => require(['@/components/multi/NoData'], resolve)
     },
   ],
-  scrollBehavior(to, from,savedPosition) {
+  scrollBehavior(to, from, savedPosition) {
     return {
       x: 0,
       y: 0
     }
-  }
+  },
+  
 })

@@ -187,15 +187,16 @@
             </div>
         </div>
         <div class="shade" v-show="showShade"></div>
+        <NoData v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
 import Swiper from "@/components/home-page/Swiper";
 import GoodsInfo from "@/components/auction-details/GoodsInfo"; //商品信息
-import GoodsList from "@/components/auction-details/GoodsList"; //商品信息
-
+import NoData from "@/components/multi/NoData";
 export default {
+    inject:['reload'],
     name: "Details",
     data() {
         return {
@@ -207,7 +208,7 @@ export default {
                     showLogo: 2, //不显示头部log
                     showShare: 3, //1搜索2分享
                     showBg: true, //是否显示背景
-                    title: "商品详情"
+                    title: "商品详情",
                 },
                 imgList: [], //轮播图
                 // 商品列表
@@ -221,6 +222,7 @@ export default {
                     des: ``
                 }
             },
+            showNoData:false,
             showShade: false,
             bargain_price: "",
             goodsDetailsData: {
@@ -270,7 +272,7 @@ export default {
     components: {
         Header,
         Swiper,
-        GoodsInfo //商品信息
+        GoodsInfo, //商品信息
     },
     methods: {
         // 查看安全服务还是购买流程
@@ -375,19 +377,15 @@ export default {
         },
         goDetail(goods_id) {
             console.log("aaa");
-            this.$router.push({
+            this.$router.replace({
                 name: "Details",
                 query: { goods_id: goods_id }
             });
-            // this.$router.go(0);
-        },
-        getStatus(urlStr) {
-            console.log("bbbbb");
-            var urlStrArr = urlStr.split("/");
-            return urlStrArr[urlStrArr.length - 1];
+            this.getData();
         },
         getData() {
             var that = this;
+
             that.$axios
                 .post("/api/goods_detail", {
                     goods_id: that.$route.query.goods_id
@@ -395,7 +393,11 @@ export default {
                 .then(function(res) {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
-                            console.log(res.data.data);
+                            if(res.data.data == ''){
+                                goods_info = '';
+                                that.showNoData = true;
+                            }
+                            that.showNoData = false;
                             var goods_info = res.data.data.goods_info;
                             that.goodsDetailsData.title.isBoutique =
                                 goods_info.is_recommend;
@@ -485,7 +487,6 @@ export default {
                             that.goodsDetailsData.sell_type =
                                 goods_info.sell_type; //一口价还是可议价
                             that.goodsDetailsData.isCollect = goods_info.is_collect;//是否收藏
-                            console.log( that.goodsDetailsData.isCollect + '---------')
                             if (res.data.data.recommendInfo.server_name) {
                                 that.goodsDetailsData.goodsList =
                                     res.data.data.recommendInfo;
@@ -498,7 +499,7 @@ export default {
                                     res.data.data.recommendInfo;
                             }
                         } else {
-                            that.$router.go(-1);
+                            // that.$router.go(-1);
                         }
                     }
                 })
@@ -507,23 +508,12 @@ export default {
                 });
         }
     },
-    created() {
-        console.log(this.getStatus(this.$route.fullPath));
-        console.log(this.$route);
-    },
-    watch: {
-        $route(to, from) {
-            //刷新参数放到这里里面去触发就可以刷新相同界面了
-            this.getData();
-        }
-    },
     mounted() {
         var that = this;
-        console.log(that.$route.query.goods_id);
         if (
             that.$route.query.goods_id != "" &&
             that.$route.query.goods_id != undefined
-        ) {
+        ){
             that.getData();
         } else {
             that.$router.go(-1);
@@ -535,6 +525,7 @@ export default {
 .goods-details-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 
 /* 商品标题 */

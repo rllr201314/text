@@ -18,26 +18,33 @@
             <div class="message-cell" v-for="item in messageData">
                 <div class="message-strip top">
                     <span class="left-text">买家</span>
-                    <span class="right-text" v-text="item.phone"></span>
-                    <span class="time" v-text="item.time"></span>
+                    <span class="right-text" v-text="item.username"></span>
+                    <span class="time" v-text="item.create_time"></span>
                 </div>
                 <div class="message-strip">
                     <span class="left-text">出价</span>
-                    <span class="right-text red-color" v-text="item.bid"></span>
+                    <span class="right-text red-color" v-text="item.price"></span>
                 </div>
                 <div class="message-strip">
                     <span class="left-text">原价</span>
-                    <span class="right-text" v-text="item.price"></span>
+                    <span class="right-text" v-text="item.goods_price"></span>
                 </div>
-                <div class="btn" :class="item.isSuc?'red-bg':'gray-bg'" v-text="item.isSuc?'同意':'已拒绝'"></div>
+                <div class="btnBox" v-if="item.is_agree == -1">
+                    <div class="green-bg" @click="Agree('ok',item.discuss_id)">同意</div>
+                    <div class="red-bg" @click="Agree('no',item.discuss_id)">拒绝</div>
+                </div>
+                <div class="btn green-color" v-if="item.is_agree == 1">已同意</div>
+                <div class="btn gray-bg" v-if="item.is_agree == 2">已拒绝</div>
             </div>
         </div>
+        <NoData v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import NoData from "@/components/multi/NoData";
 export default {
-    name: "MessageAll",
+    name: "MessageDetails",
     components: {
         Header
     },
@@ -52,26 +59,76 @@ export default {
                     title: "收到的议价消息"
                 }
             },
-            messageData:[{
-                phone:'1232***123123',
-                bid:'￥133232',
-                price:'￥133232',
-                time:'2017-08-09  12:20',
-                isSuc:true,
-            },{
-                phone:'1232***123123',
-                bid:'￥133232',
-                price:'￥133232',
-                time:'2017-08-09  12:20',
-                isSuc:false,
-            },{
-                phone:'1232***123123',
-                bid:'￥133232',
-                price:'￥133232',
-                time:'2017-08-09  12:20',
-                isSuc:true,
-            }]
+            showNoData:false,
+            messageData:[]
         };
+    },
+    methods:{
+        Agree(flag,id){
+            var that = this;
+            var opt;
+            if(flag == 'ok'){
+                opt = 1;
+            }else if(flag == 'no'){
+                opt = 2;
+            }
+            that.$axios.post('/api/do_discuss_msg',{
+                discuss_id:id,
+                is_agree:opt,
+            }).then((res)=>{
+                console.log(res)
+            }).catch((err)=>{
+                console.log(err);
+            })
+        },
+        getData(){
+            var that = this;
+            that.$axios.post('/api/discuss_msg',{
+                goods_id:that.$route.query.goods_id
+            }).then(function(res){
+                console.log(res)
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        if(res.data.data != ''){
+                            that.messageData = res.data.data;
+                            that.showNoData = false;
+                        }else{
+                            that.messageData = '';
+                            that.showNoData = true;
+                        }
+                    }else if(res.data.code == 401){
+                        mui.confirm("请先登陆","提示",["取消", "确认"],
+                                    function(e) {
+                                        if (e.index == 1) {
+                                            that.$router.push({
+                                                name: "AccountLogin",
+                                                params: {
+                                                    redirect:that.$router.currentRoute.name
+                                                }
+                                            });
+                                        } else {
+                                            that.$router.go(-1);
+                                        }
+                                    },
+                                    "div"
+                                );
+                    }
+                }
+            }).catch(function(err){
+                console.log(err)
+            })
+        }
+    },
+    mounted() {
+        var that = this;
+        if (
+            that.$route.query.goods_id != "" &&
+            that.$route.query.goods_id != undefined
+        ) {
+            that.getData();
+        } else {
+            that.$router.go(-1);
+        }
     }
 };
 </script>
@@ -145,9 +202,28 @@ export default {
 .red-color{
     color:#FF5E5E;
 }
-.btn{
+.btnBox{
+    width:2.5rem;
+    height: .44rem;
+    font-size:.22rem;
+    text-align:center;
+    -webkit-border-radius: 0.04rem;
+    -moz-border-radius: 0.04rem;
+    border-radius: 0.04rem;
+    color:#FFFFFF;
+    position: absolute;
+    top:.9rem;
+    right:.3rem;
+    display:flex;
+    justify-content:space-between;
+}
+.btnBox div{
     width:1.1rem;
     line-height: .44rem;
+}
+.btn{
+    width:1.1rem;
+    height: .44rem;
     font-size:.22rem;
     text-align:center;
     -webkit-border-radius: 0.04rem;
@@ -157,6 +233,15 @@ export default {
     position: absolute;
     top:.9rem;
     right:.7rem;
+}
+.green-color{
+    color:#45C773;
+}
+.green-bg{
+    background:#45C773;
+    -webkit-box-shadow:  1px 1px 5px #45C773;
+    -moz-box-shadow: 1px 1px 5px #45C773;
+    box-shadow: 1px 1px 5px #45C773;
 }
 .red-bg{
     background:#FE7649;

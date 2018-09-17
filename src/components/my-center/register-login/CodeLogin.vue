@@ -145,6 +145,7 @@ export default {
                                 if (mobile) {
                                     that.$store.commit("set_mobile", mobile);
                                 }
+                                that.$store.commit("changeLogin",'1');//修改登录状态
                                 mui.alert(
                                     res.data.msg,
                                     "提示",

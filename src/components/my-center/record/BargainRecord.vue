@@ -13,29 +13,33 @@
             </div>
         </div>
         <div class="bragin-con" v-for="val in goodsInfo">
-            <div class="con-tit" v-text="val.day">今天</div>
+            <div class="con-tit" v-text="val.time"></div>
             <div class="goods-strip" v-for="(item,index) in val.data">
-                <img v-if="item.isSell == 1" class="deal-status" src="../../../../static/img/my-center/clinch.png" alt="">
-                <img v-if="item.isSell == 2" class="deal-status" src="../../../../static/img/my-center/sale.png" alt="">
+                <img v-if="item.order_status >= 2 &&　item.is_self == 1" class="deal-status" src="../../../../static/img/my-center/clinch.png" alt="">
+                <img  v-if="item.order_status >= 2 &&　item.is_self == 2" class="deal-status" src="../../../../static/img/my-center/sale.png" alt="">
                 <div class="goods-top">
                     <div class="goods-strip-title">
-                        <div class="goods-type" v-text="item.goods_type"></div>
-                        <div class="account-type" v-text="item.account_type"></div>
-                        <div class="area" v-text="item.area"></div>
+                        <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
+                        <div class="goods-type" v-else>代练号</div>
+                        <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                        <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                        <div class="account-type" v-else>安卓混服</div>
+                        <div class="area" v-text="item.platform_name"></div>
                     </div>
                     <div class="goods-strip-content">
-                        <div class="goods-des" v-text="item.goods_des"></div>
+                        <div class="goods-des" v-text="item.goods_title"></div>
                         <div class="goods-ico">
-                            <img v-if="item.safe" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
-                            <img v-if="item.stages" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
-                            <img v-if="item.verify" src="../../../../static/img/goodscreen/verify.png" alt="">
+                            <img v-if="item.is_safe == 1" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
+                            <img v-if="item.is_stage == 1" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
+                            <img v-if="item.is_check == 1" src="../../../../static/img/goodscreen/verify.png" alt="">
+                            <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
                         </div>
                     </div>
                     <div class="goods-strip-bottom">
                         <span>原价</span>
                         <span class="goods-price" v-text="item.goods_price"></span>
-                        <span v-if="item.isSell == 1" class="p-bBtn">前往支付</span>
-                        <span v-if="item.isSell == 3" class="p-bBtn" @click="bargainFn">发起议价</span>
+                        <span v-if="item.is_agree == 1 && item.order_status == 1 && item.is_self == 1" class="p-bBtn" @click="goPayFn(item.order_status)">前往支付</span>
+                        <span v-if="item.is_agree == 2 && item.order_status == 1 && item.is_self == 1" class="p-bBtn" @click="bargainFn(item.goods_id)">发起议价</span>
                     </div>
                 </div>
                 <div class="goods-bot">
@@ -44,21 +48,17 @@
                         <span>议价记录</span>
                     </div>
                     <div class="sell-cell-content">
-                        <div class="sell-cell-strip">
+                        <div class="sell-cell-strip" v-for="discuss in item.discuss_msg">
                             <div class="strip-left">
                                 <span>出价</span>
-                                <span class="bid" v-text="item.bid"></span>
+                                <span class="bid">
+                                    ￥<span v-text="discuss.price"></span>
+                                </span>
                             </div>
-                            <div class="strip-con green-bg">同意交易</div>
-                            <div class="time" v-text="item.time"></div>
-                        </div>
-                        <div class="sell-cell-strip">
-                            <div class="strip-left">
-                                <span>出价</span>
-                                <span class="bid" v-text="item.bid"></span>
-                            </div>
-                            <div class="strip-con red-bg">拒绝</div>
-                            <div class="time" v-text="item.time"></div>
+                            <div class="strip-con gray-bg" v-if="discuss.is_agree == -1">待回复</div>
+                            <div class="strip-con green-bg" v-if="discuss.is_agree == 1">同意交易</div>
+                            <div class="strip-con red-bg" v-if="discuss.is_agree == 2">拒绝</div>
+                            <div class="time" v-text="discuss.create_time"></div>
                         </div>
                     </div>
                 </div>
@@ -67,22 +67,25 @@
         <div class="hoodle" v-show="showShade">
             <img src="../../../../static/img/my-center/record/bargain_tit.png" alt="">
             <div class="hoodle-con">
-                <input type="number" placeholder="请输入您的出价">
+                <input type="number" placeholder="请输入您的出价" v-model="bargain_price">
             </div>
             <div class="hoodle-btn">
-                <div class="okBtn" @click="goBargain">确认</div>
-                <div class="cancelBtn" @click="goBargain">取消</div>
+                <div class="okBtn" @click="goBargain('pay')">确认</div>
+                <div class="cancelBtn" @click="goBargain('cancle')">取消</div>
             </div>
         </div>
         <div class="shade" v-show="showShade"></div>
+        <NoData v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import NoData from "@/components/multi/NoData";
 export default {
     name: "BargainRecord",
     components: {
-        Header
+        Header,
+        NoData,
     },
     data() {
         return {
@@ -95,117 +98,124 @@ export default {
                     title: "议价记录"
                 }
             },
+            showNoData:false,
             showShade: false,
+            goods_id:'',
+            bargain_price:'',
             seleType: {
                 reply: true,
                 pay: false
             },
-            goodsInfo: [
-                {
-                    day: "今天",
-                    data: [
-                        {
-                            goods_type: "成品号",
-                            account_type: "安卓",
-                            area: "安卓一区",
-                            goods_des: "贵6小号可议价，手快有手慢无",
-                            safe: true,
-                            stages: true,
-                            verify: true,
-                            goods_price: "￥600",
-                            isSell: 1,
-                            bid: "￥6000",
-                            bindtwo: "￥6000",
-                            time: "2018-09-09 9:00"
-                        },
-                        {
-                            goods_type: "成品号",
-                            account_type: "安卓",
-                            area: "安卓一区",
-                            goods_des: "贵6小号可议价，手快有手慢无",
-                            safe: true,
-                            stages: false,
-                            verify: true,
-                            goods_price: "￥600",
-                            isSell: 3,
-                            bid: "￥6000",
-                            bindtwo: "￥6000",
-                            time: "2018-09-09 9:00"
-                        }
-                    ]
-                },
-                {
-                    day: "三天前",
-                    data: [
-                        {
-                            goods_type: "成品号",
-                            account_type: "安卓",
-                            area: "安卓一区",
-                            goods_des: "贵6小号可议价，手快有手慢无",
-                            safe: true,
-                            stages: false,
-                            verify: true,
-                            goods_price: "￥600",
-                            isSell: 2,
-                            bid: "￥6000",
-                            bindtwo: "￥6000",
-                            time: "2018-09-09 9:00"
-                        },
-                        {
-                            goods_type: "成品号",
-                            account_type: "安卓",
-                            area: "安卓一区",
-                            goods_des: "贵6小号可议价，手快有手慢无",
-                            safe: true,
-                            stages: false,
-                            verify: true,
-                            goods_price: "￥600",
-                            isSell: 3,
-                            bid: "￥6000",
-                            bindtwo: "￥6000",
-                            time: "2018-09-09 9:00"
-                        }
-                    ]
-                }
-            ]
+            lastAgree: "",
+            goodsInfo: [],
         };
     },
     methods: {
-        bargainFn(e) {
-            this.showShade = true;
-            var mo=function(e){e.preventDefault();};
-            document.body.style.overflow='hidden';
-            document.addEventListener("touchmove",mo,false);//禁止页面滑动
+        goPayFn(order_status){
+            // order_status == '' 没有订单去生成订单 / != '' 有订单去选择支付方式
+            if(order_status){
+
+            }else{
+
+            }
         },
-        goBargain(e){
-            this.showShade = false;
-            var mo=function(e){e.preventDefault();};
-            document.body.style.overflow='';//出现滚动条
-            document.removeEventListener("touchmove",mo,false);
+        bargainFn(goods_id,e) {
+            var that = this;
+            that.showShade = true;
+            var mo = function(e) {
+                e.preventDefault();
+            };
+            document.body.style.overflow = "hidden";
+            document.addEventListener("touchmove", mo, false); //禁止页面滑动
+            that.goods_id = goods_id;
         },
-        barginTypeFn(flag){
-            var that =this;
-            if(flag == 'pay'){
+        goBargain(e) {
+            var that = this;
+            if (flag == "pay") {
+                if (that.bargain_price) {
+                    that.$axios.post("/api/discuss", {
+                            goods_id: that.goods_id,
+                            discuss_price: that.bargain_price
+                        }).then(function(res) {
+                            if (res.status == 200) {mui.alert(res.data.msg,"提示","确认","","div");}
+                        }).catch(function(err) {
+                            console.log(err);
+                        });
+                } else {
+                    mui.alert("请输入议价价格", "提示", "确认", "", "div");
+                    return false;
+                }
+            }
+            that.bargain_price = "";
+            that.showShade = false;
+            var mo = function(e) {
+                e.preventDefault();
+            };
+            document.body.style.overflow = ""; //出现滚动条
+            document.removeEventListener("touchmove", mo, false);
+        },
+        barginTypeFn(flag) {
+            var that = this;
+            if (flag == "pay") {
                 that.seleType.reply = false;
                 that.seleType.pay = true;
-            }else{
+            } else {
                 that.seleType.reply = true;
                 that.seleType.pay = false;
             }
+            that.getdiscuss();
         },
-        getdiscuss(){
+        getdiscuss() {
             var that = this;
-            that.$axios.post('api/goods_discuss',{
-                is_agree:1,
-            }).then(function(res){
-                console.log(res)
-            }).catch(function(err){
-                console.log(err)
-            })
-        },
+            var agree;
+            if (that.seleType.reply) {
+                agree = -1;
+            } else {
+                agree = 1;
+            }
+            if (that.lastAgree != agree) {
+                that.$axios
+                    .post("api/goods_discuss", {
+                        is_agree: agree
+                    })
+                    .then(function(res) {
+                        console.log(res);
+                        if (res.status == 200) {
+                            if (res.data.code == 200) {
+                                that.goodsInfo = res.data.data.data;
+                                if(res.data.data.data != ''){
+                                    that.showNoData = false;
+                                }else{
+                                    that.showNoData = true;
+                                }
+                            } else if (res.data.code == 401) {
+                                mui.confirm("请先登陆","提示",["取消", "确认"],function(e) {
+                                        if (e.index == 1) {
+                                            that.$router.push({
+                                                name: "AccountLogin",
+                                                params: {
+                                                    redirect:
+                                                        that.$router
+                                                            .currentRoute.name
+                                                }
+                                            });
+                                        } else {
+                                            that.$router.go(-1);
+                                        }
+                                    }, "div"
+                                );
+                            }
+                        }
+                    })
+                    .catch(function(err) {
+                        console.log(err);
+                    });
+            }
+            that.lastAgree = agree;
+        }
     },
-    mounted(){
-        this.getdiscuss()
+    mounted() {
+        this.getdiscuss();
     }
 };
 </script>
@@ -213,6 +223,7 @@ export default {
 .bargain-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .bargin-tit {
     line-height: 0.8rem;
@@ -356,8 +367,8 @@ export default {
     vertical-align: middle;
 }
 .p-bBtn {
-    padding:0 5px;
-    text-align:center;
+    padding: 0 5px;
+    text-align: center;
     line-height: 0.44rem;
     font-size: 0.22rem;
     text-align: center;
@@ -366,9 +377,9 @@ export default {
     -webkit-border-radius: 0.04rem;
     -moz-border-radius: 0.04rem;
     border-radius: 0.04rem;
-    -webkit-box-shadow: 0 0.5px .4px #fe7649;
-    -moz-box-shadow: 0 0.5px .4px #fe7649;
-    box-shadow: 0 0.5px .4px #fe7649;
+    -webkit-box-shadow: 0 0.5px 0.4px #fe7649;
+    -moz-box-shadow: 0 0.5px 0.4px #fe7649;
+    box-shadow: 0 0.5px 0.4px #fe7649;
     position: absolute;
     left: calc(50% - 0.55rem);
 }
@@ -402,11 +413,11 @@ export default {
 }
 .bid {
     color: #333333;
-    margin-left: 0.4rem;
+    margin-left: 0.2rem;
 }
 .strip-con {
     min-width: 0.84rem;
-    padding:2px;
+    padding: 2px;
     line-height: 0.27rem;
     font-size: 0.2rem;
     color: #ffffff;

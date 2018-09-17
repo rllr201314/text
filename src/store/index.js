@@ -5,7 +5,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     token: '',
-    mobile: ''
+    mobile: '',
+    isLogin:'',
   },
   mutations: {
     set_token(state, token) {
@@ -20,6 +21,10 @@ export default new Vuex.Store({
     set_mobile(state, mobile) {
       state.mobile = mobile
       sessionStorage.mobile = mobile
+    },
+    changeLogin(state,data){
+      state.isLogin = data
+      sessionStorage.i = data
     }
   }
 })

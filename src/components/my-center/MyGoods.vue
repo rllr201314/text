@@ -3,91 +3,140 @@
     <div class="mygoods-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="seleTit">
-            <div :class="seleTit == 1?'red-border':''" @click="seleTitFn(1)">已上架</div>
-            <div :class="seleTit == 2?'red-border':''" @click="seleTitFn(2)">审核中</div>
-            <div :class="seleTit == 3?'red-border':''" @click="seleTitFn(3)">已下架</div>
+            <div :class="seleTit == 3?'red-border':''" @click="seleTitFn(3)">已上架</div>
+            <div :class="seleTit == 1?'red-border':''" @click="seleTitFn(1)">审核中</div>
+            <div :class="seleTit == 2?'red-border':''" @click="seleTitFn(2)">已下架</div>
         </div>
         <div class="mygoods-con">
-            <div class="arbitration-cell" v-for="item in putawayData" v-show="seleTit == 1">
-                <div class="gameLog">
-                    <img :src="item.log" alt="">
-                </div>
-                <div class="orderInfo">
-                    <div class="order-num">
-                        <span>订单号</span>
-                        <span v-text="item.orderNum"></span>
-                        <span class="history-time" v-text="item.time"></span>
-                    </div>
-                    <div class="order-des" v-text="item.des"></div>
-                    <div class="price-status">
-                        <span class="good-price" v-text="item.price"></span>
-                        <span class="order-status green-bg" v-text="item.orderStatus"></span>
-                    </div>
-                </div>
-                <div class="order-operate">
-                    <div class="right-operate">
-                        <span class="cancel">编辑</span>`
-                        <span class="pay">下架</span>
-                    </div>
-                </div>
-            </div>
-            <div class="arbitration-cell" v-for="item in auditData" v-show="seleTit == 2">
-                <div class="gameLog">
-                    <img :src="item.log" alt="">
-                </div>
-                <div class="orderInfo">
-                    <div class="order-num">
-                        <span>订单号</span>
-                        <span v-text="item.orderNum"></span>
-                        <span class="history-time" v-text="item.time"></span>
-                    </div>
-                    <div class="order-des" v-text="item.des"></div>
-                    <div class="price-status">
-                        <span class="good-price" v-text="item.price"></span>
-                        <span class="order-status red-bg" v-text="item.orderStatus"></span>
-                    </div>
-                </div>
-                <div class="order-operate">
-                    <div class="right-operate">
-                        <span class="pay">取消上架</span>
-                    </div>
+
+            <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 3">
+                <div class="minirefresh-scroll list">
+                    <ul>
+                        <div class="arbitration-cell" v-for="item in putawayData">
+                            <div class="gameLog">
+                                <img :src="item.game_logo" alt="">
+                            </div>
+                            <div class="orderInfo">
+                                <div class="goods-strip-title">
+                                    <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                                    <div class="goods-type" v-else>代练号</div>
+                                    <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                    <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                    <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                    <div class="area" v-text="item.platform_name"></div>
+                                </div>
+                                <div class="order-des" v-text="item.goods_title"></div>
+                                <div class="history-time" v-text="item.sort_time"></div>
+                                <div class="price-status">
+                                    <span class="good-price">￥
+                                        <span v-text="item.goods_price"></span>
+                                    </span>
+                                    <span class="order-status green-bg">上架中</span>
+                                </div>
+                            </div>
+                            <div class="order-operate">
+                                <div class="right-operate">
+                                    <span class="pay" @click="downGoods(item.goods_id)">下架</span>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
                 </div>
             </div>
-            <div class="arbitration-cell" v-for="item in removeData"  v-show="seleTit == 3">
-                <div class="gameLog">
-                    <img :src="item.log" alt="">
+            <!-- 审核中 -->
+            <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 1">
+                <div class="minirefresh-scroll list">
+                    <ul>
+                        <div class="arbitration-cell" v-for="item in auditData">
+                            <div class="gameLog">
+                                <img :src="item.game_logo" alt="">
+                            </div>
+                            <div class="orderInfo">
+                                <div class="goods-strip-title">
+                                    <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                                    <div class="goods-type" v-else>代练号</div>
+                                    <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                    <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                    <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                    <div class="area" v-text="item.platform_name"></div>
+                                </div>
+                                <div class="order-des" v-text="item.goods_title"></div>
+                                <div class="history-time" v-text="item.sort_time"></div>
+                                <div class="price-status">
+                                    <span class="good-price">￥
+                                        <span v-text="item.goods_price"></span>
+                                    </span>
+                                    <span class="order-status red-bg">审核中</span>
+                                </div>
+                            </div>
+                            <div class="order-operate">
+                                <div class="right-operate">
+                                    <span class="pay" @click="downGoods(item.goods_id)">取消上架</span>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
                 </div>
-                <div class="orderInfo">
-                     <div class="order-num">
-                         <span>订单号</span><span v-text="item.orderNum"></span><span class="history-time" v-text="item.history_time"></span>
-                     </div>
-                     <div class="order-des" v-text="item.des"></div>
-                     <div class="price-status">
-                         <span class="good-price" v-text="item.price"></span>
-                         <span class="order-status gray-bg" v-text="item.orderStatus"></span>
-                     </div>
-                     <div class="arbitration">
-                         <span class="gray">原因</span>
-                         <span v-text="item.arbitrationInfo"></span>
-                     </div>
-                </div>
-                <div class="order-operate">
-                   
-                    <div class="right-operate">
-                        <span class="cancel">删除</span>
-                        <span class="pay" @click="go">编辑</span>
-                    </div>
+            </div>
+            <!-- 审核中 -->
+            <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 2">
+                <div class="minirefresh-scroll list">
+                    <ul>
+                        <div class="arbitration-cell" v-for="item in removeData">
+                            <div class="gameLog">
+                                <img :src="item.game_logo" alt="">
+                            </div>
+                            <div class="orderInfo">
+                                <div class="goods-strip-title">
+                                    <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                                    <div class="goods-type" v-else>代练号</div>
+                                    <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                    <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                    <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                    <div class="area" v-text="item.platform_name"></div>
+                                </div>
+                                <div class="order-des" v-text="item.goods_title"></div>
+                                <div class="history-time" v-text="item.sort_time"></div>
+                                <div class="price-status">
+                                    <span class="good-price">￥
+                                        <span v-text="item.goods_price"></span>
+                                    </span>
+                                    <span class="order-status gray-bg">已下架</span>
+                                </div>
+                                <div class="arbitration" v-if="item.goods_status == 2 &&　item.reject_reason　!= ''">
+                                    <span class="gray">原因</span>
+                                    <span v-text="item.reject_reason"></span>
+                                </div>
+                                <div class="arbitration" v-if="item.goods_status == 4 &&　item.down_reason != ''">
+                                    <span class="gray">原因</span>
+                                    <span v-text="item.reject_reason"></span>
+                                </div>
+                            </div>
+                            <div class="order-operate">
+                                <div class="right-operate">
+                                    <span class="pay" @click="getGoods(item.goods_id)">编辑</span>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
                 </div>
             </div>
         </div>
+        <NoData v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import NoData from "@/components/multi/NoData";
+// import myScroll from "@/components/pull/refresh"; //刷新
+
 export default {
+    inject: ["reload"],
     name: "MyGoods",
     components: {
-        Header
+        Header,
+        // myScroll,
+        NoData
     },
     data() {
         return {
@@ -100,97 +149,233 @@ export default {
                     title: "我的商品"
                 }
             },
-            seleTit: 1,
-            putawayData: [
-                {
-                    log: "./static/img/mh_ico.png",
-                    orderNum: "123456789",
-                    history_time: "10分钟前",
-                    des: "梦幻西游xxxxxxxxxxxxxxxxxxxxx...",
-                    price: "￥13200",
-                    orderStatus: "上架中"
-                },
-                {
-                    log: "./static/img/mh_ico.png",
-                    orderNum: "123456789",
-                    history_time: "10分钟前",
-                    des: "梦幻西游xxxxxxxxxxxxxxxxxxxxx...",
-                    price: "￥13200",
-                    orderStatus: "上架中"
-                },
-                {
-                    log: "./static/img/mh_ico.png",
-                    orderNum: "123456789",
-                    history_time: "10分钟前",
-                    des: "梦幻西游xxxxxxxxxxxxxxxxxxxxx...",
-                    price: "￥13200",
-                    orderStatus: "上架中"
-                }
-            ],
-            auditData: [
-                {
-                    log: "./static/img/mh_ico.png",
-                    orderNum: "123456789",
-                    history_time: "10分钟前",
-                    des: "梦幻西游xxxxxxxxxxxxxxxxxxxxx...",
-                    price: "￥13200",
-                    orderStatus: "审核中"
-                },
-                {
-                    log: "./static/img/mh_ico.png",
-                    orderNum: "123456789",
-                    history_time: "10分钟前",
-                    des: "梦幻西游xxxxxxxxxxxxxxxxxxxxx...",
-                    price: "￥13200",
-                    orderStatus: "审核中"
-                },
-                {
-                    log: "./static/img/mh_ico.png",
-                    orderNum: "123456789",
-                    history_time: "10分钟前",
-                    des: "梦幻西游xxxxxxxxxxxxxxxxxxxxx...",
-                    price: "￥13200",
-                    orderStatus: "审核中"
-                }
-            ],
-            removeData:[
-                {
-                    log:'./static/img/mh_ico.png',
-                    orderNum:'123456789',
-                    history_time:'10分钟前',
-                    des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
-                    price:'￥13200',
-                    arbitrationInfo:'账号有问题，需要退款',
-                    orderStatus:'已下架',
-                },{
-                    log:'./static/img/mh_ico.png',
-                    orderNum:'123456789',
-                    history_time:'10分钟前',
-                    des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
-                    price:'￥13200',
-                    arbitrationInfo:'账号有问题，需要退款',
-                    orderStatus:'已下架',
-                },{
-                    log:'./static/img/mh_ico.png',
-                    orderNum:'123456789',
-                    history_time:'10分钟前',
-                    des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
-                    price:'￥13200',
-                    arbitrationInfo:'账号有问题，需要退款',
-                    orderStatus:'已下架',
-                }
-            ]
+            showNoData: false,
+            seleTit: 3,
+            putawayData: [],
+            auditData: [],
+            removeData: [],
+            pages: 1,
+            num_page: 1
         };
     },
     methods: {
         seleTitFn(opt) {
-            this.seleTit = opt;
+            var that = this;
+            that.seleTit = opt;
+            if (opt == 3) {
+                if (that.putawayData == "") {
+                    that.getData(that.seleTit, "refresh"); //上架
+                }
+            } else if (opt == 1) {
+                if (that.auditData == "") {
+                    that.getData(that.seleTit, "refresh"); //审核中
+                }
+            } else if (opt == 2) {
+                if (that.removeData == "") {
+                    that.getData(that.seleTit, "refresh"); //已下架
+                }
+            }
+            // that.$refs.myScroll.setState(0);
         },
-        go(){
-            this.$router.push({'name':'AccountLogin','params':{id:1}})
-            var router = this.$router;
-            console.log(router);
+        getData(opt, flag) {
+            console.log(opt+'--'+flag);
+            var that = this;
+            that.$axios
+                .post("/api/goods_information", {
+                    page: that.num_page, //--------------------------------------------
+                    goods_status: opt
+                })
+                .then(res => {
+                    console.log(res);
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            // 默认进来显示已上架商品
+                            var data = res.data.data.data;
+                            if (data == "") {
+                                that.showNoData = true;
+                                    that.miniRefresh.endDownLoading();
+                                that.miniRefresh.endUpLoading(true);
+                            } else {
+                                that.showNoData = false;
+                                if (flag == "refresh") {
+                                    that.miniRefresh.endDownLoading();
+                                    if (opt == 3) {
+                                        that.putawayData = data;
+                                    } else if (opt == 2) {
+                                        that.removeData = data;
+                                    } else if (opt == 1) {
+                                        that.auditData = data;
+                                    }
+                                    that.num_page = res.data.data.current_page;
+                                    that.pages = res.data.data.last_page;
+                                } else if (flag == "push") {
+                                    that.miniRefresh.endUpLoading();
+                                    if (opt == 3) {
+                                        for (var i in data) {
+                                            that.putawayData.push(data[i]);
+                                        }
+                                    } else if (opt == 2) {
+                                        for (var i in data) {
+                                            that.removeData.push(data[i]);
+                                        }
+                                    } else if (opt == 1) {
+                                        for (var i in data) {
+                                            that.auditData.push(data[i]);
+                                        }
+                                    }
+                                }
+                            }
+                        } else if (res.data.code == 401) {
+                            mui.confirm(
+                                "请先登陆",
+                                "提示",
+                                ["取消", "确认"],
+                                function(e) {
+                                    if (e.index == 1) {
+                                        that.$router.push({
+                                            name: "AccountLogin",
+                                            params: {
+                                                redirect:
+                                                    that.$router.currentRoute
+                                                        .name
+                                            }
+                                        });
+                                    } else {
+                                        that.$router.go(-1);
+                                    }
+                                },
+                                "div"
+                            );
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        // 下架
+        downGoods(goods_id) {
+            var that = this;
+            mui.confirm(
+                "确定下架商品",
+                "提示",
+                ["取消", "确认"],
+                function(e) {
+                    if (e.index == 1) {
+                        that.$axios
+                            .post("/api/down_goods", {
+                                goods_id: goods_id
+                            })
+                            .then(res => {
+                                console.log(res);
+                                if (res.status == 200) {
+                                    if (res.data.code == 200) {
+                                        mui.alert(
+                                            res.data.msg,
+                                            "提示",
+                                            "确定",
+                                            function() {
+                                                that.reload();
+                                            },
+                                            "div"
+                                        );
+                                    } else if (res.data.code == 401) {
+                                        mui.confirm(
+                                            "请先登陆",
+                                            "提示",
+                                            ["取消", "确认"],
+                                            function(e) {
+                                                if (e.index == 1) {
+                                                    that.$router.push({
+                                                        name: "AccountLogin",
+                                                        params: {
+                                                            redirect:
+                                                                that.$router
+                                                                    .currentRoute
+                                                                    .name
+                                                        }
+                                                    });
+                                                } else {
+                                                    that.$router.go(-1);
+                                                }
+                                            },
+                                            "div"
+                                        );
+                                    } else {
+                                        mui.alert(
+                                            res.data.msg,
+                                            "提示",
+                                            "确定",
+                                            "",
+                                            "div"
+                                        );
+                                    }
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            });
+                    }
+                },
+                "div"
+            );
+        },
+        // 编辑商品
+        getGoods(goods_id) {
+            var that = this;
+            mui.confirm(
+                "确定编辑商品",
+                "提示",
+                ["取消", "确认"],
+                function(e) {
+                    if (e.index == 1) {
+                        that.$router.push({
+                            name: "SellInfo",
+                            query: {
+                                flag: 2,
+                                g: goods_id
+                            }
+                        });
+                    }
+                },
+                "div"
+            );
+        },
+        refresh() {
+            var that = this;
+            that.miniRefresh = new MiniRefresh({
+                container: "#minirefresh",
+                down: {
+                    isAuto: false,
+                    bounceTime: 500,
+                    callback: () => {
+                        that.num_page = 1;
+                        that.getData(that.seleTit, "refresh");
+                    }
+                },
+                up: {
+                    isAuto: false,
+                    loadFull: {
+                        isEnable: false
+                    },
+                    isShowUpLoading: true,
+                    callback: () => {
+                        that.num_page++;
+                        console.log(that.num_page+'--'+that.pages);
+                        if(that.num_page <= that.pages){
+                            that.getData(that.seleTit, "push");
+                        }else{
+                            that.miniRefresh.endUpLoading(true);
+                        }
+                    }
+                }
+            });
         }
+    },
+    mounted() {
+        var that = this;
+        that.getData(that.seleTit, "refresh");
+        that.refresh();
     }
 };
 </script>
@@ -206,6 +391,11 @@ export default {
     line-height: 0.8rem;
     text-align: center;
     background: #ffffff;
+    position: fixed;
+    top: 0.88rem;
+    left: 0;
+    right: 0;
+    z-index: 66;
 }
 .seleTit div {
     width: 100%;
@@ -215,7 +405,16 @@ export default {
     color: #ff7e4a;
 }
 .mygoods-con {
-    padding: 0.2rem;
+    /* margin-top:1.68rem; */
+    position: fixed;
+    top: 1.68rem;
+    left: 0;
+    right: 0;
+    padding: 0 0.2rem;
+    height: 11.4rem;
+}
+.goodsList {
+    height: 11.4rem;
 }
 
 .arbitration-cell {
@@ -226,7 +425,7 @@ export default {
     -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
-    margin-bottom: 0.2rem;
+    margin-top: 0.2rem;
     padding: 0 0.2rem;
 }
 .gameLog {
@@ -242,18 +441,11 @@ export default {
     display: inline-block;
     vertical-align: middle;
     width: 5.3rem;
-    padding: 0.3rem 0;
+    padding: 0.2rem 0;
+    position: relative;
 }
 .orderInfo span {
     display: inline-block;
-}
-.order-num {
-    color: #666666;
-    font-size: 0.26rem;
-    line-height: 0.4rem;
-}
-.history-time {
-    float: right;
 }
 .order-des {
     width: 4rem;
@@ -273,20 +465,21 @@ export default {
 }
 .order-status {
     font-size: 0.2rem;
-    padding: 0.01rem 0.05rem;
+    padding: 1px 3px;
     color: #ffffff;
     line-height: 0.3rem;
     text-align: center;
     vertical-align: middle;
+    margin-left: 5px;
 }
-.red-bg{
-    background:#FF5E5E;
+.red-bg {
+    background: #ff5e5e;
 }
-.green-bg{
+.green-bg {
     background: #45c773;
 }
-.gray-bg{
-    background:#C6C6C6;
+.gray-bg {
+    background: #c6c6c6;
 }
 .order-operate {
     position: relative;
@@ -318,12 +511,92 @@ export default {
     background: #c6c6c6;
     margin-right: 0.2rem;
 }
-.arbitration{
-    line-height: .4rem; 
-        font-size:.26rem;
-        color:#333333;
-    }
+.arbitration {
+    line-height: 0.4rem;
+    font-size: 0.26rem;
+    color: #333333;
+}
 .gray {
     color: #999999;
+}
+.history-time {
+    color: #999999;
+    font-size: 0.26rem;
+    line-height: 0.4rem;
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+}
+/* 头部------ */
+.goods-strip-title {
+    color: #ffffff;
+    font-size: 0.24rem;
+    line-height: 0.36rem;
+    margin-bottom: 0.1rem;
+}
+.goods-strip-title div {
+    display: inline-block;
+    vertical-align: middle;
+}
+/* 精品 */
+.goods-type {
+    text-align: center;
+    width: 0.93rem;
+    height: 0.36rem;
+    background: -webkit-linear-gradient(#feab49, #ffcc4b);
+    background: -o-linear-gradient(#feab49, #ffcc4b);
+    background: -moz-linear-gradient(#feab49, #ffcc4b);
+    background: linear-gradient(to right, #feab49, #ffcc4b);
+    margin-right: 0.1rem;
+}
+.account-type {
+    text-align: center;
+    width: 0.7rem;
+    height: 0.36rem;
+    background: -webkit-linear-gradient(
+        120deg,
+        rgba(104, 224, 218, 1),
+        rgba(104, 223, 222, 1),
+        rgba(132, 240, 178, 1),
+        rgba(73, 209, 202, 1)
+    );
+    background: -o-linear-gradient(
+        120deg,
+        rgba(104, 224, 218, 1),
+        rgba(104, 223, 222, 1),
+        rgba(132, 240, 178, 1),
+        rgba(73, 209, 202, 1)
+    );
+    background: -moz-linear-gradient(
+        120deg,
+        rgba(104, 224, 218, 1),
+        rgba(104, 223, 222, 1),
+        rgba(132, 240, 178, 1),
+        rgba(73, 209, 202, 1)
+    );
+    background: linear-gradient(
+        120deg,
+        rgba(104, 224, 218, 1),
+        rgba(104, 223, 222, 1),
+        rgba(132, 240, 178, 1),
+        rgba(73, 209, 202, 1)
+    );
+    margin-right: 0.1rem;
+}
+.area {
+    font-size: 0.26rem;
+    color: #999999;
+}
+
+.list-wrap {
+    /* padding-top:.6rem; */
+    /* top: 1.68rem; */
+}
+.list {
+    /* padding-top: 1.68rem; */
+    /* padding-bottom: 0.24rem; */
+    /* min-height: 100vh;
+    overflow-y: auto; */
+    background: #f6f8fe;
 }
 </style>

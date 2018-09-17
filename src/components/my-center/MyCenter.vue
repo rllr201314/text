@@ -31,7 +31,7 @@
                         <span v-text="myData.sellNum"></span>
                     </div>
                 </div>
-                <div class="sign">
+                <div class="sign" v-if="false">
                     <img class="sign-img" src="../../../static/img/my-center/sign.png" alt="">
                     <div class="sign-box">
                         <span v-text="myData.integral"></span>
@@ -107,8 +107,8 @@
                     </div>
                 </div>
             </div>
-            <div class="strip-wrap" @click="goSele('commissionManage')">
-                <div class="sell-strip">
+            <div class="strip-wrap">
+                <div class="sell-strip" @click="goSele('commissionManage')">
                     <div class="left-strip price">
                         <img src="../../../static/img/my-center/price.png" alt="">
                         <span>轻松赚佣金</span>
@@ -172,7 +172,7 @@
             </div>
             <div class="strip-wrap">
                 <div class="sell-strip" @click="goSele('changePassword')">
-                    <div class="left-strip write" >
+                    <div class="left-strip write">
                         <img src="../../../static/img/my-center/write.png" alt="">
                         <span>修改密码</span>
                     </div>
@@ -210,7 +210,7 @@ export default {
                     showShare: 3, //1搜索2分享3菜单
                     showBg: false, //是否显示背景
                     title: "个人中心",
-                    goBack:1,
+                    goBack: 1
                 }
             },
             myData: {
@@ -223,35 +223,35 @@ export default {
                             name: "unpaid",
                             imgSrc: "./static/img/my-center/unpaid.png",
                             val: "待支付",
-                            link:'b_unpaid',
+                            link: "b_unpaid"
                         },
                         {
                             key: 2,
                             name: "trading",
                             imgSrc: "./static/img/my-center/trading.png",
                             val: "交易中",
-                            link:'b_trading',
+                            link: "b_trading"
                         },
                         {
                             key: 3,
                             name: "receiv",
                             imgSrc: "./static/img/my-center/receiv.png",
                             val: "待收货",
-                            link:'b_receiv',
+                            link: "b_receiv"
                         },
                         {
                             key: 4,
                             name: "tradsuccess",
                             imgSrc: "./static/img/my-center/tradsuccess.png",
                             val: "交易成功",
-                            link:'b_tradsuccess',
+                            link: "b_tradsuccess"
                         },
                         {
                             key: 5,
                             name: "order",
                             imgSrc: "./static/img/my-center/order.png",
                             val: "全部订单",
-                            link:'b_order',
+                            link: "b_order"
                         }
                     ],
                     sellTit: [
@@ -260,35 +260,35 @@ export default {
                             name: "trading",
                             imgSrc: "./static/img/my-center/trading.png",
                             val: "交易中",
-                            link:'s_trading'
+                            link: "s_trading"
                         },
                         {
                             key: 2,
                             name: "deliver",
                             imgSrc: "./static/img/my-center/deliver.png",
                             val: "已发货",
-                            link:'s_wait'
+                            link: "s_wait"
                         },
                         {
                             key: 3,
                             name: "tradsuccess",
                             imgSrc: "./static/img/my-center/tradsuccess.png",
                             val: "交易成功",
-                            link:'s_tradsuccess'  
+                            link: "s_tradsuccess"
                         },
                         {
                             key: 4,
                             name: "deal",
                             imgSrc: "./static/img/my-center/deal.png",
                             val: "交易失败",
-                            link:'s_fail'
+                            link: "s_fail"
                         },
                         {
                             key: 5,
                             name: "order",
                             imgSrc: "./static/img/my-center/order.png",
                             val: "全部订单",
-                            link:'s_order',
+                            link: "s_order"
                         }
                     ],
                     buyCon: [
@@ -297,28 +297,28 @@ export default {
                             name: "voucher",
                             imgSrc: "./static/img/my-center/voucher.png",
                             val: "代金券",
-                            link:'voucher',
+                            link: "voucher"
                         },
                         {
                             key: 2,
                             name: "bidd",
                             imgSrc: "./static/img/my-center/bidd.png",
                             val: "我的竞拍",
-                            link:'myAuction',
+                            link: "myAuction"
                         },
                         {
                             key: 3,
                             name: "bill",
                             imgSrc: "./static/img/my-center/bill.png",
                             val: "分期账单",
-                            link:'bill',
+                            link: "bill"
                         },
                         {
                             key: 4,
                             name: "bargain",
                             imgSrc: "./static/img/my-center/bargain.png",
                             val: "发起的议价",
-                            link:'bargain',
+                            link: "bargain"
                         }
                     ],
                     sellCon: [
@@ -327,21 +327,21 @@ export default {
                             name: "sell",
                             imgSrc: "./static/img/my-center/sell.png",
                             val: "我要出售",
-                            link:'sell',
+                            link: "sell"
                         },
                         {
                             key: 2,
                             name: "goods",
                             imgSrc: "./static/img/my-center/goods.png",
                             val: "我的商品",
-                            link:'myGoods',
+                            link: "myGoods"
                         },
                         {
                             key: 3,
                             name: "news",
                             imgSrc: "./static/img/my-center/news.png",
                             val: "议价消息",
-                            link:'messageAll',
+                            link: "messageAll"
                         }
                     ]
                 },
@@ -353,8 +353,8 @@ export default {
                 comNews: 19,
                 pactNews: 99,
                 phoneNum: "",
-                sellNum: "2345",
-                buyNum: "2345",
+                sellNum: "",
+                buyNum: "",
                 integral: "2345"
             }
         };
@@ -368,86 +368,152 @@ export default {
             }
         },
 
-
-
         // 路由跳转
-        goSele(flag){
-            var that_r = this.$router;
-            if(flag == 'login'){
-                that_r.push({name:'AccountLogin',params:{redirect: that_r.currentRoute.name}})
-            }else if(flag == 'register'){
-                that_r.push({name:'Register'})
+        goSele(flag) {
+            var that = this;
+            var token = that.$store.state.token;
+            if (token == undefined || token == "") {
+                mui.confirm(
+                    "请先登陆",
+                    "提示",
+                    ["取消", "确认"],
+                    function(e) {
+                        if (e.index == 1) {
+                            that.$router.push({
+                                name: "AccountLogin",
+                                params: {
+                                    redirect: that.$router.currentRoute.name
+                                }
+                            });
+                        }
+                    },
+                    "div"
+                );
+            } else {
+                var that_r = that.$router;
+                // debugger;
+                if (flag == "login") {
+                    that_r.push({
+                        name: "AccountLogin",
+                        params: { redirect: that_r.currentRoute.name }
+                    });
+                } else if (flag == "register") {
+                    that_r.push({ name: "Register" });
+                } else if (flag == "changePassword") {
+                    // 修改密码
+                    that_r.push({ name: "ChangePassword" });
+                } else if (flag == "authenticity") {
+                    //客服鉴别
+                    that_r.push({ name: "Authenticity" });
+                } else if (flag == "pact") {
+                    //合同
+                    that_r.push({ name: "Pact" });
+                } else if (flag == "browseRecord") {
+                    //浏览记录
+                    that_r.push({ name: "BrowseRecord" });
+                } else if (flag == "collect") {
+                    //收藏
+                    that_r.push({name: "Collect"});
+                    console.log(flag);
+                    console.log(that_r);
+                    
+                } else if (flag == "commissionManage") {
+                    //佣金管理
+                    that_r.push({ name: "CommissionManage" });
+                } else if (flag == "assetsManage") {
+                    //资产管理
+                    that_r.push({ name: "AssetsManage" });
+                } else if (flag == "withdrawDeposit") {
+                    //提现
+                    that_r.push({ name: "WithdrawDeposit" });
+                } else if (flag == "b_unpaid") {
+                    // 买家 头部导航栏
+                    //待支付
+                    that_r.push({ name: "BuyUnpaidStatus" });
+                } else if (flag == "b_trading") {
+                    //交易中
+                    that_r.push({ name: "BuyTradingStatus" });
+                } else if (flag == "b_receiv") {
+                    //待收货
+                    that_r.push({ name: "BuyWaitReceiveStatus" });
+                } else if (flag == "b_tradsuccess") {
+                    //交易成功
+                    that_r.push({ name: "BuyTradeSuccessStatus" });
+                } else if (flag == "b_order") {
+                    //全部订单
+                    that_r.push({ name: "BuyOrderAll" });
+                } else if (flag == "s_trading") {
+                    // 卖家 头部导航栏
+                    //交易中
+                    that_r.push({ name: "SellTradingStatus" });
+                } else if (flag == "s_wait") {
+                    //已发货
+                    that_r.push({ name: "SellWaitReceiveStatus" });
+                } else if (flag == "s_tradsuccess") {
+                    //交易成功
+                    that_r.push({ name: "SellTradeSuccessStatus" });
+                } else if (flag == "s_fail") {
+                    //交易失败
+                    that_r.push({ name: "SellFailureDealStatus" });
+                } else if (flag == "s_order") {
+                    //全部订单
+                    that_r.push({ name: "SellOrderAll" });
+                } else if (flag == "voucher") {
+                    // 买家 底部导航栏
+                    //代金券
+                    that_r.push({ name: "Voucher" });
+                } else if (flag == "myAuction") {
+                    //我的竞拍
+                    that_r.push({ name: "MyAuction" });
+                } else if (flag == "bill") {
+                    //分期账单
+                    that_r.push({ name: "BillInstallment" });
+                } else if (flag == "bargain") {
+                    //发起的议价
+                    that_r.push({ name: "BargainRecord" });
+                } else if (flag == "sell") {
+                    // 卖家 底部导航栏
+                    //我要卖
+                    that_r.push({ name: "Sell" });
+                    sessionStorage.buyOrsell = 2;
+                } else if (flag == "myGoods") {
+                    //我的商品
+                    that_r.push({ name: "MyGoods" });
+                } else if (flag == "messageAll") {
+                    //议价消息
+                    that_r.push({ name: "MessageAll" });
+                }
             }
-            // 修改密码
-            else if(flag == 'changePassword'){
-                that_r.push({name:'ChangePassword'})
-            }else if(flag == 'authenticity'){//客服鉴别
-                that_r.push({name:'Authenticity'})
-            }else if(flag == 'pact'){//合同
-                that_r.push({name:'Pact'})
-            }else if(flag == 'browseRecord'){//浏览记录
-                that_r.push({name:'BrowseRecord'})
-            }else if(flag == 'collect'){//收藏
-                that_r.push({name:'Collect'})
-            }else if(flag == 'commissionManage'){//佣金管理
-                that_r.push({name:'CommissionManage'})
-            }else if(flag == 'assetsManage'){//资产管理
-                that_r.push({name:'AssetsManage'})
-            }else if(flag == 'withdrawDeposit'){//提现
-                that_r.push({name:'WithdrawDeposit'})
-            }
-            // 买家 头部导航栏
-            else if(flag == 'b_unpaid'){//待支付
-                that_r.push({name:'BuyUnpaidStatus'})
-            }else if(flag == 'b_trading'){//交易中
-                that_r.push({name:'BuyTradingStatus'})
-            }else if(flag == 'b_receiv'){//待收货
-                that_r.push({name:'BuyWaitReceiveStatus'})
-            }else if(flag == 'b_tradsuccess'){//交易成功
-                that_r.push({name:'BuyTradeSuccessStatus'})
-            }else if(flag == 'b_order'){//全部订单
-                that_r.push({name:'BuyOrderAll'})
-            }
-            // 卖家 头部导航栏
-            else if(flag == 's_trading'){//交易中
-                that_r.push({name:'SellTradingStatus'})
-            }else if(flag == 's_wait'){//已发货
-                that_r.push({name:'SellWaitReceiveStatus'})
-            }else if(flag == 's_tradsuccess'){//交易成功
-                that_r.push({name:'SellTradeSuccessStatus'})
-            }else if(flag == 's_fail'){//交易失败
-                that_r.push({name:'SellFailureDealStatus'})
-            }else if(flag == 's_order'){//全部订单
-                that_r.push({name:'SellOrderAll'})
-            }
-            // 买家 底部导航栏
-            else if(flag == 'voucher'){//代金券
-                that_r.push({name:'Voucher'})
-            }else if(flag == 'myAuction'){//我的竞拍
-                that_r.push({name:'MyAuction'})
-            }else if(flag == 'bill'){//分期账单
-                that_r.push({name:'BillInstallment'})
-            }else if(flag == 'bargain'){//发起的议价
-                that_r.push({name:'BargainRecord'})
-            }
-            // 卖家 底部导航栏
-            else if(flag == 'sell'){//我要卖
-                that_r.push({name:'Sell'})
-            }else if(flag == 'myGoods'){//我的商品
-                that_r.push({name:'MyGoods'})
-            }else if(flag == 'messageAll'){//议价消息
-                that_r.push({name:'MessageAll'})
-            }
+        },
+        getData(){
+            var that=this;
+            that.$axios.post('/api/user_info').then((res)=>{
+                // console.log(res)
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        var data = res.data.data;
+                        that.$store.commit('set_mobile', data.user_info.username);
+                        that.myData.phoneNum = data.user_info.username;
+                        that.myData.sellNum = data.user_info.sell_count;
+                        that.myData.buyNum = data.user_info.buy_count;
+                        that.myData.manageData.usableBalance = data.user_info.total_money;
+                    }else{
+
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
         }
     },
     mounted() {
         var that = this;
         var token = this.$store.state.token;
-        if(token == undefined || token == ''){
+        if (token == undefined || token == "") {
             that.myData.userStatus = 1;
-        }else{
+        } else {
             that.myData.userStatus = 2;
-            that.myData.phoneNum = that.$store.state.mobile;
+            that.getData()
         }
     }
 };
@@ -456,6 +522,7 @@ export default {
 .mycenter-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
     position: relative;
 }
 .mycenter-top {
@@ -643,6 +710,7 @@ export default {
     color: #999999;
 }
 .box-content {
+    width: 100%;
     display: flex;
     justify-content: space-around;
     padding: 0.3rem 0 0.28rem;
@@ -765,7 +833,6 @@ export default {
 }
 .right-user-info {
     margin-left: 0.26rem;
-    padding-top: 0.16rem;
     font-size: 0.22rem;
     color: #ffdfdb;
 }

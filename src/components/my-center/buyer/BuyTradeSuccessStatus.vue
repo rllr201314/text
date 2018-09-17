@@ -72,6 +72,25 @@
                     orderStatus:'交易成功',
                 }]
             }
+        },
+        methods:{
+            getData(){
+                var that = this;
+                that.$axios.post('/api/buyer_trade_success').then((res)=>{
+                    console.log(res);
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            }
+        },
+        mounted(){
+            var that = this;
+            that.getData();
         }
     }
 </script>
@@ -117,10 +136,13 @@
         color:#666666;
         font-size:.26rem;
         margin-bottom:.1rem;
+        position:relative;
     }
     .history-time{
-        float:right;
         color:#999999;
+        position:absolute;
+        top:0;
+        right:0;
     }
     .order-des{
         width:4rem;

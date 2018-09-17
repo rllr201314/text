@@ -22,7 +22,7 @@
                     <div class="game-classfiy-top-cell" v-for="item in gameClassfiy" v-text="item.name" :class="item.sele?'red-bg':''" @click="seleGameClass(item.name)"></div>
                 </div>
                 <div class="game-classfiy-bottom">
-                    <div class="game-classfiy-bottom-list" v-for="item in gameList" @click="goSellOption(item)">
+                    <div class="game-classfiy-bottom-list" v-for="item in gameList" @click="goSellOption(item.category_id)">
                         <div class="list-left">
                             <img :src="item.game_logo" alt="">
                         </div>
@@ -137,19 +137,26 @@ export default {
         },
         goSellOption(opt) {
             var that = this;
-            var token = this.$store.state.token;
+            var token = that.$store.state.token;
             if(sessionStorage.getItem('buyOrsell') == 1){//买
                 that.$router.push({ name: "GoodScreen"});
-                sessionStorage.opt = opt.category_id;
+                sessionStorage.opt = opt;
             }else if(sessionStorage.getItem('buyOrsell') == 2){//卖
                 if (token == undefined || token == "") {
-                    mui.alert('请先登陆','提示','确认',function(){
-                        that.$router.push({name:'AccountLogin',params: {
-                            redirect: that.$router.currentRoute.name,
-                        }})
-                    },'div')
+                    mui.confirm("请先登陆","提示",["取消", "确认"],function(e) {
+                        if (e.index == 1) {
+                            that.$router.push({
+                                name: "AccountLogin",
+                                    params: {
+                                        redirect:that.$router.currentRoute.name
+                                    }
+                            });
+                        } else {
+                            that.$router.go(-1);
+                        }
+                    }, "div");
                 } else {
-                    that.$router.push({ name: "SellOption", params: opt});
+                    that.$router.push({ name: "SellOption",query:{opt}});
                 }   
             }
             
@@ -158,28 +165,32 @@ export default {
     mounted() {
         var that = this;
         var user_type = sessionStorage.getItem('buyOrsell');
-        if(user_type == 1){
-            that.showTitle.title = '我要买'
-        }else if(user_type == 2){
-            that.showTitle.title = '我要卖'
-        }
-        that.user_type = user_type;
+        if(user_type != '' && user_type != null){
+                if(user_type == 1){
+                that.showTitle.title = '我要买'
+            }else if(user_type == 2){
+                that.showTitle.title = '我要卖'
+            }
+            that.user_type = user_type;
 
-        that.$axios
-            .post("/api/category")
-            .then(function(response) {
-                var res = response;
-                console.log(res);
-                if (res.status == 200) {
-                    if (res.data.code == 200) {
-                        that.gameList = res.data.data.is_hot;
-                        that.gameClassAll = res.data.data;
+            that.$axios
+                .post("/api/category")
+                .then(function(response) {
+                    var res = response;
+                    // console.log(res);
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            that.gameList = res.data.data.is_hot;
+                            that.gameClassAll = res.data.data;
+                        }
                     }
-                }
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        }else{
+            that.$router.go(-1);
+        }
     }
 };
 </script>
@@ -188,6 +199,7 @@ export default {
 .sell-page-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .sell-page-content {
     padding: 0.2rem;

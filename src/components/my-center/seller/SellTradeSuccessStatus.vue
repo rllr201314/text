@@ -5,16 +5,16 @@
         <div class="tradeSuccess-content">
             <div class="tradeSuccess-cell" v-for="item in goodsData">
                 <div class="gameLog">
-                    <img :src="item.log" alt="">
+                    <img :src="item.game_logo" alt="">
                 </div>
                 <div class="orderInfo">
                      <div class="order-num">
-                         <span>订单号</span><span v-text="item.orderNum"></span><span class="history-time" v-text="item.history_time"></span>
+                         <span>订单号</span><span v-text="item.order_sn"></span><span class="history-time" v-text="item.create_time"></span>
                      </div>
-                     <div class="order-des" v-text="item.des"></div>
+                     <div class="order-des" v-text="item.goods_title"></div>
                      <div class="price-status">
-                         <span class="good-price" v-text="item.price"></span>
-                         <span class="order-status" v-text="item.orderStatus"></span>
+                         <span class="good-price"><span>￥</span><span v-text="item.goods_amount"></span></span>
+                         <span class="order-status">交易成功</span>
                      </div>
                 </div>
                 <div class="order-operate">
@@ -49,32 +49,27 @@
                         title:"交易成功",
                     }
                 },
-                goodsData:[{
-                    log:'./static/img/mh_ico.png',
-                    orderNum:'123456789',
-                    history_time:'10分钟前',
-                    des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
-                    price:'￥13200',
-                    orderStatus:'交易成功',
-                    text:'查看合同',
-                },{
-                    log:'./static/img/mh_ico.png',
-                    orderNum:'123456789',
-                    history_time:'10分钟前',
-                    des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
-                    price:'￥13200',
-                    orderStatus:'交易成功',
-                    text:'前往签约',
-                },{
-                    log:'./static/img/mh_ico.png',
-                    orderNum:'123456789',
-                    history_time:'10分钟前',
-                    des:'梦幻西游xxxxxxxxxxxxxxxxxxxxx...',
-                    price:'￥13200',
-                    orderStatus:'交易成功',
-                    text:'查看合同',
-                }]
+                goodsData:[],
             }
+        },
+        methods:{
+            getData(){
+                var that = this;
+                that.$axios.post('/api/seller_trade_success').then((res)=>{
+                    console.log(res);
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            that.goodsData = res.data.data.data;
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            }
+        },
+        mounted(){
+            var that = this;
+            that.getData();
         }
     }
 </script>
@@ -120,10 +115,13 @@
         color:#666666;
         font-size:.26rem;
         margin-bottom:.1rem;
+        position: relative;
     }
     .history-time{
-        float:right;
         color:#999999;
+        position:absolute;
+        top:0;
+        right:0;
     }
     .order-des{
         width:4rem;

@@ -97,6 +97,7 @@ export default {
                                 if(mobile){
                                     that.$store.commit("set_mobile",mobile);
                                 }
+                                that.$store.commit("changeLogin",'1')
                                 mui.alert(
                                     res.data.msg,
                                     "提示",
