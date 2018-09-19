@@ -123,6 +123,7 @@
     .orderAll-wrap{
         max-width:12rem;
         margin:0 auto;
+        padding-top:.88rem;
     }
     .orderAll-content{
         padding:.2rem;

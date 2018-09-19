@@ -955,7 +955,6 @@ export default {
                         .then(function(res) {
                             if (res.status == 200) {
                                 if (res.data.code == 200) {
-                                    // that.$refs.myScroll.setState(5);
                                     that.miniRefresh.endUpLoading(false);
                                     for (var i in res.data.data.data) {
                                         that.goodsInfo.push(
@@ -974,7 +973,6 @@ export default {
             } else {
                 that.page.counter = 1;
                 request.page = 1;
-                // that.$refs.myScroll.setState(0);
                 that.$axios
                     .post("/api/goods_info", request)
                     .then(function(res) {
@@ -1063,24 +1061,11 @@ export default {
                 query: { goods_id: goods_id }
             });
         },
-        // touchStart() {
-        //     console.log("aaa");
-        // },
-        // touchMove(e) {
-        //     console.log(e);
-        //     var that = this;
-        //     // console.log(this.$refs['mylist'].scrollTop)
-        //     // console.log($('#refreshContainer'))
-        //     console.log(that.mylist.scrollTop);
-        // },
-        // touchEnd() {
-        //     console.log("cc");
-        // },
         refresh() {
             this.miniRefresh = new MiniRefresh({
                 container: "#minirefresh",
                 down: {
-                    isAuto: true,
+                    isAuto: false,
                     callback: () => {
                         this.request.page = 1;
                         this.getGoodsInfo(this.request);

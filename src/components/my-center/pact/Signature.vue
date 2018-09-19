@@ -70,6 +70,7 @@ export default {
 .signature-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .signature-content {
     padding: 0.2rem;

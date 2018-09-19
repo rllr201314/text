@@ -28,37 +28,45 @@
             <div class="search" @click="getdiscuss('search')">搜索</div>
         </div>
 
-        <div class="goods-strip" v-for="item in goodsInfo" @click="goMessageDetails(item.goods_id)">
-            <div class="goods-strip-title">
-                <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                <div class="goods-type" v-else>代练号</div>
-                <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                <div class="account-type" v-else>安卓混服</div>
-                <div class="area" v-text="item.platform_name"></div>
-            </div>
-            <div class="goods-strip-content">
-                <div class="goods-des" v-text="item.goods_title"></div>
-                <div class="goods-ico">
-                    <img v-if="item.is_safe == 2" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
-                    <img v-if="item.is_stage == 2" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
-                    <img v-if="item.is_check == 2" src="../../../../static/img/goodscreen/verify.png" alt="">
-                    <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
-                </div>
-            </div>
-            <div class="goods-strip-bottom">
-                <div class="goods-price red-color" v-text="item.goods_price"></div>
-                <div class="tran-price" v-if="item.order_state >= 2">
-                    <span>成交价</span>
-                    <span class="red-color">￥<span v-text="item.goods_amount"></span></span>
-                </div>
-                <div class="hint">
-                    <div class="bargain" v-if="item.order_state < 2 || item.order_state == ''">
-                        <span>收到的议价：</span>
-                        <span v-text="item.msg_count"></span>
+        <div id="minirefresh" class="minirefresh-wrap list-wrap">
+            <div class="minirefresh-scroll list">
+                <ul>
+                    <div class="goods-strip" v-for="item in goodsInfo" @click="goMessageDetails(item.goods_id)">
+                        <div class="goods-strip-title">
+                            <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                            <div class="goods-type" v-else>代练号</div>
+                            <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                            <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                            <div class="account-type" v-else>安卓混服</div>
+                            <div class="area" v-text="item.platform_name"></div>
+                        </div>
+                        <div class="goods-strip-content">
+                            <div class="goods-des" v-text="item.goods_title"></div>
+                            <div class="goods-ico">
+                                <img v-if="item.is_safe == 2" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
+                                <img v-if="item.is_stage == 2" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
+                                <img v-if="item.is_check == 2" src="../../../../static/img/goodscreen/verify.png" alt="">
+                                <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
+                            </div>
+                        </div>
+                        <div class="goods-strip-bottom">
+                            <div class="goods-price red-color" v-text="item.goods_price"></div>
+                            <div class="tran-price" v-if="item.order_state >= 2">
+                                <span>成交价</span>
+                                <span class="red-color">￥
+                                    <span v-text="item.goods_amount"></span>
+                                </span>
+                            </div>
+                            <div class="hint">
+                                <div class="bargain" v-if="item.order_state < 2 || item.order_state == ''">
+                                    <span>收到的议价：</span>
+                                    <span v-text="item.msg_count"></span>
+                                </div>
+                                <div class="sale" v-if="item.order_state >= 2">已卖出</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="sale" v-if="item.order_state >= 2">已卖出</div>
-                </div>
+                </ul>
             </div>
         </div>
         <NoData v-if="showNoData"></NoData>
@@ -70,7 +78,8 @@ import NoData from "@/components/multi/NoData";
 export default {
     name: "MessageAll",
     components: {
-        Header
+        Header,
+        NoData
     },
     data() {
         return {
@@ -83,75 +92,134 @@ export default {
                     title: "收到的议价消息"
                 }
             },
-            showNoData:false,
+            showNoData: false,
             // 商品列表
             goodsInfo: [],
-            seleOpt:{
-                category_text:'游戏类型',
-                goods_text:'成交状态'
+            now_page: 1,
+            pages: null,
+            minirefresh: null,
+            seleOpt: {
+                category_text: "游戏类型",
+                goods_text: "成交状态"
             },
             request: {},
             goods_title: "",
             category_type: [],
-            goods_type:[{
-                value:'',
-                name:'全部'
-            },{
-                value:1,
-                name:'已成交'
-            },{
-                value:2,
-                name:'未成交'
-            }],
-            c_id:'',
-            g_id:'',
+            goods_type: [
+                {
+                    value: "",
+                    name: "全部"
+                },
+                {
+                    value: 1,
+                    name: "已成交"
+                },
+                {
+                    value: 2,
+                    name: "未成交"
+                }
+            ],
+            c_id: "",
+            g_id: ""
         };
     },
     mounted() {
         var that = this;
         that.getCategory();
         that.getdiscuss();
+        that.refresh();
     },
     methods: {
+        refresh() {
+            var that = this;
+            that.minirefresh = new MiniRefresh({
+                container: "#minirefresh",
+                down: {
+                    isLock: true
+                },
+                up: {
+                    isAuto: false,
+                    loadFull: {
+                        isEnable: false
+                    },
+                    isShowUpLoading: true,
+                    callback: () => {
+                        that.now_page++;
+                        if (that.now_page > that.pages) {
+                            that.minirefresh.endUpLoading(true);
+                        } else {
+                            this.getdiscuss("push");
+                        }
+                    }
+                }
+            });
+        },
         // 获取列表
         getdiscuss(flag) {
             var that = this;
-            if (flag == "search") {
+            if (flag == "push") {
+                that.request.page = that.now_page;
+            } else if (flag == "search") {
                 that.request.goods_status = that.g_id;
                 that.request.category_id = that.c_id;
                 that.request.goods_title = that.goods_title;
+                that.request.page = that.now_page = 1;
             } else {
                 that.request = {};
+                that.request.page = that.now_page;
             }
-            that.$axios.post("/api/preview_discuss", that.request).then(function(res){
-                console.log(res);
-                if(res.status == 200){
-                    if(res.data.code == 200){
-                        that.goodsInfo = res.data.data.data;
-                        if(res.data.data.data != ''){
-                            that.showNoData = false;
-                        }else{
-                            that.showNoData = true;
+            that.$axios
+                .post("/api/preview_discuss", that.request)
+                .then(function(res) {
+                    console.log(res);
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            var data = res.data.data.data;
+                            if (flag == "push") {
+                                if (data != "") {
+                                    for (var i in data) {
+                                        that.goodsInfo.push(data[i]);
+                                    }
+                                    that.minirefresh.endUpLoading(false);
+                                }else{
+                                    that.minirefresh.endUpLoading(true);
+                                }
+                            } else {
+                                that.goodsInfo = data;
+                                that.pages = res.data.data.last_page;
+                                if (data != "") {
+                                    that.showNoData = false;
+                                } else {
+                                    that.showNoData = true;
+                                }
+                            }
+                        } else if (res.data.code == 401) {
+                            mui.confirm(
+                                "请先登陆",
+                                "提示",
+                                ["取消", "确认"],
+                                function(e) {
+                                    if (e.index == 1) {
+                                        that.$router.push({
+                                            name: "AccountLogin",
+                                            params: {
+                                                redirect:
+                                                    that.$router.currentRoute
+                                                        .name
+                                            }
+                                        });
+                                    } else {
+                                        that.$router.go(-1);
+                                    }
+                                },
+                                "div"
+                            );
                         }
-                    }else if(res.data.code == 401){
-                        mui.confirm("请先登陆","提示",["取消", "确认"],
-                                    function(e) {
-                                        if (e.index == 1) {
-                                            that.$router.push({
-                                                name: "AccountLogin",
-                                                params: {
-                                                    redirect:that.$router.currentRoute.name
-                                                }
-                                            });
-                                        } else {
-                                            that.$router.go(-1);
-                                        }
-                                    },"div");
                     }
-                }
-            }).catch(function(err){
-                console.log(err);
-            });
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
         },
         // 获取游戏类型
         getCategory() {
@@ -163,10 +231,10 @@ export default {
                         if (res.data.code == 200) {
                             var category = res.data.data.is_hot;
                             category.unshift({
-                                category_id:'',
-                                game_name:'全部'
+                                category_id: "",
+                                game_name: "全部"
                             });
-                            that.category_type =category;
+                            that.category_type = category;
                             console.log(that.category_type);
                         }
                     }
@@ -176,27 +244,26 @@ export default {
                 });
         },
         // 显示弹出框
-        showPopver(flag){
-            mui(`#${flag}`).popover('toggle');
+        showPopver(flag) {
+            mui(`#${flag}`).popover("toggle");
         },
         // 选择隐藏弹框
-        showText(flag,val){
-            console.log(val);
+        showText(flag, val) {
             var that = this;
-            mui(`#${flag}`).popover('toggle');
-            if(flag == 'category'){
+            mui(`#${flag}`).popover("toggle");
+            if (flag == "category") {
                 var categoryArr = that.category_type;
-                for(var i in categoryArr){
-                    if(val == categoryArr[i].category_id){
+                for (var i in categoryArr) {
+                    if (val == categoryArr[i].category_id) {
                         that.seleOpt.category_text = categoryArr[i].game_name;
                         that.c_id = categoryArr[i].category_id;
                         break;
                     }
                 }
-            }else{
+            } else {
                 var goodArr = that.goods_type;
-                for(var i in goodArr){
-                    if(val == goodArr[i].value){
+                for (var i in goodArr) {
+                    if (val == goodArr[i].value) {
                         that.seleOpt.goods_text = goodArr[i].name;
                         that.g_id = goodArr[i].value;
                         break;
@@ -205,8 +272,11 @@ export default {
             }
         },
         // 跳转议价详情
-        goMessageDetails(goods_id){
-            this.$router.push({name:'MessageDetails',query:{goods_id:goods_id}})
+        goMessageDetails(goods_id) {
+            this.$router.push({
+                name: "MessageDetails",
+                query: { goods_id: goods_id }
+            });
         }
     }
 };
@@ -215,13 +285,13 @@ export default {
 .messageAll-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top: 0.88rem;
 }
 .search-wrap {
     background: #ffffff;
     padding: 0.3rem 0 0.3rem 0.2rem;
     font-size: 0.24rem;
     color: #333333;
-    margin-bottom: 0.2rem;
 }
 .search-left {
     display: inline-block;
@@ -243,11 +313,12 @@ export default {
     display: inline-block;
     position: relative;
 }
-#category,#goods{
+#category,
+#goods {
     width: 2.3rem;
 }
-#goods{
-    left:3.35rem;
+#goods {
+    left: 3.35rem;
 }
 .sele-type img {
     width: 0.2rem;
@@ -432,5 +503,11 @@ input[type="number"] {
 :-ms-input-placeholder {
     color: #999999;
     font-size: 0.26rem;
+}
+.list-wrap {
+    top: 2.88rem;
+}
+.list {
+    background: #f6f8fe;
 }
 </style>

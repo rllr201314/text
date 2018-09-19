@@ -72,6 +72,7 @@ export default {
         seleLink(flag) {
             var that = this;
             if (flag == "rollback") {
+                // debugger;
                 if (that.showTitle.goBack == 1) {
                     that.$router.push({ name: "HomePage" });
                 } else {

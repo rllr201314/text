@@ -41,7 +41,7 @@ export default new Router({
     {
       path: '/details', //商品详情
       name: 'Details',
-      component: (resolve) => require(['@/components/Details'], resolve)
+      component: (resolve) => require(['@/components/Details'], resolve),
     },
     {
       path: '/place-order', //下单

@@ -187,6 +187,7 @@ export default {
 .login-wrap {
     max-width: 7.5rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .login-header {
     width: 100%;

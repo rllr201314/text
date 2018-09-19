@@ -777,7 +777,7 @@ export default {
             }
             // 手机
             if (that_req.mobile == "") {
-                mui.alert("未输入手机号", "提示", "确认", "", "div");
+                mui.alert("请输入手机号", "提示", "确认", "", "div");
                 return false;
             } else {
                 var phoneReg = /^1[3-9][0-9]{9}$/g;

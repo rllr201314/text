@@ -173,7 +173,7 @@
             </div>
             <div class="bargain goods-details-bottom-right" v-if="goodsDetailsData.sell_type == 2" @click="bargainFn">议价</div>
             <div class="goods-details-bottom-right" v-if="goodsDetailsData.sell_type == 1"></div>
-            <div class="buy goods-details-bottom-right">立即购买</div>
+            <div class="buy goods-details-bottom-right" @click="buyFn">立即购买</div>
         </div>
         <!-- 议价弹框 -->
         <div class="hoodle" v-show="showShade">
@@ -196,7 +196,7 @@ import Swiper from "@/components/home-page/Swiper";
 import GoodsInfo from "@/components/auction-details/GoodsInfo"; //商品信息
 import NoData from "@/components/multi/NoData";
 export default {
-    inject:['reload'],
+    inject: ["reload"],
     name: "Details",
     data() {
         return {
@@ -208,7 +208,7 @@ export default {
                     showLogo: 2, //不显示头部log
                     showShare: 3, //1搜索2分享
                     showBg: true, //是否显示背景
-                    title: "商品详情",
+                    title: "商品详情"
                 },
                 imgList: [], //轮播图
                 // 商品列表
@@ -222,7 +222,8 @@ export default {
                     des: ``
                 }
             },
-            showNoData:false,
+            goods_id:null,
+            showNoData: false,
             showShade: false,
             bargain_price: "",
             goodsDetailsData: {
@@ -261,7 +262,7 @@ export default {
                     flow: false
                 },
                 // 是否收藏
-                isCollect: '',
+                isCollect: "",
                 // 是否有视频
                 video_url: "",
                 sell_type: "",
@@ -272,7 +273,7 @@ export default {
     components: {
         Header,
         Swiper,
-        GoodsInfo, //商品信息
+        GoodsInfo //商品信息
     },
     methods: {
         // 查看安全服务还是购买流程
@@ -286,44 +287,43 @@ export default {
             }
         },
         // 验证客服
-        goVerify(){
-            this.$router.push({name:'Authenticity'});
+        goVerify() {
+            this.$router.push({ name: "Authenticity" });
         },
         // 收藏
         collect() {
             var that = this;
             var token = this.$store.state.token;
             if (token == undefined || token == "") {
-                mui.confirm(
-                    "请先登陆",
-                    "提示",
-                    ["取消", "确认"],
-                    function(e) {
-                        console.log(e);
-                        if (e.index == 1) {
+                // mui.confirm(
+                //     "请先登陆",
+                //     "提示",
+                //     ["取消", "确认"],
+                //     function(e) {
+                //         if (e.index == 1) {
                             that.$router.push({
                                 name: "AccountLogin",
                                 params: {
                                     redirect: that.$router.currentRoute.name
                                 }
                             });
-                        }
-                    },
-                    "div"
-                );
+                //         }
+                //     },
+                //     "div"
+                // );
             } else {
                 that.$axios
                     .post("/api/collect", {
-                        goods_id: that.$route.query.goods_id
+                        goods_id: that.goods_id
                     })
                     .then(function(res) {
                         console.log(res);
                         if (res.status == 200) {
                             if (res.data.code == 200) {
-                                if(that.goodsDetailsData.isCollect == 1){
+                                if (that.goodsDetailsData.isCollect == 1) {
                                     that.goodsDetailsData.isCollect = 2;
-                                }else{
-                                     that.goodsDetailsData.isCollect = 1;
+                                } else {
+                                    that.goodsDetailsData.isCollect = 1;
                                 }
                             }
                         }
@@ -339,13 +339,29 @@ export default {
             document.body.style.overflow = "hidden";
             document.addEventListener("touchmove", mo, false); //禁止页面滑动
         },
+        buyFn() {
+            var that = this;
+            if (that.$store.state.token) {
+                that.$router.push({
+                    name: "PlaceOrderPage",
+                    query: { goods_id: that.goods_id }
+                });
+            } else {
+                that.$router.push({
+                    name: "AccountLogin",
+                    params: {
+                        redirect: that.$router.currentRoute.name
+                    }
+                });
+            }
+        },
         goBargain(flag, e) {
             var that = this;
             if (flag == "ok") {
                 if (that.bargain_price) {
                     that.$axios
                         .post("/api/discuss", {
-                            goods_id: that.$route.query.goods_id,
+                            goods_id: that.goods_id,
                             discuss_price: that.bargain_price
                         })
                         .then(function(res) {
@@ -388,13 +404,14 @@ export default {
 
             that.$axios
                 .post("/api/goods_detail", {
-                    goods_id: that.$route.query.goods_id
+                    goods_id: that.goods_id
                 })
                 .then(function(res) {
+                    console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
-                            if(res.data.data == ''){
-                                goods_info = '';
+                            if (res.data.data == "") {
+                                goods_info = "";
                                 that.showNoData = true;
                             }
                             that.showNoData = false;
@@ -486,7 +503,8 @@ export default {
                                 goods_info.goods_images;
                             that.goodsDetailsData.sell_type =
                                 goods_info.sell_type; //一口价还是可议价
-                            that.goodsDetailsData.isCollect = goods_info.is_collect;//是否收藏
+                            that.goodsDetailsData.isCollect =
+                                goods_info.is_collect; //是否收藏
                             if (res.data.data.recommendInfo.server_name) {
                                 that.goodsDetailsData.goodsList =
                                     res.data.data.recommendInfo;
@@ -508,12 +526,22 @@ export default {
                 });
         }
     },
+    // beforeRouteLeave(to,from,next){
+    //     // this.getData();
+    //     // console.log(this);
+    //     // console.log(to);
+    //     // if(to.path == 'AccountLogin'){
+    //     //     from.meta.keepAlive = true;
+    //     // }
+    //     // next();
+    // },
     mounted() {
         var that = this;
         if (
             that.$route.query.goods_id != "" &&
             that.$route.query.goods_id != undefined
-        ){
+        ) {
+            that.goods_id = that.$route.query.goods_id;
             that.getData();
         } else {
             that.$router.go(-1);
@@ -525,7 +553,7 @@ export default {
 .goods-details-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top:.88rem;
+    padding-top: 0.88rem;
 }
 
 /* 商品标题 */
@@ -603,7 +631,7 @@ export default {
     line-height: 0.35rem;
     padding: 0 0.1rem;
     color: #999999;
-    border:1px solid #b5b5b5;
+    border: 1px solid #b5b5b5;
     -webkit-border-radius: 0.18rem;
     -moz-border-radius: 0.18rem;
     border-radius: 0.18rem;
@@ -857,7 +885,7 @@ export default {
 }
 .goods-details-bottom-left,
 .goods-details-bottom-right {
-    display: inline-block;
+    /* display: inline-block; */
     text-align: center;
 }
 .goods-details-bottom-left {
@@ -865,7 +893,7 @@ export default {
     width: 1.3rem;
     font-size: 0.24rem;
     padding-top: 0.1rem;
-    border-right:1px solid #dcdcdc;
+    border-right: 1px solid #dcdcdc;
 }
 .goods-details-bottom-right {
     width: 2.5rem;

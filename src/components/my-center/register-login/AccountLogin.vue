@@ -104,15 +104,16 @@ export default {
                                     "确定",
                                     function() {
                                         // debugger;
-                                        if(that.$router.currentRoute.params.redirect != undefined){
-                                            that.$router.replace({
-                                                name: that.$router.currentRoute.params.redirect
-                                            });
-                                        }else{
-                                            that.$router.push({
-                                                name: "MyCenter"
-                                            });
-                                        }
+                                        // if(that.$router.currentRoute.params.redirect != undefined){
+                                        //     that.$router.replace({
+                                        //         name: that.$router.currentRoute.params.redirect
+                                        //     });
+                                        // }else{
+                                        //     that.$router.push({
+                                        //         name: "MyCenter"
+                                        //     });
+                                        // }
+                                        that.$router.go(-1);
                                         
                                     },
                                     "div"
@@ -152,6 +153,7 @@ export default {
 .login-wrap {
     max-width: 7.5rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .login-header {
     width: 100%;
