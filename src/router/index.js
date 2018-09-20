@@ -49,7 +49,7 @@ export default new Router({
       component: (resolve) => require(['@/components/buy/PlaceOrderPage'], resolve)
     },
     {
-      path: '/pay', //支付
+      path: '/pay', //支付 -- 支付方式
       name: 'Pay',
       component: (resolve) => require(['@/components/buy/Pay'], resolve)
     },

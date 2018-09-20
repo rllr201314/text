@@ -1648,14 +1648,9 @@ input[type="number"] {
     vertical-align: middle;
 }
 .list-wrap {
-    /* padding-top:.6rem; */
     top: 1.68rem;
 }
 .list {
-    /* padding-top: 1.68rem; */
-    /* padding-bottom: 0.24rem; */
-    /* min-height: 100vh;
-    overflow-y: auto; */
     background: #f6f8fe;
 }
 </style>

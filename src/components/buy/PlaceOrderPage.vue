@@ -70,6 +70,14 @@
                             </span>
                         </div>
                     </div>
+                    <div class="contact-cell" v-if="goodsInfo.is_discuss == 1">
+                        <span class="celltext">议价价格</span>
+                        <div class="cell-right">
+                            <span class="unit-price price">￥
+                                <span v-text="goodsInfo.discuss_price"></span>
+                            </span>
+                        </div>
+                    </div>
                     <div class="contact-cell" v-if="false">
                         <span class="celltext">商品数量</span>
                         <div class="cell-right raise-good">
@@ -258,7 +266,8 @@ export default {
             customInfo:null,//自定义--分期期数
             showSafe:false,
             showCompact:false,
-            down_price:null,//期数---
+            down_price:null,//首付
+            stage_num:null,//期数---
             protocol: true, //阅读协议
             showDownPayBox: false, //首付选项显示
             showStageBox: false, //分期选项显示
@@ -305,7 +314,8 @@ export default {
             } else if (flag == "stage") {
                 that.operaStage.stage = true;
                 that.operaStage.noStage = false;
-                that.down_price = 3;
+                that.down_price = 1;
+                that.stage_num = 1;
                 that.sumFn()
             } else if (flag == "nosafe") {
                 if(!that.operaSafe.noSafe){
@@ -338,19 +348,19 @@ export default {
         },
         sumFn(){
             var that = this;
-            if(that.down_price == 3){
+            if(that.down_price == 1){
                 if(that.showSafe || that.showCompact && that.operaSafe.safe){
                     that.totalPrice = Number(that.stage.first_deposit_price) + Number(that.goodsInfo.other_fee);
                 }else{
                     that.totalPrice = Number(that.stage.first_deposit_price);
                 }
-            }else if(that.down_price == 5){
+            }else if(that.down_price == 2){
                 if(that.showSafe || that.showCompact && that.operaSafe.safe){
                     that.totalPrice = Number(that.stage.second_deposit_price) + Number(that.goodsInfo.other_fee);
                 }else{
                     that.totalPrice = Number(that.stage.second_deposit_price);
                 }
-            }else{
+            }else if(that.down_price == 3){
                 if(that.operaSafe.safe){
                      that.totalPrice = Number(that.goodsInfo.goods_price) + Number(that.goodsInfo.other_fee);
                 }else{
@@ -366,16 +376,16 @@ export default {
                 if (downPayOpera[i].key == opera) {
                     downPayOpera[i].issele = true;
                     if(opera == 1){
-                        that.down_price = 3;
+                        that.down_price = 1;
                         that.show_periods = true;
                         that.sumFn();
                     }else if(opera == 2){
-                        that.down_price = 5;
+                        that.down_price = 2;
                         that.show_periods = true;
                         that.sumFn();
                     }else{
                         that.show_periods = false;
-                        that.down_price = 'num';
+                        that.down_price = 3;
                         that.sumFn()
                     }
                     continue;
@@ -418,25 +428,33 @@ export default {
             for (var i in stageOpera) {
                 if (stageOpera[i].key == opera) {
                     stageOpera[i].issele = true;
-                    // 首付百分三十 分一期
-                    if(that.down_price == 3 && opera == 1){
+                    if(that.down_price == 1 && opera == 1){// 首付百分三十 分一期
                         that.stageInfo = that.stage.first_one_interest;
-                    }else if(that.down_price == 3 && opera == 2){
+                        that.stage_num = 1;
+                    }else if(that.down_price == 1 && opera == 2){
                         that.stageInfo = that.stage.first_two_interest;
-                    }else if(that.down_price == 3 && opera == 3){
+                        that.stage_num = 3;
+                    }else if(that.down_price == 1 && opera == 3){
                         that.stageInfo = that.stage.first_three_interest;
-                    }else if(that.down_price == 5 && opera == 1){
+                        that.stage_num = 5;
+                    }else if(that.down_price == 2 && opera == 1){//首付百分之五十
                         that.stageInfo = that.stage.second_one_interest;
-                    }else if(that.down_price == 5 && opera == 2){
+                        that.stage_num = 1;
+                    }else if(that.down_price == 2 && opera == 2){
                         that.stageInfo = that.stage.second_two_interest;
-                    }else if(that.down_price == 5 && opera == 3){
+                        that.stage_num = 3;
+                    }else if(that.down_price == 2 && opera == 3){
                         that.stageInfo = that.stage.second_three_interest;
-                    }else if(that.down_price == 'num' && opera == 1){
+                        that.stage_num = 5;
+                    }else if(that.down_price == 3 && opera == 1){//自定义首付
                         that.stageInfo = that.customInfo.first_one_interest;
-                    }else if(that.down_price == 'num' && opera == 2){
+                        that.stage_num = 1;
+                    }else if(that.down_price == 3 && opera == 2){
                         that.stageInfo = that.customInfo.first_two_interest;
-                    }else if(that.down_price == 'num' && opera == 3){
+                        that.stage_num = 3;
+                    }else if(that.down_price == 3 && opera == 3){
                         that.stageInfo = that.customInfo.first_three_interest;
+                        that.stage_num = 5;
                     }
                     continue;
                 }
@@ -494,7 +512,7 @@ export default {
                         if (res.data.code == 200) {
                             that.goodsInfo = res.data.data.goods_info;
                             that.stage = res.data.data.stage;
-                            // 可以选择分期的话默认 首付30% 分一期
+                            // 可以选择分期的话默认 首付30% 分一期 判断可购合同还是保险
                             that.stageInfo = that.stage.first_one_interest;
                             that.totalPrice = that.goodsInfo.goods_price;
                             if(that.goodsInfo.is_safe == 2 && that.goodsInfo.is_compact == 2 && that.goodsInfo.other_is_safe == 1){
@@ -536,45 +554,72 @@ export default {
             var that = this;
             var request = {};
             // 微信
-            // if (that.wx == "") {
-            //     mui.alert("请输入微信账号", "提示", "确认", "", "div");
-            //     return false;
-            // }else{
-            //     var reg = /[\u4e00-\u9fa5]/g;
-            //     if(that.wx.match(reg)){
-            //         mui.alert("请输入正确微信账号", "提示", "确认", "", "div");
-            //         return false;
-            //     }
-            //      request.wx = that.wx;
-            // }
-            // // 手机号
-            // if (that.phone == "") {
-            //     mui.alert("请输入手机号", "提示", "确认", "", "div");
-            //     return false;
-            // }else{
-            //     var reg = /^1[3-9][0-9]{9}$/g;
-            //     if (!that.phone.match(reg)) {
-            //         mui.alert("您输入的手机号不正确","提示","确定","","div");
-            //         return false;
-            //     }
-            //      request.phone = that.phone;
-            // }
+            if (that.wx == "") {
+                mui.alert("请输入微信账号", "提示", "确认", "", "div");
+                return false;
+            }else{
+                var reg = /[\u4e00-\u9fa5]/g;
+                if(that.wx.match(reg)){
+                    mui.alert("请输入正确微信账号", "提示", "确认", "", "div");
+                    return false;
+                }
+                 request.wx = that.wx;
+            }
+            // 手机号
+            if (that.phone == "") {
+                mui.alert("请输入手机号", "提示", "确认", "", "div");
+                return false;
+            }else{
+                var reg = /^1[3-9][0-9]{9}$/g;
+                if (!that.phone.match(reg)) {
+                    mui.alert("您输入的手机号不正确","提示","确定","","div");
+                    return false;
+                }
+                 request.phone = that.phone;
+            }
+            // 判断是否勾选协议
+            if(!that.protocol){
+                mui.alert("请阅读并同意《看个号平台交易协议》","提示","确定","","div");
+                return false;
+            }
             // 分期还是一口价------------------------------------------------------------------
             if(that.operaStage.stage){
-                request.safe = 2;
-                request.down_price = that.down_price;
-                if(request.down_price == 'num'){
+                request.down_price = that.down_price;//选择 首付金额
+                if(request.down_price == 3){//自定义金额
                     if(!that.show_periods){
                         mui.alert("请确认你输入的自定义价格","提示","确定","","div");
+                        return false;
                     }
-                }else{
-                    console.log('aaaaaaaaaaaaaaaaa')
                 }
-
-            }else{
-                request.safe = 1;
+                request.stage_num = that.stage_num;
             }
+            // 是否购买合同或者保险
+            if(that.showSafe){
+                if(that.operaSafe.safe){//买保险
+                    request.safe = 1;
+                    request.compact = 2;
+                }else{
+                    request.safe = 2;
+                    request.compact = 2;
+                }
+            }else if(that.showCompact){
+                if(that.operaSafe.safe){//买合同
+                    request.safe = 2;
+                    request.compact = 1;
+                }else{
+                    request.safe = 2;
+                    request.compact = 2;
+                }
+            }else{
+                request.safe = 2;
+                request.compact = 2;
+            }
+            request.price = that.totalPrice;
+            request.goods_id = that.$route.query.goods_id;
             console.log(request);
+            var request = JSON.stringify(request)
+            that.$router.push({name:'Pay',query:{request}})
+            sessionStorage.order_info = request;
         }
     },
     mounted() {

@@ -111,13 +111,11 @@ export default {
             let clipboard = new ClipboardJS("#copy");
             clipboard.on("success", function(e) {
                 clipboard.destroy();
-                console.log("成功");
-                mui.alert("复制成功", "提示", "确认", null, "div");
+                mui.toast("复制成功",{ duration:'short', type:'div' });
             });
             clipboard.on("error", function(e) {
                 clipboard.destory();
-                console.log("失败");
-                mui.alert("请重新点击复制", "提示", "确认", null, "div");
+                mui.toast("请重新点击复制",{ duration:'short', type:'div' });
             });
         }
     }

@@ -2,47 +2,56 @@
     <!-- 浏览记录 -->
     <div class="browse-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
-        <div class="browse-con" v-if="!showNoData">
-            <div class="sele">
-                <span @click="clear('null')">清除失效</span>
-                <span @click="clear('all')">清除所有记录</span>
-            </div>
-            <div class="browse-info">
-                <div class="vertical"></div>
-                <div class="browse-cell" v-for="item in goodsInfo">
-                    <div class="browse-cell-tit">
-                        <span class="circle"></span>
-                        <span v-text="item.time"></span>
-                    </div>
-                    <div class="browse-cell-con" v-for="ind in item.data">
-                        <div class="browse-cell-con-top">
-                            <div class="goods-strip-title">
-                                <div class="goods-type" v-if="ind.deal_type == 1">成品号</div>
-                                <div class="goods-type" v-else-if="ind.deal_type == 2">代练号</div>
-                                <div class="account-type" v-if="ind.client_id == 1">安卓</div>
-                                <div class="account-type" v-else-if="ind.client_id == 2">苹果</div>
-                                <div class="account-type" v-else-if="ind.client_id == 3">安卓混服</div>
-                                <div class="area" v-text="ind.platform_name"></div>
-                            </div>
-                            <div class="goods-strip-content">
-                                <div class="goods-des" v-text="ind.goods_title"></div>
-                            </div>
-                            <div class="goods-strip-bottom">
-                                <span class="goods-price">￥<span v-text="ind.goods_price"></span></span>
+
+        <div id="minirefresh" class="minirefresh-wrap list-wrap">
+            <div class="minirefresh-scroll list">
+                <ul>
+                    <div class="browse-con" v-if="!showNoData">
+                        <div class="sele">
+                            <span @click="clear('null')">清除失效</span>
+                            <span @click="clear('all')">清除所有记录</span>
+                        </div>
+                        <div class="browse-info">
+                            <div class="vertical"></div>
+                            <div class="browse-cell" v-for="item in goodsInfo">
+                                <div class="browse-cell-tit">
+                                    <span class="circle"></span>
+                                    <span v-text="item.time"></span>
+                                </div>
+                                <div class="browse-cell-con" v-for="ind in item.data">
+                                    <div class="browse-cell-con-top">
+                                        <div class="goods-strip-title">
+                                            <div class="goods-type" v-if="ind.deal_type == 1">成品号</div>
+                                            <div class="goods-type" v-else-if="ind.deal_type == 2">代练号</div>
+                                            <div class="account-type" v-if="ind.client_id == 1">安卓</div>
+                                            <div class="account-type" v-else-if="ind.client_id == 2">苹果</div>
+                                            <div class="account-type" v-else-if="ind.client_id == 3">安卓混服</div>
+                                            <div class="area" v-text="ind.platform_name"></div>
+                                        </div>
+                                        <div class="goods-strip-content">
+                                            <div class="goods-des" v-text="ind.goods_title"></div>
+                                        </div>
+                                        <div class="goods-strip-bottom">
+                                            <span class="goods-price">￥
+                                                <span v-text="ind.goods_price"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="browse-cell-con-bot">
+                                        <div class="con-bot-box">
+                                            <img class="see" src="../../../../static/img/my-center/record/see.png" alt="">
+                                            <span v-text="ind.click_count"></span>
+                                        </div>
+                                        <div class="con-bot-box">
+                                            <img class="collect" src="../../../../static/img/my-center/record/collect.png" alt="">
+                                            <span v-text="ind.collect_count"></span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="browse-cell-con-bot">
-                            <div class="con-bot-box">
-                                <img class="see" src="../../../../static/img/my-center/record/see.png" alt="">
-                                <span v-text="ind.click_count"></span>
-                            </div>
-                            <div class="con-bot-box">
-                                <img class="collect" src="../../../../static/img/my-center/record/collect.png" alt="">
-                                <span v-text="ind.collect_count"></span>
-                            </div>
-                        </div>
                     </div>
-                </div>
+                </ul>
             </div>
         </div>
         <div class="hint" v-show="false">
@@ -54,13 +63,12 @@
 </template>
 <script>
 import Header from "@/components/home-page/Header";
-import myScroll from "@/components/pull/refresh"; //刷新
 import NoData from "@/components/multi/NoData";
 export default {
     name: "BrowseRecord",
     components: {
         Header,
-        NoData,
+        NoData
     },
     data() {
         return {
@@ -73,60 +81,118 @@ export default {
                     title: "浏览记录"
                 }
             },
-            showNoData:false,
-            goodsInfo: []
+            now_page: 1,
+            pages: null,
+            showNoData: false,
+            goodsInfo: [],
+            miniRefresh: null
         };
     },
-    methods:{
-        clear(flag){
-            var that =this;
-            if(flag == 'null'){
-                that.$axios.post('/api/clear_history').then((res)=>{
-                    console.log(res);
-                    if(res.status == 200){
-                        if(res.data.code == 400){
-                            mui.alert(res.data.msg,'提示','确认','','');
+    methods: {
+        clear(flag) {
+            var that = this;
+            if (flag == "null") {
+                that.$axios
+                    .post("/api/clear_history")
+                    .then(res => {
+                        console.log(res);
+                        if (res.status == 200) {
+                            mui.toast(res.data.msg, {
+                                duration: "short",
+                                type: "div"
+                            });
                         }
-                    }
-                }).catch((err)=>{
-                    console.log(err);
-                })
-            }else if(flag == 'all'){
-                that.$axios.post('/api/clear_all_history').then((res)=>{
-                    console.log(res);
-                    if(res.status == 200){
-                        if(res.data.code == 200){
-                            that.showNoData = true;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
+            } else if (flag == "all") {
+                that.$axios
+                    .post("/api/clear_all_history")
+                    .then(res => {
+                        console.log(res);
+                        if (res.status == 200) {
+                            if (res.data.code == 200) {
+                                that.showNoData = true;
+                            }
                         }
-                    }
-                }).catch((err)=>{
-                    console.log(err);
-                })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
             }
         },
-        getData(){
+        getData(flag) {
             var that = this;
-            that.$axios.post('/api/history_info').then((res)=>{
-                console.log(res)
-                if(res.status == 200){
-                    if(res.data.code == 200){
-                        if(res.data.data.data == ''){
-                            that.showNoData = true;
-                        }else{
-                            that.goodsInfo = res.data.data.data;
-                            that.showNoData = false;
+            that.$axios
+                .post("/api/history_info", {
+                    page: that.now_page
+                })
+                .then(res => {
+                    console.log(res);
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            if (flag) {
+                                if (res.data.data.data == "") {
+                                    that.miniRefresh.endUpLoading(true);
+                                } else {
+                                    for (var i in res.data.data.data) {
+                                        that.goodsInfo.push(
+                                            res.data.data.data[i]
+                                        );
+                                    }
+                                    that.miniRefresh.endUpLoading(false);
+                                }
+                            } else {
+                                if (res.data.data.data == "") {
+                                    that.showNoData = true;
+                                } else {
+                                    that.goodsInfo = res.data.data.data;
+                                    that.showNoData = false;
+                                    that.pages = res.data.data.last_page;
+                                }
+                            }
                         }
-
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        refresh() {
+            this.miniRefresh = new MiniRefresh({
+                container: "#minirefresh",
+                down: {
+                    isLock: true,
+                    isAuto: false,
+                    callback: () => {
+                        this.request.page = 1;
+                        this.getData();
+                    }
+                },
+                up: {
+                    isAuto: false,
+                    loadFull: {
+                        isEnable: false
+                    },
+                    isShowUpLoading: true,
+                    callback: () => {
+                        this.now_page++;
+                        if (this.now_page <= this.pages) {
+                            this.getData("push");
+                            console.log("aaa");
+                        } else {
+                            this.miniRefresh.endUpLoading(true);
+                        }
                     }
                 }
-            }).catch((err)=>{
-                console.log(err)
-            })
+            });
         }
     },
-    mounted(){
+    mounted() {
         var that = this;
         that.getData();
+        that.refresh();
     }
 };
 </script>
@@ -134,27 +200,25 @@ export default {
 .browse-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top:.88rem;
+    padding-top: 0.88rem;
 }
 .browse-con {
     padding: 0 0.2rem;
     position: relative;
-    height:12.4rem;
-    overflow-y:auto;
 }
 .sele {
     color: #999999;
     font-size: 0.24rem;
     position: absolute;
-    height:.8rem;
-    line-height:.8rem;
-    text-align:right;
+    height: 0.8rem;
+    line-height: 0.8rem;
+    text-align: right;
     right: 0.2rem;
-    top:0;
-    z-index:2;
+    top: 0;
+    z-index: 2;
 }
-.sele span{
-    display:inline-block;
+.sele span {
+    display: inline-block;
 }
 .sele span:nth-last-child(1) {
     margin-left: 0.6rem;
@@ -162,7 +226,7 @@ export default {
 .vertical {
     width: 1px;
     position: absolute;
-    left:0;
+    left: 0;
     top: 0.3rem;
     bottom: 0;
     /* height:1200px; */
@@ -215,7 +279,7 @@ export default {
     line-height: 0.36rem;
     margin-bottom: 0.2rem;
 }
-.goods-strip-title div{
+.goods-strip-title div {
     vertical-align: middle;
 }
 /* 精品 */
@@ -331,5 +395,12 @@ export default {
     color: #999999;
     font-size: 0.24rem;
     vertical-align: middle;
+}
+.list-wrap {
+    top: 0.88rem;
+    padding-bottom: 0.8rem;
+}
+.list {
+    background: #f6f8fe;
 }
 </style>

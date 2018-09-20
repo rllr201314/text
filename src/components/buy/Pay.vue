@@ -6,231 +6,537 @@
             <div class="pay-cell">
                 <div class="info-title">
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
-                    <span>订单信息</span>
+                    <span>请选择支付方式</span>
+                    <span>（请在下单后45分钟之内完成支付）</span>
                 </div>
-                <div class="info-content">
-                    <div class="strip">
-                        <span class="strip-left">订单号</span>
-                        <div class="strip-right">
-                            <span v-text="payData.orderInfo.orderNum"></span>
-                            <span class="orange-color">取消订单</span>
+                <div class="info-cell">
+                    <div class="cell-tit">
+                        <div class="tit-strip" @click="seleline('on')" :class="is_line?'red-top':''">线上支付</div>
+                        <div class="tit-strip" @click="seleline('no')" :class="!is_line?'red-top':''">线下支付</div>
+                    </div>
+                    <div class="opt-cell showPay" v-show="is_line">
+                        <div class="pay-strip" v-for="item in online" @click="selePayFun(item.key)" :class="item.issele?'red-border':'black-border'">
+                            <img :src="item.imgsrc" alt="">
                         </div>
                     </div>
-                    <div class="strip">
-                        <span class="strip-left">时间</span>
-                        <div class="strip-right">
-                            <span v-text="payData.orderInfo.orderTime"></span>
-                        </div>
+                    <div class="opt-cell remind" v-show="!is_line && off_line">
+                        <img src="../../../static/img/order/wallet.png" alt="">
+                        <div>线下支付主要通过银行卡或支付宝进行转账。请先确认“前往支付”</div>
                     </div>
-                    <div class="strip">
-                        <span class="strip-left">订单金额</span>
-                        <div class="strip-right">
-                            <span class="red-color order-price" v-text="payData.orderInfo.orderPrice"></span>
-                            <!--  -->
-                            <div class="discount">
-                                <div class="isbalance">
-                                    <div class="balance-left">
-                                        <img :src="payData.orderInfo.isbalace.balace?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
-                                        <span>使用押金抵扣</span>
-                                    </div>
-                                    <div>
-                                        <img :src="payData.orderInfo.isbalace.nobalace?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
-                                        <span>使用余额抵扣</span>
-                                    </div>
+                    <div class="opt-cell-order " v-if="!is_line && !off_line">
+                        <div class="order">
+                            <div class="order-box">
+                                <span>订单号：</span>
+                                <span class="strip-con" v-text="order_num"></span>
+                                <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="order_num" @click="copyFn()" id="copy">
+                            </div>
+                            <div class="red-color">转账的同时请您备注订单号以便核实</div>
+                        </div>
+                        <div class="pay-way">
+                            <div class="pay-way-tit">
+                                <img src="../../../static/img/order/zfb_ico.png" alt="">
+                                <span>支付宝转账</span>
+                            </div>
+                            <div class="pay-way-con">
+                                <div class="order-box">
+                                    <span>收款方：</span>
+                                    <span class="strip-con" v-text="order_info.ali.username"></span>
+                                    <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="order_info.ali.username" @click="copyFn()" id="copy">
                                 </div>
-                                <div class="deduction">
-                                    <div class="deduction-strip">押金抵扣 -￥3000</div>
-                                    <div class="deduction-strip">押金抵扣 -￥3000</div>
+                                <div class="order-box">
+                                    <span>支付宝账户：</span>
+                                    <span class="strip-con" v-text="order_info.ali.account">></span>
+                                    <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="order_info.ali.account" @click="copyFn()" id="copy">
                                 </div>
-                                <div class="last-time">（距离订单取消还有 <span class="red-color" v-text="payData.orderInfo.lastTime"></span> 请尽快完成交易）</div>
+                            </div>
+                        </div>
+                        <div class="across"></div>
+                        <div class="pay-way">
+                            <div class="pay-way-tit">
+                                <img src="../../../static/img/order/card.png" alt="">
+                                <span>银行卡转账</span>
+                            </div>
+                            <div class="pay-way-con">
+                                <div class="order-box">
+                                    <span>开户名：</span>
+                                    <span class="strip-con" v-text="order_info.bank.username"></span>
+                                    <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="order_info.bank.username" @click="copyFn()" id="copy">
+                                </div>
+                                <div class="order-box">
+                                    <span>开户行：</span>
+                                    <span class="strip-con" v-text="order_info.bank.bank_name"></span>
+                                    <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="order_info.bank.bank_name" @click="copyFn()" id="copy">
+                                </div>
+                                <div class="order-box">
+                                    <span>银行帐号：</span>
+                                    <span class="strip-con" v-text="order_info.bank.account"></span>
+                                    <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="order_info.bank.account" @click="copyFn()" id="copy">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="pay-info">
+                    <div class="left-pay-info">
+                        实际支付
+                    </div>
+                    <div class="right-pay-info">
+                        <div class="pay-price red-color">
+                            ￥<span v-text="price"></span>
+                        </div>
+                        <div class="isbalance" v-if="false">
+                            <div class="balance-left">
+                                <img :src="payData.orderInfo.isbalace.balace?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
+                                <span>使用押金抵扣</span>
+                            </div>
+                            <div>
+                                <img :src="payData.orderInfo.isbalace.nobalace?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
+                                <span>使用余额抵扣</span>
+                            </div>
+                        </div>
+                        <div class="deduction" v-if="false">
+                            <div class="deduction-strip">押金抵扣 -￥3000</div>
+                            <div class="deduction-strip">押金抵扣 -￥3000</div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
-            
-            <div class="pay-cell">
-                <!-- 支付方式组件 -->
-                <Payment v-bind:payInfo="componentsData.payInfo"></Payment>
-            </div>
         </div>
-        <div class="nextBtn">下一步</div>
+        <div class="nextBtn" @click="goPayFn" v-text="ok_text"></div>
+        <Loading v-if="showLoading"></Loading>
     </div>
 </template>
 <script>
-    import Header from '@/components/home-page/Header'
-    import Payment from '@/components/buy/Payment'
-    export default {
-        name:'Pay',
-        data(){
-            return {
-                componentsData:{
-                    showTitle:{
-                        showBack:false,//显示后退按钮
-                        showLogo:2,//不显示头部log
-                        showShare:3,//1搜索2分享
-                        showBg:true,//是否显示背景
-                        title:"商品下单",
-                    },
-                    payInfo:{
-                        showTitle:true,
-                        payment:{
-                            online:true,
-                            noline:false
-                        },
-                        online:[{
-                                key:'visa',
-                                issele:true,
-                                imgsrc:'./static/img/order/visa.png',
-                            },{
-                                key:'wx',
-                                issele:false,
-                                imgsrc:'./static/img/order/wxpay.png',
-                            },{
-                                key:'zfb',
-                                issele:false,
-                                imgsrc:'./static/img/order/zfbpay.png',
-                            }]
-                    }
+import Header from "@/components/home-page/Header";
+import Loading from "@/components/multi/Loading";
+export default {
+    name: "Pay",
+    data() {
+        return {
+            componentsData: {
+                showTitle: {
+                    showBack: false, //显示后退按钮
+                    showLogo: 2, //不显示头部log
+                    showShare: 3, //1搜索2分享
+                    showBg: true, //是否显示背景
+                    title: "商品下单"
                 },
-
-                payData:{
-                    orderInfo:{
-                        orderNum:'13823427342389423',
-                        orderTime:'2018-08-08 9:00',
-                        orderPrice:'￥2000',
-                        isbalace:{
-                            balace:true,
-                            nobalace:false,
-                        },
-                        lastTime:'22:22',
+                // s
+                payInfo: {
+                    showTitle: true,
+                    payment: {
+                        online: true,
+                        noline: false
+                    }
+                }
+            },
+            ok_text:'前往支付',
+            order_num:null,
+            order_info:null,
+            showLoading:false,
+            goods_info:null,
+            price:null,
+            is_line: true, //线上true 线下false
+            off_line:true,//未选择线下true 选择线下false
+            payment_num:3,//默认银联
+            online: [
+                {
+                    key: 3,
+                    issele: true,
+                    imgsrc: "./static/img/order/visa.png"
+                },
+                {
+                    key: 1,
+                    issele: false,
+                    imgsrc: "./static/img/order/wxpay.png"
+                },
+                {
+                    key: 2,
+                    issele: false,
+                    imgsrc: "./static/img/order/zfbpay.png"
+                }
+            ],
+            payData: {
+                orderInfo: {
+                    orderNum: "13823427342389423",
+                    orderTime: "2018-08-08 9:00",
+                    orderPrice: "￥2000",
+                    isbalace: {
+                        balace: true,
+                        nobalace: false
                     },
+                    lastTime: "22:22"
+                }
+            }
+        };
+    },
+    components: {
+        Header,
+        Loading
+    },
+    methods: {
+        seleline(flag) {
+            var that = this;
+            if (flag == "on") {
+                that.is_line = true;
+                that.ok_text = "前往支付";
+            } else {
+                that.is_line = false;
+                if(that.off_line){
+                    that.ok_text = "前往支付";
+                }else{
+                    that.ok_text = "查看订单";
                 }
             }
         },
-        components:{
-            Header,
-            Payment,
+        // 选择线上支付 方式
+        selePayFun(opt) {
+            var that = this;
+            var payAll = this.online;
+            for (var i in payAll) {
+                if (opt == payAll[i].key) {
+                    payAll[i].issele = true;
+                    that.payment_num = opt;
+                    continue;
+                }
+                payAll[i].issele = false;
+            }
         },
-        methods:{
-            
+        // 复制
+        copyFn() {
+            let that = this;
+            let clipboard = new ClipboardJS("#copy");
+            clipboard.on("success", function(e) {
+                clipboard.destroy();
+                mui.toast("复制成功",{ duration:'short', type:'div' });
+            });
+            clipboard.on("error", function(e) {
+                clipboard.destory();
+                mui.toast("请重新点击复制",{ duration:'short', type:'div' });
+            });
+        },
+        // 判断是不是JSON字符串
+        isobjStr(str) {
+            if (typeof str == "string") {
+                try {
+                    if (typeof JSON.parse(str) == "object") {
+                        return true;
+                    }
+                } catch (e) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        },
+        getData(){
+            var that = this;
+            var request = {};
+            var data = that.goods_info;
+            request.goods_id = data.goods_id;
+            request.mobile = data.phone;
+            request.wx = data.wx;
+            request.is_compact = data.compact;
+            request.is_safe = data.safe;
+            if(that.is_line){
+                request.payment_method = that.payment_num;
+            }else{
+                request.payment_method = 4;//选择线下支付
+            }
+            if(data.down_price){
+                request.stage_method = data.down_price;
+                request.stage_number = data.stage_num;
+            }
+            that.$axios.post('/api/order_confirm',request).then((res)=>{
+                console.log(res);
+                that.showLoading = false;
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        if(that.is_line){
+                            // 跳转页面 第三方接口
+                        }else{
+                            var data = res.data.data;
+                            that.off_line = false;
+                            that.order_num = data.order_sn;
+                            that.order_info = data.bank_account;
+                            that.ok_text = "查看订单"
+                        }
+                    }else if(res.data.code == 401){
+                        mui.confirm(
+                                res.data.msg,
+                                "提示",
+                                ["取消", "确认"],
+                                (e) => {
+                                    if (e.index == 1) {
+                                        that.$router.push({
+                                            name: "AccountLogin",
+                                            params: {
+                                                redirect: "Details"
+                                            }
+                                        });
+                                    } else {
+                                        that.$router.go(-2);
+                                    }
+                                },
+                                "div"
+                            );
+                    }else{
+                        mui.alert(res.data.msg,'提示','确认','','div')
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err);
+            })
+        },
+        goPayFn(){
+            var that = this;
+            that.showLoading = true;
+            that.getData();
+        }
+    },
+    mounted() {
+        var that = this;
+        var request = that.$route.query.request;
+        var b = sessionStorage.getItem("order_info");
+        if (request == b) {
+            if (that.isobjStr(request)) {
+                that.goods_info = JSON.parse(request);
+                that.price = that.goods_info.price;
+            } else {
+                that.$router.go(-1);
+            }
+        } else {
+            that.$router.go(-1);
         }
     }
+};
 </script>
 <style scoped>
+.pay-wrap {
+    max-width: 12rem;
+    margin: 0 auto;
+    padding-top: 0.88rem;
+}
+.pay-content {
+    padding: 0.2rem 0.2rem 0;
+}
+.pay-cell {
+    padding: 0 0.2rem;
+    background: #ffffff;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    margin-bottom: 0.2rem;
+}
+.info-title {
+    line-height: 0.7rem;
+    /* border-bottom:1px solid #e5e5e5; */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
 
-    .pay-content{
-        padding:.2rem .2rem 0;
-    }
-    .pay-cell{
-        background:#FFFFFF;
-        -webkit-border-radius: .1rem;
-        -moz-border-radius: .1rem;
-        border-radius: .1rem;
-        -webkit-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        -moz-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        box-shadow: .06rem .05rem .09rem #D6D6D6;
-        margin-bottom:.2rem;
-    }
-    .info-title{
-        line-height:.7rem;
-        border-bottom:.01rem solid #E5E5E5;
-    }
-    
-    .info-title span{
-        display: inline-block;
-        color:#333333;
-        font-size:.28rem;
-    }
-    .info-title img{
-        width:.13rem;
-        height:.29rem;
-        margin-left:.17rem;
-        vertical-align:middle;
-    }
+.info-title span {
+    display: inline-block;
+    color: #333333;
+    font-size: 0.28rem;
+}
+.info-title span:nth-last-child(1) {
+    font-size: 0.26rem;
+    color: #999999;
+}
+.info-title img {
+    width: 0.13rem;
+    height: 0.29rem;
+    margin-top: 0.1rem;
+}
 
-    .info-content{
-        color:#666666;
-        font-size:.26rem;
-        padding:.3rem .2rem .1rem;
-    }
-    .strip{
-        margin-bottom:.1rem;
-    }
-    .strip-left,.strip-right{
-        display:inline-block;
-    }
-    .strip-left{
-        width:1.3rem;
-        vertical-align: top;
-    }
-    .orange-color{
-        color:#FF7E4A;
-        text-decoration: underline;
-        margin-left:.4rem;
-    }
-    .red-color{
-        color:#FA5856;
-    }
-    .order-price{
-        font-size:.3rem;
-        margin-bottom:.1rem;
-    }
-    .isbalance{   
-        margin:.2rem 0;
-    }
-    .isbalance img{
-        width:.28rem;
-        height:.28rem;
-        vertical-align: middle;
-    }
-    .isbalance span{
-        vertical-align: middle;
-    }
-    .isbalance div{
-        display:inline-block;
-    }
-    .balance-left{
-        margin-right:.8rem;
-    }
-    .deduction{
-        background:#F6F6F6;
-        -webkit-border-radius: .06rem;
-        -moz-border-radius: .06rem;
-        border-radius: .06rem;
-        padding:.2rem;
-        color:#999999;
-        margin-bottom:.2rem;
-    }
-    .deduction div{
-        margin-bottom:.15rem;
-    }
-    .deduction div:nth-last-child(1){
-        margin-bottom:0;
-    }
+.pay-info {
+    font-size: 0.26rem;
+    padding: 0.4rem 0;
+    display: flex;
+    justify-content: flex-start;
+}
+.red-color {
+    color: #fa5856;
+}
+.left-pay-info {
+    width: 1.6rem;
+}
+.right-pay-info {
+    width: 100%;
+}
+.isbalance {
+    margin: 0.2rem 0;
+}
+.isbalance img {
+    width: 0.28rem;
+    height: 0.28rem;
+    vertical-align: middle;
+}
+.isbalance span {
+    vertical-align: middle;
+}
+.isbalance div {
+    display: inline-block;
+}
+.balance-left {
+    margin-right: 0.8rem;
+}
+.deduction {
+    background: #f6f6f6;
+    -webkit-border-radius: 0.06rem;
+    -moz-border-radius: 0.06rem;
+    border-radius: 0.06rem;
+    padding: 0.2rem;
+    color: #999999;
+    margin-bottom: 0.2rem;
+}
+.deduction div {
+    margin-bottom: 0.15rem;
+}
+.deduction div:nth-last-child(1) {
+    margin-bottom: 0;
+}
 
-    
+/* 下一步 */
+.nextBtn {
+    color: #ffffff;
+    font-size: 0.28rem;
+    margin: 0.5rem auto 0;
+    width: 6.5rem;
+    text-align: center;
+    line-height: 0.8rem;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    background: -webkit-linear-gradient(#fd915f, #fc534a);
+    background: -o-linear-gradient(#fd915f, #fc534a);
+    background: -moz-linear-gradient(#fd915f, #fc534a);
+    background: linear-gradient(to right, #fd915f, #fc534a);
+}
+.info-cell {
+    font-size: 0;
+}
+.cell-tit {
+    display: flex;
+    justify-content: flex-start;
+    font-size: 0.26rem;
+    height: 0.56rem;
+    line-height: 0.56rem;
+    position: relative;
+    top: 1px;
+}
+.cell-tit div {
+    width: 1.65rem;
+    text-align: center;
+    /* border-bottom: 1px solid red; */
+}
+.red-top {
+    border-top: 0.05rem solid #ff7e4a;
+    border-left: 1px solid #e5e5e5;
+    border-right: 1px solid #e5e5e5;
+    border-bottom: 1px solid #ffffff;
+}
+.opt-cell {
+    padding: 0.4rem 0;
+    border: 1px solid #e5e5e5;
+}
+.opt-cell-order {
+    font-size: 0.24rem;
+    border: 1px solid #e5e5e5;
+}
+/* 确认订单 */
+.order {
+    width: 6.14rem;
+    margin: 0.2rem auto 0.1rem;
+    padding: 0.2rem 0.5rem;
+    background: #f6f8fe;
+    border-top-left-radius: 0.53rem;
+    border-top-right-radius: 0.53rem;
+    border-bottom-left-radius: 0.53rem;
+    border-bottom-right-radius: 0.53rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+}
+.order-box {
+    color: #999999;
+    margin-bottom: 0.1rem;
+}
+.copy-img {
+    width: 0.2rem;
+    height: 0.24rem;
+}
+.strip-con {
+    color: #666666;
+    margin: 0 0.15rem;
+}
+.pay-way {
+    padding: 0.2rem 0.1rem 0.1rem;
+}
+.across {
+    width: 100%;
+    height: 0.1rem;
+    background: #f6f8fe;
+}
+.pay-way-tit {
+    font-weight: bold;
+}
+.pay-way-tit img {
+    width: 0.4rem;
+    height: 0.4rem;
+    vertical-align: middle;
+}
+.pay-way-con {
+    margin-left: 0.5rem;
+}
+/* 线上支付 */
+.showPay {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 0.4rem;
+}
+/* 线下支付 */
+.remind {
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.4rem 0.2rem 0.4rem 0.14rem;
+    align-items: center;
+}
+.remind img {
+    width: 0.89rem;
+    height: 0.89rem;
+    margin-right: 0.21rem;
+}
+.remind div {
+    color: #999999;
+    font-size: 0.26rem;
+}
 
-
-    /* 下一步 */
-    .nextBtn{
-        color:#FFFFFF;
-        font-size:.28rem;
-        margin:.5rem auto 0;
-        width:6.5rem;
-        text-align: center;
-        line-height: .8rem;
-        -webkit-border-radius: .1rem;
-        -moz-border-radius: .1rem;
-        border-radius: .1rem;
-        -webkit-box-shadow: .06rem .05rem .09rem #FD915F;
-        -moz-box-shadow: .06rem .05rem .09rem #FD915F;
-        box-shadow: .06rem .05rem .09rem #FD915F;
-        background:-webkit-linear-gradient(#FD915F,#FC534A);
-        background:-o-linear-gradient(#FD915F,#FC534A);
-        background:-moz-linear-gradient(#FD915F,#FC534A);
-        background:linear-gradient(to right, #FD915F , #FC534A);
-    }
+.pay-strip {
+    width: 1.4rem;
+    height: 0.58rem;
+    margin-right: 0.5rem;
+    overflow: hidden;
+}
+.pay-strip img {
+    width: 1.4rem;
+    height: 0.58rem;
+}
+.red-border {
+    border: 1px dashed #fe7649;
+}
+.black-border {
+    border: 1px dashed #dcdcdc;
+}
 </style>
 
