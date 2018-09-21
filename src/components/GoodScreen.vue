@@ -1094,7 +1094,6 @@ export default {
     beforeRouteLeave(to, from, next) {
         if (to.path == "/details") {
             from.meta.keepAlive = true;
-            console.log(from);
         } else {
             from.meta.keepAlive = false;
         }

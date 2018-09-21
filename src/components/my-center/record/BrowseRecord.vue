@@ -398,7 +398,6 @@ export default {
 }
 .list-wrap {
     top: 0.88rem;
-    padding-bottom: 0.8rem;
 }
 .list {
     background: #f6f8fe;

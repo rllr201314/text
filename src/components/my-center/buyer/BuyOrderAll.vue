@@ -113,6 +113,16 @@
                 })
             }
         },
+        beforeRouteLeave(to, from, next) {
+            // to.meta.keepAlive = false;
+            console.log(to);
+            if(to.path == '/pay'){
+                // to.meta.keepAlive = false;
+                this.$router.go(-4);//3-列表 因为列表的状态还是保存的 所以说直接跳选择游戏类型
+            }else{
+                next();
+            }
+        },
         mounted(){
             var that =this;
             that.getData();

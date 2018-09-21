@@ -5,25 +5,25 @@
         <div class="unpaid-content">
             <div class="unpaid-cell" v-for="item in goodsData">
                 <div class="gameLog">
-                    <img :src="item.log" alt="">
+                    <img :src="item.game_logo" alt="">
                 </div>
                 <div class="orderInfo">
                     <div class="order-num">
                         <span>订单号</span>
-                        <span v-text="item.orderNum"></span>
-                        <span class="history-time" v-text="item.history_time"></span>
+                        <span v-text="item.order_sn"></span>
+                        <span class="history-time" v-text="item.create_time"></span>
                     </div>
-                    <div class="order-des" v-text="item.des"></div>
+                    <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
-                        <span class="good-price" v-text="item.price"></span>
-                        <span class="order-status" v-text="item.orderStatus"></span>
+                        <span class="good-price" v-text="item.goods_amount"></span>
+                        <span class="order-status">待支付</span>
                     </div>
                     <div class="last-time">
                         倒计时
-                        <span class="time" v-text="item.time_h"></span>
-                        <span class="gray">小时</span>
-                        <span class="time" v-text="item.time_m"></span>
-                        <span class="gray">分</span>后订单将自动取消
+                        <span class="time" v-text="item.minute"></span>
+                        <span class="gray">分钟</span>
+                        <span class="time" v-text="item.second"></span>
+                        <span class="gray">秒</span>后订单将自动取消
                     </div>
                 </div>
                 <div class="order-operate">
@@ -32,8 +32,8 @@
                         <span>联系客服</span>
                     </div>
                     <div class="right-operate">
-                        <span class="cancel" @click="cancalOrder(item.key)">取消订单</span>
-                        <span class="pay">前往支付</span>
+                        <span class="cancel" @click="cancalOrder(item.order_id)">取消订单</span>
+                        <span class="pay" @click="goPayFn(item.order_id,item.goods_amount)">前往支付</span>
                     </div>
                 </div>
             </div>
@@ -67,7 +67,8 @@ export default {
                     showLogo: 2, //显示头部title文字
                     showShare: 3, //1搜索2分享3菜单
                     showBg: true, //是否显示背景
-                    title: "未支付订单"
+                    title: "未支付订单",
+                    
                 }
             },
             showUnpaidBox: false, //分期选项显示
@@ -117,6 +118,18 @@ export default {
             this.showUnpaidBox = true;
             this.showUnpaidShare = true;
         },
+        goPayFn(order_id,price){
+            var all = {}
+            all.order_id = order_id;
+            all.price = price;
+            var order_info = JSON.stringify(all);
+            this.$router.push({name:'Pay',query:{order_info}})
+        },
+        initTime(time){
+            var mm = Math.floor((time / 60) % 60);
+            var ss =  Math.floor(time %　60);
+            return [mm,ss];
+        },
         getData() {
             var that = this;
             that.$axios
@@ -129,8 +142,53 @@ export default {
                                 that.showNoData = true;
                             }else{
                                 that.showNoData = false;
-                                that.goodsData = res.data.data;
+                                var data = res.data.data;
+                                data.map((obj,index)=>{
+                                    this.$set(
+                                        obj,'minute',that.initTime(obj.lock_time)[0]
+                                    )
+                                    this.$set(
+                                        obj,'second',that.initTime(obj.lock_time)[1]
+                                    )
+                                })
+                                that.goodsData = data;
+                                for(var i in that.goodsData){
+                                    (function(i){
+                                        var timer = setInterval(function(){
+                                        that.goodsData[i].second -= 1;
+                                        if(that.goodsData[i].second<=0){ 
+                                            that.goodsData[i].minute-=1; 
+                                            that.goodsData[i].second=60; 
+                                            if(that.goodsData[i].minute<0){ 
+                                                that.goodsData[i].second = 0;
+                                                that.goodsData[i].minute = 0;
+                                                clearInterval(timer);
+                                            } 
+                                        }
+                                    },1000) 
+                                    })(i)
+                                }   
                             }
+
+                        }else if(res.data.code == 401){
+                             mui.confirm(
+                                res.data.msg,
+                                "提示",
+                                ["取消", "确认"],
+                                (e) => {
+                                    if (e.index == 1) {
+                                        that.$router.push({
+                                            name: "AccountLogin",
+                                            params: {
+                                                redirect: "Details"
+                                            }
+                                        });
+                                    } else {
+                                        that.$router.go(-2);
+                                    }
+                                },
+                                "div"
+                            );
                         }
                     }
                 })
@@ -232,7 +290,7 @@ export default {
     color: #333333;
     text-align: center;
     line-height: 0.4rem;
-    border: 0.01rem solid #aaaaaa;
+    border: 1px solid #aaaaaa;
     font-size: 0.26rem;
     -webkit-border-radius: 0.04rem;
     -moz-border-radius: 0.04rem;

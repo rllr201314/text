@@ -104,7 +104,7 @@ export default {
         Footer
     },
     mounted(){
-        // 活动倒计时----
+        // // 活动倒计时----
         // var time = null;
         // var second=5; 
         // var minute=0; 
@@ -138,8 +138,6 @@ export default {
         // time=setInterval(countDown,1000); 
               
     }
-
-
 }
 </script>
 

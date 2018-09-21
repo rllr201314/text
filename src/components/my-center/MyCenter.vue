@@ -497,8 +497,27 @@ export default {
                         that.myData.sellNum = data.user_info.sell_count;
                         that.myData.buyNum = data.user_info.buy_count;
                         that.myData.manageData.usableBalance = data.user_info.total_money;
-                    }else{
-
+                    }else if(res.data.code == 401){
+                        // that.$router.push({name: "AccountLogin"})
+                        mui.confirm(
+                                res.data.msg,
+                                "提示",
+                                ["取消", "确认"],
+                                e => {
+                                    if (e.index == 1) {
+                                        that.$router.push({
+                                            name: "AccountLogin",
+                                            params: {
+                                                redirect: "Details"
+                                            }
+                                        });
+                                    } else {
+                                        that.$router.go(-1);
+                                    }
+                                    console.log(e);
+                                },
+                                "div"
+                            );
                     }
                 }
             }).catch((err)=>{

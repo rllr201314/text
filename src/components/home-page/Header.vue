@@ -75,7 +75,9 @@ export default {
                 // debugger;
                 if (that.showTitle.goBack == 1) {
                     that.$router.push({ name: "HomePage" });
-                } else {
+                } else if (that.showTitle.goBack == 2) {
+                    that.$router.go(-3);
+                }else {
                     that.$router.go(-1);
                 }
             } else if (flag == "mycenter") {
@@ -160,6 +162,7 @@ export default {
     text-align: center;
     position: relative;
     color: #333333;
+
 }
 .rebBg {
     padding: 0.1rem 0;

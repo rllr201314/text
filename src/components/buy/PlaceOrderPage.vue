@@ -523,6 +523,10 @@ export default {
                                 that.totalPrice = Number(that.goodsInfo.goods_price) + Number(that.goodsInfo.other_fee);
                             }
 
+                        }else if(res.data.code == 400){
+                            mui.alert(res.data.msg,'提示','确认',function(){
+                                that.$router.go(-1);
+                            },'div')
                         } else if (res.data.code == 401) {
                             mui.confirm(
                                 res.data.msg,

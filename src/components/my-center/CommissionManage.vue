@@ -125,6 +125,7 @@ export default {
 .commission-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .commission-content {
     padding: 0.2rem;

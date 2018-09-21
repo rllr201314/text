@@ -120,7 +120,8 @@ export default {
                     showLogo: 2, //不显示头部log
                     showShare: 3, //1搜索2分享
                     showBg: true, //是否显示背景
-                    title: "商品下单"
+                    title: "商品下单",
+                    goBack:'',
                 },
                 // s
                 payInfo: {
@@ -131,6 +132,7 @@ export default {
                     }
                 }
             },
+            order_id:null,
             ok_text:'前往支付',
             order_num:null,
             order_info:null,
@@ -233,27 +235,41 @@ export default {
         getData(){
             var that = this;
             var request = {};
-            var data = that.goods_info;
-            request.goods_id = data.goods_id;
-            request.mobile = data.phone;
-            request.wx = data.wx;
-            request.is_compact = data.compact;
-            request.is_safe = data.safe;
-            if(that.is_line){
-                request.payment_method = that.payment_num;
+            var url;
+            if(that.goods_info && !that.order_id){
+                url = 'order_confirm';
+                var data = that.goods_info;
+                request.goods_id = data.goods_id;
+                request.mobile = data.phone;
+                request.wx = data.wx;
+                request.is_compact = data.compact;
+                request.is_safe = data.safe;
+                if(that.is_line){
+                    request.payment_method = that.payment_num;
+                }else{
+                    request.payment_method = 4;//选择线下支付
+                }
+                if(data.down_price){
+                    request.stage_method = data.down_price;
+                    request.stage_number = data.stage_num;
+                }
             }else{
-                request.payment_method = 4;//选择线下支付
+                url = 'order_trading';
+                request.order_id = that.order_id;
+                if(that.is_line){
+                    request.payment_method = that.payment_num;
+                }else{
+                    request.payment_method = 4;//选择线下支付
+                }
             }
-            if(data.down_price){
-                request.stage_method = data.down_price;
-                request.stage_number = data.stage_num;
-            }
-            that.$axios.post('/api/order_confirm',request).then((res)=>{
+            
+            that.$axios.post('/api/'+url,request).then((res)=>{
                 console.log(res);
                 that.showLoading = false;
                 if(res.status == 200){
                     if(res.data.code == 200){
                         mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        that.componentsData.showTitle.goBack = 2;//存在从订单列表进来直接回退到个人中心的小bug---------用beforeRouteLeve解决
                         if(that.is_line){
                             // 跳转页面 第三方接口
                         }else{
@@ -292,24 +308,45 @@ export default {
         },
         goPayFn(){
             var that = this;
-            that.showLoading = true;
-            that.getData();
+            if(!that.is_line && !that.off_line){
+                that.$router.push({name: "BuyOrderAll" })
+            }else{
+                that.showLoading = true;
+                that.getData();
+            }
         }
+    },
+    beforeRouteLeave(to, from, next) {
+        if(to.path == '/good-list'){
+            to.meta.keepAlive = false;
+        }
+        next();
     },
     mounted() {
         var that = this;
-        var request = that.$route.query.request;
         var b = sessionStorage.getItem("order_info");
-        if (request == b) {
-            if (that.isobjStr(request)) {
-                that.goods_info = JSON.parse(request);
-                that.price = that.goods_info.price;
+        if(that.$route.query.request){
+        var request = that.$route.query.request;
+            if (request == b) {
+                if (that.isobjStr(request)) {
+                    that.goods_info = JSON.parse(request);
+                    that.price = that.goods_info.price;
+                } else {
+                    that.$router.go(-1);
+                }
             } else {
                 that.$router.go(-1);
             }
-        } else {
-            that.$router.go(-1);
+        }else if(that.$route.query.order_info){
+            var order_id = that.$route.query.order_info;
+            if(that.isobjStr(order_id)){
+                var order = JSON.parse(order_id);
+                that.order_id = order.order_id;
+                that.price = order.price;
+
+            }
         }
+        
     }
 };
 </script>
