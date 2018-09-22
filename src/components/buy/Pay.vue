@@ -236,6 +236,7 @@ export default {
             var that = this;
             var request = {};
             var url;
+            // 判断是下单过来还是订单过来
             if(that.goods_info && !that.order_id){
                 url = 'order_confirm';
                 var data = that.goods_info;
@@ -278,6 +279,7 @@ export default {
                             that.order_num = data.order_sn;
                             that.order_info = data.bank_account;
                             that.ok_text = "查看订单"
+                            console.log(data);
                         }
                     }else if(res.data.code == 401){
                         mui.confirm(
@@ -304,6 +306,21 @@ export default {
                 }
             }).catch((err)=>{
                 console.log(err);
+            })
+        },
+        initTime(order_id){
+            var that = this;
+            that.$axios('/api/order_time',{
+                order_id:order_id
+            }).then((res)=>{
+                console.log(res)
+                if(res.status == 200){
+                    if(res.data.code == 200){
+
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
             })
         },
         goPayFn(){

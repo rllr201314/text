@@ -15,7 +15,7 @@
                     </div>
                     <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
-                        <span class="good-price" v-text="item.goods_amount"></span>
+                        <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
                         <span class="order-status">待支付</span>
                     </div>
                     <div class="last-time">

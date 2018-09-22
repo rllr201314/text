@@ -127,7 +127,7 @@ export default {
                 up: {
                     isAuto: false,
                     loadFull: {
-                        isEnable: false
+                        isEnable: false,
                     },
                     isShowUpLoading: true,
                     callback: () => {

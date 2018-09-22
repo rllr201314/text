@@ -5,18 +5,18 @@
         <div class="trad-content">
             <div class="trad-cell" v-for="item in goodsData">
                 <div class="gameLog">
-                    <img :src="item.log" alt="">
+                    <img :src="item.game_logo" alt="">
                 </div>
                 <div class="orderInfo">
                     <div class="order-num">
                         <span>订单号</span>
-                        <span v-text="item.orderNum"></span>
-                        <span class="history-time" v-text="item.history_time"></span>
+                        <span v-text="item.order_sn"></span>
+                        <span class="history-time" v-text="item.create_time"></span>
                     </div>
-                    <div class="order-des" v-text="item.des"></div>
+                    <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
-                        <span class="good-price" v-text="item.price"></span>
-                        <span class="order-status" v-text="item.orderStatus"></span>
+                        <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
+                        <span class="order-status">待确认交易</span>
                     </div>
                 </div>
                 <div class="order-operate">
@@ -25,7 +25,7 @@
                         <span>联系客服</span>
                     </div>
                     <div class="right-operate">
-                        <span class="pay">查看</span>
+                        <span class="pay" >查看</span>
                     </div>
                 </div>
             </div>

@@ -5,10 +5,10 @@
         <div class="sell-page-content">
             <div class="search">
                 <img class="search-ico" src="../../../static/img/search_ico.png" alt="">
-                <input class="search-input" type="text" placeholder="请输入游戏名称">
+                <input class="search-input" type="text" placeholder="请输入游戏名称" v-model="search_val" @input="searchFn">
                 <img class="empty-ico" src="../../../static/img/empty_ico.png" alt="" @click="emptyFun()">
             </div>
-            <div class="search-history">
+            <div class="search-history" v-if="historyNameList != ''">
                 <div class="search-history-title">
                     <div class="search-histoty-title-text">近期搜索</div>
                     <img src="../../../static/img/delete_ico.png" alt="">
@@ -51,24 +51,9 @@ export default {
                 showBg: true, //是否显示背景
                 title: ""
             },
-            user_type:'',//用户类型
-            historyNameList: [
-                {
-                    name: "梦幻西游"
-                },
-                {
-                    name: "梦幻西游之梦幻西游"
-                },
-                {
-                    name: "梦幻西游"
-                },
-                {
-                    name: "梦幻西游之梦幻西游"
-                },
-                {
-                    name: "梦幻西游"
-                }
-            ],
+            search_val: "",
+            user_type: "", //用户类型
+            historyNameList: [],
             gameClassfiy: [
                 { name: "热", sele: true },
                 { name: "A", sele: false },
@@ -108,7 +93,42 @@ export default {
     methods: {
         //一键清空
         emptyFun() {
-            $(".search-input").val("");
+            this.search_val = "";
+        },
+        Trim(str, is_global) {
+            var result;
+            result = str.replace(/(^\s+)|(\s+$)/g, "");
+            if (is_global.toLowerCase() == "g") {
+                result = result.replace(/\s/g, "");
+            }
+            return result;
+        },
+        // 搜索
+        searchFn() {
+            var that = this;
+            // console.log(that.search_val);
+            // console.log(that.gameClassAll);
+            // var all = that.gameClassAll.is_other;
+            // console.log(all);
+            // var a = /^[A-Za-z]+$/;//字母
+            // var b = /^[\u4E00-\u9FA5]{2,4}$/;//汉字
+            // var c = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/;//汉字和字母
+            // var str = that.Trim(that.search_val,'g');
+            // if(str.match(a)){//字母
+            //     console.log('aaa');
+            //     console.log(str.match(a));
+            // }else if(str.match(b)){
+            //     console.log('---')
+            //     console.log(str.match(b));
+            // }else if(str.match(c)){
+            //     console.log('ddd');
+            //     console.log(str)
+            //     for(var i in all){
+            //         console.log(i);
+
+            //     }
+
+            // }
         },
         // 选择游戏对应的字母
         seleGameClass(opt) {
@@ -138,38 +158,45 @@ export default {
         goSellOption(opt) {
             var that = this;
             var token = that.$store.state.token;
-            if(sessionStorage.getItem('buyOrsell') == 1){//买
-                that.$router.push({ name: "GoodScreen"});
+            if (sessionStorage.getItem("buyOrsell") == 1) {
+                //买
+                that.$router.push({ name: "GoodScreen" });
                 sessionStorage.opt = opt;
-            }else if(sessionStorage.getItem('buyOrsell') == 2){//卖
+            } else if (sessionStorage.getItem("buyOrsell") == 2) {
+                //卖
                 if (token == undefined || token == "") {
-                    mui.confirm("请先登陆","提示",["取消", "确认"],function(e) {
-                        if (e.index == 1) {
-                            that.$router.push({
-                                name: "AccountLogin",
+                    mui.confirm(
+                        "请先登陆",
+                        "提示",
+                        ["取消", "确认"],
+                        function(e) {
+                            if (e.index == 1) {
+                                that.$router.push({
+                                    name: "AccountLogin",
                                     params: {
-                                        redirect:that.$router.currentRoute.name
+                                        redirect: that.$router.currentRoute.name
                                     }
-                            });
-                        } else {
-                            that.$router.go(-1);
-                        }
-                    }, "div");
+                                });
+                            } else {
+                                that.$router.go(-1);
+                            }
+                        },
+                        "div"
+                    );
                 } else {
-                    that.$router.push({ name: "SellOption",query:{opt}});
-                }   
+                    that.$router.push({ name: "SellOption", query: { opt } });
+                }
             }
-            
         }
     },
     mounted() {
         var that = this;
-        var user_type = sessionStorage.getItem('buyOrsell');
-        if(user_type != '' && user_type != null){
-                if(user_type == 1){
-                that.showTitle.title = '我要买'
-            }else if(user_type == 2){
-                that.showTitle.title = '我要卖'
+        var user_type = sessionStorage.getItem("buyOrsell");
+        if (user_type != "" && user_type != null) {
+            if (user_type == 1) {
+                that.showTitle.title = "我要买";
+            } else if (user_type == 2) {
+                that.showTitle.title = "我要卖";
             }
             that.user_type = user_type;
 
@@ -188,7 +215,7 @@ export default {
                 .catch(function(error) {
                     console.log(error);
                 });
-        }else{
+        } else {
             that.$router.go(-1);
         }
     }
@@ -199,7 +226,7 @@ export default {
 .sell-page-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top:.88rem;
+    padding-top: 0.88rem;
 }
 .sell-page-content {
     padding: 0.2rem;
@@ -218,8 +245,8 @@ export default {
 .search-input {
     width: 7.1rem;
     height: 0.76rem;
-    font-size:.24rem;
-    color:#999999;
+    font-size: 0.24rem;
+    color: #999999;
     padding: 0 0.52rem;
     margin: 0;
 }

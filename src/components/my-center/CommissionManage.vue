@@ -19,7 +19,7 @@
                         <img src="../../../static/img/my-center/getcode_ico.png" alt="">
                         <span class="gray-color">邀请码</span>
                         <span class="invite" v-text="invite"></span>
-                        <span class="blue-color" :data-clipboard-text="invite" @click="copyFn()" id="copy">复制</span>
+                        <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="invite" @click="copyFn()" id="copy">
                     </div>
                 </div>
                 <div class="commission-bot-strip">
@@ -231,5 +231,9 @@ export default {
     position:absolute;
     top:1rem;
     right:.2rem;
+}
+.copy-img {
+    width: 0.2rem;
+    height: 0.24rem;
 }
 </style>
