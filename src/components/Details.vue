@@ -54,146 +54,159 @@
                 <img v-if="goodsDetailsData.safeInfo.check == 1" src="../../static/img/goodscreen/verify.png" alt="">
                 <img v-if="goodsDetailsData.safeInfo.compact == 1" src="../../static/img/goodscreen/contract_ico.png" alt="">
             </div>
-        </div>
-        <!-- 账号绑定 -->
-        <div class="accountBind-info detail-info">
-            <div class="info-left">账号绑定</div>
-            <div class="info-right">
-                <div class="user-bind">
-                    <img :src="goodsDetailsData.accountBind.userBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
-                    <span>绑定身份证</span>
-                </div>
-                <div class="user-bind">
-                    <img :src="goodsDetailsData.accountBind.phoneBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
-                    <span>绑定手机</span>
-                </div>
-                <div class="user-bind">
-                    <img :src="goodsDetailsData.accountBind.emailBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
-                    <span>绑定邮箱</span>
-                </div>
             </div>
-        </div>
-        <!-- 商品描述 -->
-        <div class="goods-details-info">
-            <GoodsInfo v-bind:goodsInfo="componentsData.goodsInfo"></GoodsInfo>
-        </div>
-        <!-- 视频看号 -->
-        <div class="vedio-info">
-            <div class="vedio-title" v-if="goodsDetailsData.video_url != ''">
-                <div class="vedio-title-top">
-                    <span class="vertical"></span>
-                    <span>视频看号</span>
-                </div>
-                <div class="red-color">
-                    为保证您的资产安全受平台保护，请勿联系视频中的个人联系方式
-                </div>
-            </div>
-            <!-- iframe -->
-            <div class="vedio-content" v-if="goodsDetailsData.video_url != ''">视频</div>
-            <div class="vidio-bottom">
-                <div :class="goodsDetailsData.safeOrflow.safe?'red-border':'black-border'" @click="cliflow('safe')">安全服务</div>
-                <div :class="goodsDetailsData.safeOrflow.flow?'red-border':'black-border'" @click="cliflow('flow')">购买流程</div>
-            </div>
-            <div class="showBox">
-                <div class="showBox-left" v-show="goodsDetailsData.safeOrflow.safe">
-                    <div class="detail-user-opera">
-                        <div class="cell user-contact">
-                            <img src="../../static/img/goods-details/contact_ico.png" alt="">
-                            <div>全程客服协助</div>
-                        </div>
-                        <div class="cell user-safety">
-                            <img src="../../static/img/goods-details/safety_ico.png" alt="">
-                            <div>付款安全保障</div>
-                        </div>
-                        <div class="cell user-Authentication">
-                            <img src="../../static/img/goods-details/user_bind_ico.png" alt="">
-                            <div>卖家身份认证</div>
-                        </div>
-                        <div class="cell user-settlement">
-                            <img src="../../static/img/goods-details/settlement_ico.png" alt="">
-                            <div>保险理赔</div>
-                        </div>
+            <!-- 账号绑定 -->
+            <div class="accountBind-info detail-info">
+                <div class="info-left">账号绑定</div>
+                <div class="info-right">
+                    <div class="user-bind">
+                        <img :src="goodsDetailsData.accountBind.userBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
+                        <span>绑定身份证</span>
                     </div>
-                    <div class="go-verify" @click="goVerify">前往验证客服</div>
-                    <!-- <div class="more-info">查看更多详情</div> -->
-                </div>
-                <div class="showBox-right" v-show="goodsDetailsData.safeOrflow.flow">
-                    <div class="flow-left">
-                        <img src="../../static/img/goods-details/flow.png" alt="">
+                    <div class="user-bind">
+                        <img :src="goodsDetailsData.accountBind.phoneBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
+                        <span>绑定手机</span>
                     </div>
-                    <div class="flow-right">
-                        <div class="flow-title">下单支付</div>
-                        <div class="flow-content">支付成功，进入与 [联系发货客服] 聊天界面</div>
-                        <div class="flow-title">等待发货</div>
-                        <div class="flow-content">客服登录卖家账号，为买家发货。</div>
-                        <div class="flow-content">部分游戏需要买家同时在线才能发货，</div>
-                        <div class="flow-content">请保持在线并及时与发货客服沟通。</div>
-                        <div class="flow-content red-color">重要：道具交易不使用QQ沟通，谨防骗子！</div>
-                        <div class="flow-title">买家收货</div>
-                        <div class="flow-content">在游戏内取货</div>
-                        <div class="flow-title">确认收货</div>
-                        <div class="flow-content">买家确认收货</div>
-                        <div class="flow-title">交易成功</div>
+                    <div class="user-bind">
+                        <img :src="goodsDetailsData.accountBind.emailBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
+                        <span>绑定邮箱</span>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- 猜你喜欢 -->
-        <div class="guess" v-if="goodsDetailsData.goodsList != ''">
-            <img src="../../static/img/goods-details/left_solid.png" alt="">
-            <span>猜你喜欢</span><img src="../../static/img/goods-details/right_solid.png" alt="">
-        </div>
-        <!-- 商品列表 -->
-        <div v-if="goodsDetailsData.goodsList != ''">
-            <div class="goods-strip" v-for="item in goodsDetailsData.goodsList" @click="goDetail(item.goods_id)">
-                <div class="goods-strip-title">
-                    <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                    <div class="goods-type" v-else-if="item.deal_type == 2">代练号</div>
-                    <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                    <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                    <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                    <div class="area" v-text="item.area_name"></div>
-                </div>
-                <div class="goods-des" v-text="item.goods_title"></div>
-                <div class="goods-price">￥
-                    <span v-text="item.goods_price"></span>
+            <!-- 商品描述 -->
+            <div class="goods-details-info">
+                <!-- <GoodsInfo v-bind:goodsInfo="componentsData.goodsInfo"></GoodsInfo> -->
+                <div class="goods-info-content">
+                    <div class="goods-info-content-left">
+                        <div class="goods-basic-left">基本信息</div>
+                        <div class="goods-level-left">等级</div>
+                        <div class="goods-school-left">门派</div>
+                        <div class="goods-des-left">商品描述</div>
+                    </div>
+                    <div class="goods-info-content-right">
+                        <div class="goods-basic-right" v-text="goodsInfo.basic"></div>
+                        <div class="goods-level-right" v-text="goodsInfo.level"></div>
+                        <div class="goods-school-right" v-text="goodsInfo.school"></div>
+                        <div class="goods-des-right" v-text="goodsInfo.des"></div>
+                    </div>
                 </div>
             </div>
-            <div class="more-info">查看更多</div>
-        </div>
-        <!-- div -->
-        <div class="goods-details-bottom">
-            <div class="share goods-details-bottom-left">
-                <img src="../../static/img/goods-details/share_ico.png" alt="">
-                <div>分享</div>
-            </div>
-            <div class="collect goods-details-bottom-left" @click="collect()">
-                <img :src="goodsDetailsData.isCollect == 1?'./static/img/goods-details/ok_collect_ico.png':'./static/img/goods-details/no_collect_ico.png'" alt="">
-                <div>收藏</div>
-            </div>
-            <div class="bargain goods-details-bottom-right" v-if="goodsDetailsData.sell_type == 2" @click="bargainFn">议价</div>
-            <div class="goods-details-bottom-right" v-if="goodsDetailsData.sell_type == 1"></div>
-            <div class="buy goods-details-bottom-right" @click="buyFn">立即购买</div>
-        </div>
-        <!-- 议价弹框 -->
-        <div class="hoodle" v-show="showShade">
-            <img src="../../static/img/my-center/record/bargain_tit.png" alt="">
-            <div class="hoodle-con">
-                <input type="number" placeholder="请输入您的出价" v-model="bargain_price">
-            </div>
-            <div class="hoodle-btn">
-                <div class="okBtn" @click="goBargain('ok')">确认</div>
-                <div class="cancelBtn" @click="goBargain('no')">取消</div>
-            </div>
-        </div>
-        <div class="shade" v-show="showShade"></div>
-        <NoData v-if="showNoData"></NoData>
-    </div>
+            <!-- 视频看号 -->
+            <div class="vedio-info">
+                <div class="vedio-title" v-if="goodsDetailsData.video_url != ''">
+                    <div class="vedio-title-top">
+                        <span class="vertical"></span>
+                        <span>视频看号</span>
+                    </div>
+                    <div class="red-color">
+                        为保证您的资产安全受平台保护，请勿联系视频中的个人联系方式
+                    </div>
+                </div>
+                <!-- iframe -->
+                <div class="vedio-content" v-if="goodsDetailsData.video_url != ''">视频</div>
+                <div class="vidio-bottom">
+                    <div :class="goodsDetailsData.safeOrflow.safe?'red-border':'black-border'" @click="cliflow('safe')">安全服务</div>
+                    <div :class="goodsDetailsData.safeOrflow.flow?'red-border':'black-border'" @click="cliflow('flow')">购买流程</div>
+                </div>
+                <div class="showBox">
+                    <div class="showBox-left" v-show="goodsDetailsData.safeOrflow.safe">
+                        <div class="detail-user-opera">
+                            <div class="cell user-contact">
+                                <img src="../../static/img/goods-details/contact_ico.png" alt="">
+                                <div>全程客服协助</div>
+                            </div>
+                            <div class="cell user-safety">
+                                <img src="../../static/img/goods-details/safety_ico.png" alt="">
+                                <div>付款安全保障</div>
+                            </div>
+                            <div class="cell user-Authentication">
+                                <img src="../../static/img/goods-details/user_bind_ico.png" alt="">
+                                <div>卖家身份认证</div>
+                            </div>
+                            <div class="cell user-settlement">
+                                <img src="../../static/img/goods-details/settlement_ico.png" alt="">
+                                <div>保险理赔</div>
+                            </div>
+                        </div>
+                        <div class="go-verify" @click="goVerify">前往验证客服</div>
+                        <!-- <div class="more-info">查看更多详情</div> -->
+                    </div>
+                    <div class="showBox-right" v-show="goodsDetailsData.safeOrflow.flow">
+                        <div class="flow-left">
+                            <img src="../../static/img/goods-details/flow.png" alt="">
+                    </div>
+                            <div class="flow-right">
+                                <div class="flow-title">下单支付</div>
+                                <div class="flow-content">支付成功，进入与 [联系发货客服] 聊天界面</div>
+                                <div class="flow-title">等待发货</div>
+                                <div class="flow-content">客服登录卖家账号，为买家发货。</div>
+                                <div class="flow-content">部分游戏需要买家同时在线才能发货，</div>
+                                <div class="flow-content">请保持在线并及时与发货客服沟通。</div>
+                                <div class="flow-content red-color">重要：道具交易不使用QQ沟通，谨防骗子！</div>
+                                <div class="flow-title">买家收货</div>
+                                <div class="flow-content">在游戏内取货</div>
+                                <div class="flow-title">确认收货</div>
+                                <div class="flow-content">买家确认收货</div>
+                                <div class="flow-title">交易成功</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 猜你喜欢 -->
+                <div class="guess" v-if="goodsDetailsData.goodsList != ''">
+                    <img src="../../static/img/goods-details/left_solid.png" alt="">
+                    <span>猜你喜欢</span><img src="../../static/img/goods-details/right_solid.png" alt="">
+                </div>
+                    <!-- 商品列表 -->
+                    <div v-if="goodsDetailsData.goodsList != ''">
+                        <div class="goods-strip" v-for="item in goodsDetailsData.goodsList" @click="goDetail(item.goods_id)">
+                            <div class="goods-strip-title">
+                                <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                                <div class="goods-type" v-else-if="item.deal_type == 2">代练号</div>
+                                <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                <div class="area" v-text="item.area_name"></div>
+                            </div>
+                            <div class="goods-des" v-text="item.goods_title"></div>
+                            <div class="goods-price">￥
+                                <span v-text="item.goods_price"></span>
+                            </div>
+                        </div>
+                        <div class="more-info">查看更多</div>
+                    </div>
+                    <!-- div -->
+                    <div class="goods-details-bottom">
+                        <div class="share goods-details-bottom-left">
+                            <img src="../../static/img/goods-details/share_ico.png" alt="">
+                            <div>分享</div>
+                        </div>
+                        <div class="collect goods-details-bottom-left" @click="collect()">
+                            <img :src="goodsDetailsData.isCollect == 1?'./static/img/goods-details/ok_collect_ico.png':'./static/img/goods-details/no_collect_ico.png'" alt="">
+                            <div>收藏</div>
+                        </div>
+                        <div class="bargain goods-details-bottom-right" v-if="goodsDetailsData.sell_type == 2" @click="bargainFn">议价</div>
+                        <div class="goods-details-bottom-right" v-if="goodsDetailsData.sell_type == 1"></div>
+                        <div class="buy goods-details-bottom-right" @click="buyFn">立即购买</div>
+                    </div>
+                    <!-- 议价弹框 -->
+                    <div class="hoodle" v-show="showShade">
+                        <img src="../../static/img/my-center/record/bargain_tit.png" alt="">
+                        <div class="hoodle-con">
+                            <input type="number" placeholder="请输入您的出价" v-model="bargain_price">
+                        </div>
+                            <div class="hoodle-btn">
+                                <div class="okBtn" @click="goBargain('ok')">确认</div>
+                                <div class="cancelBtn" @click="goBargain('no')">取消</div>
+                            </div>
+                        </div>
+                        <div class="shade" v-show="showShade"></div>
+                        <NoData v-if="showNoData"></NoData>
+                    </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
 import Swiper from "@/components/home-page/Swiper";
-import GoodsInfo from "@/components/auction-details/GoodsInfo"; //商品信息
 import NoData from "@/components/multi/NoData";
 export default {
     inject: ["reload"],
@@ -213,16 +226,9 @@ export default {
                 imgList: [], //轮播图
                 // 商品列表
                 // 商品信息
-                goodsInfo: {
-                    isShowTitle: false, //是否显示商品信息头部
-                    basic: "",
-                    level: "",
-                    school: "",
-                    authent: "",
-                    des: ``
-                }
             },
-            goods_id:null,
+            goodsInfo:{},
+            goods_id: null,
             showNoData: false,
             showShade: false,
             bargain_price: "",
@@ -272,8 +278,7 @@ export default {
     },
     components: {
         Header,
-        Swiper,
-        GoodsInfo //商品信息
+        Swiper
     },
     methods: {
         // 查看安全服务还是购买流程
@@ -301,12 +306,12 @@ export default {
                 //     ["取消", "确认"],
                 //     function(e) {
                 //         if (e.index == 1) {
-                            that.$router.push({
-                                name: "AccountLogin",
-                                params: {
-                                    redirect: that.$router.currentRoute.name
-                                }
-                            });
+                that.$router.push({
+                    name: "AccountLogin",
+                    params: {
+                        redirect: that.$router.currentRoute.name
+                    }
+                });
                 //         }
                 //     },
                 //     "div"
@@ -322,8 +327,16 @@ export default {
                             if (res.data.code == 200) {
                                 if (that.goodsDetailsData.isCollect == 1) {
                                     that.goodsDetailsData.isCollect = 2;
+                                    mui.toast(res.data.msg, {
+                                        duration: "short",
+                                        type: "div"
+                                    });
                                 } else {
                                     that.goodsDetailsData.isCollect = 1;
+                                    mui.toast(res.data.msg, {
+                                        duration: "short",
+                                        type: "div"
+                                    });
                                 }
                             }
                         }
@@ -481,30 +494,16 @@ export default {
                             }
                             // 基本信息
                             if (goods_info.server_name != null) {
-                                that.componentsData.goodsInfo.basic =
-                                    goods_info.platform_name +
-                                    ">" +
-                                    goods_info.area_name +
-                                    ">" +
-                                    goods_info.server_name;
+                                that.goodsInfo.basic = goods_info.platform_name + ">" + goods_info.area_name + ">" + goods_info.server_name;
                             } else {
-                                that.componentsData.goodsInfo.basic =
-                                    goods_info.platform_name +
-                                    ">" +
-                                    goods_info.area_name;
+                                that.goodsInfo.basic = goods_info.platform_name + ">" + goods_info.area_name;
                             }
-                            that.componentsData.goodsInfo.level =
-                                goods_info.role_level + "级";
-                            that.componentsData.goodsInfo.school =
-                                goods_info.faction_name;
-                            that.componentsData.goodsInfo.des =
-                                goods_info.goods_description;
-                            that.componentsData.imgList =
-                                goods_info.goods_images;
-                            that.goodsDetailsData.sell_type =
-                                goods_info.sell_type; //一口价还是可议价
-                            that.goodsDetailsData.isCollect =
-                                goods_info.is_collect; //是否收藏
+                            that.goodsInfo.level = goods_info.role_level + "级";
+                            that.goodsInfo.school = goods_info.faction_name;
+                            that.goodsInfo.des = goods_info.goods_description;
+                            that.componentsData.imgList = goods_info.goods_images;
+                            that.goodsDetailsData.sell_type = goods_info.sell_type; //一口价还是可议价
+                            that.goodsDetailsData.isCollect = goods_info.is_collect; //是否收藏
                             if (res.data.data.recommendInfo.server_name) {
                                 that.goodsDetailsData.goodsList =
                                     res.data.data.recommendInfo;
@@ -1098,6 +1097,27 @@ input[type="number"] {
 :-ms-input-placeholder {
     color: #999999;
     font-size: 0.24rem;
+}
+
+/* 商品信息 */
+.goods-info-content {
+    padding: .2rem;
+    font-size: 0.26rem;
+}
+.goods-info-content-left,
+.goods-info-content-right {
+    display: inline-block;
+    vertical-align: top;
+}
+.goods-info-content-left {
+    color: #666666;
+    width: 1.19rem;
+    line-height: 0.43rem;
+}
+.goods-info-content-right {
+    color: #333333;
+    width: 5.5rem;
+    line-height: 0.43rem;
 }
 </style>
 

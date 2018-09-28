@@ -32,7 +32,7 @@
                         <span>联系客服</span>
                     </div>
                     <div class="right-operate">
-                        <span class="cancel" @click="cancalOrder(item.order_id)">取消订单</span>
+                        <span class="cancel" @click="cancalOrder(item.order_id)" v-if="false">取消订单</span>
                         <span class="pay" @click="goPayFn(item.order_id,item.goods_amount)">前往支付</span>
                     </div>
                 </div>

@@ -4,19 +4,19 @@
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="pact-content">
             <div class="pact-cell">
-                <div class="pact-strip">
+                <div class="pact-strip" @click="goSign('ture')">
                     <div class="left-strip">
                         <span>需要我签名</span>
-                        <span class="gray-color">(2)</span>
+                        <span class="gray-color">(<span v-text="sign_num"></span>)</span>
                     </div>
                     <div class="right-strip">
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                <div class="pact-strip">
+                <div class="pact-strip" @click="goSign('ed')">
                     <div class="left-strip">
                         <span>已签约合同</span>
-                        <span class="gray-color">(2)</span>
+                        <span class="gray-color">(<span v-text="end_num"></span>)</span>
                     </div>
                     <div class="right-strip">
                         <img src="../../../../static/img/order/next.png" alt="">
@@ -43,8 +43,36 @@ export default {
                     showBg: true, //是否显示背景
                     title: "电子合同"
                 }
-            }
+            },
+            sign_num:0,
+            end_num:0,
         };
+    },
+    methods:{
+        goSign(flag){
+            if(flag == 'ture'){
+                this.$router.push({name:'Signature'})
+            }else{
+                this.$router.push({name:'Signed'})
+            }
+        },
+        getData(){
+            var that = this;
+            that.$axios.post('/api/buyer_contract').then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.sign_num = res.data.data.sign_contract;
+                        that.end_num = res.data.data.end_contract;
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
+        }
+    },
+    mounted(){
+        this.getData()
     }
 };
 </script>

@@ -237,7 +237,7 @@ export default {
             var request = {};
             var url;
             // 判断是下单过来还是订单过来
-            if(that.goods_info && !that.order_id){
+            if(that.goods_info && !that.order_id){//订单
                 url = 'order_confirm';
                 var data = that.goods_info;
                 request.goods_id = data.goods_id;
@@ -253,6 +253,9 @@ export default {
                 if(data.down_price){
                     request.stage_method = data.down_price;
                     request.stage_number = data.stage_num;
+                    if(data.down_price == 3){
+                        request.down_payment = data.down_payment;
+                    }
                 }
             }else{
                 url = 'order_trading';
@@ -334,10 +337,11 @@ export default {
         }
     },
     beforeRouteLeave(to, from, next) {
-        if(to.path == '/good-list'){
-            to.meta.keepAlive = false;
+        if(to.path == '/place-order'){
+            this.$router.go(-3);//跳转到选择游戏类型
+        }else{
+            next();
         }
-        next();
     },
     mounted() {
         var that = this;

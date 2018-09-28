@@ -30,7 +30,7 @@
                     </div>
                     <div class="right-operate">
                         <!-- <span class="cancel">取消仲裁</span> -->
-                        <span class="pay">查看</span>
+                        <span class="pay" @click="goStatus(item.order_id)">查看</span>
                     </div>
                 </div>
             </div>
@@ -83,7 +83,13 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
-        }
+        },
+        // goStatus(order_id) {
+        //     this.$router.push({
+        //         name: "SellTakeDelivery",
+        //         query: { order: order_id }
+        //     });
+        // },
     },
     mounted() {
         var that = this;

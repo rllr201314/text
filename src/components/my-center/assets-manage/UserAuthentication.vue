@@ -6,8 +6,9 @@
             <div class="add-card" v-if="pageType==1">
                 <img src="../../../../static/img/assets-manage/user_card.png" alt="">
                 <div>为了您的资金安全，请先完成个人实名认证</div>
-                <div class="go-authentic">前往认证</div>
+                <div class="go-authentic" @click="goAuthentication">前往认证</div>
             </div>
+
             <div class="manange-card" v-else-if="pageType==2">
                 <div class="manange-top">
                     <img src="../../../../static/img/goodscreen/vertical.png" alt="">
@@ -16,7 +17,7 @@
                 <div class="manange-content">
                     <div class="manange-strip" >
                         <span class="manange-left">持卡人</span>
-                        <span>认错</span>
+                        <span>aaa</span>
                         <span class="hint-right red-color">（为了您的资金安全，持卡人必须为认证用户本人）</span>
                     </div>
                     <div class="manange-strip" >
@@ -65,7 +66,7 @@
                         title:"选择银行卡",
                     }
                 },
-                pageType:2  ,//控制页面是添加银行卡还是选择银行卡----
+                pageType:1,//控制页面是添加银行卡还是选择银行卡----
                 protocol:false,
             }
         },
@@ -73,7 +74,10 @@
            
         },
         methods:{
-            
+            // 前往认证
+            goAuthentication(){
+                this.$router.push({name:'SafePhone'})
+            }
         }
     }
 </script>
@@ -82,6 +86,7 @@
         max-width: 12rem;
         margin:0 auto;
         height:100%;
+        padding-top:.88rem;
     }
     .userauthentic-content{
         font-size:.26rem;
@@ -97,17 +102,18 @@
         margin:3rem 0 .5rem;
     }
     .go-authentic{
-        width:1.1rem;
+        width:1.5rem;
         line-height: .44rem;
         font-size:.22rem;
         background:#FE7649;
         color:#FFFFFF;
+        padding:.05rem 0;
         -webkit-border-radius: .04rem;
         -moz-border-radius: .04rem;
         border-radius: .04rem;
-        -webkit-box-shadow: .01rem .02rem .09rem #FE7649;
-        -moz-box-shadow: .01rem .02rem .09rem #FE7649;
-        box-shadow: .01rem .02rem .09rem #FE7649;
+        -webkit-box-shadow: 0 1px 2px #FE7649;
+        -moz-box-shadow:0 1px 2px #FE7649;
+        box-shadow: 0 1px 2px #FE7649;
         margin:.2rem auto 0;
     }
 

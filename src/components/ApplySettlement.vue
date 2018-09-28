@@ -145,6 +145,7 @@ export default {
 .apply-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .apply-con {
     padding: 0.2rem;

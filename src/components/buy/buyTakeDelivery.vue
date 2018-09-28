@@ -3,61 +3,104 @@
     <div class="take-wrap">
         <Header v-bind:showTitle="componentsData.showTitle"></Header>
         <div class="take-content">
-            <OrderInfo v-bind:orderInfo="componentsData.orderInfo"></OrderInfo>
+             <!-- 商品详情 -->
+            <div class="take-cell">
+                <div class="goods-info-top">
+                    <img src="../../../static/img/goodscreen/vertical.png" alt="">
+                    <span>订单详情</span>
+                </div>
+                <div class="goods-info-content">
+                    <img :src="goodsInfo.game_logo" alt="">
+                    <div class="goods-info">
+                        <div class="goods-info-title" v-text="goodsInfo.goods_title"></div>
+                        <div class="goods-info-box">
+                            <div class="goods-info-left">
+                                <div class="text-left">系统</div>
+                                <div class="text-left">客户端</div>
+                                <div class="text-left">所在区服</div>
+                                <div class="text-left">等级</div>
+                                <div class="text-left">门派</div>
+                                <div class="text-left">商品类型</div>
+                            </div>
+                            <div class="goods-info-right">
+                                <div class="text-right"   v-if="goodsInfo.client_id == 1">安卓</div>
+                                <div class="text-right"  v-else-if="goodsInfo.client_id == 2">苹果</div>
+                                <div class="text-right"  v-else-if="goodsInfo.client_id == 3">安卓混服</div>
+
+                                <div class="text-right"  v-text="goodsInfo.platform_name"></div>
+                                <div class="text-right" v-if="goodsInfo.server_name != null" v-text=" goodsInfo.area_name+'>'+goodsInfo.server_name"></div>
+                                <div class="text-right" v-else v-text="goodsInfo.area_name"></div>
+                                <div class="text-right"><span v-text="goodsInfo.role_level"></span>级</div>
+                                <div class="text-right" v-text="goodsInfo.faction_name"></div>
+                                <div class="text-right" v-if="goodsInfo.deal_type == 1">成品号</div>
+                                <div class="text-right" v-else>代练号</div>
+                                <div class="text-right" v-text="goodsInfo.account_bind"></div>
+                                <div class="text-right" v-text="goodsInfo.account_bind"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- 订单号，分期情况，实际支付 -->
             <div class="take-cell">
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">订单号</div>
                     <div class="goodsInfo-right">
-                        <span v-text="takeData.orderInfo.orderNum"></span>
-                        <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="takeData.orderInfo.orderNum" @click="copyFn()" id="copy">
+                        <span v-text="goodsInfo.order_sn"></span>
+                        <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="goodsInfo.order_sn" @click="copyFn()" id="copy">
                     </div>
                 </div>
-                <div class="goodsInfo">
+                <div class="goodsInfo" v-if="goodsInfo.is_stage == 1">
                     <div class="goodsInfo-left">分期情况</div>
-                    <div class="goodsInfo-right" v-text="takeData.orderInfo.order"></div>
+                    <div class="goodsInfo-right" v-text="goodsInfo.stage_info"></div>
                 </div>
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">实际支付</div>
                     <div class="goodsInfo-right">
-                        <span class="red-color" v-text="takeData.orderInfo.price"></span>
+                        <span class="red-color" v-text="goodsInfo.order_amount"></span>
                         <span class="green-color">已支付</span>
                     </div>
                 </div>
             </div>
             <!-- 状态 -->
             <div class="take-status-img-cell">
-                <img v-for="item in takeData.takeTypeImg" v-show="item.key == takeData.takeType" :src="item.imgsrc" alt="">
+                <img v-for="item in takeData.takeTypeImg" v-show="item.key == takeType" :src="item.imgsrc" alt="">
             </div>
             <!-- 收货状态 -->
             <div class="take-cell">
                 <div class="take-status-title">
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
                     <span>收货状态</span>
-                    <span class="red-color" v-if="takeData.takeType == 2">（如果您已检验账号没有问题，请确认交易）</span>
-                    <span class="gray-border" v-if="takeData.takeType == 5">已收货</span>
-                    <span class="award" v-if="takeData.takeType == 5">申请仲裁</span>
+                    <span class="red-color" v-if="takeType == -1">（如果您已检验账号没有问题，请确认交易）</span>
+                    <span class="gray-border" v-if="goodsInfo.is_end == 1">已收货</span>
+                    <span class="award" @click="goArbitration" v-if="goodsInfo.is_arbitrate == 1">申请仲裁</span>
                 </div>
                 <div class="take-cell-content">
-                    <div class="cargo" v-if="takeData.takeType == 1">申请验货</div>
-                    <div class="cargo" v-if="takeData.takeType == 2">确认交易</div>
-                    <div class="intie" v-if="takeData.takeType == 3">
+                    <!-- 验货跳过 -->
+                    <div class="cargo" v-if="takeType == 1 && false">申请验货</div>
+                    <div class="cargo" v-if="takeType == -1" @click="agree">确认交易</div>
+                    <div class="intie" v-if="takeType == 1||　takeType == 2">
                         <img src="../../../static/img/order/speed.png" alt="">
                         <span>客服正在为您火速换绑中，请您耐心等待</span>
                     </div>
-                    <div class="confirm-receipt" v-if="takeData.takeType == 4 ||　takeData.takeType == 5">
-                        <div class="confirm-title">
-                            <span>游戏截图（{{takeData.gamePrint}}）</span>
+                    <div class="confirm-receipt" v-if="takeType == 3 ||takeType == 5">
+                        <div class="confirm-title" v-if="false">
+                            <span>游戏截图（{{gamePrint}}）</span>
                             <span class="red-color">点击查看</span>
                         </div>
                         <div>换绑一般会在24小时后生效，请验收账号没有问题后，确认收货！</div>
                         <div class="account">
                             <div class="accountText">
-                                <span>游戏账号:</span>{{takeData.account}}</div>
+                                <span>游戏账号:</span>
+                                <input v-model="goodsInfo.account" disabled="disabled">
+                            </div>
                             <div class="accountText">
-                                <span>密码:</span>{{takeData.password}}</div>
+                                <span>密码:</span>
+                                <input :type="passType?'type':'password'" v-model="goodsInfo.password" disabled="disabled">
+                                <img :src="passType?'../../../static/img/order/noSee.png':'../../../static/img/order/see.png'" alt="" @click="seePasswordFn">
+                            </div>
                         </div>
-                        <div class="cargo" v-if="takeData.takeType == 4">确认收货</div>
+                        <div class="cargo" v-if="goodsInfo.is_end == 2 && isend" @click="endTrade">确认收货</div>
                     </div>
                 </div>
             </div>
@@ -86,44 +129,36 @@ export default {
                     showBg: true, //是否显示背景
                     title: "收货"
                 },
-                orderInfo: {
-                    order_type: 2, //1商品详情 2订单详情
-                    order_title: "梦幻西游xxxxxxxxssssssssssssssss",
-                    order_des: [
-                        "华为一区>群英荟萃",
-                        "96级",
-                        "方寸5山",
-                        "成品号",
-                        "邮箱、身份证、手机号"
-                    ]
-                }
             },
+            isend:true,//确认收货显示
+            passType:true,
+            goodsInfo:{},
+            // 已收货状态 仲裁显示 **
+            takeType: null, //1-申请验货 2-确认交易 3-换绑 4-确认收货 5-申请仲裁 || -1 确认交易 1&&2换绑  3确认收货 5-申请仲裁
             takeData: {
-                orderInfo: {
-                    orderNum: "136544654",
-                    order: "首付50%，期数5期，每月利息3%",
-                    price: "￥2888"
-                },
-                takeType: 5, //1-申请验货 2-确认交易 3-换绑 4-确认收货 5-申请仲裁
                 takeTypeImg: [
                     {
-                        key: 1,
+                        key: 0,
                         imgsrc: "./static/img/order/one.png"
                     },
                     {
-                        key: 2,
+                        key: -1,
                         imgsrc: "./static/img/order/two.png"
                     },
                     {
-                        key: 3,
+                        key: 1,//1&&2换绑
                         imgsrc: "./static/img/order/three.png"
                     },
                     {
-                        key: 4,
+                        key: 2,//1&&2换绑
+                        imgsrc: "./static/img/order/three.png"
+                    },
+                    {
+                        key: 3,
                         imgsrc: "./static/img/order/four.png"
                     },
                     {
-                        key: 5,
+                        key: 5,//没改
                         imgsrc: "./static/img/order/four.png"
                     }
                 ],
@@ -145,7 +180,69 @@ export default {
                 clipboard.destory();
                 mui.toast("请重新点击复制", { duration: "short", type: "div" });
             });
+        },
+        // 查看密码
+        seePasswordFn(){
+            this.passType = !this.passType;
+        },
+        // 确认交易
+        agree(){
+            var that = this;
+            that.$axios.post('/api/agree_trade',{
+                order_id:that.goodsInfo.order_id
+            }).then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        mui.toast(res.data.msg, { duration: "short", type: "div" });
+                        that.takeType = res.data.data.bind_status;
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
+        },
+        // 确认收货
+        endTrade(){
+            var that = this;
+            that.$axios.post('/api/end_trade',{
+                order_id:that.goodsInfo.order_id
+            }).then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        mui.toast(res.data.msg, { duration: "short", type: "div" });
+                        that.isend = false;
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
+        },
+        // 申请仲裁
+        goArbitration(){
+            this.$router.push({name:'Arbitration',query:{order:this.goodsInfo.order_id}})
+        },
+        getData(order_id){
+            var that = this;
+            that.$axios.post('/api/buyer_trade_status',{
+                order_id:order_id
+            }).then((res)=>{
+                console.log(res)
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.goodsInfo = res.data.data;
+                        that.takeType = that.goodsInfo.bind_status;
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
         }
+    },
+    mounted(){
+        var that = this;
+        that.getData(that.$route.query.order)
     }
 };
 </script>
@@ -269,6 +366,9 @@ export default {
 .confirm-title span {
     color: #999999;
 }
+.confirm-title .red-color{
+    text-decoration: underline;
+}
 .account {
     background: #f6f6f6;
     /* -webkit-border-radius: .1rem;
@@ -288,7 +388,10 @@ export default {
     padding-right: 0.1rem;
     color: #666666;
 }
-
+.accountText img{
+    width:.35rem;
+    height:.22rem;
+}
 .take-bottom {
     font-size: 0.24rem;
     color: #999999;
@@ -299,8 +402,8 @@ export default {
     text-decoration: underline;
 }
 .take-status-title .gray-border {
-    border: 0.01rem solid #b5b5b5;
-    width: 0.78rem;
+    border: 1px solid #b5b5b5;
+    padding:1px 3px;
     font-size: 0.2rem;
     text-align: center;
     line-height: 0.35rem;
@@ -317,5 +420,107 @@ export default {
 .copy-img {
     width: 0.2rem;
     height: 0.24rem;
+}
+
+
+ /* 订单详情 */
+ .goods-info-top {
+    line-height: 0.7rem;
+    border-bottom: 0.01rem solid #e5e5e5;
+}
+
+.goods-info-top span {
+    display: inline-block;
+    color: #333333;
+    font-size: 0.28rem;
+    vertical-align: middle;
+}
+.goods-info-top img {
+    width: 0.13rem;
+    height: 0.35rem;
+    margin: 0.1rem 0 0 0.17rem;
+    vertical-align: middle;
+    vertical-align: middle;
+}
+.goods-info-content {
+    padding: 0.2rem 0;
+    font-size: 0.26rem;
+    color: #666666;
+}
+.goods-info-content img {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0 0.6rem 0 0.35rem;
+    vertical-align: middle;
+}
+.goods-info {
+    display: inline-block;
+    width: 4.8rem;
+    vertical-align: middle;
+}
+.goods-info-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #333333;
+    margin-bottom: 0.15rem;
+}
+.goods-info-left,
+.goods-info-right {
+    display: inline-block;
+    vertical-align: middle;
+}
+.goods-info-left div {
+    margin-bottom: 0.1rem;
+}
+.goods-info-right div {
+    margin-bottom: 0.1rem;
+    color: #333333;
+}
+.goods-info-left {
+    margin-right: 0.35rem;
+}
+.contact-content {
+    padding-left: 0.2rem;
+}
+
+/* ==========input========= */
+.accountText input {
+    margin: 0;
+    padding: 0.1rem;
+    font-size: 0.26rem;
+    border: none;
+    width: 3rem;
+    height: 0.6rem;
+    background:#f6f6f6;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+::-webkit-input-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
+}
+
+:-moz-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
+}
+
+::-moz-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
+}
+
+:-ms-input-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
 }
 </style>

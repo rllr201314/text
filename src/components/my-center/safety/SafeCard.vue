@@ -7,7 +7,7 @@
         </div>
         <div class="safe-authentic-content">
             <div class="safe-cell">
-                <div class="safe-cell-tit">
+                <div class="safe-cell-tit" v-if="false">
                     <div class="upimg-cell">
                         <img :src="upimg.user_card" alt="">
                         <input type="file" id="upImg" accept="image/*" capture @change="addImg">
@@ -15,23 +15,23 @@
                 </div>
                 <div class="safe-strip">
                     <span class="strip-left">姓名</span>
-                    <input type="text" placeholder="请填写您的姓名">
+                    <input type="text" placeholder="请填写您的姓名" v-model="username">
                 </div>
                 <div class="safe-strip">
                     <span class="strip-left">身份证号</span>
-                    <input type="number" placeholder="请填写您的身份证号">
+                    <input type="number" placeholder="请填写您的身份证号" v-model="id_num">
                 </div>
                 <div class="safe-strip">
                     <span class="strip-left">银行卡</span>
-                    <input type="number" placeholder="请填写您实名开户的银行卡账号">
+                    <input type="number" placeholder="请填写您实名开户的银行卡账号" v-model="card_num">
                 </div>
                 <div class="safe-strip">
                     <span class="strip-left">联系电话</span>
-                    <input type="number" placeholder="请填写您的联系电话">
+                    <input type="number" placeholder="请填写您的联系电话" v-model="mobile">
                 </div>
             </div>
         </div>
-        <div class="okBtn">下一步</div>
+        <div class="okBtn" @click="nextBtn">下一步</div>
         <div class="statement">
             <span class="statement-tit">声明：</span>
             <span>本认证信息已接入公安系统，对于一切认证身份均具有法律效力</span>
@@ -56,10 +56,13 @@ export default {
                     title: "安全认证"
                 }
             },
-            
+            username: "",
+            id_num: "",
+            card_num: "",
+            mobile: "",
             upimg: {
                 user_card: "./static/img/my-center/safe/user_card.png",
-                imgData:"image/gif, image/jpeg, image/png, image/jpg"
+                imgData: "image/gif, image/jpeg, image/png, image/jpg"
             }
         };
     },
@@ -95,8 +98,37 @@ export default {
                     name: fileName, //获取文件名
                     base64: this.result //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
                 };
-                that.upimg.user_card=imgMsg.base64;
+                that.upimg.user_card = imgMsg.base64;
             };
+        },
+        nextBtn() {
+            var that = this;
+            var request = {};
+            request.name = that.username;
+            request.id_no = that.id_num;
+            request.bank_account = that.card_num;
+            request.mobile = that.mobile;
+            request.verify_code = that.$route.query.code;
+            that.$axios
+                .post("/api/authentic_four",request)
+                .then(res => {
+                    console.log(res);
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                        } else {
+                            mui.toast(res.data.msg, {
+                                duration: "short",
+                                type: "div"
+                            });
+                            if (res.data.code == 401) {
+                                that.$router.push({ name: "AccountLogin" });
+                            }
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     }
 };
@@ -105,6 +137,7 @@ export default {
 .safe-authentic-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top: 0.88rem;
 }
 .safe-authentic-content {
     padding: 0.2rem;
@@ -128,8 +161,8 @@ export default {
     width: 6.3rem;
     height: 1rem;
 }
-.safe-cell-tit{
-    padding:.4rem 0;
+.safe-cell-tit {
+    padding: 0.4rem 0;
 }
 .upimg-cell {
     vertical-align: top;
@@ -158,16 +191,15 @@ export default {
     opacity: 0;
 }
 
-
-.safe-strip{
-    color:#666666;  
+.safe-strip {
+    color: #666666;
     border-bottom: 0.01rem solid #e5e5e5;
     line-height: 0.9rem;
 }
-.strip-left{
-    width:1.5rem;
+.strip-left {
+    width: 1.5rem;
     display: inline-block;
-    font-size:.26rem;
+    font-size: 0.26rem;
 }
 
 /* 提交申请 */
@@ -189,19 +221,15 @@ export default {
     background: -moz-linear-gradient(#fd915f, #fc534a);
     background: linear-gradient(to right, #fd915f, #fc534a);
 }
-.statement{
-    font-size:.24rem;
-    margin: .3rem auto 0;
+.statement {
+    font-size: 0.24rem;
+    margin: 0.3rem auto 0;
     width: 6.5rem;
-    color:#999999;
+    color: #999999;
 }
-.statement-tit{
-    color:#666666;
+.statement-tit {
+    color: #666666;
 }
-
-
-
-
 
 /* ==========input========= */
 input {

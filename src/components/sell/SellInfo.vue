@@ -279,14 +279,17 @@
                 </li>
             </ul>
         </div>
+        <Loading v-if="showLoading"></Loading>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import Loading from "@/components/multi/Loading";
 export default {
     name: "SellInfo",
     components: {
-        Header
+        Header,
+        Loading
     },
     data() {
         return {
@@ -299,6 +302,8 @@ export default {
                     title: "我要卖"
                 }
             },
+            showLoading:false,
+            editOrpublish:null,
             showTagAll: false,
             seleData: {
                 faction: "未选择",
@@ -326,7 +331,7 @@ export default {
                 upimgAll: {
                     imgSrc: [],
                     imgData: {
-                        accept: "image/gif, image/jpeg, image/png, image/jpg"
+                        accept: "image/jpeg, image/png, image/jpg"
                     }
                 },
                 // 是否购买保险
@@ -376,6 +381,7 @@ export default {
                 mobile: "",
                 wx: "",
                 images: [],
+                goods_id:null,
             }
         };
     },
@@ -387,7 +393,7 @@ export default {
             var imgLen = imgSrcArr.length;
             console.log(imgLen);
             if (imgLen >= 9) {
-                mui.alert("图片选择到达上限", "提示", "确认", "", "div");
+               mui.toast("图片选择到达上限", { duration: "short", type: "div" });
             } else if (imgLen < 9) {
                 var imgArr = [];
                 var fileLen = event.target.files.length;
@@ -397,22 +403,20 @@ export default {
                     for (var i = 0; i < addImg; i++) {
                         imgArr.push(event.target.files[i]);
                     }
-                    mui.alert("图片选择超过上限,只保存9张","提示","确认","","div");
+                    mui.toast("图片选择超过上限,只保存9张", { duration: "short", type: "div" });
                 }else {
                     imgArr = event.target.files;
                 }
-                console.log(imgArr);
-                console.log(imgArr.length);
                 for (var i = 0; i < imgArr.length; i++) {
                     console.log('-------');
                     let type = imgArr[i].type; //文件的类型，判断是否是图片
                     let size = imgArr[i].size; //文件的大小，判断图片的大小
                     if (that.sellData.upimgAll.imgData.accept.indexOf(type) == -1) {
-                        mui.alert("请选择我们支持的图片格式！","提示","确认",null,"div");
+                        mui.toast("请选择我们支持的图片格式！", { duration: "short", type: "div" });
                         return false;
                     }
                     if (size > 2097152) {
-                        mui.alert("请选择2M以内的图片！","确认",null,"div");
+                        mui.toast("请选择2M以内的图片！", { duration: "short", type: "div" });
                         return false;
                     }
                     var reader = new FileReader();
@@ -436,6 +440,7 @@ export default {
         },
         // 账号绑定
         seleSafe(flag) {
+            console.log(flag)
             var safeArr = this.sellData.seleSafeData.safe;
             if (flag == "4") {
                 for (var i in safeArr) {
@@ -628,23 +633,6 @@ export default {
                 });
         },
         // 发布商品
-        // addGoods(){
-        //     var that = this;
-        //     var img = that.sellData.upimgAll.imgSrc;
-        //     console.log(img);
-        //     var upimg = [];
-        //     for(var i in img){
-        //         upimg.push(img[i].img_url);
-        //     }
-        //     console.log(upimg);
-        //     that.$axios.post('/api/img_test',{
-        //         images:upimg
-        //     }).then((res)=>{
-        //         console.log(res)
-        //     }).catch((err)=>{
-        //         console.log(err)
-        //     })
-        // },
         addGoods() {
             var that = this;
             var that_req = that.requestData;                              
@@ -797,7 +785,7 @@ export default {
                     return false;
                 }
             }
-            console.log(that_req);
+            // console.log(that_req);
             // let config = {
             //     headers: { "Content-Type": "multipart/form-data" }
             // };
@@ -813,21 +801,24 @@ export default {
             //         param.append(i,that_req[i])
             //     }
             // }
-            that.$axios
-                .post("/api/add_goods",that_req)
+            var url = null;
+            if(that.editOrpublish == 1){
+                url = 'add_goods';
+            }else if(that.editOrpublish == 2){
+                url = 'edit_goods';
+                // that_req.goods_id = that.goods_id;
+            }
+            that.showLoading = true;
+            that.$axios.post("/api/"+url,that_req)
                 .then(function(res) {
                     // console.log(res);
                     if (res.status == 200) {
+                        that.showLoading = false;
                         if(res.data.code == 200){
                             mui.alert(res.data.msg,'提示','确认',function(){
                                 that.$router.push({name:'MyCenter'});
                             },'div');
-                        }else if(res.data.code == 401){
-                            mui.alert(res.data.msg,'提示','确认',function(){
-                                that.$store.commit('del_token');
-                                that.$router.push({name:'AccountLogin'});
-                            },'div');
-                        }else if(res.data.code){
+                        }else{
                             mui.alert(res.data.msg,'提示','确认','','div');
                         }
                     }
@@ -903,7 +894,7 @@ export default {
                     category_id: that.category_id
                 })
                 .then(function(res) {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var tagType = res.data.data;
@@ -941,16 +932,18 @@ export default {
         getConfig(opt,flag){
             var that = this;
             // 请求选择参数
+            // console.log(opt)
             that.$axios
                 .post("/api/other_config", {
                     category_id: opt.category_id,
                     operation_id: opt.operation_id
                 })
                 .then(function(res) {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var data = res.data.data;
+                            // 发布
                             if(flag == 1){
                                 var safe = data.account_bind; 
                                 for (var i in safe) {
@@ -971,9 +964,8 @@ export default {
                                 that.sellData.faction = data.faction; //职业
                                 that.sellData.accountType = data.account_type; //账号类型
                                 that.judgeInfo(data.chargeInfo);
-                            }else if(flag == 2){
+                            }else if(flag == 2){//编辑
                                 var oldData = that.oldData;
-
                                 var safe = data.account_bind;
                                 for(var i in safe){
                                     safe[i].ischeck = false;
@@ -998,21 +990,21 @@ export default {
                                 that.sellData.sellType.sell = sellType; //是否议价
                                 // 角色性别
                                 for(var i in data.person_sex){
-                                    if(data.person_sex[i].value = oldData.person_sex){
+                                    if(data.person_sex[i].value == oldData.person_sex){
                                         that.requestData.person_sex = data.person_sex[i].value;
                                         that.seleData.sex = data.person_sex[i].name;
                                     }
                                 }
                                 // 职业
                                 for(var i in data.faction){
-                                    if(data.faction[i].faction_id = oldData.faction_id){
+                                    if(data.faction[i].faction_id == oldData.faction_id){
                                         that.requestData.faction_id = data.faction[i].faction_id;
                                         that.seleData.faction = data.faction[i].faction_name;
                                     }
                                 }
                                 // 账号类型
                                 for(var i in data.account_type){
-                                    if(data.account_type[i].value = oldData.account_type){
+                                    if(data.account_type[i].value == oldData.account_type){
                                         that.requestData.account_type = data.account_type[i].value;
                                         that.seleData.accountType = data.account_type[i].name;
                                     }
@@ -1021,9 +1013,12 @@ export default {
                                 that.sellData.seleTag = oldData.tag;
                                 // 图片
                                 for(var i in oldData.images){
-                                    that.sellData.upimgAll.imgSrc.push(oldData.images[i]);
+                                    that.sellData.upimgAll.imgSrc.push(oldData.images[i].img_url);
                                 }
-                                that.judgeInfo(data.chargeInfo);
+                                that.sellData.sex = data.person_sex; //角色性别
+                                that.sellData.faction = data.faction; //职业
+                                that.sellData.accountType = data.account_type; //账号类型
+                                that.judgeInfo(data.chargeInfo);//判断合同还是保险
                             }
                         }else if(res.data.code == 401){
                             // 登录状态过期
@@ -1049,13 +1044,13 @@ export default {
         },
         getRedact(goods_id){
             var that = this;
-            console.log(that.$router);
+            // console.log(that.$router);
             that.$axios.post('/api/get_goods',{
                 goods_id:goods_id
             }).then((res) => {
                 if(res.status == 200){
                     if(res.data.code == 200){
-                        console.log(res.data.data);
+                        // console.log(res.data.data);
                         var data = res.data.data;
                         that.category_id = data.category_id;
                         var that_req = that.requestData;
@@ -1133,7 +1128,7 @@ export default {
             return false;
         }
         var opt = that.$route.query;
-        console.log(opt);
+        // console.log(opt);
         // 判断有没有传参过来
 
         if(JSON.stringify(opt) == "{}"){
@@ -1149,10 +1144,12 @@ export default {
                 that.getTagType();//获取标签大类
                 that.comData.showTitle.title = "我要卖";
                 that.getConfig(opt,opt.flag);//请求选择参数
+                that.editOrpublish = 1;
             }else if(opt.flag == 2){
-                console.log(opt.g);
                 that.getRedact(opt.g);
                 that.comData.showTitle.title = "编辑";
+                that.editOrpublish = 2;
+                that.requestData.goods_id = opt.g;
             }else{
                 that.$router.go(-1); 
             }
@@ -1164,6 +1161,7 @@ export default {
 .sellInfo-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 
 .sellInfo-content {
@@ -1657,7 +1655,7 @@ input[type="number"] {
     color: #666666;
     font-size: 0.28rem;
 }
-
+ 
 .option-black {
     color: #333333;
     font-size: 0.28rem;

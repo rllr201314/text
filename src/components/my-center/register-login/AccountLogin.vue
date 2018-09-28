@@ -56,8 +56,7 @@ export default {
         };
     },
     mounted(){
-            var that =this;
-                console.log(that.$router);
+        // var that =this;
     },
     methods: {
         loginFn() {

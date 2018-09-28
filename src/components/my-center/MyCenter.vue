@@ -93,7 +93,7 @@
                 <div class="box-content" @click="goSele('assetsManage')">
                     <div class="box-content-cell">
                         <div class="manage-des">可用余额</div>
-                        <div class="manage-detail" v-text="myData.manageData.usableBalance"></div>
+                        <div class="manage-detail"><span v-text="myData.manageData.usableBalance"></span>元</div>
                     </div>
                     <div class="vertical-bg"></div>
                     <div class="box-content-cell">
@@ -346,7 +346,7 @@ export default {
                     ]
                 },
                 manageData: {
-                    usableBalance: "1000.2元",
+                    usableBalance: "",
                     frostBalance: "666元",
                     cashPledge: "888元"
                 },
@@ -363,8 +363,10 @@ export default {
         seleUserType(flag) {
             if (flag == "buy") {
                 this.myData.userTypeOpt.usertype = true;
+                sessionStorage.user_type = '1';
             } else if (flag == "sell") {
                 this.myData.userTypeOpt.usertype = false;
+                sessionStorage.user_type = '2';
             }
         },
 
@@ -533,6 +535,13 @@ export default {
         } else {
             that.myData.userStatus = 2;
             that.getData()
+        }
+        if(sessionStorage.getItem('user_type') != null){
+            if(sessionStorage.getItem('user_type') == 1){
+                this.myData.userTypeOpt.usertype = true;
+            }else{
+                this.myData.userTypeOpt.usertype = false;
+            }
         }
     }
 };

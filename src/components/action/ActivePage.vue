@@ -48,6 +48,7 @@
 .active-wrap {
     max-width: 12rem;
     margin:0 auto;
+    padding-top:.88rem;
 }
 .active-content{
     padding:.2rem;

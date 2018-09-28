@@ -189,6 +189,12 @@ export default {
             }
         }
     },
+    beforeRouteLeave(to, from, next) {
+        if (to.path == "/good-list") {
+            to.meta.keepAlive = false;
+        }
+        next();
+    },
     mounted() {
         var that = this;
         var user_type = sessionStorage.getItem("buyOrsell");

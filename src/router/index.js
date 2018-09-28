@@ -264,9 +264,13 @@ export default new Router({
       name: 'Pact',
       component: (resolve) => require(['@/components/my-center/pact/Pact'], resolve),
     }, {
-      path: '/signature', //签名
+      path: '/signature', //待签名
       name: 'Signature',
       component: (resolve) => require(['@/components/my-center/pact/Signature'], resolve),
+    }, {
+      path: '/signed', //已签名
+      name: 'Signed',
+      component: (resolve) => require(['@/components/my-center/pact/Signed'], resolve),
     },
     // 记录
     {

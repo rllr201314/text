@@ -31,7 +31,7 @@
                             </div>
                             <div class="right-operate">
                                 <span class="cancel" v-text="item.text"></span>
-                                <span class="pay">查看</span>
+                                <span class="pay" @click="goStatus(item.order_id)">查看</span>
                             </div>
                         </div>
                     </div>
@@ -145,7 +145,13 @@ export default {
                     }
                 }
             });
-        }
+        },
+        goStatus(order_id) {
+            this.$router.push({
+                name: "SellTakeDelivery",
+                query: { order: order_id }
+            });
+        },
     },
     mounted() {
         var that = this;

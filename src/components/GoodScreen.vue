@@ -1459,6 +1459,7 @@ input[type="number"] {
 /* 筛选确认 */
 .screen-type-bottom {
     text-align: center;
+    margin-bottom:.2rem;
 }
 .ok-screen-btn {
     display: inline-block;
@@ -1475,10 +1476,9 @@ input[type="number"] {
     background: -o-linear-gradient(#fd915f, #fc534a);
     background: -moz-linear-gradient(#fd915f, #fc534a);
     background: linear-gradient(to right, #fd915f, #fc534a);
-    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #fd895c;
-    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #fd895c;
-    box-shadow: 0.06rem 0.05rem 0.09rem #fd895c;
-    margin-right: 0.5rem;
+    /* -webkit-box-shadow: 3px 3px 6px #fd895c;
+    -moz-box-shadow: 3px 3px 6px #fd895c;
+    box-shadow: 3px 3px 6px #fd895c; */
 }
 .no-screen-btn {
     display: inline-block;
@@ -1492,6 +1492,7 @@ input[type="number"] {
     -moz-border-radius: 0.3rem;
     border-radius: 0.3rem;
     background: #c6c6c6;
+    margin-left: 0.5rem;
 }
 
 /* 筛选下栏------ */

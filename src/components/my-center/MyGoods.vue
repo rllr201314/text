@@ -13,25 +13,27 @@
                 <div class="minirefresh-scroll list">
                     <ul>
                         <div class="arbitration-cell" v-for="item in putawayData">
-                            <div class="gameLog">
-                                <img :src="item.game_logo" alt="">
-                            </div>
-                            <div class="orderInfo">
-                                <div class="goods-strip-title">
-                                    <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                                    <div class="goods-type" v-else>代练号</div>
-                                    <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                    <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                                    <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                    <div class="area" v-text="item.platform_name"></div>
+                            <div class="arbitration-box">
+                                <div class="gameLog">
+                                    <img :src="item.game_logo" alt="">
                                 </div>
-                                <div class="order-des" v-text="item.goods_title"></div>
-                                <div class="history-time" v-text="item.sort_time"></div>
-                                <div class="price-status">
-                                    <span class="good-price">￥
-                                        <span v-text="item.goods_price"></span>
-                                    </span>
-                                    <span class="order-status green-bg">上架中</span>
+                                <div class="orderInfo">
+                                    <div class="goods-strip-title">
+                                        <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                                        <div class="goods-type" v-else>代练号</div>
+                                        <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                        <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                        <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                        <div class="area" v-text="item.platform_name"></div>
+                                    </div>
+                                    <div class="order-des" v-text="item.goods_title"></div>
+                                    <div class="history-time" v-text="item.sort_time"></div>
+                                    <div class="price-status">
+                                        <span class="good-price">￥
+                                            <span v-text="item.goods_price"></span>
+                                        </span>
+                                        <span class="order-status green-bg">上架中</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="order-operate">
@@ -48,25 +50,27 @@
                 <div class="minirefresh-scroll list">
                     <ul>
                         <div class="arbitration-cell" v-for="item in auditData">
-                            <div class="gameLog">
-                                <img :src="item.game_logo" alt="">
-                            </div>
-                            <div class="orderInfo">
-                                <div class="goods-strip-title">
-                                    <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                                    <div class="goods-type" v-else>代练号</div>
-                                    <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                    <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                                    <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                    <div class="area" v-text="item.platform_name"></div>
+                            <div class="arbitration-box">
+                                <div class="gameLog">
+                                    <img :src="item.game_logo" alt="">
                                 </div>
-                                <div class="order-des" v-text="item.goods_title"></div>
-                                <div class="history-time" v-text="item.sort_time"></div>
-                                <div class="price-status">
-                                    <span class="good-price">￥
-                                        <span v-text="item.goods_price"></span>
-                                    </span>
-                                    <span class="order-status red-bg">审核中</span>
+                                <div class="orderInfo">
+                                    <div class="goods-strip-title">
+                                        <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                                        <div class="goods-type" v-else>代练号</div>
+                                        <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                        <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                        <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                        <div class="area" v-text="item.platform_name"></div>
+                                    </div>
+                                    <div class="order-des" v-text="item.goods_title"></div>
+                                    <div class="history-time" v-text="item.sort_time"></div>
+                                    <div class="price-status">
+                                        <span class="good-price">￥
+                                            <span v-text="item.goods_price"></span>
+                                        </span>
+                                        <span class="order-status red-bg">审核中</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="order-operate">
@@ -83,33 +87,35 @@
                 <div class="minirefresh-scroll list">
                     <ul>
                         <div class="arbitration-cell" v-for="item in removeData">
-                            <div class="gameLog">
-                                <img :src="item.game_logo" alt="">
-                            </div>
-                            <div class="orderInfo">
-                                <div class="goods-strip-title">
-                                    <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                                    <div class="goods-type" v-else>代练号</div>
-                                    <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                    <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                                    <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                    <div class="area" v-text="item.platform_name"></div>
+                            <div class="arbitration-box">
+                                <div class="gameLog">
+                                    <img :src="item.game_logo" alt="">
                                 </div>
-                                <div class="order-des" v-text="item.goods_title"></div>
-                                <div class="history-time" v-text="item.sort_time"></div>
-                                <div class="price-status">
-                                    <span class="good-price">￥
-                                        <span v-text="item.goods_price"></span>
-                                    </span>
-                                    <span class="order-status gray-bg">已下架</span>
-                                </div>
-                                <div class="arbitration" v-if="item.goods_status == 2 &&　item.reject_reason　!= ''">
-                                    <span class="gray">原因</span>
-                                    <span v-text="item.reject_reason"></span>
-                                </div>
-                                <div class="arbitration" v-if="item.goods_status == 4 &&　item.down_reason != ''">
-                                    <span class="gray">原因</span>
-                                    <span v-text="item.reject_reason"></span>
+                                <div class="orderInfo">
+                                    <div class="goods-strip-title">
+                                        <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                                        <div class="goods-type" v-else>代练号</div>
+                                        <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                        <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                        <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                        <div class="area" v-text="item.platform_name"></div>
+                                    </div>
+                                    <div class="order-des" v-text="item.goods_title"></div>
+                                    <div class="history-time" v-text="item.sort_time"></div>
+                                    <div class="price-status">
+                                        <span class="good-price">￥
+                                            <span v-text="item.goods_price"></span>
+                                        </span>
+                                        <span class="order-status gray-bg">已下架</span>
+                                    </div>
+                                    <div class="arbitration" v-if="item.goods_status == 2 &&　item.reject_reason　!= ''">
+                                        <span class="gray">原因</span>
+                                        <span v-text="item.reject_reason"></span>
+                                    </div>
+                                    <div class="arbitration" v-if="item.goods_status == 4 &&　item.down_reason != ''">
+                                        <span class="gray">原因</span>
+                                        <span v-text="item.reject_reason"></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="order-operate">
@@ -428,9 +434,12 @@ export default {
     margin-top: 0.2rem;
     padding: 0 0.2rem;
 }
+.arbitration-box{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
 .gameLog {
-    display: inline-block;
-    vertical-align: middle;
     margin: 0 0.2rem;
 }
 .gameLog img {
@@ -438,8 +447,6 @@ export default {
     height: 0.8rem;
 }
 .orderInfo {
-    display: inline-block;
-    vertical-align: middle;
     width: 5.3rem;
     padding: 0.2rem 0;
     position: relative;
@@ -589,14 +596,9 @@ export default {
 }
 
 .list-wrap {
-    /* padding-top:.6rem; */
-    /* top: 1.68rem; */
+    padding:0 .2rem;
 }
 .list {
-    /* padding-top: 1.68rem; */
-    /* padding-bottom: 0.24rem; */
-    /* min-height: 100vh;
-    overflow-y: auto; */
     background: #f6f8fe;
 }
 </style>

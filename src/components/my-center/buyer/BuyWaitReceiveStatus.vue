@@ -25,7 +25,7 @@
                         <span>联系客服</span>
                     </div>
                     <div class="right-operate">
-                        <span class="pay" @click="goTake(item.order_id)">查看</span>
+                        <span class="pay" @click="goStatus(item.order_id)">查看</span>
                     </div>
                 </div>
             </div>
@@ -79,9 +79,8 @@ export default {
                     console.log(err);
                 });
         },
-        goTake(id){
-            console.log(id)
-            this.$router.push({name:'BuyTakeDelivery'})
+        goStatus(order_id){
+            this.$router.push({name:'BuyTakeDelivery',query:{order:order_id}})
         }
     },
     mounted() {

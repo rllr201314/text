@@ -103,9 +103,9 @@ export default {
                                             that.hintCode = "获取验证码";
                                         }
                                     }, 1000);
-                                    mui.alert(res.data.msg,"提示","确认","","");
+                                    mui.toast(res.data.msg,{ duration:'short', type:'div' });
                                 } else {
-                                    mui.alert(res.data.msg,"提示","确认","","");
+                                    mui.toast(res.data.msg,{ duration:'short', type:'div' });
                                 }
                             }
                         })
@@ -146,20 +146,22 @@ export default {
                                     that.$store.commit("set_mobile", mobile);
                                 }
                                 that.$store.commit("changeLogin",'1');//修改登录状态
+                                // 修改alert 尽量改 不需要用户点击 设置一秒后跳转
                                 mui.alert(
                                     res.data.msg,
                                     "提示",
                                     "确定",
                                     function() {
-                                        if(that.$router.currentRoute.params.redirect != undefined){
-                                            that.$router.replace({
-                                                name: that.$router.currentRoute.params.redirect
-                                            });
-                                        }else{
-                                            that.$router.push({
-                                                name: "MyCenter"
-                                            });
-                                        }
+                                        // if(that.$router.currentRoute.params.redirect != undefined){
+                                        //     that.$router.replace({
+                                        //         name: that.$router.currentRoute.params.redirect
+                                        //     });
+                                        // }else{
+                                        //     that.$router.push({
+                                        //         name: "MyCenter"
+                                        //     });
+                                        // }
+                                        that.$router.go(-1);
                                     },
                                     "div"
                                 );

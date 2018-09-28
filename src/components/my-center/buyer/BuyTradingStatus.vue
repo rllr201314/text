@@ -16,7 +16,7 @@
                     <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
                         <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
-                        <span class="order-status">待确认交易</span>
+                        <span class="order-status" v-text="item.bind_status"></span>
                     </div>
                 </div>
                 <div class="order-operate">
@@ -25,7 +25,7 @@
                         <span>联系客服</span>
                     </div>
                     <div class="right-operate">
-                        <span class="pay" >查看</span>
+                        <span class="pay" @click="goStatus(item.order_id)">查看</span>
                     </div>
                 </div>
             </div>
@@ -78,6 +78,9 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
+        },
+        goStatus(order_id){
+            this.$router.push({name:'BuyTakeDelivery',query:{order:order_id}})
         }
     },
     mounted() {

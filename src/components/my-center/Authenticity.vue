@@ -14,36 +14,41 @@
             <div class="authent-content-top">
                 <div class="authent-cell">
                     <div class="authent-strip-inp">
-                        <input type="number" placeholder="请输入客服QQ进行验证">
-                        <span>验证QQ客服</span>
+                        <input type="number" placeholder="请输入客服QQ进行验证" v-model="qq_num" @input="searchFn('qq')">
+                        <span @click="authentcityFn('qq')">验证QQ客服</span>
                     </div>
                     <div class="authent-strip-inp">
-                        <input type="text" placeholder="请输入客服微信进行验证">
-                        <span>验证微信客服</span>
+                        <input type="text" placeholder="请输入客服微信进行验证" v-model="wx_name" @input="searchFn('wx')">
+                        <span @click="authentcityFn('wx')">验证微信客服</span>
                     </div>
                     <div class="authent-strip-inp">
-                        <input type="text" placeholder="请复制商品链接进行验证">
-                        <span>验证商品链接</span>
+                        <input type="url" placeholder="请复制商品链接进行验证" v-model="goods_name" @input="searchFn('goods')">
+                        <span @click="authentcityFn('goods')">验证商品链接</span>
                     </div>
                 </div>
                 <div class="verify-cell">
                     <div class="verify-strip-title">
                         <div class="title-txt">验证结果</div>
                     </div>
-                    <div class="verifg-content" v-show="authentData.verifgType == 1">
+                    <div class="verifg-content" v-show="verifgType == 0">
+                        <div class="verifg-center">
+                            请输入您需要验证的内容，并进行验证
+                        </div>
+                    </div>
+                    <div class="verifg-content" v-show="verifgType == 1">
                         <div class="verifg-img">
                             <img src="../../../static/img/my-center/true_good.png" alt="">
                         </div>
                         <div class="verifg-text">
-                            <div>看个号客服1号</div>
-                            <div>小花竭诚为您服务！</div>
+                            <div>看个号客服</div>
+                            <div><span v-text="nicename"></span>竭诚为您服务！</div>
                             <div class="link-up">
                                 <img src="../../../static/img/my-center/news_ico.png" alt="">
                                 <span>在线沟通</span>
                             </div>
                         </div>
                     </div>
-                    <div class="verifg-content" v-show="authentData.verifgType == 2">
+                    <div class="verifg-content" v-show="verifgType == 2">
                         <div class="verifg-img">
                             <img src="../../../static/img/my-center/false_good.png" alt="">
                         </div>
@@ -55,7 +60,7 @@
                             <div>以免您的财产损失</div>
                         </div>
                     </div>
-                    <div class="verifg-content" v-show="authentData.verifgType == 3">
+                    <div class="verifg-content" v-show="verifgType == 3">
                         <div class="verifg-img">
                             <img src="../../../static/img/my-center/false_link.png" alt="">
                         </div>
@@ -66,7 +71,7 @@
                                 <span class="red-color">请勿操作</span>，谨防受骗</div>
                         </div>
                     </div>
-                    <div class="verifg-content" v-show="authentData.verifgType == 4">
+                    <div class="verifg-content" v-show="verifgType == 4">
                         <div class="verifg-img">
                             <img src="../../../static/img/my-center/true_link.png" alt="">
                         </div>
@@ -83,25 +88,104 @@
             </div>
             <Footer class="footer"></Footer>
         </div>
+        <Loading v-show="showLoading"></Loading>
     </div>
 </template>
 <script>
 import Footer from "@/components/home-page/Footer";
+import Loading from "@/components/multi/Loading"
 export default {
     name: "Authenticity",
     components: {
-        Footer
+        Footer,
+        Loading
     },
     data() {
         return {
-            authentData: {
-                verifgType: 1
-            }
+            verifgType: 0,//0 提示验证 1真客服 ,2假客服，3假商品链接，4真商品
+            goods_name:'',
+            wx_name:'',
+            qq_num:'',
+            nicename:'',
+            showLoading:false,
         };
     },
     methods:{
         goback(){
             this.$router.go(-1);
+        },
+        searchFn(flag){
+            var that = this;
+            if(flag == 'qq'){
+                that.wx_name = '';
+                that.goods_name = '';
+            }else if(flag == 'wx'){
+                that.qq_num = '';
+                that.goods_name = '';
+            }else if(flag == 'goods'){
+                that.qq_num = '';
+                that.wx_name = '';
+            }
+        },
+        authentcityFn(flag){
+            var that = this;
+            var request = {};
+            if(flag == 'qq'){
+                if(that.qq_num == '' || that.qq_num.length < 5){
+                    mui.toast("请输入正确的QQ号", { duration: "500", type: "div" });
+                    return false;
+                }
+                request.authentic_type = 1;
+                request.content = that.qq_num;
+            }else if(flag == 'wx'){
+                var reg=/^[a-zA-Z\d_]{5,}$/;    
+                if(!reg.test(that.wx_name)){
+                    mui.toast("请输入正确的微信号", { duration: "short", type: "div" });
+                    return false;
+                }
+                request.authentic_type = 2;
+                request.content = that.wx_name;
+            }else if(flag == 'goods'){
+                if(that.goods_name == ""){
+                    mui.toast("请输入商品链接", { duration: "short", type: "div" });
+                    return false;
+                }
+                request.authentic_type = 3;
+                request.content = that.goods_name;
+            }
+            that.showLoading = true;
+            that.$axios.post('/api/authentic_kf',request).then((res)=>{
+                if(res.status == 200){
+                    that.showLoading = false;
+                    if(res.data.code == 200){
+                        if(request.authentic_type == 1){
+                            if(res.data.data.flag == 1){
+                                that.nicename = res.data.data.nickname;
+                                that.verifgType = 1;
+                            }else{
+                                that.verifgType = 2;
+                            }
+                        }else if(request.authentic_type == 2){
+                            if(res.data.data.flag == 1){
+                                that.nicename = res.data.data.nickname;
+                                that.verifgType = 1;
+                            }else{
+                                that.verifgType = 2;
+                            }
+                        }else if(request.authentic_type == 3){
+                            if(res.data.data.flag == 1){
+                                that.verifgType = 4;
+                            }else{
+                                that.verifgType = 3;
+                            }
+                        }
+                    }else{
+                        mui.toast(res.data.msg, { duration: "short", type: "div" });
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
         }
     }
 };
@@ -228,6 +312,9 @@ export default {
     width: 1.2rem;
     height: 1.17rem;
 }
+.verifg-center{
+    text-align:center;
+}
 .verifg-text {
     vertical-align: middle;
     display: inline-block;
@@ -295,3 +382,10 @@ input[type="number"] {
     font-size: 0.24rem;
 }
 </style>
+<style>
+ /* scoped 模式 访问不到 */
+.mui-toast-container{
+    bottom:110px !important;
+}
+</style>
+

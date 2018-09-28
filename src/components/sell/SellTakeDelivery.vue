@@ -9,9 +9,9 @@
                     <span>订单详情</span>
                 </div>
                 <div class="goods-info-con">
-                    <img class="goods-ico" src="../../../static/img/mh_ico.png" alt="">
+                    <img class="goods-ico" :src="goodsInfo.game_logo" alt="">
                     <div class="goods-info-des">
-                        <span v-text="takeData.order_title"></span>
+                        <span v-text="goodsInfo.goods_title"></span>
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
@@ -21,25 +21,29 @@
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">订单号</div>
                     <div class="goodsInfo-right">
-                        <span v-text="takeData.orderInfo.orderNum"></span>
-                        <span class="blue-color" :data-clipboard-text="takeData.orderInfo.orderNum" @click="copyFn()" id="copy">[复制]</span>
+                        <span v-text="goodsInfo.order_sn"></span>
+                        <span class="blue-color" :data-clipboard-text="goodsInfo.order_sn" @click="copyFn()" id="copy">[复制]</span>
                     </div>
                 </div>
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">总支付金额</div>
-                    <div class="goodsInfo-right red-color" v-text="takeData.orderInfo.rental"></div>
+                    <div class="goodsInfo-right red-color">￥<span v-text="goodsInfo.goods_amount"></span></div>
                 </div>
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">保险费</div>
-                    <div class="goodsInfo-right" v-text="takeData.orderInfo.premium"></div>
+                    <div class="goodsInfo-right">￥<span v-text="goodsInfo.goods_safe"></span></div>
+                </div>
+                <div class="goodsInfo">
+                    <div class="goodsInfo-left">合同费</div>
+                    <div class="goodsInfo-right">￥<span v-text="goodsInfo.goods_compact"></span></div>
                 </div>
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">平台手续费</div>
-                    <div class="goodsInfo-right" v-text="takeData.orderInfo.hand"></div>
+                    <div class="goodsInfo-right">￥<span v-text="goodsInfo.goods_charge"></span></div>
                 </div>
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">结算总金额</div>
-                    <div class="goodsInfo-right red-color" v-text="takeData.orderInfo.price"></div>
+                    <div class="goodsInfo-right red-color">￥<span v-text="goodsInfo.income_amount"></span></div>
                 </div>
             </div>
             <!-- 状态 -->
@@ -121,6 +125,7 @@ export default {
                     title: "收货"
                 }
             },
+            goodsInfo:{},
             takeData: {
                 order_title: "梦幻西游xxxxxxxxssssssssssssssss",
                 orderInfo: {
@@ -168,12 +173,12 @@ export default {
             clipboard.on("success", function(e) {
                 clipboard.destroy();
                 console.log("成功");
-                mui.alert("复制成功", "提示", "确认", null, "div");
+                mui.toast("复制成功", { duration: "short", type: "div" });
             });
             clipboard.on("error", function(e) {
                 clipboard.destory();
                 console.log("失败");
-                mui.alert("请重新点击复制", "提示", "确认", null, "div");
+                mui.toast("请重新点击复制", { duration: "short", type: "div" });
             });
         },
         // 添加图片
@@ -187,23 +192,11 @@ export default {
                 let type = imgArr[i].type; //文件的类型，判断是否是图片
                 let size = imgArr[i].size; //文件的大小，判断图片的大小
                 if (that.upimgAll.imgData.accept.indexOf(type) == -1) {
-                    mui.alert(
-                        "请选择我们支持的图片格式！",
-                        "提示",
-                        "确认",
-                        null,
-                        "div"
-                    );
+                    mui.alert("请选择我们支持的图片格式！","提示","确认",null,"div");
                     return false;
                 }
                 if (size > 3145728) {
-                    mui.alert(
-                        "请选择3M以内的图片！",
-                        "提示",
-                        "确认",
-                        null,
-                        "div"
-                    );
+                    mui.alert("请选择3M以内的图片！","提示","确认",null,"div");
                     return false;
                 }
 
@@ -223,7 +216,25 @@ export default {
         delImg(ind) {
             var imgList = this.upimgAll.imgSrc;
             imgList.splice(ind, 1);
-        }
+        },
+        getData(){
+            var that = this;
+            that.$axios.post('/api/seller_trade_status',{
+                order_id:that.$route.query.order,
+            }).then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.goodsInfo = res.data.data;
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
+        },
+    },
+    mounted(){
+        this.getData();
     }
 };
 </script>
@@ -231,6 +242,7 @@ export default {
 .take-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .take-content {
     padding: 0.2rem 0.2rem 0;

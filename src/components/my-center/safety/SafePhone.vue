@@ -15,12 +15,12 @@
                 </div>
                 <div class="safe-strip">
                     <span class="safe-strip-tit">验证码</span>
-                    <input type="password" placeholder="请输入验证码">
-                    <span class="get-code" @click="getCode">获取验证码</span>
+                    <input type="number" placeholder="请输入验证码" v-model="code">
+                    <span class="get-code" @click="getCode" v-text="hintCode"></span>
                 </div>
             </div>
         </div>
-        <div class="okBtn">开始认证</div>
+        <div class="okBtn" @click="startAuthent">开始认证</div>
     </div>
 </template>
 <script>
@@ -41,8 +41,61 @@ export default {
                     title: "安全认证"
                 }
             },
-            phone: "135****8596"
+            phone: "",
+            hintCode: "获取验证码",
+            isGetCode: true,
+            code:'',
         };
+    },
+    methods: {
+        getCode() {
+            var that = this;
+            if (that.isGetCode) {
+                that.$axios
+                    .post("/api/check_mobile", {
+                        mobile: that.$store.state.mobile
+                    })
+                    .then(function(res) {
+                        console.log(res.data);
+                        if (res.status == 200) {
+                            if (res.data.code == 200) {
+                                that.hintCode = 60;
+                                that.isGetCode = false;
+                                var time = setInterval(function() {
+                                    that.hintCode--;
+                                    if (that.hintCode <= 0) {
+                                        clearInterval(time);
+                                        that.isGetCode = true;
+                                        that.hintCode = "获取验证码";
+                                    }
+                                }, 1000);
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                            } else{
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                                if(res.data.code == 401){
+                                    that.$router.push({name:'AccountLogin'})
+                                }
+                            }
+                        }
+                    })
+                    .catch(function(err) {
+                        console.log(err);
+                    });
+            }
+        },
+        startAuthent(){
+            var that = this;
+            if(!that.code){
+                mui.toast('验证码不能为空',{duration:'short',type:'div'});
+            }else{
+                that.$router.push({name:'SafeCard',query:{"code":that.code}})
+            }
+        }
+    },
+    mounted() {
+        var that = this;
+        var str = that.$store.state.mobile;
+        that.phone = str.substr(0, 3) + "****" + str.substr(7);
     }
 };
 </script>
@@ -50,6 +103,7 @@ export default {
 .safe-authentic-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top: 0.88rem;
 }
 .safe-authentic-content {
     padding: 0.2rem;
@@ -96,8 +150,9 @@ export default {
     color: #fe7649;
     font-size: 0.22rem;
     line-height: 0.6rem;
-    padding: 0 0.4rem;
-    border: 0.01rem solid #fe7649;
+    width: 1.9rem;
+    text-align: center;
+    border: 1px solid #fe7649;
     -webkit-border-radius: 0.15rem;
     -moz-border-radius: 0.15rem;
     border-radius: 0.15rem;
@@ -163,4 +218,5 @@ input[type="number"] {
     color: #999999;
     font-size: 0.26rem;
 }
+
 </style>

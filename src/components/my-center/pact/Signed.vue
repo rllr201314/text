@@ -1,5 +1,5 @@
 <template>
-    <!-- 需要我签名 -->
+    <!-- 已签约合同 -->
     <div class="signature-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="signature-content">
@@ -26,7 +26,7 @@
 <script>
 import Header from "@/components/home-page/Header";
 export default {
-    name: "Signature",
+    name: "Signed",
     components: {
         Header
     },
@@ -38,36 +38,36 @@ export default {
                     showLogo: 2, //显示头部title文字
                     showShare: 3, //1搜索2分享3菜单
                     showBg: true, //是否显示背景
-                    title: "需要我签名"
+                    title: "已签约合同"
                 }
             },
             signatureData:[{
                 type:'网络虚拟财产转让合同(卖家签)',
                 time:'2019-09-10',
                 company:'杭州古都科技有限公司灵石县分公司',
-                signType:'待签署',
+                signType:'已签署',
             },{
                 type:'网络虚拟财产转让合同(卖家签)',
                 time:'2019-09-10',
                 company:'杭州古都科技有限公司灵石县分公司',
-                signType:'待签署',
+                signType:'已签署',
             },{
                 type:'网络虚拟财产转让合同(卖家签)',
                 time:'2019-09-10',
                 company:'杭州古都科技有限公司灵石县分公司',
-                signType:'待签署',
+                signType:'已签署',
             },{
                 type:'网络虚拟财产转让合同(卖家签)',
                 time:'2019-09-10',
                 company:'杭州古都科技有限公司灵石县分公司',
-                signType:'待签署',
+                signType:'已签署',
             }]
         };
     },
     methods:{
         getData(){
             var that = this;
-            that.$axios.post('/api/buyer_sign_contract').then((res)=>{
+            that.$axios.post('/api/buyer_end_contract').then((res)=>{
                 console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
@@ -152,7 +152,7 @@ export default {
     font-size:.2rem;
     line-height: .3rem;
     color:#ffffff;
-    background:#FF5E5E;
+    background:#45C773;
     padding:.05rem .1rem;
     position: absolute;
     top:.1rem;

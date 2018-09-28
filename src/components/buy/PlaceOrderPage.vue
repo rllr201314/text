@@ -5,14 +5,13 @@
         <Header v-bind:showTitle="componentsData.showTitle"></Header>
         <div class="placeOrder-content">
             <!-- 商品详情 -->
-            <!-- <OrderInfo v-bind:orderInfo="componentsData.orderInfo"></OrderInfo> -->
             <div class="placeOrder-cell">
                 <div class="goods-info-top">
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
                     <span>商品详情</span>
                 </div>
                 <div class="goods-info-content">
-                    <img src="../../../static/img/mh_ico.png" alt="">
+                    <img :src="goodsInfo.game_logo" alt="">
                     <div class="goods-info">
                         <div class="goods-info-title" v-text="goodsInfo.goods_title"></div>
                         <div class="goods-info-box">
@@ -469,11 +468,17 @@ export default {
             console.log()
             if((Number(that.goodsInfo.goods_price) * 0.3) > that.custom_price){
                 mui.alert('自定义分期首付金额不可低于原价30%','提示','确认','','div');
+                that.customInfo =null;
+                that.stageInfo = null;
+                that.show_periods = false;
             }else if(Number(that.goodsInfo.goods_price)< that.custom_price){
                 mui.alert('首付金额不应大于原价','提示','确认','','div');
+                that.customInfo =null;
+                that.stageInfo = null;
+                that.show_periods = false;
             }else{
                 that.$axios.post('/api/self_stage',{
-                    price:that.goodsInfo.goods_price,
+                    price:Number(that.goodsInfo.goods_price),
                     down_payment:that.custom_price
                 }).then((res)=>{
                     console.log(res)
@@ -586,7 +591,7 @@ export default {
                 mui.alert("请阅读并同意《看个号平台交易协议》","提示","确定","","div");
                 return false;
             }
-            // 分期还是一口价------------------------------------------------------------------
+            // 分期还是一口价 true分期
             if(that.operaStage.stage){
                 request.down_price = that.down_price;//选择 首付金额
                 if(request.down_price == 3){//自定义金额
@@ -594,6 +599,7 @@ export default {
                         mui.alert("请确认你输入的自定义价格","提示","确定","","div");
                         return false;
                     }
+                    request.down_payment = that.custom_price;
                 }
                 request.stage_num = that.stage_num;
             }

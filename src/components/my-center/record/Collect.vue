@@ -235,6 +235,9 @@ export default {
     margin-left: 0.12rem;
 }
 /* 底部 价格 */
+.goods-strip-bottom{
+    position:relative;
+}
 .goods-strip-bottom div {
     display: inline-block;
 }
@@ -262,7 +265,8 @@ export default {
 .goods-collect {
     font-size: 0.24rem;
     color: #999999;
-    float: right;
+    position:absolute;
+    right:0;
 }
 .goods-collect img {
     width: 0.25rem;

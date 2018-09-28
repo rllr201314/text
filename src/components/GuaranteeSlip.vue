@@ -14,31 +14,31 @@
                 <div class="cell-con">
                     <div class="cell-strip">
                         <span class="left-strip">保单号</span>
-                        <span class="right-strip" v-text="slipData.num"></span>
+                        <span class="right-strip" v-text="orderInfo.assurance_sn"></span>
                     </div>
                     <div class="cell-strip">
                         <span class="left-strip">产品名称</span>
-                        <span class="right-strip" v-text="slipData.productName"></span>
+                        <span class="right-strip">网络虚拟财产保险</span>
                     </div>
                     <div class="cell-strip">
                         <span class="left-strip">投保时间</span>
-                        <span class="right-strip" v-text="slipData.time"></span>
+                        <span class="right-strip"><span v-text="orderInfo.start_time"></span>至<span v-text="orderInfo.end_time"></span></span>
                     </div>
                     <div class="cell-strip">
                         <span class="left-strip">保单状态</span>
-                        <span class="right-strip" v-text="slipData.status"></span>
+                        <span class="right-strip">出单成功</span>
                     </div>
                     <div class="cell-strip">
                         <span class="left-strip">保险期限</span>
-                        <span class="right-strip" v-text="slipData.dateSlip"></span>
+                        <span class="right-strip" >中国人保与杭州古都科技有限公司灵石县分公司共同为客户提供一年的保障</span>
                     </div>
                     <div class="cell-strip">
                         <span class="left-strip">受益人</span>
-                        <span class="right-strip" v-text="slipData.userName"></span>
+                        <span class="right-strip" v-text="orderInfo.username"></span>
                     </div>
                     <div class="cell-strip">
                         <span class="left-strip">联系电话</span>
-                        <span class="right-strip" v-text="slipData.phone"></span>
+                        <span class="right-strip" v-text="orderInfo.phone_number"></span>
                     </div>
                 </div>
             </div>
@@ -49,15 +49,15 @@
                 <div class="cell-con">
                     <div class="cell-strip">
                         <span class="left-strip">保险金额</span>
-                        <span class="right-strip" v-text="goodsData.insurance"></span>
+                        <span class="right-strip"><span v-text="orderInfo.money"></span>元</span>
                     </div>
                     <div class="cell-strip">
                         <span class="left-strip">免赔额</span>
-                        <span class="right-strip" v-text="goodsData.excess"></span>
+                        <span class="right-strip">每次事故绝对免赔额为200元或10%，两者以高者为准。</span>
                     </div>
                     <div class="cell-strip">
                         <span class="left-strip">投保支付费用</span>
-                        <span class="right-strip" v-text="goodsData.defrayment"></span>
+                        <span class="right-strip"><span v-text="orderInfo.end_money"></span>元</span>
                     </div>
                 </div>
             </div>
@@ -82,21 +82,29 @@ export default {
                     title: "电子保单"
                 }
             },
-            slipData:{
-                num:'KGH00000000000',
-                productName:'网络虚拟财产保险',
-                time:'订单时间+1天】至【订单时间+366天】',
-                status:'出单成功',
-                dateSlip:'中国人保财险与杭州古都科技有限公司打散后发的是佛啊说撒的佛奥德赛后is阿道夫哦is啊哈地方',
-                userName:'hhhh',
-                phone:'12345678'
-            },
-            goodsData:{
-                insurance:'￥34567',
-                excess:'每次事故绝对免赔额为200元或10%，两者以高者为准。',
-                defrayment:'【总额的8%】元',
-            }
+            orderInfo:{},
         };
+    },
+    methods:{
+        getData(){
+            var that = this;
+            that.$axios.post('/api/arbitrate',{
+                order_id:that.$route.query.order
+            }).then((res)=>{
+                console.log(res)
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.orderInfo = res.data.data;
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
+        }
+    },
+    mounted(){
+        console.log(this.$route.query.order);
+        this.getData();
     }
 };
 </script>
@@ -104,6 +112,7 @@ export default {
 .guaranteeslip-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .guaranteeslip-con{
     padding:.2rem;

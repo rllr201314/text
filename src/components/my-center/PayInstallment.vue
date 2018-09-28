@@ -8,6 +8,7 @@
                     <img class="lasttime" src="../../../static/img/my-center/his.png" alt="">
                     <span>最近还款期</span>
                     <span class="black" v-text="payData.lastTime"></span>
+                    <span class="right-time">(逾期<span class="red-color">5</span>天)</span>
                 </div>
                 <div class="payInstall-strip refund">
                     <span>选择还款方式</span>
@@ -21,7 +22,13 @@
                     </div>
                 </div>
                 <div class="payInstall-strip ">
-                    <span>应付金额</span><span class="red-color" v-text="payData.price"></span>
+                    <span class="strip-left">分期金额</span><span  v-text="payData.price"></span>
+                </div>
+                <div class="payInstall-strip ">
+                    <span class="strip-left">滞纳金</span><span  v-text="payData.price"></span>
+                </div>
+                <div class="payInstall-strip ">
+                    <span class="strip-left">应付金额</span><span class="red-color" v-text="payData.price"></span>
                 </div>
             </div>
         </div>
@@ -68,6 +75,7 @@
     .pay-installment-wrap{
         max-width: 12rem;
         margin:0 auto;
+        padding-top:.88rem;
     }
     .payInstall-content{
         padding:.2rem;
@@ -91,7 +99,6 @@
         vertical-align: middle;
         color:#666666;
         font-size:.26rem;
-        margin-left:.13rem;
     }
     .lasttime{
         width:.29rem;
@@ -109,6 +116,14 @@
     .refund img{
         width:.22rem;
         height:.22rem;
+    }
+    .right-time{
+        display: inline-block;
+        margin-left:1rem;
+    }
+    .strip-left{
+        display: inline-block;
+        width:1.5rem;
     }
     .red-color{
         color:#FA5856 !important;

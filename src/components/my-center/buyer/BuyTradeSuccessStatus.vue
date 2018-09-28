@@ -27,8 +27,8 @@
                                 <span>联系客服</span>
                             </div>
                             <div class="right-operate">
-                                <span class="cancel">查看保单</span>
-                                <span class="pay">查看</span>
+                                <span class="cancel" v-if="item.is_safe == 1" @click="lookChit(item.order_id)">查看保单</span>
+                                <span class="pay" @click="goStatus(item.order_id)">查看</span>
                             </div>
                         </div>
                     </div>
@@ -70,8 +70,8 @@ export default {
             var that = this;
             if (flag) {
                 that.$axios
-                    .post("/api/buyer_trade_success",{
-                        page:that.now_page
+                    .post("/api/buyer_trade_success", {
+                        page: that.now_page
                     })
                     .then(res => {
                         console.log(res);
@@ -80,8 +80,10 @@ export default {
                                 if (res.data.data.data == "") {
                                     that.minirefresh.endUpLoading(true);
                                 } else {
-                                    for(var i in res.data.data.data){
-                                        that.goodsData.push(res.data.data.data[i]);
+                                    for (var i in res.data.data.data) {
+                                        that.goodsData.push(
+                                            res.data.data.data[i]
+                                        );
                                     }
                                     that.minirefresh.endUpLoading(false);
                                 }
@@ -114,6 +116,18 @@ export default {
                         console.log(err);
                     });
             }
+        },
+        lookChit(order_id) {
+            this.$router.push({
+                name: "GuaranteeSlip",
+                query: { order: order_id }
+            });
+        },
+        goStatus(order_id) {
+            this.$router.push({
+                name: "BuyTakeDelivery",
+                query: { order: order_id }
+            });
         },
         refresh() {
             var that = this;
@@ -181,7 +195,7 @@ export default {
 .orderInfo {
     display: inline-block;
     vertical-align: middle;
-    width: 5.3rem;
+    width: 5rem;
     padding: 0.3rem 0;
 }
 .orderInfo span {

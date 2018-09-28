@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="manage-cell">
-                <div class="manage-strip">
+                <div class="manage-strip" @click="addCard">
                     <span class="manage-lefttext">银行卡设置</span>
                     <div class="right-opt" >
                         <span>未绑定</span>
@@ -73,6 +73,12 @@
 
                 }
             }
+        },
+        methods:{
+            // 管理 银行卡
+            addCard(){
+                this.$router.push({name:'UserAuthentication'})
+            }
         }
     }
 </script>
@@ -80,6 +86,7 @@
     .assets-manage-wrap{
         max-width: 12rem;
         margin:0 auto;
+        padding-top:.88rem;
     }
     .manage-content{
         padding:.2rem;

@@ -1,7 +1,7 @@
 <template>
     <div class="sellOption-wrap">
+        <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="sellOpt-top">
-            <Header v-bind:showTitle="comData.showTitle"></Header>
             <div class="game-sign">
                 <img :src="sellOptData.gameLog" alt="">
                 <div v-text="sellOptData.gameName"></div>
@@ -423,16 +423,18 @@ export default {
 .sellOption-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .sellOpt-top {
     height: 5rem;
     background-image: url(../../../static/img/sell/header_bg.png);
     background-repeat: no-repeat;
     background-size: 100% 5rem;
+    padding-top:.5rem;
 }
 .game-sign {
     text-align: center;
-    margin-top: 0.5rem;
+    /* margin-top: 0.5rem; */
     font-size: 0.28rem;
 }
 .game-sign img {

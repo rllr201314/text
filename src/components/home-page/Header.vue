@@ -39,7 +39,7 @@
                     <img src="../../../static/img/header-menu/service_ico.png" alt="">
                     <span>在线咨询</span>
                 </div>
-                <div class="history" @click="toPage('')">
+                <div class="history" @click="toPage('browse')">
                     <img src="../../../static/img/header-menu/history_ico.png" alt="">
                     <span>浏览历史</span>
                 </div>
@@ -51,7 +51,7 @@
 
 <script>
 export default {
-    inject: ["reload"],
+    inject: ["reload"],//刷新页面
     name: "Header",
     data() {
         return {
@@ -59,6 +59,13 @@ export default {
         };
     },
     props: ["showTitle"],
+    beforeRouteLeave(to, from, next) {
+        if (from.path == "/account-login" || from.path == "/code-login") {
+            this.$router.push({name:'HomePage'})
+        } else {
+            next();
+        }
+    },
     mounted() {},
     methods: {
         //一键清空
@@ -76,29 +83,30 @@ export default {
                 if (that.showTitle.goBack == 1) {
                     that.$router.push({ name: "HomePage" });
                 } else if (that.showTitle.goBack == 2) {
-                    that.$router.go(-3);
+                    // that.$router.go(-3);
+                    that.$router.go(-1);
                 }else {
                     that.$router.go(-1);
                 }
             } else if (flag == "mycenter") {
                 var token = that.$store.state.token;
                 if (token == undefined || token == "") {
-                    mui.confirm(
-                        "请先登陆",
-                        "提示",
-                        ["取消", "确认"],
-                        function(e) {
-                            if (e.index == 1) {
+                    // mui.confirm(
+                    //     "请先登陆",
+                    //     "提示",
+                    //     ["取消", "确认"],
+                    //     function(e) {
+                    //         if (e.index == 1) {
                                 that.$router.push({
                                     name: "AccountLogin",
                                     params: {
                                         redirect: "MyCenter"
                                     }
                                 });
-                            }
-                        },
-                        "div"
-                    );
+                    //         }
+                    //     },
+                    //     "div"
+                    // );
                 } else {
                     that.$router.push({ name: "MyCenter" });
                 }
@@ -106,35 +114,38 @@ export default {
         },
         toPage(flag) {
             var that = this;
+            that.showMenu = false;
             if (flag == "home") {
                 that.$router.push({ name: "HomePage" });
             } else if (flag == "sell") {
                 that.$router.push({ name: "Sell" });
                 sessionStorage.buyOrsell = 2;
-                that.reload(); //刷新页面
+                // that.reload(); //刷新页面
             } else if (flag == "my") {
                 var token = that.$store.state.token;
                 if (token == undefined || token == "") {
-                    mui.confirm(
-                        "请先登陆",
-                        "提示",
-                        ["取消", "确认"],
-                        function(e) {
-                            if (e.index == 1) {
+                    // mui.confirm(
+                    //     "请先登陆",
+                    //     "提示",
+                    //     ["取消", "确认"],
+                    //     function(e) {
+                    //         if (e.index == 1) {
                                 that.$router.push({
                                     name: "AccountLogin",
                                     params: {
                                         redirect: "MyCenter"
                                     }
                                 });
-                            }
-                        },
-                        "div"
-                    );
+                    //         }
+                    //     },
+                    //     "div"
+                    // );
                 } else {
                     that.$router.push({ name: "MyCenter" });
-                    that.reload();
+                    // that.reload();
                 }
+            }else if(flag == 'browse'){
+                that.$router.push({name:'BrowseRecord'})
             }
         }
     }
