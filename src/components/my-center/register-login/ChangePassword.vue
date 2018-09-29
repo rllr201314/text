@@ -53,9 +53,9 @@ export default {
             var phone = that.phoneNum;
             var reg = /^1[3-9][0-9]{9}$/g;
             if (phone == "") {
-                mui.alert("手机号码不能为空", "提示", "确定", "", "div");
+                mui.toast("手机号码不能为空",{ duration:'short', type:'div' });
             } else if (!phone.match(reg)) {
-                mui.alert("您的手机号不正确", "提示", "确定", "", "div");
+                mui.toast("您的手机号不正确",{ duration:'short', type:'div' });
             } else {
                 that.$axios
                     .post("/api/sms_code", {
@@ -66,9 +66,9 @@ export default {
                         var res = response;
                         if (res.status == 200) {
                             if (res.data.code == 200) {
-                                mui.alert(res.data.msg, "提示", "确认", "", "");
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
                             } else {
-                                mui.alert(res.data.msg, "提示", "确认", "", "");
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
                             }
                         }
                     })
@@ -86,15 +86,15 @@ export default {
             var phoneReg = /^1[3-9][0-9]{9}$/g;
             var passReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
             if (mobile == "") {
-                mui.alert("手机号不能为空", "提示", "确定", "", "div");
+                mui.toast("手机号不能为空",{ duration:'short', type:'div' });
             } else if (!mobile.match(phoneReg)) {
-                mui.alert("您输入的手机号不正确", "提示", "确定", "", "div");
+                mui.toast("您输入的手机号不正确",{ duration:'short', type:'div' });
             } else if (verify_code == "" || verify_code.length < 6) {
-                mui.alert("您输入的验证码不正确", "提示", "确定", "", "div");
+                mui.toast("您输入的验证码不正确",{ duration:'short', type:'div' });
             } else if (password == "") {
-                mui.alert("密码不能为空", "提示", "确定", "", "div");
+                mui.toast("密码不能为空",{ duration:'short', type:'div' });
             } else if (!password.match(passReg)) {
-                mui.alert("密码为6-16位数字、字母组合","提示","确定","","div");
+                mui.toast("密码为6-16位数字、字母组合",{ duration:'short', type:'div' });
             } else {
                 that.$axios
                     .post("/api/find_password", {
@@ -107,19 +107,21 @@ export default {
                         var res = response;
                         if (res.status == 200) {
                             if (res.data.code == 200) {
-                                mui.alert(
-                                    res.data.msg,
-                                    "提示",
-                                    "确定",
-                                    function() {
-                                        that.$router.push({
-                                            name: "MyCenter"
-                                        });
-                                    },
-                                    "div"
-                                );
+                                // mui.alert(
+                                //     res.data.msg,
+                                //     "提示",
+                                //     "确定",
+                                //     function() {
+                                //         that.$router.push({
+                                //             name: "MyCenter"
+                                //         });
+                                //     },
+                                //     "div"
+                                // );
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                                that.$router.push({name: "MyCenter"});
                             } else {
-                                mui.alert(res.data.msg,"提示","确定","","div");
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
                                 that.verify_code = "";
                                 that.password = "";
                             }
@@ -181,7 +183,7 @@ export default {
     font-size: 0.22rem;
     line-height: 0.6rem;
     padding: 0 0.4rem;
-    border: 0.01rem solid #fe7649;
+    border: 1px solid #fe7649;
     -webkit-border-radius: 0.15rem;
     -moz-border-radius: 0.15rem;
     border-radius: 0.15rem;

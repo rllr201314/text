@@ -7,28 +7,31 @@
                 <div class="payInstall-strip">
                     <img class="lasttime" src="../../../static/img/my-center/his.png" alt="">
                     <span>最近还款期</span>
-                    <span class="black" v-text="payData.lastTime"></span>
-                    <span class="right-time">(逾期<span class="red-color">5</span>天)</span>
+                    <span class="black" v-text="time"></span>
+                    <span class="right-time" v-if="payData.delay_day != 0">(逾期<span class="red-color">5</span>天)</span>
                 </div>
                 <div class="payInstall-strip refund">
                     <span>选择还款方式</span>
                     <div class="current" @click="seleMode('current')">
-                        <img :src="payData.isCurrent?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">
+                        <img :src="isCurrent?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">
                         <span>还本期</span>
                     </div>
                     <div class="all" @click="seleMode('all')">
-                        <img :src="payData.isCurrent?'../../../static/img/order/nocheck.png':'../../../static/img/order/okcheck.png'" alt="">
+                        <img :src="isCurrent?'../../../static/img/order/nocheck.png':'../../../static/img/order/okcheck.png'" alt="">
                         <span>还全部</span>
                     </div>
                 </div>
                 <div class="payInstall-strip ">
-                    <span class="strip-left">分期金额</span><span  v-text="payData.price"></span>
+                    <span class="strip-left">分期金额</span><span>￥<span v-text="payData.money"></span></span>
                 </div>
                 <div class="payInstall-strip ">
-                    <span class="strip-left">滞纳金</span><span  v-text="payData.price"></span>
+                    <span class="strip-left">利息</span><span>￥<span v-text="payData.charge"></span></span>
+                </div>
+                <div class="payInstall-strip " v-if="payData.delay_day != 0">
+                    <span class="strip-left">滞纳金</span><span>￥<span v-text="payData.delay_money"></span></span>
                 </div>
                 <div class="payInstall-strip ">
-                    <span class="strip-left">应付金额</span><span class="red-color" v-text="payData.price"></span>
+                    <span class="strip-left">应付金额</span><span class="red-color">￥<span v-text="payData.total_money"></span></span>
                 </div>
             </div>
         </div>
@@ -53,20 +56,47 @@
                         title:"支付分期",
                     }
                 },
-                payData:{
-                    lastTime:'2018-07-09',
-                    isCurrent:true,
-                    price:"￥999"
-                }
+                allData:{},
+                payData:{},
+                time:null,
+                isCurrent:true,
             }
         },
         methods:{
             seleMode(flag){
+                var that = this;
                 if(flag == 'current'){
-                    this.payData.isCurrent = true;
+                    that.isCurrent = true;
+                    that.payData = that.allData.next_stage;
                 }else if(flag == 'all'){
-                    this.payData.isCurrent = false;
+                    that.isCurrent = false;
+                    that.payData = that.allData.end_stage;
                 }
+            },
+            getData(){
+                var that = this;
+                that.$axios.post('/api/order_stage',{
+                    order_id:that.$route.query.order
+                }).then((res)=>{
+                    console.log(res)
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            that.allData = res.data.data;
+                            that.payData = that.allData.next_stage;
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            }
+        },
+        mounted(){
+            var that = this;
+            if(that.$route.query.order && that.$route.query.time){
+                that.getData();
+                that.time = that.$route.query.time;
+            }else{
+                that.$router.go(-1);
             }
         }
     }

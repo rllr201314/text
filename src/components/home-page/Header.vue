@@ -59,13 +59,6 @@ export default {
         };
     },
     props: ["showTitle"],
-    beforeRouteLeave(to, from, next) {
-        if (from.path == "/account-login" || from.path == "/code-login") {
-            this.$router.push({name:'HomePage'})
-        } else {
-            next();
-        }
-    },
     mounted() {},
     methods: {
         //一键清空

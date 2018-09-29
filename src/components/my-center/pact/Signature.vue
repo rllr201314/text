@@ -3,32 +3,35 @@
     <div class="signature-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="signature-content">
-            <div class="signature-title">共2份合同待签署</div>
-            <div class="signature-cell" v-for="item in signatureData">
+            <div class="signature-title">共<span v-text="num"></span>份合同待签署</div>
+            <div class="signature-cell" v-for="item in signatureData" @click="sign(item.contract_id)">
                 <div class="left-cell">
                     <img src="../../../../static/img/my-center/signature.png" alt="">
                 </div>
                 <div class="right-cell">
                     <div class="right-top">
-                        <span v-text="item.type"></span>
-                        <span class="time gray-color" v-text="item.time"></span>
+                        <span v-text="item.contract_title"></span>
+                        <span class="time gray-color" v-text="item.create_time"></span>
                     </div>
                     <div class="right-bot">
                         <img src="../../../../static/img/my-center/write.png" alt="">
-                        <span class="gray-color" v-text="item.company"></span>
-                        <span class="sian-type" v-text="item.signType"></span>
+                        <span class="gray-color" v-text="item.company_name"></span>
+                        <span class="sian-type">待签署</span>
                     </div>
                 </div>
             </div>
         </div>
+        <NoData v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import NoData from "@/components/multi/NoData";
 export default {
     name: "Signature",
     components: {
-        Header
+        Header,
+        NoData
     },
     data() {
         return {
@@ -41,27 +44,10 @@ export default {
                     title: "需要我签名"
                 }
             },
-            signatureData:[{
-                type:'网络虚拟财产转让合同(卖家签)',
-                time:'2019-09-10',
-                company:'杭州古都科技有限公司灵石县分公司',
-                signType:'待签署',
-            },{
-                type:'网络虚拟财产转让合同(卖家签)',
-                time:'2019-09-10',
-                company:'杭州古都科技有限公司灵石县分公司',
-                signType:'待签署',
-            },{
-                type:'网络虚拟财产转让合同(卖家签)',
-                time:'2019-09-10',
-                company:'杭州古都科技有限公司灵石县分公司',
-                signType:'待签署',
-            },{
-                type:'网络虚拟财产转让合同(卖家签)',
-                time:'2019-09-10',
-                company:'杭州古都科技有限公司灵石县分公司',
-                signType:'待签署',
-            }]
+            num:'',
+            signatureData:[],
+            showNoData: false,
+            
         };
     },
     methods:{
@@ -71,12 +57,49 @@ export default {
                 console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
+                        that.num = res.data.data.length;
+                        if(res.data.data != ''){
+                            that.signatureData = res.data.data;
+                            YHT.init(that.signatureData[0].app_id,that.getInit);
+                        }else{
+                            that.showNoData = true;
+                        }
                     }
                 }
             }).catch((err)=>{
                 console.log(err)
             })
-        }
+        },
+        getInit(obj){
+            var that = this;
+            that.$axios.post('/api/contract_token').then((res)=>{
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        if(res.data.data.token){
+                            YHT.setToken(res.data.data.token);
+                            //重新设置token，从请求头获取token
+                            YHT.do(obj);//调用此方法，会继续执行上次未完成的操作
+                        }
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err);
+            })
+        },
+        sign(contract_id){
+            var that = this;
+            //合同签署页面
+            YHT.signContract(function successFun(url) {
+                    console.log(url);
+                    window.open(url);
+                },
+                function failFun(data) {
+                    console.log(data);
+                },
+                contract_id
+            );
+
+        },
     },
     mounted(){
         this.getData();

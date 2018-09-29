@@ -3,21 +3,21 @@
     <div class="billInstallment-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="bill-content">
-            <div class="time-interval">
+            <div class="time-interval" v-if="false">
                 <span>2018年7月</span><img src="../../../static/img/my-center/down_ico.png" alt="">
             </div>
             <div class="bill-cell bidd-info">
                 <div class="bind-strip">
                     <span  class="left-info">分期总金额</span>
-                    <span class="right-info"> ¥6000 </span>
+                    <span class="right-info"> ¥<span v-text="amount_info.total_amount"></span></span>
                 </div>
                 <div class="bind-strip">
                     <span  class="left-info"> 已还金额</span>
-                    <span class="right-info"> ¥6000 </span>
+                    <span class="right-info"> ¥<span v-text="amount_info.repay_amount"></span></span>
                 </div>
                 <div class="bind-strip">
                     <span  class="left-info">剩余分期金额</span>
-                    <span class="right-info red-color"> ¥6000 </span>
+                    <span class="right-info red-color"> ¥<span v-text="amount_info.remain_amount"></span></span>
                 </div>
             </div>
             <div class="bill-cell">
@@ -26,36 +26,35 @@
                     <span>分期明细</span>
                 </div>
                 <div class="bill-cell-content">
-                    <div class="stage-cell" v-for="(item,ind) in billData.orderData">
+                    <div class="stage-cell" v-for="(item,ind) in orderData">
                         <div class="order-num">
                             <span>订单号 </span>
-                            <span class="black-color" v-text="item.orderNum"></span>
-                            <span class="refund">我要还款</span>
+                            <span class="black-color" v-text="item.order_sn"></span>
+                            <span class="refund" @click="goPayFn(item.order_id,item.next_time)">我要还款</span>
                         </div>
-                        <div class="goods-des" v-text="item.orderDes"></div>
+                        <div class="goods-des" v-text="item.goods_title"></div>
                         <div class="stage-info">
-                            <span class="red-color" v-text="item.price"></span>
-                            <span class="black-color">期数{{item.periods}}</span>
-                            <span class="black-color">利率{{item.rate}}</span>
+                            <span class="red-color">￥<span v-text="item.cur_money"></span></span>
+                            <span class="black-color">期数<span v-text="item.cur_num"></span></span>
+                            <span class="black-color">利率<span v-text="item.percent_rate"></span></span>
                         </div>
                         <div class="stage-bottom">
                             <img src="../../../static/img/my-center/his.png" alt="" class="history">
                             <span>最近还款期</span>
-                            <span v-text="item.recentTime"></span>
-                            <span class="tag green-bg" v-show="item.refund">已还款</span>
-                            <span class="tag red-bg" v-show="!item.refund">未还款</span>
+                            <span v-text="item.next_time"></span>
+                            <span class="tag green-bg" v-if="item.stage_status == 1">已还款</span>
+                            <span class="tag red-bg" v-if="item.stage_status == 2 || item.stage_status == 3">未还款</span>
                             <div class="showStage" @click="showStageFun(ind,item.showStage)">
                                 <img :src="item.showStage?'../../../static/img/my-center/up_ico.png':'../static/img/my-center/down_ico.png'" alt="">
                             </div>
                         </div>
                         <div class="stage-box" v-show="item.showStage">
-                            <div class="stage-strip" v-for="val in item.stageData":class="val.isRefund?'':'black-color'">
+                            <div class="stage-strip" v-for="val in item.stage_info" :class="val.flag == 1?'':'black-color'">
                                 <div class="suc-refund">
-                                    <img v-if="val.isRefund" src="../../../static/img/my-center/suc_refund.png" alt="">
+                                    <img v-if="val.flag == 1" src="../../../static/img/my-center/suc_refund.png" alt="">
                                 </div>
-                                <span class="periodsNum" v-text="val.installment"></span>
-                                <span v-text="val.price"></span>
-                                <span v-text="val.detaile"></span>
+                                <span class="periodsNum" v-text="val.stage_title"></span>
+                                <span v-text="val.stage_value"></span>
                             </div>
                         </div>
                     </div>
@@ -82,90 +81,37 @@
                         title:"分期账单",
                     }
                 },
-                billData:{
-                    orderData:[{
-                        orderNum:'232131231231231',
-                        orderDes:'梦幻西游xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-                        price:'￥1800',
-                        periods:'5',
-                        rate:'3%',
-                        recentTime:'2018-07-09',
-                        refund:true,//是否还款
-                        showStage:false,
-                        stageData:[{
-                            isRefund:true,
-                            installment:'首付',
-                            price:'￥500',
-                            detaile:'',
-                        },{
-                            isRefund:false,
-                            installment:'第一期',
-                            price:'￥500',
-                            detaile:'（本金1000，利息3000*3%=90）',
-                        },{
-                            isRefund:false,
-                            installment:'第二期',
-                            price:'￥500',
-                            detaile:'（本金1000，利息3000*3%=90）',
-                        }]
-                    },{
-                        orderNum:'232131231231231',
-                        orderDes:'梦幻西游xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-                        price:'￥1800',
-                        periods:'5',
-                        rate:'3%',
-                        recentTime:'2018-07-09',
-                        refund:false,//是否还款
-                        showStage:false,
-                        stageData:[{
-                            isRefund:true,
-                            installment:'首付',
-                            price:'￥500',
-                            detaile:'',
-                        },{
-                            isRefund:false,
-                            installment:'第一期',
-                            price:'￥500',
-                            detaile:'（本金1000，利息3000*3%=90）',
-                        },{
-                            isRefund:false,
-                            installment:'第二期',
-                            price:'￥500',
-                            detaile:'（本金1000，利息3000*3%=90）',
-                        }]
-                    },{
-                        orderNum:'232131231231231',
-                        orderDes:'梦幻西游xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-                        price:'￥1800',
-                        periods:'5',
-                        rate:'3%',
-                        recentTime:'2018-07-09',
-                        refund:true,//是否还款
-                        showStage:false,
-                        stageData:[{
-                            isRefund:true,
-                            installment:'首付',
-                            price:'￥500',
-                            detaile:'',
-                        },{
-                            isRefund:false,
-                            installment:'第一期',
-                            price:'￥500',
-                            detaile:'（本金1000，利息3000*3%=90）',
-                        },{
-                            isRefund:false,
-                            installment:'第二期',
-                            price:'￥500',
-                            detaile:'（本金1000，利息3000*3%=90）',
-                        }]
-                    }]
-                }
+                amount_info:{},
+                orderData:[],
             }
         },
         methods:{
             showStageFun(ind,flag){
-                this.billData.orderData[ind].showStage = !this.billData.orderData[ind].showStage;
+                this.orderData[ind].showStage = !this.orderData[ind].showStage;
+            },
+            getData(){
+                var that = this;
+                that.$axios.post('/api/stage_info').then((res)=>{
+                    console.log(res);
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            that.amount_info = res.data.data.amount_info;
+                            for(var i in res.data.data.order_info){
+                                res.data.data.order_info[i].showStage = false;
+                            }
+                            that.orderData = res.data.data.order_info;
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            },
+            goPayFn(order_id,time){
+                this.$router.push({name:'PayInstallment',query:{order:order_id,time:time}});
             }
+        },
+        mounted(){
+            this.getData();
         }
     }
 </script>
@@ -173,9 +119,10 @@
     .billInstallment-wrap{
         max-width:12rem;
         margin:0 auto;
+        padding-top:.88rem;
     }
     .bill-content{
-        padding:0 .2rem;
+        padding:.2rem .2rem 0;
     }
     .time-interval{
         line-height: .9rem;
@@ -249,6 +196,7 @@
     .order-num{
         line-height: .5rem;
         padding-top:.1rem;
+        position:relative;
     }
     .refund{
         font-size:.22rem;
@@ -257,14 +205,15 @@
         width:1.1rem;
         text-align:center;
         line-height: .44rem;
-        float:right;
         background:#FE7649;
         -webkit-border-radius: .04rem;
         -moz-border-radius: .04rem;
         border-radius: .04rem;
-        -webkit-box-shadow: .02rem .02rem .09rem #FE7649;
-        -moz-box-shadow: .02rem .02rem .09rem #FE7649;
-        box-shadow: .02rem .02rem .09rem #FE7649;
+        -webkit-box-shadow: 1px 1px 3px #FE7649;
+        -moz-box-shadow: 1px 1px 3px #FE7649;
+        box-shadow: 1px 1px 3px #FE7649;
+        position:absolute;
+        right:0;
     }
     .goods-des{
         white-space: nowrap;
@@ -340,6 +289,6 @@
         height:.13rem;
     }
     .periodsNum{
-        min-width:.7rem;
+        min-width:.8rem;
     }
 </style>

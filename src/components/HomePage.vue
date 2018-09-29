@@ -87,8 +87,7 @@ export default {
         showActive(){
             this.isShowShage = !this.isShowShage;
         },
-        countDown(times){
-        }
+        
     },
     components: {
         Header,

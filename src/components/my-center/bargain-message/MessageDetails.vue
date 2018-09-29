@@ -136,6 +136,7 @@ export default {
 .messageADetails-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .messageDetails-con {
     padding: 0 0.2rem;

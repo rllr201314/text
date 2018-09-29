@@ -48,15 +48,13 @@ export default {
                     showLogo: 2, //显示头部title文字
                     showShare: "", //1搜索2分享3菜单
                     showBg: false, //是否显示背景
-                    title: "登录"
+                    title: "登录",
+                    goBack:1,
                 }
             },
             phone: "",
             password: ""
         };
-    },
-    mounted(){
-        // var that =this;
     },
     methods: {
         loginFn() {
@@ -66,19 +64,13 @@ export default {
             var phoneReg = /^1[3-9][0-9]{9}$/g;
             var passReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
             if (mobile == "") {
-                mui.alert("手机号码不能为空", "提示", "确定", "", "div");
+                mui.toast("手机号码不能为空",{ duration:'short', type:'div' });
             } else if (!mobile.match(phoneReg)) {
-                mui.alert("您输入的手机号不正确", "提示", "确定", "", "div");
+                mui.toast("您输入的手机号不正确",{ duration:'short', type:'div' });
             } else if (password == "") {
-                mui.alert("密码不能为空", "提示", "确定", "", "div");
+                mui.toast("密码不能为空",{ duration:'short', type:'div' });
             } else if (!password.match(passReg)) {
-                mui.alert(
-                    "密码为6-16位数字、字母组合",
-                    "提示",
-                    "确定",
-                    "",
-                    "div"
-                );
+                mui.toast("密码为6-16位数字、字母组合",{ duration:'short', type:'div' });
             } else {
                 that.$axios
                     .post("/api/login", {
@@ -97,34 +89,30 @@ export default {
                                     that.$store.commit("set_mobile",mobile);
                                 }
                                 that.$store.commit("changeLogin",'1')
-                                mui.alert(
-                                    res.data.msg,
-                                    "提示",
-                                    "确定",
-                                    function() {
-                                        // debugger;
-                                        // if(that.$router.currentRoute.params.redirect != undefined){
-                                        //     that.$router.replace({
-                                        //         name: that.$router.currentRoute.params.redirect
-                                        //     });
-                                        // }else{
-                                        //     that.$router.push({
-                                        //         name: "MyCenter"
-                                        //     });
-                                        // }
-                                        that.$router.go(-1);
+                                // mui.alert(
+                                //     res.data.msg,
+                                //     "提示",
+                                //     "确定",
+                                //     function() {
+                                //         // if(that.$router.currentRoute.params.redirect != undefined){
+                                //         //     that.$router.replace({
+                                //         //         name: that.$router.currentRoute.params.redirect
+                                //         //     });
+                                //         // }else{
+                                //         //     that.$router.push({
+                                //         //         name: "MyCenter"
+                                //         //     });
+                                //         // }
+                                //         that.$router.go(-1);
                                         
-                                    },
-                                    "div"
-                                );
+                                //     },
+                                //     "div"
+                                // );
+                                
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                                that.$router.go(-1);
                             } else {
-                                mui.alert(
-                                    res.data.msg,
-                                    "提示",
-                                    "确定",
-                                    "",
-                                    "div"
-                                );
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
                                 that.password = "";
                             }
                         }

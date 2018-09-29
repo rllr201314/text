@@ -115,6 +115,8 @@ export default {
                     console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
+                            mui.toast(res.data.msg, { duration: "short",type: "div"});
+                            // 跳页面
                         } else {
                             mui.toast(res.data.msg, {
                                 duration: "short",

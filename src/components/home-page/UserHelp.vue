@@ -1,17 +1,17 @@
 <template>
     <!-- 用户帮助 -->
     <div class="user-help">
-        <div class="is-service">
+        <div class="is-service" @click="toLink('authent')">
             <img src="../../../static/img/eye_ico.png" alt="">
             <span>真假客服鉴定</span>
         </div>
         <div class="vertical"></div>
-        <div class="consult">
+        <div class="consult" @click="toLink('refer')">
             <img src="../../../static/img/dialog_ico.png" alt="">
             <span>在线咨询</span>
         </div>
         <div class="vertical"></div>
-        <div class="sell">
+        <div class="sell" @click="toLink('sell')">
             <img src="../../../static/img/sell_ico.png" alt="">
             <span>我要卖</span>
         </div>
@@ -20,7 +20,20 @@
 
 <script>
     export default {
-        name: "UserHelp"
+        name: "UserHelp",
+        methods:{
+            toLink(flag){
+                var that = this;
+                if(flag == 'authent'){
+                    that.$router.push({name:'Authenticity'})
+                }else if(flag == 'refer'){
+                    console.log('-----------咨询------------')
+                }else if(flag == 'sell'){
+                    that.$router.push({name:'Sell'});
+                    sessionStorage.buyOrsell = 2;
+                }
+            }
+        }
     }
 </script>
 

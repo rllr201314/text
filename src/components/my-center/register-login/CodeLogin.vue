@@ -49,7 +49,8 @@ export default {
                     showLogo: 2, //显示头部title文字
                     showShare: "", //1搜索2分享3菜单
                     showBg: false, //是否显示背景
-                    title: "手机短信登录"
+                    title: "手机短信登录",
+                    goBack:1,
                 }
             },
             phone: "",
@@ -57,11 +58,6 @@ export default {
             hintCode: "获取验证码",
             isGetCode: true
         };
-    },
-    mounted(){
-        var that =this;
-        
-                console.log(that.$router);
     },
     methods: {
         // 手机登录
@@ -81,9 +77,9 @@ export default {
                 var phone = that.phone;
                 var reg = /^1[3-9][0-9]{9}$/g;
                 if (phone == "") {
-                    mui.alert("手机号码不能为空", "提示", "确定", "", "div");
+                    mui.toast("手机号码不能为空",{ duration:'short', type:'div' });
                 } else if (!phone.match(reg)) {
-                    mui.alert("您输入的手机号不正确","提示","确定","","div");
+                    mui.toast("您输入的手机号不正确",{ duration:'short', type:'div' });
                 } else {
                     that.$axios.post("/api/sms_code", {
                             mobile: phone
@@ -121,11 +117,11 @@ export default {
             var verify_code = that.verify_code;
             var phoneReg = /^1[3-9][0-9]{9}$/g;
             if (mobile == "") {
-                mui.alert("手机号码不能为空", "提示", "确定", "", "div");
+                mui.toast("手机号码不能为空",{ duration:'short', type:'div' });
             } else if (!mobile.match(phoneReg)) {
-                mui.alert("您输入的手机号不正确", "提示", "确定", "", "div");
+                mui.toast("您输入的手机号不正确",{ duration:'short', type:'div' });
             } else if (verify_code == "" || verify_code.length < 6) {
-                mui.alert("您输入的验证码不正确", "提示", "确定", "", "div");
+                mui.toast("您输入的验证码不正确",{ duration:'short', type:'div' });
             } else {
                 that.$axios.post("/api/sms_login", {
                         mobile: mobile,
@@ -147,32 +143,29 @@ export default {
                                 }
                                 that.$store.commit("changeLogin",'1');//修改登录状态
                                 // 修改alert 尽量改 不需要用户点击 设置一秒后跳转
-                                mui.alert(
-                                    res.data.msg,
-                                    "提示",
-                                    "确定",
-                                    function() {
-                                        // if(that.$router.currentRoute.params.redirect != undefined){
-                                        //     that.$router.replace({
-                                        //         name: that.$router.currentRoute.params.redirect
-                                        //     });
-                                        // }else{
-                                        //     that.$router.push({
-                                        //         name: "MyCenter"
-                                        //     });
-                                        // }
-                                        that.$router.go(-1);
-                                    },
-                                    "div"
-                                );
+                                // mui.alert(
+                                //     res.data.msg,
+                                //     "提示",
+                                //     "确定",
+                                //     function() {
+                                //         // if(that.$router.currentRoute.params.redirect != undefined){
+                                //         //     that.$router.replace({
+                                //         //         name: that.$router.currentRoute.params.redirect
+                                //         //     });
+                                //         // }else{
+                                //         //     that.$router.push({
+                                //         //         name: "MyCenter"
+                                //         //     });
+                                //         // }
+                                //         that.$router.go(-1);
+                                //     },
+                                //     "div"
+                                // );
+                                
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                                that.$router.go(-1);
                             } else {
-                                mui.alert(
-                                    res.data.msg,
-                                    "提示",
-                                    "确定",
-                                    "",
-                                    "div"
-                                );
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
                                 that.verify_code = "";
                             }
                         }

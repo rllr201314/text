@@ -48,7 +48,7 @@
             </div>
             <!-- 状态 -->
             <div class="take-status-img-cell">
-                <img v-for="item in takeData.takeTypeImg" v-if="item.key == takeData.takeType" :src="item.imgsrc" alt="">
+                <img v-for="item in takeData.takeTypeImg" v-if="item.key == takeType" :src="item.imgsrc" alt="">
             </div>
             <!-- 收货状态 -->
             <div class="take-cell">
@@ -58,7 +58,7 @@
                 </div>
                 <div class="take-cell-content">
                     <div class="confirm-receipt">
-                        <div v-if="takeData.takeType == 1">
+                        <div v-if="false">
                             <div class="upimg-content">
                                 <div class="img-cell" v-for="(item,index) in upimgAll.imgSrc">
                                     <img :src="item.base64" alt="">
@@ -73,30 +73,20 @@
                             </div>
                             <div class="upImgBtn">提交验货</div><span class="upImg-hint">（最多上传8张图片）</span>
                         </div>
-                        <div class="confirm-title" v-if="takeData.takeType == 3 || takeData.takeType == 2">
-                            <span>游戏截图（{{takeData.gamePrint}}）</span>
-                            <span class="orange-color">点击查看</span>
+                        <div class="intie" v-if="takeType == -1">
+                            <span>等待买家确认交易</span>
                         </div>
-                        <div class="affirming" v-if="takeData.takeType == 2">确认中</div>
-                        <div v-if="takeData.takeType == 3">
-                            <div class="account">
-                                <div class="accountText">
-                                    <span>换绑邮箱:</span>{{takeData.email}}
-                                </div>
-                                <div class="accountText">
-                                    <span>手机号:</span>{{takeData.phone}}
-                                </div>
-                                <div class="accountText">
-                                    <span>密码:</span>
-                                    <input type="password" placeholder="请输入密码">
-                                </div>
-                            </div>
-                            <div class="cargo">换绑已完成</div>
+                        <div class="intie" v-if="takeType == 1||　takeType == 2">
+                            <img src="../../../static/img/order/speed.png" alt="">
+                            <span>客服正在为您火速换绑中，请您耐心等待</span>
                         </div>
                     </div>
-                    <div v-if="takeData.takeType == 4">
+                    <div v-if="takeType == 3 && is_end == 2">
                         <div class="text-center">您已发货成功，等待买家确认收货</div>
-                        <div class="cargo">确认交易</div>
+                        <div class="cargo" v-if="false">确认交易</div>
+                    </div>
+                    <div v-if="takeType == 3 && is_end == 1">
+                        <div class="text-center">买家已确认收货</div>
                     </div>
                 </div>
             </div>
@@ -126,31 +116,28 @@ export default {
                 }
             },
             goodsInfo:{},
+            is_end:'',
+            takeType: '', //1-提交截图 2-等待买家确认 3-换绑 4-确认收货
             takeData: {
-                order_title: "梦幻西游xxxxxxxxssssssssssssssss",
-                orderInfo: {
-                    orderNum: "136544654",
-                    rental: "￥12324",
-                    premium: "￥2888",
-                    hand: "￥2855",
-                    price: "￥666666"
-                },
-                takeType: 1, //1-提交截图 2-等待买家确认 3-换绑 4-确认收货
                 takeTypeImg: [
                     {
-                        key: 1,
+                        key: 0,
                         imgsrc: "./static/img/sell/one.png"
                     },
                     {
-                        key: 2,
+                        key: -1,
                         imgsrc: "./static/img/sell/two.png"
                     },
                     {
-                        key: 3,
+                        key: 1,
                         imgsrc: "./static/img/sell/three.png"
                     },
                     {
-                        key: 4,
+                        key: 2,
+                        imgsrc: "./static/img/sell/three.png"
+                    },
+                    {
+                        key: 3,
                         imgsrc: "./static/img/sell/four.png"
                     }
                 ],
@@ -226,6 +213,11 @@ export default {
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.goodsInfo = res.data.data;
+                        that.takeType = res.data.data.bind_status;
+                        that.is_end = res.data.data.is_end;
+                        if(that.is_end == 1){
+                            that.takeType = 3;
+                        }
                     }
                 }
             }).catch((err)=>{
@@ -523,5 +515,17 @@ input[type="number"] {
 :-ms-input-placeholder {
     color: #999999;
     font-size: 0.24rem;
+}
+
+.intie {
+    text-align: center;
+}
+.intie img {
+    width: 0.25rem;
+    height: 0.25rem;
+    vertical-align: middle;
+}
+.intie span {
+    vertical-align: middle;
 }
 </style>
