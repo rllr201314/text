@@ -4,30 +4,31 @@
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="withdraw-title">
             <div class="auciton-status" @click="seleWithStatus('balance')" :class="withdrawStatus?'red-border':''">余额提现</div>
-            <div class="auciton-status" @click="seleWithStatus('nobalance')" :class="withdrawStatus?'':'red-border'">押金提现</div>
+            <div class="auciton-status" @click="seleWithStatus('deposit')" :class="withdrawStatus?'':'red-border'">押金提现</div>
         </div>
         <div class="withdraw-content">
             <!-- 余额提现 -->
-            <div class="balance-wrap" v-show="withdrawStatus">
-                <div class="card-strip withdraw-cell">
-                    <div class="left-strip">银行卡</div>
-                    <div class="right-strip">
-                        <span v-text="balanceData.cardNum"></span>
-                        <img src="../../../../static/img/order/next.png" alt="">
-                    </div>
+            <div class="card-strip withdraw-cell" @click="seleCard">
+                <div class="left-strip" v-text="withdrawInfo.name"></div>
+                <div class="right-strip">
+                    <span v-text="withdrawInfo.open_bank"></span>
+                    <span v-text="withdrawInfo.account"></span>
+                    <img src="../../../../static/img/order/next.png" alt="">
                 </div>
+            </div>
+            <div class="balance-wrap" v-show="withdrawStatus">
                 <div class=" withdraw-cell">
                     <div class="withdraw-strip">
                         <div class="left-strip">可提现金额</div>
                         <div class="right-strip">
-                            <span v-text="balanceData.price"></span>
-                            <span class="blue-color">全部提取</span>
+                            <span>￥</span><span v-text="withdrawInfo.remain_amount"></span>
+                            <span class="blue-color" @click="withdrawAll('balance')">全部提取</span>
                         </div>
                     </div>
                     <div class="withdraw-strip">
                         <div class="left-strip">提现金额</div>
                         <div class="right-strip">
-                            <input type="number" placeholder="0">
+                            <input type="number"  v-model="balance_price" placeholder="0">
                             <span>元</span>
                         </div>
                     </div>
@@ -35,25 +36,18 @@
             </div>
             <!-- 押金提现 -->
             <div class="balance-wrap" v-show="!withdrawStatus">
-                <div class="card-strip withdraw-cell">
-                    <div class="left-strip">银行卡</div>
-                    <div class="right-strip">
-                        <span v-text="nobalanceData.cardNum"></span>
-                        <img src="../../../../static/img/order/next.png" alt="">
-                    </div>
-                </div>
                 <div class=" withdraw-cell">
                     <div class="withdraw-strip">
                         <div class="left-strip">可提现金额</div>
                         <div class="right-strip">
-                            <span v-text="nobalanceData.price"></span>
-                            <span class="blue-color">全部提取</span>
+                            <span>￥</span><span v-text="withdrawInfo.deposit_amount"></span>
+                            <span class="blue-color" @click="withdrawAll('deposit')">全部提取</span>
                         </div>
                     </div>
                     <div class="withdraw-strip">
                         <div class="left-strip">提现金额</div>
                         <div class="right-strip">
-                            <input type="number" placeholder="0">
+                            <input type="number" v-model="deposit_price" placeholder="0">
                             <span>元</span>
                         </div>
                     </div>
@@ -62,16 +56,18 @@
 
             <div class="hint">提现申请提交后，余额将被暂时冻结（无法使用）</div>
         </div>
-        
-        <div class="okBtn">预计24小时内到账，确认提现</div>
+        <div class="okBtn" @click="withdrowFn">预计24小时内到账，确认提现</div>
+        <Loading v-if="showLoading"></Loading>
     </div>
 </template>
 <script>
-    import Header from '@/components/home-page/Header'
+import Header from '@/components/home-page/Header'
+import Loading from "@/components/multi/Loading";
     export default {
         name:'WithdrawDeposit',
         components:{
             Header,
+            Loading
         },
         data(){
             return {
@@ -84,33 +80,108 @@
                         title:"提现",
                     }
                 },
-                withdrawStatus:true,
-                balanceData:{
-                    cardNum:'工商银行储蓄卡 301************30',
-                    price:'￥1000.50元',
-                    inpPrice:''
-                },
-                nobalanceData:{
-                    cardNum:'工商银行储蓄卡 301*****22*****30',
-                    price:'￥100011111.50元',
-                    inpPrice:''
-                }
+                showLoading:false,
+                withdrawStatus:true,//true余额false押金
+                withdrawInfo:{},
+                balance_price:'',
+                deposit_price:'',
             }
         },
         methods:{
+            // 选择默认银行卡
+            seleCard(){
+                var that = this;
+                that.$router.push({name:'CardManage',query:{type:1}})
+            },
+            // 全部提现
+            withdrawAll(flag){
+                if(flag == 'balance'){
+                    this.balance_price = Number(this.withdrawInfo.remain_amount);
+                    this.deposit_price = '';
+                }else if(flag == 'deposit'){
+                    this.deposit_price = Number(this.withdrawInfo.deposit_amount); 
+                    this.balance_price = '';
+                }
+            },
+            // 余额还是押金
             seleWithStatus(flag){
                 if(flag == 'balance'){
                     this.withdrawStatus = true;
-                }else if(flag == 'nobalance'){
+                }else if(flag == 'deposit'){
                     this.withdrawStatus = false;
                 }
+            },
+            // 提现按钮
+            withdrowFn(){
+                var that = this;
+                var request = {};
+                // 判断是余额提现还是押金提现
+                if(that.withdrawStatus){
+                    var price = that.balance_price;
+                    if(price < 1){
+                        mui.toast('提现金额不能小于1', {duration: "short",type: "div"});
+                        return false;
+                    }else if(price > that.withdrawInfo.remain_amount){
+                        mui.toast('提现金额不能大于余额', {duration: "short",type: "div"});
+                        return false;
+                    }else{
+                        request.withdraw_amount = that.balance_price;
+                    }
+                }else{
+                    var price = that.deposit_price;
+                    if(price < 1){
+                        mui.toast('提现金额不能小于1', {duration: "short",type: "div"});
+                        return false;
+                    }else if(price > that.withdrawInfo.deposit_amount){
+                        mui.toast('提现金额不能大于押金', {duration: "short",type: "div"});
+                        return false;
+                    }else{
+                        request.withdraw_amount = that.deposit_amount;
+                    }
+                }
+                request.account_id = that.withdrawInfo.account_id;
+                that.showLoading = true;
+                that.$axios.post('/api/do_withdraw',request).then((res)=>{
+                    console.log(res);
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            that.getData();
+                        }
+                        that.showLoading = false;
+                        that.balance_price = '';
+                        that.deposit_amount = '';
+                        mui.toast(res.data.msg, {duration: "short",type: "div"});
+                    }
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            },
+            getData(){
+                var that = this;
+                that.$axios.post('/api/withdraw_config').then((res)=>{
+                    console.log(res);
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            that.withdrawInfo = res.data.data
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err);
+                })
             }
+        },
+        mounted(){
+            this.getData();
         }
     
     }
 </script>
 <style scoped>
-
+    .withdraw-wrap{
+        max-width: 12rem;
+        margin: 0 auto;
+        padding-top: 0.88rem;
+    }
     .withdraw-title{
         background:#FFFFFF;
         font-size:.26rem;
@@ -214,7 +285,6 @@
         padding:0;
         margin:0 .03rem 0 0;
         width:3rem;
-        height:.9rem;
         line-height: .9rem;
     }
     input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{

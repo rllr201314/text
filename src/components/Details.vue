@@ -5,30 +5,30 @@
         <!-- 商品标题 -->
         <div class="goods-details-title">
             <div class="goods-datails-title-top">
-                <div class="title-boutique" v-if="goodsDetailsData.title.isBoutique == 1">精</div>
-                <div class="title-goods-type" v-if="goodsDetailsData.title.goods_type == 1">成品号</div>
-                <div class="title-goods-type" v-else-if="goodsDetailsData.title.goods_type == 2">代练号</div>
+                <div class="title-boutique" v-if="detailData.is_recommend == 1">精</div>
+                <div class="title-goods-type" v-if="detailData.deal_type == 1">成品号</div>
+                <div class="title-goods-type" v-else-if="detailData.deal_type == 2">代练号</div>
                 <div class="title-view-history">
                     <img src="../../static/img/goods-details/view_count_ico.png" alt="">
                     <span>浏览次数</span>
-                    <span v-text="goodsDetailsData.title.view_num"></span>
+                    <span v-text="detailData.click_count"></span>
                 </div>
             </div>
-            <div class="goods-datails-title-des" v-text="goodsDetailsData.title.goods_des"></div>
+            <div class="goods-datails-title-des" v-text="detailData.goods_title"></div>
             <div class="title-goods-price">￥
-                <span v-text="goodsDetailsData.title.goods_price"></span>
+                <span v-text="detailData.goods_price"></span>
             </div>
             <div class="upTime">
                 <span>发布时间：</span>
-                <span v-text="goodsDetailsData.title.upTime"></span>
+                <span v-text="detailData.create_time"></span>
             </div>
         </div>
         <!-- 卖家信息 -->
         <div class="seller-info">
-            <img class="user-head-log" :src="goodsDetailsData.sellerInfo.sellerLog" alt="">
+            <img class="user-head-log" :src="detailData.head_img" alt="">
             <div class="seller-info-right">
                 <div class="seller-right-top">
-                    <div class="seller-name" v-text="goodsDetailsData.sellerInfo.sellername"></div>
+                    <div class="seller-name" v-text="detailData.username"></div>
                     <!-- 暂时保留 -->
                     <div class="seller-auth" v-if="false">
                         <img src="../../static/img/goods-details/Authentication_ico.png" alt="">
@@ -49,10 +49,10 @@
         <div class="safe-info detail-info">
             <div class="info-left">服务保障</div>
             <div class="info-right safe-info-right">
-                <img v-if="goodsDetailsData.safeInfo.safe == 1" src="../../static/img/goodscreen/safe_ico.png" alt="">
-                <img v-if="goodsDetailsData.safeInfo.stage == 1" src="../../static/img/goodscreen/stages_ico.png" alt="">
-                <img v-if="goodsDetailsData.safeInfo.check == 1" src="../../static/img/goodscreen/verify.png" alt="">
-                <img v-if="goodsDetailsData.safeInfo.compact == 1" src="../../static/img/goodscreen/contract_ico.png" alt="">
+                <img v-if="detailData.is_safe == 1" src="../../static/img/goodscreen/safe_ico.png" alt="">
+                <img v-if="detailData.is_stage == 1" src="../../static/img/goodscreen/stages_ico.png" alt="">
+                <img v-if="detailData.is_check == 1" src="../../static/img/goodscreen/verify.png" alt="">
+                <img v-if="detailData.is_compact == 1" src="../../static/img/goodscreen/contract_ico.png" alt="">
             </div>
             </div>
             <!-- 账号绑定 -->
@@ -60,15 +60,15 @@
                 <div class="info-left">账号绑定</div>
                 <div class="info-right">
                     <div class="user-bind">
-                        <img :src="goodsDetailsData.accountBind.userBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
+                        <img :src="accountBind.userBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
                         <span>绑定身份证</span>
                     </div>
                     <div class="user-bind">
-                        <img :src="goodsDetailsData.accountBind.phoneBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
+                        <img :src="accountBind.phoneBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
                         <span>绑定手机</span>
                     </div>
                     <div class="user-bind">
-                        <img :src="goodsDetailsData.accountBind.emailBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
+                        <img :src="accountBind.emailBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
                         <span>绑定邮箱</span>
                     </div>
                 </div>
@@ -84,16 +84,17 @@
                         <div class="goods-des-left">商品描述</div>
                     </div>
                     <div class="goods-info-content-right">
-                        <div class="goods-basic-right" v-text="goodsInfo.basic"></div>
-                        <div class="goods-level-right" v-text="goodsInfo.level"></div>
-                        <div class="goods-school-right" v-text="goodsInfo.school"></div>
-                        <div class="goods-des-right" v-text="goodsInfo.des"></div>
+                        <div class="goods-basic-right" v-if="detailData.server_name != null" v-text="detailData.platform_name + '>' +　detailData.area_name+'>'+detailData.server_name"></div>
+                        <div class="goods-basic-right" v-else v-text="detailData.platform_name + '>' +　detailData.area_name"></div>
+                        <div class="goods-level-right"><span v-text="detailData.role_level"></span>级</div>
+                        <div class="goods-school-right" v-text="detailData.faction_name"></div>
+                        <div class="goods-des-right" v-text="detailData.goods_description"></div>
                     </div>
                 </div>
             </div>
             <!-- 视频看号 -->
             <div class="vedio-info">
-                <div class="vedio-title" v-if="goodsDetailsData.video_url != ''">
+                <div class="vedio-title" v-if="detailData.video_url != null">
                     <div class="vedio-title-top">
                         <span class="vertical"></span>
                         <span>视频看号</span>
@@ -103,13 +104,14 @@
                     </div>
                 </div>
                 <!-- iframe -->
-                <div class="vedio-content" v-if="goodsDetailsData.video_url != ''">视频</div>
+                <div class="vedio-content" v-if="detailData.video_url != null">视频</div>
+
                 <div class="vidio-bottom">
-                    <div :class="goodsDetailsData.safeOrflow.safe?'red-border':'black-border'" @click="cliflow('safe')">安全服务</div>
-                    <div :class="goodsDetailsData.safeOrflow.flow?'red-border':'black-border'" @click="cliflow('flow')">购买流程</div>
+                    <div :class="safeOrflow.safe?'red-border':'black-border'" @click="cliflow('safe')">安全服务</div>
+                    <div :class="safeOrflow.flow?'red-border':'black-border'" @click="cliflow('flow')">购买流程</div>
                 </div>
                 <div class="showBox">
-                    <div class="showBox-left" v-show="goodsDetailsData.safeOrflow.safe">
+                    <div class="showBox-left" v-show="safeOrflow.safe">
                         <div class="detail-user-opera">
                             <div class="cell user-contact">
                                 <img src="../../static/img/goods-details/contact_ico.png" alt="">
@@ -131,7 +133,7 @@
                         <div class="go-verify" @click="goVerify">前往验证客服</div>
                         <!-- <div class="more-info">查看更多详情</div> -->
                     </div>
-                    <div class="showBox-right" v-show="goodsDetailsData.safeOrflow.flow">
+                    <div class="showBox-right" v-show="safeOrflow.flow">
                         <div class="flow-left">
                             <img src="../../static/img/goods-details/flow.png" alt="">
                     </div>
@@ -153,20 +155,21 @@
                     </div>
                 </div>
                 <!-- 猜你喜欢 -->
-                <div class="guess" v-if="goodsDetailsData.goodsList != ''">
+                <div class="guess" v-if="recommendData != ''">
                     <img src="../../static/img/goods-details/left_solid.png" alt="">
                     <span>猜你喜欢</span><img src="../../static/img/goods-details/right_solid.png" alt="">
                 </div>
                     <!-- 商品列表 -->
-                    <div v-if="goodsDetailsData.goodsList != ''">
-                        <div class="goods-strip" v-for="item in goodsDetailsData.goodsList" @click="goDetail(item.goods_id)">
+                    <div v-if="recommendData != ''">
+                        <div class="goods-strip" v-for="item in recommendData" @click="goDetail(item.goods_id)">
                             <div class="goods-strip-title">
                                 <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
                                 <div class="goods-type" v-else-if="item.deal_type == 2">代练号</div>
                                 <div class="account-type" v-if="item.client_id == 1">安卓</div>
                                 <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
                                 <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                <div class="area" v-text="item.area_name"></div>
+                                <div class="area" v-if="item.server_name != null" v-text="item.area_name +'>' + item.server_name"></div>
+                                <div class="area" v-else v-text="item.area_name"></div>
                             </div>
                             <div class="goods-des" v-text="item.goods_title"></div>
                             <div class="goods-price">￥
@@ -182,11 +185,11 @@
                             <div>分享</div>
                         </div>
                         <div class="collect goods-details-bottom-left" @click="collect()">
-                            <img :src="goodsDetailsData.isCollect == 1?'./static/img/goods-details/ok_collect_ico.png':'./static/img/goods-details/no_collect_ico.png'" alt="">
+                            <img :src="detailData.is_collect == 1?'./static/img/goods-details/ok_collect_ico.png':'./static/img/goods-details/no_collect_ico.png'" alt="">
                             <div>收藏</div>
                         </div>
-                        <div class="bargain goods-details-bottom-right" v-if="goodsDetailsData.sell_type == 2" @click="bargainFn">议价</div>
-                        <div class="goods-details-bottom-right" v-if="goodsDetailsData.sell_type == 1"></div>
+                        <div class="bargain goods-details-bottom-right" v-if="detailData.sell_type == 2" @click="bargainFn">议价</div>
+                        <div class="goods-details-bottom-right" v-if="detailData.sell_type == 1"></div>
                         <div class="buy goods-details-bottom-right" @click="buyFn">立即购买</div>
                     </div>
                     <!-- 议价弹框 -->
@@ -202,12 +205,14 @@
                         </div>
                         <div class="shade" v-show="showShade"></div>
                         <NoData v-if="showNoData"></NoData>
+                        <Loading v-if="showLoading"></Loading>
                     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
 import Swiper from "@/components/home-page/Swiper";
 import NoData from "@/components/multi/NoData";
+import Loading from "@/components/multi/Loading";
 export default {
     inject: ["reload"],
     name: "Details",
@@ -223,72 +228,44 @@ export default {
                     showBg: true, //是否显示背景
                     title: "商品详情"
                 },
-                imgList: [], //轮播图
+                imgList: [] //轮播图
                 // 商品列表
                 // 商品信息
             },
-            goodsInfo:{},
+            showLoading:false,
             goods_id: null,
             showNoData: false,
             showShade: false,
             bargain_price: "",
-            goodsDetailsData: {
-                // 头部标题
-                title: {
-                    isBoutique: "",
-                    goods_type: "", //商品类型
-                    view_num: "", //浏览次数
-                    goods_des: "",
-                    goods_price: "",
-                    goods_sellNum: "",
-                    upTime: ""
-                },
-                // 卖家信息
-                sellerInfo: {
-                    sellerLog: "",
-                    sellername: "",
-                    credit: "" //信誉积分
-                },
-                // 服务保障
-                safeInfo: {
-                    safe: "",
-                    stage: "",
-                    check: "",
-                    compact: ""
-                },
-                // 账号绑定
-                accountBind: {
-                    userBind: true,
-                    phoneBind: true,
-                    emailBind: true
-                },
-                // 显示安全服务是购买流程
-                safeOrflow: {
-                    safe: true,
-                    flow: false
-                },
-                // 是否收藏
-                isCollect: "",
-                // 是否有视频
-                video_url: "",
-                sell_type: "",
-                goodsList: []
+            detailData: {},
+            recommendData: {},
+            // 显示安全服务是购买流程
+            safeOrflow: {
+                safe: true,
+                flow: false
+            },
+            // 账号绑定
+            accountBind: {
+                userBind: true,
+                phoneBind: true,
+                emailBind: true
             }
         };
     },
     components: {
         Header,
-        Swiper
+        Swiper,
+        Loading
     },
     methods: {
         // 查看安全服务还是购买流程
         cliflow(flag) {
             if (flag == "safe") {
-                this.goodsDetailsData.safeOrflow.safe = true;
-                this.goodsDetailsData.safeOrflow.flow = false;
+                this.safeOrflow.safe = true;
+                this.safeOrflow.flow = false;
             } else if (flag == "flow") {
-                this.goodsDetailsData.safeOrflow.safe = false;
-                this.goodsDetailsData.safeOrflow.flow = true;
+                this.safeOrflow.safe = false;
+                this.safeOrflow.flow = true;
             }
         },
         // 验证客服
@@ -300,22 +277,12 @@ export default {
             var that = this;
             var token = this.$store.state.token;
             if (token == undefined || token == "") {
-                // mui.confirm(
-                //     "请先登陆",
-                //     "提示",
-                //     ["取消", "确认"],
-                //     function(e) {
-                //         if (e.index == 1) {
                 that.$router.push({
                     name: "AccountLogin",
                     params: {
                         redirect: that.$router.currentRoute.name
                     }
                 });
-                //         }
-                //     },
-                //     "div"
-                // );
             } else {
                 that.$axios
                     .post("/api/collect", {
@@ -325,14 +292,14 @@ export default {
                         console.log(res);
                         if (res.status == 200) {
                             if (res.data.code == 200) {
-                                if (that.goodsDetailsData.isCollect == 1) {
-                                    that.goodsDetailsData.isCollect = 2;
+                                if (that.detailData.is_collect == 1) {
+                                    that.detailData.is_collect = 2;
                                     mui.toast(res.data.msg, {
                                         duration: "short",
                                         type: "div"
                                     });
                                 } else {
-                                    that.goodsDetailsData.isCollect = 1;
+                                    that.detailData.is_collect = 1;
                                     mui.toast(res.data.msg, {
                                         duration: "short",
                                         type: "div"
@@ -344,30 +311,23 @@ export default {
                     .catch(function(err) {});
             }
         },
+        // 显示议价框
         bargainFn() {
-            this.showShade = true;
-            var mo = function(e) {
-                e.preventDefault();
-            };
-            document.body.style.overflow = "hidden";
-            document.addEventListener("touchmove", mo, false); //禁止页面滑动
-        },
-        buyFn() {
             var that = this;
-            if (that.$store.state.token) {
-                that.$router.push({
-                    name: "PlaceOrderPage",
-                    query: { goods_id: that.goods_id }
-                });
+            var token = that.$store.state.token;
+            console.log(token);
+            if (token) {
+                this.showShade = true;
+                var mo = function(e) {
+                    e.preventDefault();
+                };
+                document.body.style.overflow = "hidden";
+                document.addEventListener("touchmove", mo, false); //禁止页面滑动
             } else {
-                that.$router.push({
-                    name: "AccountLogin",
-                    params: {
-                        redirect: that.$router.currentRoute.name
-                    }
-                });
+                that.$router.push({ name: "AccountLogin" });
             }
         },
+        // 发送议价
         goBargain(flag, e) {
             var that = this;
             if (flag == "ok") {
@@ -379,20 +339,20 @@ export default {
                         })
                         .then(function(res) {
                             if (res.status == 200) {
-                                mui.alert(
-                                    res.data.msg,
-                                    "提示",
-                                    "确认",
-                                    "",
-                                    "div"
-                                );
+                                mui.toast(res.data.msg, {
+                                    duration: "short",
+                                    type: "div"
+                                });
                             }
                         })
                         .catch(function(err) {
                             console.log(err);
                         });
                 } else {
-                    mui.alert("请输入议价价格", "提示", "确认", "", "div");
+                    mui.toast("请输入议价价格", {
+                        duration: "short",
+                        type: "div"
+                    });
                     return false;
                 }
             }
@@ -404,17 +364,32 @@ export default {
             document.body.style.overflow = ""; //出现滚动条
             document.removeEventListener("touchmove", mo, false);
         },
+        // 购买
+        buyFn() {
+            var that = this;
+            if (that.$store.state.token) {
+                that.$router.push({
+                    name: "PlaceOrderPage",
+                    query: { goods_id: that.goods_id }
+                });
+            } else {
+                mui.toast("请先登陆", { duration: "short", type: "div" });
+                that.$router.push({ name: "AccountLogin" });
+            }
+        },
+        // 点击推荐
         goDetail(goods_id) {
-            console.log("aaa");
             this.$router.replace({
                 name: "Details",
                 query: { goods_id: goods_id }
             });
+            this.reload();
             this.getData();
         },
+        // 获取数据
         getData() {
             var that = this;
-
+            that.showLoading = true;
             that.$axios
                 .post("/api/goods_detail", {
                     goods_id: that.goods_id
@@ -422,98 +397,35 @@ export default {
                 .then(function(res) {
                     console.log(res);
                     if (res.status == 200) {
+                        that.showLoading = false;
                         if (res.data.code == 200) {
-                            if (res.data.data == "") {
-                                goods_info = "";
+                            var data = res.data.data;
+                            if (data == "") {
                                 that.showNoData = true;
-                            }
-                            that.showNoData = false;
-                            var goods_info = res.data.data.goods_info;
-                            that.goodsDetailsData.title.isBoutique =
-                                goods_info.is_recommend;
-                            that.goodsDetailsData.title.goods_type =
-                                goods_info.deal_type;
-                            that.goodsDetailsData.title.view_num =
-                                goods_info.click_count;
-                            that.goodsDetailsData.title.goods_des =
-                                goods_info.goods_title;
-                            that.goodsDetailsData.title.goods_price =
-                                goods_info.goods_price;
-                            that.goodsDetailsData.title.goods_sellNum =
-                                goods_info.is_recommend;
-                            that.goodsDetailsData.title.upTime =
-                                goods_info.create_time;
-                            that.goodsDetailsData.sellerInfo.sellerLog =
-                                goods_info.head_img;
-                            that.goodsDetailsData.sellerInfo.sellername =
-                                goods_info.username;
-                            that.goodsDetailsData.safeInfo.stage =
-                                goods_info.is_stage;
-                            that.goodsDetailsData.safeInfo.safe =
-                                goods_info.is_safe;
-                            that.goodsDetailsData.safeInfo.check =
-                                goods_info.is_check;
-                            that.goodsDetailsData.safeInfo.compact =
-                                goods_info.is_compact;
-                            var account_bind = goods_info.account_bind;
-                            if (account_bind.length > 1) {
-                                for (var i in account_bind) {
-                                    if (account_bind[i] == 1) {
-                                        that.goodsDetailsData.accountBind.userBind = false;
-                                        continue;
-                                    } else if (account_bind[i] == 2) {
-                                        that.goodsDetailsData.accountBind.emailBind = false;
-                                        continue;
-                                    } else if (account_bind[i] == 3) {
-                                        that.goodsDetailsData.accountBind.phoneBind = false;
-                                        continue;
-                                    } else if (account_bind[i] == 4) {
-                                        that.goodsDetailsData.accountBind.userBind = true;
-                                        that.goodsDetailsData.accountBind.emailBind = true;
-                                        that.goodsDetailsData.accountBind.phoneBind = true;
+                            } else {
+                                that.showNoData = false;
+                                that.detailData = data.goods_info;
+                                that.recommendData = data.recommendInfo;
+                                that.componentsData.imgList =
+                                    that.detailData.goods_images;
+                                var bind = data.account_bind;
+                                for (var i in data.goods_info.account_bind) {
+                                    if (data.goods_info.account_bind[i] == 1) {
+                                        that.accountBind.userBind = false;
+                                    } else if (
+                                        data.goods_info.account_bind[i] == 2
+                                    ) {
+                                        that.accountBind.phoneBind = false;
+                                    } else if (
+                                        data.goods_info.account_bind[i] == 3
+                                    ) {
+                                        that.accountBind.emailBind = false;
+                                    } else {
+                                        that.accountBind.userBind = true;
+                                        that.accountBind.phoneBind = true;
+                                        that.accountBind.emailBind = true;
                                     }
                                 }
-                            } else {
-                                if (account_bind[0] == 1) {
-                                    that.goodsDetailsData.accountBind.userBind = false;
-                                    that.goodsDetailsData.accountBind.emailBind = true;
-                                    that.goodsDetailsData.accountBind.phoneBind = true;
-                                } else if (account_bind[0] == 2) {
-                                    that.goodsDetailsData.accountBind.emailBind = false;
-                                    that.goodsDetailsData.accountBind.phoneBind = true;
-                                    that.goodsDetailsData.accountBind.userBind = true;
-                                } else if (account_bind[0] == 3) {
-                                    that.goodsDetailsData.accountBind.phoneBind = false;
-                                    that.goodsDetailsData.accountBind.userBind = true;
-                                    that.goodsDetailsData.accountBind.emailBind = true;
-                                } else if (account_bind[0] == 4) {
-                                    that.goodsDetailsData.accountBind.userBind = true;
-                                    that.goodsDetailsData.accountBind.emailBind = true;
-                                    that.goodsDetailsData.accountBind.phoneBind = true;
-                                }
-                            }
-                            // 基本信息
-                            if (goods_info.server_name != null) {
-                                that.goodsInfo.basic = goods_info.platform_name + ">" + goods_info.area_name + ">" + goods_info.server_name;
-                            } else {
-                                that.goodsInfo.basic = goods_info.platform_name + ">" + goods_info.area_name;
-                            }
-                            that.goodsInfo.level = goods_info.role_level + "级";
-                            that.goodsInfo.school = goods_info.faction_name;
-                            that.goodsInfo.des = goods_info.goods_description;
-                            that.componentsData.imgList = goods_info.goods_images;
-                            that.goodsDetailsData.sell_type = goods_info.sell_type; //一口价还是可议价
-                            that.goodsDetailsData.isCollect = goods_info.is_collect; //是否收藏
-                            if (res.data.data.recommendInfo.server_name) {
-                                that.goodsDetailsData.goodsList =
-                                    res.data.data.recommendInfo;
-                                that.goodsDetailsData.goodsList.area_name =
-                                    res.data.data.recommendInfo.area_name +
-                                    ">" +
-                                    res.data.data.recommendInfo.server_name;
-                            } else {
-                                that.goodsDetailsData.goodsList =
-                                    res.data.data.recommendInfo;
                             }
                         } else {
                             // that.$router.go(-1);
@@ -525,15 +437,6 @@ export default {
                 });
         }
     },
-    // beforeRouteLeave(to,from,next){
-    //     // this.getData();
-    //     // console.log(this);
-    //     // console.log(to);
-    //     // if(to.path == 'AccountLogin'){
-    //     //     from.meta.keepAlive = true;
-    //     // }
-    //     // next();
-    // },
     mounted() {
         var that = this;
         if (
@@ -702,16 +605,15 @@ export default {
 .safe-info-right img {
     width: 0.36rem;
     height: 0.36rem;
-    margin-right: 0.14rem;
+    margin-left: 0.14rem;
 }
 /* 账号绑定 */
 .user-bind img {
     width: 0.25rem;
     height: 0.27rem;
-    /* vertical-align: middle; */
 }
 .user-bind {
-    margin-right: 0.3rem;
+    margin-left: 0.2rem;
 }
 /* .user-bind span{
         vertical-align: middle;
@@ -1101,7 +1003,7 @@ input[type="number"] {
 
 /* 商品信息 */
 .goods-info-content {
-    padding: .2rem;
+    padding: 0.2rem;
     font-size: 0.26rem;
 }
 .goods-info-content-left,
@@ -1109,9 +1011,15 @@ input[type="number"] {
     display: inline-block;
     vertical-align: top;
 }
+.goods-info-content-left div{
+    line-height: .5rem;
+}
+.goods-info-content-right div {
+    line-height: .5rem;
+}
 .goods-info-content-left {
     color: #666666;
-    width: 1.19rem;
+    width: 1.5rem;
     line-height: 0.43rem;
 }
 .goods-info-content-right {

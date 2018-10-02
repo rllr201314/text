@@ -61,7 +61,7 @@
         height:.22rem;
     }
     .vertical{
-        width:.02rem;
+        width:1px;
         height:.18rem;
         background:#B0B0B0;
         margin:auto 0;

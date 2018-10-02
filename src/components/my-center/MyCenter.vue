@@ -181,7 +181,7 @@
                     </div>
                 </div>
 
-                <div class="sell-strip">
+                <div class="sell-strip" @click="logoutFn">
                     <div class="left-strip quit">
                         <img src="../../../static/img/my-center/quit.png" alt="">
                         <span>退出登录</span>
@@ -486,6 +486,22 @@ export default {
                     that_r.push({ name: "MessageAll" });
                 }
             }
+        },
+        logoutFn(){
+            var that = this;
+            that.$axios.post('/api/user_logout').then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.$router.push({name:'HomePage'});
+                        that.$store.commit('del_token');
+                        that.$store.commit('del_mobile');
+                    }
+                    mui.toast(res.data.msg, {duration: "short",type: "div"});
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
         },
         getData(){
             var that=this;

@@ -86,8 +86,8 @@
             <div class="service">举报和投诉，请联系
                 <span class="go-service">在线客服</span>
             </div>
-            <Footer class="footer"></Footer>
         </div>
+        <Footer class="footer"></Footer>
         <Loading v-show="showLoading"></Loading>
     </div>
 </template>
@@ -190,11 +190,24 @@ export default {
     }
 };
 </script>
+<style>
+ /* 让footer 定位到底部 */
+html,body,#app{
+    height:100%;
+}
+ /* scoped 模式 访问不到 */
+.mui-toast-container{
+    bottom:110px !important;
+}
+</style>
+
 <style scoped>
+
 .authenticity-wrap {
     max-width: 12rem;
     margin: 0 auto;
     position: relative;
+    height:100%;
 }
 .authent-header {
     text-align: center;
@@ -381,11 +394,11 @@ input[type="number"] {
     color: #999999;
     font-size: 0.24rem;
 }
-</style>
-<style>
- /* scoped 模式 访问不到 */
-.mui-toast-container{
-    bottom:110px !important;
+.footer{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
 }
 </style>
 

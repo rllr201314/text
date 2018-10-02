@@ -5,43 +5,46 @@
         <div class="manage-content">
             <div class="manage-cell assets-cell">
                 <div class="detail-title">
-                    <img src="../../../../static/img/my-center/asset_ico.png" alt="">
-                    <span>收支明细</span>
+                    <div @click="goDetail">
+                        <img src="../../../../static/img/my-center/asset_ico.png" alt="">
+                        <span>收支明细</span>
+                    </div>
                 </div>
                 <div class="detail-content">
                     <div class="price-title">可用余额</div>
-                    <div class="price" v-text="assetsData.balance"></div>
-                    <div class="deposit">提现</div>
+                    <div class="price">￥<span v-text="assetsData.total_money"></span></div>
+                    <div class="deposit" @click="goShow">提现</div>
                 </div>
             </div>
             <div class="manage-cell">
                 <div class="manage-strip">
                     <span class="manage-lefttext">提现冻结资金</span>
                     <div class="right-opt" >
-                        <span>￥100元</span>
+                        <span>￥<span v-text="assetsData.limit_money"></span></span>
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
                 <div class="manage-strip">
                     <span class="manage-lefttext">押金</span>
                     <div class="right-opt" >
-                        <span>999999</span>
+                        <span>￥0</span>
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
             </div>
             <div class="manage-cell">
                 <div class="manage-strip" @click="addCard">
-                    <span class="manage-lefttext">银行卡设置</span>
+                    <span class="manage-lefttext">提现账户设置</span>
                     <div class="right-opt" >
-                        <span>未绑定</span>
+                        <span v-if="assetsData.is_bank == 1">已绑定</span>
+                        <span v-else>未绑定</span>
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                <div class="manage-strip">
+                <div class="manage-strip" >
                     <span class="manage-lefttext">我的代金券</span>
                     <div class="right-opt" >
-                        <span>您有2张代金券可使用</span>
+                        <span>您有0张代金券可使用</span>
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
@@ -67,18 +70,49 @@
                         title:"资产管理",
                     }
                 },
-                assetsData:{
-                    balance:"￥999999",
-                    
-
-                }
+                assetsData:{}
             }
         },
         methods:{
             // 管理 银行卡
             addCard(){
-                this.$router.push({name:'UserAuthentication'})
+                var that = this;
+                // 判断有有没有绑定银行卡
+                if(that.assetsData.is_bank == 1){
+                    that.$router.push({name:'CardManage',query:{type:that.assetsData.is_bank}})
+                }else if(that.assetsData.is_bank == 2){
+                    that.$router.push({name:'UserAuthentication',query:{type:that.assetsData.is_identify}})
+                }
+            },
+            getData(){
+                var that = this;
+                that.$axios.post('/api/income_info').then((res)=>{
+                    console.log(res);
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            that.assetsData = res.data.data;
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            },
+            // 收支明细
+            goDetail(){
+                this.$router.push({name:'ReceiptsAll'})
+            },
+            // 提现
+            goShow(){
+                var that = this;
+                if(that.assetsData.is_bank == 1){
+                    that.$router.push({name:'WithdrawDeposit',query:{type:that.assetsData.is_bank}})
+                }else{
+                    mui.toast("请先设置提现账户", {duration: "short",type: "div"});
+                }
             }
+        },
+        mounted(){
+            this.getData();
         }
     }
 </script>
@@ -109,6 +143,9 @@
         color:#999999;
         font-size:.24rem;
         padding:.2rem;
+    }
+    .detail-title div{
+        display: inline-block;
     }
     .detail-title img{
         width:.21rem;
@@ -144,8 +181,6 @@
         -moz-box-shadow: .01rem .01rem .09rem #FE7649;
         box-shadow: .01rem .01rem .09rem #FE7649;
     }
-
-
     .manage-strip{
         font-size:.26rem;
         color:#666666;
@@ -168,12 +203,12 @@
     }
     .right-opt span{
         vertical-align: middle;
-        margin-right:.18rem;
     }
     .right-opt img{
         width:.13rem;
         height:.24rem;
         margin-top:-.03rem;
+        margin-left:.18rem;
         vertical-align: middle;
     }
 </style>

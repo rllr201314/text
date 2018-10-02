@@ -1,7 +1,11 @@
 <template>
     <div class="login-wrap">
         <div class="login-header">
-            <Header v-bind:showTitle="comData.showTitle"></Header>
+            <!-- <Header v-bind:showTitle="comData.showTitle"></Header> -->
+            <div class="login-title">
+                <img src="../../../../static/img/header/back_ico.png" alt="" @click="gobake">
+                <span>手机短信登录</span>
+            </div>
         </div>
         <div class="login-content">
             <div class="login-cell">
@@ -60,6 +64,9 @@ export default {
         };
     },
     methods: {
+        gobake(){
+            this.$router.push({ name: "HomePage" });
+        },
         // 手机登录
         goAccount() {
             var that = this;
@@ -182,13 +189,36 @@ export default {
 .login-wrap {
     max-width: 7.5rem;
     margin: 0 auto;
-    padding-top:.88rem;
+    /* padding-top:.88rem; */
 }
 .login-header {
     width: 100%;
     height: 5.24rem;
     background: url(../../../../static/img/my-center/login_hbg.png) no-repeat;
     background-size: 100% 5.24rem;
+    position: relative;
+}
+.login-title{
+    height:.7rem;
+    line-height:.7rem;
+    text-align:center;
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+}
+.login-title img{
+    width:.16rem;
+    height:.29rem;
+    vertical-align: middle;
+    position: absolute;
+    left:.2rem;
+    top:.25rem;
+}
+.login-title span{
+    vertical-align: middle;
+    /* display: inline-block; */
+    /* margin:0 auto; */
 }
 .login-content {
     padding: 0.3rem 0.2rem 0;

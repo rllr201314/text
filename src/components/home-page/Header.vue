@@ -10,40 +10,44 @@
             <div v-else-if="showTitle.showLogo == 2" class="titText" v-html="showTitle.title"></div>
             <div v-else-if="showTitle.showLogo == 3" class="titInp">
                 <img class="search-ico" src="../../../static/img/search_ico.png" alt="">
-                <input class="search-title" type="text" placeholder="请输入搜索内容">
+                <form action="javascript:return true;">
+                    <input class="search-title" type="search" placeholder="请输入搜索内容" @keyup.13="show()" ref="input1" @blur="out()">
+                </form>
                 <img class="empty-ico" src="../../../static/img/empty_ico.png" alt="" @click="emptyFun()">
             </div>
             <!--右边按钮-->
             <img v-if="showTitle.showShare === 1" class="head_right_search" src="../../../static/img/searchLogo.png" alt="">
             <img v-else-if="showTitle.showShare === 2" class="head_right_share" src="../../../static/img/share_ico.png" alt="">
-            <img v-else-if="showTitle.showShare === 3" class="head_right_share" src="../../../static/img/menu_ico.png" alt="" @click="cliMenu">
-            <img v-else-if="showTitle.showShare === 4" class="head_right_add" src="../../../static/img/header/hAdd_ico.png" alt="">
-            <div class="showMenu" v-show="showMenu">
-                <div class="tohome" @click="toPage('home')">
-                    <img src="../../../static/img/header-menu/tohome_ico.png" alt="">
-                    <span>首页</span>
+            <img v-else-if="showTitle.showShare === 3" :style="iconstyle" class="head_right_share" src="../../../static/img/menu_ico.png" alt="" @click="cliMenu">
+            <img v-else-if="showTitle.showShare === 4" class="head_right_add" src="../../../static/img/header/hAdd_ico.png" alt="" @click="addCard">
+            <transition name="fade">
+                <div class="showMenu" v-show="showMenu" transiton="fade">
+                    <div class="tohome" @click="toPage('home')">
+                        <img src="../../../static/img/header-menu/tohome_ico.png" alt="">
+                        <span>首页</span>
+                    </div>
+                    <div class="tosell" @click="toPage('sell')">
+                        <img src="../../../static/img/header-menu/tosell_ico.png" alt="">
+                        <span>我要卖</span>
+                    </div>
+                    <div class="take" @click="toPage('take')">
+                        <img src="../../../static/img/header-menu/take_ico.png" alt="">
+                        <span>收货</span>
+                    </div>
+                    <div class="service" @click="toPage('message')">
+                        <img src="../../../static/img/header-menu/service_ico.png" alt="">
+                        <span>消息</span>
+                    </div>
+                    <div class="user" @click="toPage('my')">
+                        <img src="../../../static/img/header-menu/user_ico.png" alt="">
+                        <span>个人中心</span>
+                    </div>
+                    <div class="history" @click="toPage('browse')">
+                        <img src="../../../static/img/header-menu/history_ico.png" alt="">
+                        <span>浏览历史</span>
+                    </div>
                 </div>
-                <div class="tosell" @click="toPage('sell')">
-                    <img src="../../../static/img/header-menu/tosell_ico.png" alt="">
-                    <span>我要卖</span>
-                </div>
-                <div class="take" @click="toPage('take')">
-                    <img src="../../../static/img/header-menu/take_ico.png" alt="">
-                    <span>收货</span>
-                </div>
-                <div class="user" @click="toPage('my')">
-                    <img src="../../../static/img/header-menu/user_ico.png" alt="">
-                    <span>个人中心</span>
-                </div>
-                <div class="service" @click="toPage('')">
-                    <img src="../../../static/img/header-menu/service_ico.png" alt="">
-                    <span>在线咨询</span>
-                </div>
-                <div class="history" @click="toPage('browse')">
-                    <img src="../../../static/img/header-menu/history_ico.png" alt="">
-                    <span>浏览历史</span>
-                </div>
-            </div>
+            </transition>
             <div class="header-shade" v-show="showMenu" @click="cliMenu"></div>
         </div>
     </div>
@@ -55,28 +59,41 @@ export default {
     name: "Header",
     data() {
         return {
-            showMenu: false //是否显示菜单
+            showMenu: false ,//是否显示菜单
+            iconrotate:0,//旋转de
         };
     },
     props: ["showTitle"],
     mounted() {},
-    methods: {
-        //一键清空
-        emptyFun() {
-            $(".search-title").val("");
+    computed:{    
+        iconstyle(){//图标动态样式      
+            let arr = new Array(); 
+            arr.push('transition:0.5s;')
+            arr.push('transform:');
+            arr.push('rotate('+this.iconrotate+'deg);');
+            return arr.join("");    
         },
+    },
+    methods: {
         // 点击菜单
         cliMenu() {
             this.showMenu = !this.showMenu;
+            if (this.iconrotate==90) {
+                this.iconrotate=0;
+            }else {
+                this.iconrotate=90;
+            }
+        },
+        // + 添加提现账号
+        addCard(){
+            this.$router.push({name:'UserAuthentication',query:{type:1}});
         },
         seleLink(flag) {
             var that = this;
             if (flag == "rollback") {
-                // debugger;
                 if (that.showTitle.goBack == 1) {
                     that.$router.push({ name: "HomePage" });
                 } else if (that.showTitle.goBack == 2) {
-                    // that.$router.go(-3);
                     that.$router.go(-1);
                 }else {
                     that.$router.go(-1);
@@ -84,22 +101,7 @@ export default {
             } else if (flag == "mycenter") {
                 var token = that.$store.state.token;
                 if (token == undefined || token == "") {
-                    // mui.confirm(
-                    //     "请先登陆",
-                    //     "提示",
-                    //     ["取消", "确认"],
-                    //     function(e) {
-                    //         if (e.index == 1) {
-                                that.$router.push({
-                                    name: "AccountLogin",
-                                    params: {
-                                        redirect: "MyCenter"
-                                    }
-                                });
-                    //         }
-                    //     },
-                    //     "div"
-                    // );
+                    that.$router.push({name: "AccountLogin",params: {redirect: "MyCenter"}});
                 } else {
                     that.$router.push({ name: "MyCenter" });
                 }
@@ -107,38 +109,23 @@ export default {
         },
         toPage(flag) {
             var that = this;
-            that.showMenu = false;
+            that.cliMenu();
             if (flag == "home") {
                 that.$router.push({ name: "HomePage" });
             } else if (flag == "sell") {
                 that.$router.push({ name: "Sell" });
                 sessionStorage.buyOrsell = 2;
-                // that.reload(); //刷新页面
             } else if (flag == "my") {
                 var token = that.$store.state.token;
                 if (token == undefined || token == "") {
-                    // mui.confirm(
-                    //     "请先登陆",
-                    //     "提示",
-                    //     ["取消", "确认"],
-                    //     function(e) {
-                    //         if (e.index == 1) {
-                                that.$router.push({
-                                    name: "AccountLogin",
-                                    params: {
-                                        redirect: "MyCenter"
-                                    }
-                                });
-                    //         }
-                    //     },
-                    //     "div"
-                    // );
+                    that.$router.push({name: "AccountLogin",params: {redirect: "MyCenter"}});
                 } else {
                     that.$router.push({ name: "MyCenter" });
-                    // that.reload();
                 }
             }else if(flag == 'browse'){
                 that.$router.push({name:'BrowseRecord'})
+            }else if(flag == 'message'){
+                that.$router.push({name:'MessageAll_Server'})
             }
         }
     }
@@ -234,10 +221,11 @@ export default {
     position: relative;
 }
 .search-title {
+    background:#ffffff;
     width: 5.76rem;
     height: 0.66rem;
     font-size: 0.26rem;
-    padding: 0 0.52rem;
+    padding: 0 0.6rem;
     margin: 0;
     border-top-left-radius: 0.33rem;
     border-top-right-radius: 0.33rem;

@@ -35,7 +35,7 @@
                 </div>
             </div>
         </div>
-        <div class="nextBtn">前往支付</div>
+        <div class="nextBtn" @click="goPay">前往支付</div>
     </div>
 </template>
 <script>
@@ -88,6 +88,10 @@
                 }).catch((err)=>{
                     console.log(err)
                 })
+            },
+            goPay(){
+                // 分期支付
+                
             }
         },
         mounted(){

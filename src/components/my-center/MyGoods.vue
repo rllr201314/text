@@ -8,7 +8,6 @@
             <div :class="seleTit == 2?'red-border':''" @click="seleTitFn(2)">已下架</div>
         </div>
         <div class="mygoods-con">
-
             <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 3">
                 <div class="minirefresh-scroll list">
                     <ul>
@@ -181,14 +180,13 @@ export default {
                     that.getData(that.seleTit, "refresh"); //已下架
                 }
             }
-            // that.$refs.myScroll.setState(0);
         },
         getData(opt, flag) {
             console.log(opt+'--'+flag);
             var that = this;
             that.$axios
                 .post("/api/goods_information", {
-                    page: that.num_page, //--------------------------------------------
+                    page: that.num_page, 
                     goods_status: opt
                 })
                 .then(res => {
@@ -197,13 +195,15 @@ export default {
                         if (res.data.code == 200) {
                             // 默认进来显示已上架商品
                             var data = res.data.data.data;
-                            if (data == "") {
-                                that.showNoData = true;
+                            if (flag == "refresh") {
+                                if(data == ""){
+                                    that.showNoData = true;
                                     that.miniRefresh.endDownLoading();
-                                that.miniRefresh.endUpLoading(true);
-                            } else {
-                                that.showNoData = false;
-                                if (flag == "refresh") {
+                                    that.putawayData = '';
+                                    that.removeData = '';
+                                    that.auditData = '';
+                                }else{
+                                    that.showNoData = false;
                                     that.miniRefresh.endDownLoading();
                                     if (opt == 3) {
                                         that.putawayData = data;
@@ -214,7 +214,11 @@ export default {
                                     }
                                     that.num_page = res.data.data.current_page;
                                     that.pages = res.data.data.last_page;
-                                } else if (flag == "push") {
+                                }
+                            } else if (flag == "push") {
+                                if(data == ''){
+                                    that.miniRefresh.endUpLoading(true);
+                                }else{
                                     that.miniRefresh.endUpLoading();
                                     if (opt == 3) {
                                         for (var i in data) {
@@ -231,28 +235,7 @@ export default {
                                     }
                                 }
                             }
-                        } else if (res.data.code == 401) {
-                            mui.confirm(
-                                "请先登陆",
-                                "提示",
-                                ["取消", "确认"],
-                                function(e) {
-                                    if (e.index == 1) {
-                                        that.$router.push({
-                                            name: "AccountLogin",
-                                            params: {
-                                                redirect:
-                                                    that.$router.currentRoute
-                                                        .name
-                                            }
-                                        });
-                                    } else {
-                                        that.$router.go(-1);
-                                    }
-                                },
-                                "div"
-                            );
-                        }
+                        } 
                     }
                 })
                 .catch(err => {

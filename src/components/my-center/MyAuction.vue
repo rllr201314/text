@@ -84,6 +84,8 @@
                                 <div class="payTitle">请于6小时内完成支付</div>
                                 <div> (支付超时将扣除押金）</div>
                             </div>
+                        </div>
+                        <div class="left-operate">
                             <span>
                                 倒计时
                                 <span class="time" v-text="item.time_h"></span>
@@ -175,6 +177,7 @@ export default {
 .auction-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .auction-content {
     padding: 0.2rem;
@@ -295,9 +298,11 @@ export default {
 .order-operate {
     border-top: 0.01rem solid #e5e5e5;
     line-height: 0.8rem;
+    display:flex;
+    justify-content: space-between;
 }
 .order-operate div {
-    display: inline-block;
+    /* display: inline-block; */
 }
 .left-operate {
     font-size: 0.24rem;
@@ -327,12 +332,12 @@ export default {
     color: #333333;
     text-align: center;
     line-height: 0.4rem;
-    border: 0.01rem solid #aaaaaa;
+    border: 1px solid #aaaaaa;
     font-size: 0.26rem;
     -webkit-border-radius: 0.04rem;
     -moz-border-radius: 0.04rem;
     border-radius: 0.04rem;
-    margin: 0 0.1rem;
+    /* margin: 0 0.1rem; */
 }
 .gray {
     color: #959595;
@@ -340,7 +345,8 @@ export default {
 .right-operate {
     font-size: 0.22rem;
     color: #ffffff;
-    float: right;
+    /* position:absolute;
+    right: .2rem; */
 }
 .pay {
     width: 1.1rem;

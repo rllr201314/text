@@ -285,24 +285,12 @@ export default {
                             console.log(data);
                         }
                     }else if(res.data.code == 401){
-                        mui.confirm(
-                                res.data.msg,
-                                "提示",
-                                ["取消", "确认"],
-                                (e) => {
-                                    if (e.index == 1) {
-                                        that.$router.push({
-                                            name: "AccountLogin",
-                                            params: {
-                                                redirect: "Details"
-                                            }
-                                        });
-                                    } else {
-                                        that.$router.go(-2);
-                                    }
-                                },
-                                "div"
-                            );
+                        that.$router.push({
+                            name: "AccountLogin",
+                            params: {
+                                redirect: "Details"
+                            }
+                        });
                     }else{
                         mui.alert(res.data.msg,'提示','确认','','div')
                     }
@@ -347,7 +335,7 @@ export default {
         var that = this;
         var b = sessionStorage.getItem("order_info");
         if(that.$route.query.request){
-        var request = that.$route.query.request;
+            var request = that.$route.query.request;
             if (request == b) {
                 if (that.isobjStr(request)) {
                     that.goods_info = JSON.parse(request);
@@ -366,6 +354,8 @@ export default {
                 that.price = order.price;
 
             }
+        }else if(that.$route.query.stage){
+                // 分期支付
         }
         
     }

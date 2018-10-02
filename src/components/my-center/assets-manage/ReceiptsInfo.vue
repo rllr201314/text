@@ -66,6 +66,7 @@
     .receiptAll-wrap{
         max-width: 12rem;
         margin:0 auto;
+        padding-top:.88rem;
     }
     .receiptInfo-content{
         font-size:.26rem;

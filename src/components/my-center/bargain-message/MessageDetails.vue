@@ -46,7 +46,8 @@ import NoData from "@/components/multi/NoData";
 export default {
     name: "MessageDetails",
     components: {
-        Header
+        Header,
+        NoData
     },
     data() {
         return {

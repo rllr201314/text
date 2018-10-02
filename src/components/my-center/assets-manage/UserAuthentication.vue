@@ -12,249 +12,405 @@
             <div class="manange-card" v-else-if="pageType==2">
                 <div class="manange-top">
                     <img src="../../../../static/img/goodscreen/vertical.png" alt="">
-                    <span>请绑定持卡人本人的银行卡</span>
+                    <span>请填写提现账户信息</span>
                 </div>
                 <div class="manange-content">
-                    <div class="manange-strip" >
-                        <span class="manange-left">持卡人</span>
-                        <span>aaa</span>
-                        <span class="hint-right red-color">（为了您的资金安全，持卡人必须为认证用户本人）</span>
+                    <div class="manange-strip">
+                        <span class="manange-left">姓名</span>
+                        <span v-text="name"></span>
+                        <span class="hint-right red-color">（为了您的资金安全，姓名必须为认证用户本人）</span>
                     </div>
-                    <div class="manange-strip" >
-                        <span class="manange-left card-type">银行卡类型</span>
+
+                    <div class="manange-strip" @click="showPop">
+                        <span class="manange-left card-type">提现方式</span>
                         <div class="right-strip">
-                            <span>请选择银行卡类型</span>
+                            <span v-text="seleType"></span>
                             <img src="../../../../static/img/order/next.png" alt="">
                         </div>
                     </div>
-                    <div class="manange-strip" >
-                        <span class="manange-left">银行卡号</span>
-                        <input type="number" class="card-num" placeholder="请输入银行卡号">
+
+                    <div class="manange-strip" v-if="seleType == '支付宝'">
+                        <span class="manange-left-z">支付宝账户</span>
+                        <input type="text" class="card-num" placeholder="请输入支付宝账户" v-model="zfb">
                     </div>
-                    <div class="manange-strip" >
-                        <span class="manange-left">开户行</span>
-                        <input type="text" class="card-name" placeholder="请填写您的开户行名称">
-                        <span class="red-color">（请咨询各银行服务热线）</span>
+                    <div v-if="seleType == '银行卡'">
+                        <div class="manange-strip">
+                            <span class="manange-left">银行卡号</span>
+                            <input type="number" class="card-num" placeholder="请输入银行卡号" v-model="bank_num">
+                        </div>
+                        <div class="manange-strip">
+                            <span class="manange-left">开户行</span>
+                            <input type="text" class="card-name" placeholder="请填写您的开户行名称" v-model="bank_text">
+                            <span class="red-color">（请咨询各银行服务热线）</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="protocol" v-if="pageType==2">
-            <img :src="protocol?'../../../../static/img/goodscreen/okcheck.png':'../../../../static/img/goodscreen/nocheck.png'" alt="">
+            <img :src="protocol?'../../../../static/img/goodscreen/okcheck.png':'../../../../static/img/goodscreen/nocheck.png'" alt=""  @click="isAgree">
             <div>
-                我已阅读并同意<span class="red-color">《看个号手机网游平台协议》</span>
+                我已阅读并同意<span class="red-color" @click="isLook">《看个号手机网游平台协议》</span>
             </div>
         </div>
-        <div class="okBtn" v-if="pageType==2">提交绑定信息</div>
+        <div class="okBtn" v-if="pageType==2" @click="addInfo">提交绑定信息</div>
+        <div id="sheet" class="mui-popover mui-popover-bottom mui-popover-action">
+            <!-- 可选择菜单 -->
+            <ul class="pop-view">
+                <li class="pop-view-tit option-gray">
+                    <div>请选择提现方式</div>
+                </li>
+                <!-- 商品类型 -->
+                <li class="option-black" v-for="item in accountType" @click="seleTypeFn(item.value)" v-text="item.name"></li>
+            </ul>
+            <!-- 取消菜单 -->
+            <ul class="pop-view">
+                <li class="mui-table-view-cell option-black">
+                    <a href="#sheet">取消</a>
+                </li>
+            </ul>
+        </div>
+        <Loading v-if="showLoading"></Loading>
     </div>
 </template>
 <script>
-    import Header from '@/components/home-page/Header'
-    export default {
-        name:'UserAuthentication',
-        components:{
-            Header,
+import Header from "@/components/home-page/Header";
+import Loading from "@/components/multi/Loading";
+
+export default {
+    name: "UserAuthentication",
+    components: {
+        Header,
+        Loading
+    },
+    data() {
+        return {
+            comData: {
+                showTitle: {
+                    showBack: false,
+                    showLogo: 2, //显示头部title文字
+                    // showShare:5,//1搜索2分享3菜单
+                    showBg: true, //是否显示背景
+                    title: "选择账户"
+                }
+            },
+            showLoading:false,
+            pageType: null, //控制页面是添加银行卡还是选择银行卡----
+            protocol: false,
+            name: "",
+            accountType: [],
+            seleType: "支付宝",
+            seleVal: "",
+            zfb: "",
+            bank_num: "",
+            bank_text: ""
+        };
+    },
+    mounted() {
+        var that = this;
+        if (that.$route.query.type) {
+            // 1-已实名认证
+            if (that.$route.query.type == 1) {
+                that.pageType = 2;
+                that.getData();
+            } else {
+                that.pageType = 1;
+            }
+        } else {
+            that.$router.go(-1);
+        }
+    },
+    methods: {
+        // 前往认证
+        goAuthentication() {
+            this.$router.push({ name: "SafePhone" });
         },
-        data(){
-            return {
-                comData:{
-                    showTitle:{
-                        showBack:false,
-                        showLogo:2,//显示头部title文字
-                        showShare:5,//1搜索2分享3菜单
-                        showBg:true,//是否显示背景
-                        title:"选择银行卡",
+        // 获取银行卡配置
+        getData() {
+            var that = this;
+            that.$axios
+                .post("/api/account_config")
+                .then(res => {
+                    console.log(res);
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            that.name = res.data.data.username;
+                            that.accountType = res.data.data.withdraw_method;
+                            for (var i in that.accountType) {
+                                if (that.accountType[i].name == "支付宝") {
+                                    that.seleVal = that.accountType[i].value;
+                                    break;
+                                }
+                            }
+                        }
                     }
-                },
-                pageType:1,//控制页面是添加银行卡还是选择银行卡----
-                protocol:false,
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        // 提现方式弹框
+        showPop() {
+            mui("#sheet").popover("toggle");
+        },
+        seleTypeFn(val) {
+            mui("#sheet").popover("toggle");
+            var that = this;
+            for (var i in that.accountType) {
+                if (that.accountType[i].value == val) {
+                    that.seleVal = that.accountType[i].value;
+                    that.seleType = that.accountType[i].name;
+                    break;
+                }
             }
         },
-        mounted(){
-           
+        // 是否阅读合同
+        isAgree() {
+            this.protocol = !this.protocol;
         },
-        methods:{
-            // 前往认证
-            goAuthentication(){
-                this.$router.push({name:'SafePhone'})
+        isLook() {
+            console.log("合同");
+        },
+        addInfo() {
+            var that = this;
+            var request = {};
+            if (that.seleVal == 1) {
+                if (that.bank_num == "") {
+                    mui.toast("请填写银行卡号", {duration: "short",type: "div"});
+                    return false;
+                }
+                if (that.bank_text == "") {
+                    mui.toast("请填写开户行名称", {duration: "short",type: "div"});
+                    return false;
+                }
+                request.account = that.bank_num;
+                request.open_bank = that.bank_text;
+            } else if (that.seleVal == 2) {
+                if (that.zfb == "") {
+                    mui.toast("请填写支付宝账号", {duration: "short",type: "div"});
+                    return false;
+                }
+                request.account = that.zfb;
+            }
+            if (that.protocol) {
+                that.showLoading = true;
+                request.withdraw_method = that.seleVal;//提现方式
+
+                that.$axios.post('/api/add_account',request).then((res)=>{
+                    console.log(res);
+                    that.showLoading = false;
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            mui.toast(res.data.msg, {duration: "short",type: "div"});
+                            that.$router.go(-1);
+                        }else{
+                            mui.toast(res.data.msg, {duration: "short",type: "div"});
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err);
+                })
+            } else {
+                mui.toast("请阅读并同意《看个号手机网游平台协议》", {duration: "short",type: "div"});
             }
         }
     }
+};
 </script>
 <style scoped>
-    .userauthentic-wrap{
-        max-width: 12rem;
-        margin:0 auto;
-        height:100%;
-        padding-top:.88rem;
-    }
-    .userauthentic-content{
-        font-size:.26rem;
-        color:#333333;
-        padding:.2rem;
-    }
-    .add-card{
-        text-align: center;
-    }
-    .add-card img{
-        width:1.57rem;
-        height:1.26rem;
-        margin:3rem 0 .5rem;
-    }
-    .go-authentic{
-        width:1.5rem;
-        line-height: .44rem;
-        font-size:.22rem;
-        background:#FE7649;
-        color:#FFFFFF;
-        padding:.05rem 0;
-        -webkit-border-radius: .04rem;
-        -moz-border-radius: .04rem;
-        border-radius: .04rem;
-        -webkit-box-shadow: 0 1px 2px #FE7649;
-        -moz-box-shadow:0 1px 2px #FE7649;
-        box-shadow: 0 1px 2px #FE7649;
-        margin:.2rem auto 0;
-    }
+.userauthentic-wrap {
+    max-width: 12rem;
+    margin: 0 auto;
+    height: 100%;
+    padding-top: 0.88rem;
+}
+.userauthentic-content {
+    font-size: 0.26rem;
+    color: #333333;
+    padding: 0.2rem;
+}
+.add-card {
+    text-align: center;
+}
+.add-card img {
+    width: 1.57rem;
+    height: 1.26rem;
+    margin: 3rem 0 0.5rem;
+}
+.go-authentic {
+    width: 1.5rem;
+    line-height: 0.44rem;
+    font-size: 0.22rem;
+    background: #fe7649;
+    color: #ffffff;
+    padding: 0.05rem 0;
+    -webkit-border-radius: 0.04rem;
+    -moz-border-radius: 0.04rem;
+    border-radius: 0.04rem;
+    -webkit-box-shadow: 0 1px 2px #fe7649;
+    -moz-box-shadow: 0 1px 2px #fe7649;
+    box-shadow: 0 1px 2px #fe7649;
+    margin: 0.2rem auto 0;
+}
 
-    .manange-card{
-        background:#FFFFFF;
-        -webkit-border-radius: .1rem;
-        -moz-border-radius: .1rem;
-        border-radius: .1rem;
-        -webkit-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        -moz-box-shadow: .06rem .05rem .09rem #D6D6D6;
-        box-shadow: .06rem .05rem .09rem #D6D6D6;
-    }
-    .manange-top{
-        line-height:.7rem;
-        border-bottom:.01rem solid #E5E5E5;
-    }
-    .manange-top span{
-        display: inline-block;
-        color:#333333;
-        font-size:.28rem;
-    }
-    .manange-top img{
-        width:.13rem;
-        height:.29rem;
-        margin-left:.17rem;
-        vertical-align: middle;
-    }
-    .manange-content{
-        padding-left:.2rem;
-    }
-    .manange-strip{
-        line-height: .9rem;
-        font-size:.26rem;
-        border-bottom:.01rem solid #E5E5E5;
-        position: relative;
-    }
-    .manange-strip span{
-        display: inline-block;
-    }
-    .manange-left{
-        width:1.2rem;
-        font-size:.26rem;
-        color:#666666;
-    }
-    .card-type{
-        width:1.4rem;
-    }
-    .hint-right{
-        width:3rem;
-        line-height: .3rem;
-        position:absolute;
-        right:.2rem;
-        top:0.15rem;
-    }
-    .red-color{
-        font-size:.24rem;
-        color:#FF5E5E;
-    }
-    .right-strip{
-        color:#999999;
-        position:absolute;
-        right:.2rem;
-        top:0;
+.manange-card {
+    background: #ffffff;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+}
+.manange-top {
+    line-height: 0.7rem;
+    border-bottom: 0.01rem solid #e5e5e5;
+}
+.manange-top span {
+    display: inline-block;
+    color: #333333;
+    font-size: 0.28rem;
+}
+.manange-top img {
+    width: 0.13rem;
+    height: 0.29rem;
+    margin-left: 0.17rem;
+    vertical-align: middle;
+}
+.manange-content {
+    padding-left: 0.2rem;
+}
+.manange-strip {
+    line-height: 0.9rem;
+    font-size: 0.26rem;
+    border-bottom: 0.01rem solid #e5e5e5;
+    position: relative;
+}
+.manange-strip span {
+    display: inline-block;
+}
+.manange-left {
+    width: 1.2rem;
+    font-size: 0.26rem;
+    color: #666666;
+}
+.manange-left-z {
+    width: 1.5rem;
+    font-size: 0.26rem;
+    color: #666666;
+}
+.card-type {
+    width: 1.4rem;
+}
+.hint-right {
+    width: 3rem;
+    line-height: 0.3rem;
+    position: absolute;
+    right: 0.2rem;
+    top: 0.15rem;
+}
+.red-color {
+    font-size: 0.24rem;
+    color: #ff5e5e;
+}
+.right-strip {
+    color: #999999;
+    position: absolute;
+    right: 0.2rem;
+    top: 0;
+}
+.right-strip img {
+    width: 0.13rem;
+    height: 0.24rem;
+    margin-left: 0.17rem;
+    vertical-align: middle;
+}
+.right-strip span {
+    vertical-align: middle;
+}
 
-    }
-    .right-strip img{
-        width:.13rem;
-        height:.24rem;
-        margin-left:.17rem;
-        vertical-align: middle;
-    }
-    .right-strip span{
-        vertical-align: middle;
-    }
-    
-     /* 协议 */
-    .protocol{
-        margin:0 0 .2rem;
-        padding:0 .2rem;
-    }
-    .protocol img{
-        width:.28rem;
-        height:.28rem;
-        vertical-align: middle;
-    }
-    .protocol div{
-        display: inline-block;
-        font-size:.22rem;
-    }
-    /* 提交申请 */
-    .okBtn{
-        color:#FFFFFF;
-        font-size:.28rem;
-        margin:.2rem auto 0;
-        width:6.5rem;
-        text-align: center;
-        line-height: .8rem;
-        -webkit-border-radius: .1rem;
-        -moz-border-radius: .1rem;
-        border-radius: .1rem;
-        -webkit-box-shadow: .06rem .05rem .09rem #FD915F;
-        -moz-box-shadow: .06rem .05rem .09rem #FD915F;
-        box-shadow: .06rem .05rem .09rem #FD915F;
-        background:-webkit-linear-gradient(#FD915F,#FC534A);
-        background:-o-linear-gradient(#FD915F,#FC534A);
-        background:-moz-linear-gradient(#FD915F,#FC534A);
-        background:linear-gradient(to right, #FD915F , #FC534A);
-    }
+/* 协议 */
+.protocol {
+    margin: 0 0 0.2rem;
+    padding: 0 0.2rem;
+}
+.protocol img {
+    width: 0.28rem;
+    height: 0.28rem;
+    vertical-align: middle;
+}
+.protocol div {
+    display: inline-block;
+    font-size: 0.22rem;
+}
+/* 提交申请 */
+.okBtn {
+    color: #ffffff;
+    font-size: 0.28rem;
+    margin: 0.2rem auto 0;
+    width: 6.5rem;
+    text-align: center;
+    line-height: 0.8rem;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    background: -webkit-linear-gradient(#fd915f, #fc534a);
+    background: -o-linear-gradient(#fd915f, #fc534a);
+    background: -moz-linear-gradient(#fd915f, #fc534a);
+    background: linear-gradient(to right, #fd915f, #fc534a);
+}
 
+.card-num {
+    width: 5rem;
+}
+/* ==========input========= */
+input {
+    font-size: 0.26rem;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 2.65rem;
+    line-height: 0.9rem;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+::-webkit-input-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
+}
+:-moz-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
+}
+::-moz-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
+}
+:-ms-input-placeholder {
+    color: #999999;
+    font-size: 0.26rem;
+}
 
-    .card-num{
-        width:4rem;
-    }
-     /* ==========input========= */
-    input{
-        font-size:.26rem;
-        border:none;
-        padding:0;
-        margin:0;
-        width:2.65rem;
-        height:.9rem;
-        line-height: .9rem;
-    }
-    input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{
-        -webkit-appearance: none !important;
-    }
-    input[type="number"]{-moz-appearance: textfield}
-    ::-webkit-input-placeholder { 
-        color:#999999;
-        font-size:.26rem;
-    }
-    :-moz-placeholder {
-        color:#999999;
-        font-size:.26rem;
-    }
-    ::-moz-placeholder { 
-        color:#999999;
-        font-size:.26rem;
-    }
-    :-ms-input-placeholder {
-        color:#999999;
-        font-size:.26rem;
-    }
+/* 弹框 */
+.pop-view {
+    margin-top: 10px;
+    background: #ffffff;
+    text-align: center;
+    list-style: none;
+}
+.pop-view li {
+    line-height: 0.9rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+.pop-view a {
+    padding: 0;
+}
 </style>

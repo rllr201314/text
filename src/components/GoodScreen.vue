@@ -1,7 +1,14 @@
 <template>
     <!-- 商品列表 商品筛选  -->
     <div class="good-screen-wrap">
-        <Header v-bind:showTitle="copmonentsData.showTitle" v-if="true"></Header>
+        <Header v-bind:showTitle="showTitle" v-if="true"></Header>
+        <div class="titInp">
+            <img class="search-ico" src="../../static/img/search_ico.png" alt="">
+            <form action="javascript:return true;">
+                <input class="search-title" type="search" placeholder="请输入搜索内容" @keyup.13="show()" ref="input1" @blur="out()">
+            </form>
+            <img class="empty-ico" src="../../static/img/empty_ico.png" alt="" @click="emptyFun()">
+        </div>
         <div class="screen-title" v-if="true">
             <div class="screen-title-top">
                 <div class="title-top-cell" v-for="(item,index) in screenTop" @click="topScreen(item.flag,index)">
@@ -20,35 +27,35 @@
             <div class="minirefresh-scroll list">
                 <ul>
                     <div class="goods-strip" v-for="(item,index) in goodsInfo" @click="goDetail(item.goods_id)">
-                    <div class="goods-strip-title">
-                        <div class="boutique" v-if="item.is_recommend == 1">精</div>
-                        <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
-                        <div class="goods-type" v-else-if="item.deal_type_id == 2">代练号</div>
-                        <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                        <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                        <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                        <div class="area" v-text="item.area_name"></div>
-                    </div>
-                    <div class="goods-strip-content">
-                        <div class="goods-des" v-text="item.goods_title"></div>
-                        <div class="goods-ico">
-                            <img v-if="item.is_safe == 1" src="../../static/img/goodscreen/safe_ico.png" alt="">
-                            <img v-if="item.is_stage == 1" src="../../static/img/goodscreen/stages_ico.png" alt="">
-                            <img v-if="item.is_check == 1" src="../../static/img/goodscreen/verify.png" alt="">
+                        <div class="goods-strip-title">
+                            <div class="boutique" v-if="item.is_recommend == 1">精</div>
+                            <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
+                            <div class="goods-type" v-else-if="item.deal_type_id == 2">代练号</div>
+                            <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                            <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                            <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                            <div class="area" v-text="item.area_name"></div>
+                        </div>
+                        <div class="goods-strip-content">
+                            <div class="goods-des" v-text="item.goods_title"></div>
+                            <div class="goods-ico">
+                                <img v-if="item.is_safe == 1" src="../../static/img/goodscreen/safe_ico.png" alt="">
+                                <img v-if="item.is_stage == 1" src="../../static/img/goodscreen/stages_ico.png" alt="">
+                                <img v-if="item.is_check == 1" src="../../static/img/goodscreen/verify.png" alt="">
+                             </div>
+                        </div>
+                        <div class="goods-strip-bottom">
+                            <div class="goods-price" v-text="item.goods_price"></div>
+                            <div class="bargain" v-if="item.sell_type == 2">可议价</div>
                         </div>
                     </div>
-                    <div class="goods-strip-bottom">
-                        <div class="goods-price" v-text="item.goods_price"></div>
-                        <div class="bargain" v-if="item.sell_type == 2">可议价</div>
-                    </div>
-                </div>
                 </ul>
             </div>
         </div>
-
         <!-- 账号 -->
         <div class="screen-box account-type-box" v-show="screenInfoAll[0].isShow">
-            <div class="account-type-strip" v-for="item in account_info" :class="item.ischeck?'red-color':'black-color'" v-text="item.name" @click="seleAccount(item.value)"></div>
+            <div class="account-type-strip" v-for="item in account_info" :class="item.ischeck?'red-color':'black-color'" v-text="item.name" 
+            @click="seleAccount(item.value)"></div>
         </div>
         <!-- 手机型号 -->
         <div class="screen-box phone-type-box" v-show="screenInfoAll[1].isShow">
@@ -64,12 +71,13 @@
             </div>
             <!-- 平台 -->
             <div class="phone-type-box scroll-view" v-show="showOperation">
-                <div class="phone-type-strip" v-for="item in operation_info" :class="item.ischeck?'red-color':'black-color'" v-text="item.platform_name" @click="seleOperation(item.operation_id)"></div>
+                <div class="phone-type-strip" v-for="item in operation_info" :class="item.ischeck?'red-color':'black-color'" v-text="item.platform_name" 
+                @click="seleOperation(item.operation_id)"></div>
             </div>
             <div v-show="!showOperation" class="server-operation">
                 <!-- 区 -->
                 <div class="server-operation-box" v-if="showArea">
-                    <div class="operation-type-strip" v-for="item in area_info" :class="item.ischeck?'red-border':'black-border'" v-text="item.area_name" @click="getArea(item.area_id)"></div>
+                    <div class="operation-type-strip" v-for="item in area_info" :class="item.ischeck?'red-border':'black-border'" v-text="item.area_name"@click="getArea(item.area_id)"></div>
                 </div>
                 <!-- 服 -->
                 <div class="server-area-box" v-if="showArea">
@@ -78,18 +86,20 @@
                         <img class="search-area-ico" src="../../static/img/search_ico.png" alt="">
                     </div>
                     <div class="area-type-content">
-                        <div class="area-type-strip" v-for="item in server_info" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.server_name" @click="seleServer(item.server_id,'server')"></div>
+                        <div class="area-type-strip" v-for="item in server_info" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.server_name" 
+                        @click="seleServer(item.server_id,'server')"></div>
                     </div>
                     <!-- <div class="area-type-btn">确认</div> -->
                 </div>
-                <!-- 没区的时候只显示服 -->
+                    <!-- 没区的时候只显示服 -->
                 <div class="server-area-box" v-if="!showArea">
                     <div class="area-type-search">
                         <input type="text" placeholder="搜索">
                         <img class="search-area-ico" src="../../static/img/search_ico.png" alt="">
                     </div>
                     <div class="area-type-content">
-                        <div class="area-type-strip" v-for="item in server_info" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.area_name" @click="seleServer(item.area_id,'area')"></div>
+                        <div class="area-type-strip" v-for="item in server_info" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.area_name" 
+                        @click="seleServer(item.area_id,'area')"></div>
                     </div>
                     <!-- <div class="area-type-btn">确认</div> -->
                 </div>
@@ -127,37 +137,43 @@
             <div class="screen-type-strip">
                 <div class="screen-strip-left">账号绑定</div>
                 <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.accountBind" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('accountBind',item.value)"></div>
+                    <div class="screen-strip-box" v-for="item in screen_info.accountBind" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                    @click="seleScreen('accountBind',item.value)"></div>
                 </div>
             </div>
             <div class="screen-type-strip">
                 <div class="screen-strip-left">视频状态</div>
                 <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.videoStatus" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('videoStatus',item.value)"></div>
+                    <div class="screen-strip-box" v-for="item in screen_info.videoStatus" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                    @click="seleScreen('videoStatus',item.value)"></div>
                 </div>
             </div>
             <div class="screen-type-strip">
                 <div class="screen-strip-left">售价类型</div>
                 <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.sellType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('sellType',item.value)"></div>
+                    <div class="screen-strip-box" v-for="item in screen_info.sellType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                    @click="seleScreen('sellType',item.value)"></div>
                 </div>
             </div>
             <div class="screen-type-strip">
                 <div class="screen-strip-left">是否可分期</div>
                 <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.isStages" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isStages',item.value)"></div>
+                    <div class="screen-strip-box" v-for="item in screen_info.isStages" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                    @click="seleScreen('isStages',item.value)"></div>
                 </div>
             </div>
             <div class="screen-type-strip">
                 <div class="screen-strip-left">保险情况</div>
                 <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.isInsurance" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isInsurance',item.value)"></div>
+                    <div class="screen-strip-box" v-for="item in screen_info.isInsurance" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                    @click="seleScreen('isInsurance',item.value)"></div>
                 </div>
             </div>
             <div class="screen-type-strip">
                 <div class="screen-strip-left">等级</div>
                 <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.levelType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('levelType',item.value)"></div>
+                    <div class="screen-strip-box" v-for="item in screen_info.levelType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                    @click="seleScreen('levelType',item.value)"></div>
                 </div>
             </div>
             <div class="screen-type-bottom">
@@ -167,15 +183,18 @@
         </div>
         <!-- 神兽 -->
         <div class="screen-box bottom-screen-box pokemon-type-box" v-show="screenInfoAll[4].isShow">
-            <div class="screen-strip-box" v-for="item in screen_info.pokemonType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('pokemon',item.name)"></div>
+            <div class="screen-strip-box" v-for="item in screen_info.pokemonType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+            @click="seleScreen('pokemon',item.name)"></div>
         </div>
         <!-- 职业 -->
         <div class="screen-box bottom-screen-box profession-type-box" v-show="screenInfoAll[5].isShow">
-            <div class="screen-strip-box" v-for="item in screen_info.professionType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('profession',item.name)"></div>
+            <div class="screen-strip-box" v-for="item in screen_info.professionType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+            @click="seleScreen('profession',item.name)"></div>
         </div>
         <!-- 门派 -->
         <div class="screen-box bottom-screen-box school-type-box" v-show="screenInfoAll[6].isShow">
-            <div class="screen-strip-box" v-for="item in screen_info.schoolType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('school',item.name)"></div>
+            <div class="screen-strip-box" v-for="item in screen_info.schoolType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+            @click="seleScreen('school',item.name)"></div>
         </div>
         <!-- 遮罩 -->
         <div class="goodscreen-shade" v-show="screenInfoAll[7].isShow" @click="hiddenScreenFun()"></div>
@@ -194,37 +213,15 @@ export default {
     data() {
         return {
             // 组件的数据
-            copmonentsData: {
-                // Header
-                showTitle: {
-                    showBack: false,
-                    showLogo: 3, //显示头部inp
-                    showShare: 3, //1搜索2分享3菜单
-                    showBg: true,
-                    title: ""
-                }
+            // Header
+            showTitle: {
+                showBack: false,
+                showLogo: 2, //显示头部inp
+                showShare: 3, //1搜索2分享3菜单
+                showBg: true,
+                title: "",
             },
-            list: [],
-            page: {
-                counter: 1,
-                pageStart: 1,
-                pageEnd: 1,
-                total: 10
-            },
-            miniRefresh: null,
-            showNoData: false,
-            pages: "", //总页数
-            goodsInfo: "",
-            showBottom: false, //不显示下方筛选栏
-            begin_price: "",
-            end_price: "",
-            is_video: "",
-            sell_type: "",
-            is_stage: "",
-            is_safe: "",
-            role_level: "",
-            sort_price: "",
-            sort_collection: "",
+            // 提交的数据
             request: {
                 page: 1,
                 rows: 10,
@@ -246,6 +243,21 @@ export default {
                 sort_collection: "",
                 is_video: ""
             },
+            list: [],
+            miniRefresh: null,
+            showNoData: false,
+            pages: "", //总页数
+            goodsInfo: "",
+            showBottom: false, //不显示下方筛选栏
+            begin_price: "",
+            end_price: "",
+            is_video: "",
+            sell_type: "",
+            is_stage: "",
+            is_safe: "",
+            role_level: "",
+            sort_price: "",
+            sort_collection: "",
             // 筛选---之上
             screenTop: [
                 {
@@ -415,6 +427,18 @@ export default {
         };
     },
     methods: {
+        //一键清空
+        emptyFun() {
+            $(".search-title").val("");
+        },
+        // 隐藏键盘
+        show(){
+            this.$refs.input1.blur();
+            // 
+        },
+        out(){
+            console.log(this.request)
+        },
         // 上一栏选项
         topScreen(flag, index) {
             var screentop = this.screenTop;
@@ -580,7 +604,6 @@ export default {
         },
         // 选择服务器
         seleServer(opt, flag) {
-            console.log(opt + "---" + flag);
             var that = this;
             if (flag == "area") {
                 var areaAll = that.server_info;
@@ -945,56 +968,44 @@ export default {
                 areaAll[i].ischeck = false;
             }
         },
+        // 获取数据
         getGoodsInfo(request, flag) {
             var that = this;
-            if (flag) {
-                console.log(flag);
-                if (that.request.page < that.pages) {
-                    that.$axios
-                        .post("/api/goods_info", request)
-                        .then(function(res) {
-                            if (res.status == 200) {
-                                if (res.data.code == 200) {
+            that.$axios
+                .post("/api/goods_info", request)
+                .then(function(res) {
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            var data = res.data.data.data;
+                            if(flag){
+                                if(data == ''){
+                                    that.miniRefresh.endUpLoading(true);
+                                }else{
                                     that.miniRefresh.endUpLoading(false);
                                     for (var i in res.data.data.data) {
                                         that.goodsInfo.push(
                                             res.data.data.data[i]
                                         );
                                     }
-                                }
-                            }
-                        })
-                        .catch(function(err) {
-                            console.log(err);
-                        });
-                }else{
-                    that.miniRefresh.endUpLoading(true);
-                }
-            } else {
-                that.page.counter = 1;
-                request.page = 1;
-                that.$axios
-                    .post("/api/goods_info", request)
-                    .then(function(res) {
-                        console.log(res);
-                        if (res.status == 200) {
-                            if (res.data.code == 200) {
-                                that.miniRefresh.endDownLoading();
-                                if (res.data.data.data == "") {
+                                } 
+                            }else{
+                                if(data == ""){
                                     that.showNoData = true;
                                     that.goodsInfo = "";
-                                } else {
+                                    that.miniRefresh.endDownLoading();
+                                }else{
                                     that.goodsInfo = res.data.data.data;
                                     that.pages = res.data.data.last_page;
                                     that.showNoData = false;
+                                    that.miniRefresh.endDownLoading();
                                 }
                             }
                         }
-                    })
-                    .catch(function(err) {
-                        console.log(err);
-                    });
-            }
+                    }
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
         },
         getGonfig(category_id) {
             var that = this;
@@ -1043,11 +1054,7 @@ export default {
                             }
                             that.screen_info.levelType = role_level;
                             // 调用商品列表接口
-                            that.request.page = that.page.counter;
-                            that.request.rows = that.page.total;
                             that.getGoodsInfo(that.request);
-                                    
-
                         }
                     }
                 })
@@ -1062,13 +1069,15 @@ export default {
             });
         },
         refresh() {
-            this.miniRefresh = new MiniRefresh({
+            var that = this;
+            that.miniRefresh = new MiniRefresh({
                 container: "#minirefresh",
                 down: {
                     isAuto: false,
+                    bounceTime: 500,
                     callback: () => {
-                        this.request.page = 1;
-                        this.getGoodsInfo(this.request);
+                        that.request.page = 1;
+                        that.getGoodsInfo(that.request);
                     }
                 },
                 up: {
@@ -1078,8 +1087,12 @@ export default {
                     },
                     isShowUpLoading: true,
                     callback: () => {
-                        this.request.page++;
-                        this.getGoodsInfo(this.request, "push");
+                        that.request.page++;
+                        if(that.request.page <= that.pages){
+                            that.getGoodsInfo(that.request, "push");
+                        }else{
+                            that.miniRefresh.endUpLoading(true);
+                        }
                     }
                 }
             });
@@ -1459,7 +1472,7 @@ input[type="number"] {
 /* 筛选确认 */
 .screen-type-bottom {
     text-align: center;
-    margin-bottom:.2rem;
+    margin-bottom: 0.2rem;
 }
 .ok-screen-btn {
     display: inline-block;
@@ -1652,5 +1665,45 @@ input[type="number"] {
 }
 .list {
     background: #f6f8fe;
+}
+
+
+/*搜索*/
+.titInp {
+    width: 5.8rem;
+    height: 0.88rem;
+    margin: 0 auto;
+    position: fixed;
+    top:0;
+    left:calc(50% - 2.9rem);
+    z-index:999999;
+    line-height:.88rem;
+}
+.search-title {
+    background:#ffffff;
+    width: 5.8rem;
+    height: 0.66rem;
+    font-size: 0.26rem;
+    padding: 0 0.6rem;
+    margin: 0;
+    border-top-left-radius: 0.33rem;
+    border-top-right-radius: 0.33rem;
+    border-bottom-left-radius: 0.33rem;
+    border-bottom-right-radius: 0.33rem;
+    background:#ffffff;
+}
+.search-ico {
+    width: 0.32rem;
+    height: 0.27rem;
+    position: absolute;
+    top: 0.32rem;
+    left: 0.23rem;
+}
+.empty-ico {
+    width: 0.23rem;
+    height: 0.24rem;
+    position: absolute;
+    top: 0.32rem;
+    right: 0.25rem;
 }
 </style>

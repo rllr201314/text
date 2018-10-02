@@ -20,7 +20,11 @@ export default new Vuex.Store({
     },
     set_mobile(state, mobile) {
       state.mobile = mobile
-      sessionStorage.mobile = mobile
+      sessionStorage.mobile = mobile;
+    },
+    del_mobile(state) {
+      state.mobile = ''
+      sessionStorage.removeItem('mobile');
     },
     changeLogin(state,data){
       state.isLogin = data
