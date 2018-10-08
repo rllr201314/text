@@ -348,7 +348,7 @@ export default {
                 manageData: {
                     usableBalance: "",
                     frostBalance: "666元",
-                    cashPledge: "888元"
+                    cashPledge: "0元"
                 },
                 comNews: 19,
                 pactNews: 99,
@@ -506,7 +506,7 @@ export default {
         getData(){
             var that=this;
             that.$axios.post('/api/user_info').then((res)=>{
-                // console.log(res)
+                console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
                         var data = res.data.data;

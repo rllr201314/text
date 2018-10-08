@@ -78,6 +78,12 @@ export default {
                 is_agree:opt,
             }).then((res)=>{
                 console.log(res)
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        that.getData();
+                    }
+                }
             }).catch((err)=>{
                 console.log(err);
             })

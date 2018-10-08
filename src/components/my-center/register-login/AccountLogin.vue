@@ -268,7 +268,7 @@ input {
     padding: 0.1rem;
     font-size: 0.24rem;
     border: none;
-    width: 4.7rem;
+    width: 6rem;
     height: 0.6rem;
 }
 input::-webkit-outer-spin-button,

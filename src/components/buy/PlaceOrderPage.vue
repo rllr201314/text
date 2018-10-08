@@ -97,7 +97,7 @@
                         <div class="sele-opera">
                             <div class="opera" @click="seleOpera('nostage')">
                                 <img :src="operaStage.noStage?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">
-                                <span>一口价</span>
+                                <span>全款</span>
                             </div>
                             <div class="opera" @click="seleOpera('stage')" v-if="goodsInfo.is_stage == 1">
                                 <img :src="operaStage.stage?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">
@@ -306,9 +306,17 @@ export default {
                 that.operaStage.stage = false;
                 that.operaStage.noStage = true;
                 if(that.showSafe || that.showCompact && that.operaSafe.safe){
-                    that.totalPrice = Number(that.goodsInfo.goods_price) + Number(that.goodsInfo.other_fee);
+                    if(that.goodsInfo.discuss_price != 0){
+                        that.totalPrice = Number(that.goodsInfo.discuss_price) + Number(that.goodsInfo.other_fee);
+                    }else{
+                        that.totalPrice = Number(that.goodsInfo.goods_price) + Number(that.goodsInfo.other_fee);
+                    }
                 }else{
-                    that.totalPrice = Number(that.goodsInfo.goods_price);
+                    if(that.goodsInfo.discuss_price != 0){
+                        that.totalPrice = Number(that.goodsInfo.discuss_price);
+                    }else{
+                        that.totalPrice = Number(that.goodsInfo.goods_price);
+                    }
                 }
             } else if (flag == "stage") {
                 that.operaStage.stage = true;
@@ -519,13 +527,25 @@ export default {
                             that.stage = res.data.data.stage;
                             // 可以选择分期的话默认 首付30% 分一期 判断可购合同还是保险
                             that.stageInfo = that.stage.first_one_interest;
-                            that.totalPrice = that.goodsInfo.goods_price;
+                            if(that.goodsInfo.discuss_price != 0){
+                                that.totalPrice = that.goodsInfo.discuss_price;
+                            }else{
+                                that.totalPrice = that.goodsInfo.goods_price;
+                            }
                             if(that.goodsInfo.is_safe == 2 && that.goodsInfo.is_compact == 2 && that.goodsInfo.other_is_safe == 1){
                                 that.showSafe = true;
-                                that.totalPrice = Number(that.goodsInfo.goods_price) + Number(that.goodsInfo.other_fee);
+                                if(that.goodsInfo.discuss_price != 0){
+                                    that.totalPrice = Number(that.goodsInfo.discuss_price) + Number(that.goodsInfo.other_fee);
+                                }else{
+                                    that.totalPrice = Number(that.goodsInfo.goods_price) + Number(that.goodsInfo.other_fee);
+                                }
                             }else if(that.goodsInfo.is_safe == 2 && that.goodsInfo.is_compact == 2 && that.goodsInfo.other_is_compact == 1){
                                 that.showCompact = true;
-                                that.totalPrice = Number(that.goodsInfo.goods_price) + Number(that.goodsInfo.other_fee);
+                                if(that.goodsInfo.discuss_price != 0){
+                                    that.totalPrice = Number(that.goodsInfo.discuss_price) + Number(that.goodsInfo.other_fee);
+                                }else{
+                                    that.totalPrice = Number(that.goodsInfo.goods_price) + Number(that.goodsInfo.other_fee);
+                                }
                             }
 
                         }else if(res.data.code == 400){
@@ -634,10 +654,7 @@ export default {
     },
     mounted() {
         var that = this;
-        if (
-            that.$route.query.goods_id != "" &&
-            that.$route.query.goods_id != undefined
-        ) {
+        if (that.$route.query.goods_id != "" && that.$route.query.goods_id != undefined) {
             that.getData();
         } else {
             that.$router.go(-1);

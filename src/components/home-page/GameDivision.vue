@@ -44,7 +44,7 @@
             goArea(flag){
                 var that = this;
                 if(flag == 'mh'){
-                    that.$router.push({name:'ActiveArea',params:{tit:'梦幻西游活动专区'}})
+                    that.$router.push({name:'ActiveArea',query:{tit:'梦幻西游活动专区'}})
                 }else if(flag == 'dh'){
                     that.$router.push({name:'ActiveArea',params:{tit:'大话西游活动专区'}})
                 }else if(flag == 'clx'){

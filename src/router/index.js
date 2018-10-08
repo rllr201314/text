@@ -308,12 +308,19 @@ export default new Router({
       name: 'ApplySettlement',
       component: (resolve) => require(['@/components/ApplySettlement'], resolve),
     },
-    // 消息
+    // 消息预览
     {
       path: '/message-server',
       name: 'MessageAll_Server',
       component: (resolve) => require(['@/components/my-center/message/messageAll'], resolve),
-    },{
+    },
+    // 消息详细
+    {
+      path: '/message-info',
+      name: 'Message_Details',
+      component: (resolve) => require(['@/components/my-center/message/message_details'], resolve),
+    },
+    {
       path: '/apply-settlement',
       name: 'ApplySettlement',
       component: (resolve) => require(['@/components/ApplySettlement'], resolve),

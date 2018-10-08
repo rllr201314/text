@@ -252,6 +252,9 @@ export default {
     display:flex;
     justify-content: flex-start;
 } */
+.login-info input{
+    width: 4.2rem;
+}
 .phone-ico {
     width: 0.23rem;
     height: 0.3rem;
@@ -333,11 +336,11 @@ export default {
 
 /* ==========input========= */
 input {
+    width:6rem;
     margin: 0;
     padding: 0.1rem;
     font-size: 0.24rem;
     border: none;
-    width: 4.2rem;
     height: 0.6rem;
 }
 input::-webkit-outer-spin-button,

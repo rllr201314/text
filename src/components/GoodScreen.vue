@@ -5,7 +5,7 @@
         <div class="titInp">
             <img class="search-ico" src="../../static/img/search_ico.png" alt="">
             <form action="javascript:return true;">
-                <input class="search-title" type="search" placeholder="请输入搜索内容" @keyup.13="show()" ref="input1" @blur="out()">
+                <input class="search-title" type="search" placeholder="请输入搜索内容" v-model="request.content" @keyup.13="show()" ref="input1" @blur="out()">
             </form>
             <img class="empty-ico" src="../../static/img/empty_ico.png" alt="" @click="emptyFun()">
         </div>
@@ -241,7 +241,8 @@ export default {
                 end_price: "",
                 sort_price: "",
                 sort_collection: "",
-                is_video: ""
+                is_video: "",
+                content:'',
             },
             list: [],
             miniRefresh: null,
@@ -258,6 +259,7 @@ export default {
             role_level: "",
             sort_price: "",
             sort_collection: "",
+
             // 筛选---之上
             screenTop: [
                 {
@@ -429,15 +431,15 @@ export default {
     methods: {
         //一键清空
         emptyFun() {
-            $(".search-title").val("");
+            this.request.content = '';
         },
         // 隐藏键盘
         show(){
             this.$refs.input1.blur();
-            // 
+            this.getGoodsInfo(this.request);
         },
         out(){
-            console.log(this.request)
+            this.getGoodsInfo(this.request);
         },
         // 上一栏选项
         topScreen(flag, index) {

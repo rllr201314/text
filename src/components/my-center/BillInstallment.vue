@@ -107,7 +107,12 @@
                 })
             },
             goPayFn(order_id,time){
-                this.$router.push({name:'PayInstallment',query:{order:order_id,time:time}});
+                var order_sn = {};
+                order_sn.order_id = order_id;
+                order_sn.time = time;
+                order_sn = JSON.stringify(order_sn);
+                sessionStorage.s_order = order_sn;
+                this.$router.push({name:'PayInstallment',query:{order:order_sn}});
             }
         },
         mounted(){

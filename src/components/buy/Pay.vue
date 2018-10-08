@@ -84,17 +84,17 @@
                         <div class="pay-price red-color">
                             ￥<span v-text="price"></span>
                         </div>
-                        <div class="isbalance" v-if="false">
-                            <div class="balance-left">
-                                <img :src="payData.orderInfo.isbalace.balace?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
+                        <div class="isbalance" >
+                            <div class="balance-left" @click="Balace('true')">
+                                <img :src="isbalace?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
                                 <span>使用押金抵扣</span>
                             </div>
-                            <div>
-                                <img :src="payData.orderInfo.isbalace.nobalace?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
+                            <div  @click="Balace('false')">
+                                <img :src="!isbalace?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
                                 <span>使用余额抵扣</span>
                             </div>
                         </div>
-                        <div class="deduction" v-if="false">
+                        <div class="deduction" >
                             <div class="deduction-strip">押金抵扣 -￥3000</div>
                             <div class="deduction-strip">押金抵扣 -￥3000</div>
                         </div>
@@ -103,7 +103,7 @@
 
             </div>
         </div>
-        <div class="nextBtn" @click="goPayFn" v-text="ok_text"></div>
+        <div class="nextBtn" @click="goPayFn" v-text="ok_text" v-if="showBtn"></div>
         <Loading v-if="showLoading"></Loading>
     </div>
 </template>
@@ -132,6 +132,8 @@ export default {
                     }
                 }
             },
+            showBtn:true,
+            stage_info:null,
             order_id:null,
             ok_text:'前往支付',
             order_num:null,
@@ -159,15 +161,13 @@ export default {
                     imgsrc: "./static/img/order/zfbpay.png"
                 }
             ],
+            isbalace:true,
             payData: {
                 orderInfo: {
                     orderNum: "13823427342389423",
                     orderTime: "2018-08-08 9:00",
                     orderPrice: "￥2000",
-                    isbalace: {
-                        balace: true,
-                        nobalace: false
-                    },
+                    
                     lastTime: "22:22"
                 }
             }
@@ -178,6 +178,14 @@ export default {
         Loading
     },
     methods: {
+        Balace(flag){
+            var that = this;
+            if(flag == 'true'){
+                that.isbalace = true;
+            }else if(flag == 'false'){
+                that.isbalace = false;
+            }
+        },
         seleline(flag) {
             var that = this;
             if (flag == "on") {
@@ -237,7 +245,7 @@ export default {
             var request = {};
             var url;
             // 判断是下单过来还是订单过来
-            if(that.goods_info && !that.order_id){//订单
+            if(that.goods_info && !that.order_id){//详情
                 url = 'order_confirm';
                 var data = that.goods_info;
                 request.goods_id = data.goods_id;
@@ -257,9 +265,18 @@ export default {
                         request.down_payment = data.down_payment;
                     }
                 }
-            }else{
+            }else if(!that.goods_info && that.order_id){//待支付订单
                 url = 'order_trading';
                 request.order_id = that.order_id;
+                if(that.is_line){
+                    request.payment_method = that.payment_num;
+                }else{
+                    request.payment_method = 4;//选择线下支付
+                }
+            }else if(that.stage_info){//分期支付
+                url = 'do_stage'
+                request.order_id = that.stage_info.order;
+                request.stage_method = that.stage_info.way;
                 if(that.is_line){
                     request.payment_method = that.payment_num;
                 }else{
@@ -273,7 +290,7 @@ export default {
                 if(res.status == 200){
                     if(res.data.code == 200){
                         mui.toast(res.data.msg,{ duration:'short', type:'div' });
-                        that.componentsData.showTitle.goBack = 2;//存在从订单列表进来直接回退到个人中心的小bug---------用beforeRouteLeve解决
+                        that.componentsData.showTitle.goBack = 2;
                         if(that.is_line){
                             // 跳转页面 第三方接口
                         }else{
@@ -281,8 +298,11 @@ export default {
                             that.off_line = false;
                             that.order_num = data.order_sn;
                             that.order_info = data.bank_account;
-                            that.ok_text = "查看订单"
-                            console.log(data);
+                            if(url == 'do_stage'){
+                                that.showBtn = false;
+                            }else{
+                                that.ok_text = "查看订单";
+                            }
                         }
                     }else if(res.data.code == 401){
                         that.$router.push({
@@ -292,7 +312,7 @@ export default {
                             }
                         });
                     }else{
-                        mui.alert(res.data.msg,'提示','确认','','div')
+                        mui.toast(res.data.msg,{ duration:'short', type:'div' });
                     }
                 }
             }).catch((err)=>{
@@ -327,6 +347,8 @@ export default {
     beforeRouteLeave(to, from, next) {
         if(to.path == '/place-order'){
             this.$router.go(-3);//跳转到选择游戏类型
+        }else if(to.path == '/installment'){
+            this.$router.go(-1);//跳转到选择游戏类型
         }else{
             next();
         }
@@ -334,7 +356,7 @@ export default {
     mounted() {
         var that = this;
         var b = sessionStorage.getItem("order_info");
-        if(that.$route.query.request){
+        if(that.$route.query.request){//详情
             var request = that.$route.query.request;
             if (request == b) {
                 if (that.isobjStr(request)) {
@@ -346,16 +368,35 @@ export default {
             } else {
                 that.$router.go(-1);
             }
-        }else if(that.$route.query.order_info){
+        }else if(that.$route.query.order_info){//未支付订单
             var order_id = that.$route.query.order_info;
-            if(that.isobjStr(order_id)){
-                var order = JSON.parse(order_id);
-                that.order_id = order.order_id;
-                that.price = order.price;
-
+            var unpaid_o = sessionStorage.getItem('unpaid_o');
+            if(order_id == unpaid_o){
+                if(that.isobjStr(order_id)){
+                    var order = JSON.parse(order_id);
+                    that.order_id = order.order_id;
+                    that.price = order.price;
+                }else{
+                    that.$router.go(-1);
+                }
+            }else{
+                that.$router.go(-1);
             }
-        }else if(that.$route.query.stage){
-                // 分期支付
+        }else if(that.$route.query.stage){// 分期支付
+            var s_stages = sessionStorage.getItem('stage');
+            var stages = that.$route.query.stage;
+            if(s_stages == stages){
+                if(that.isobjStr(stages)){
+                    that.stage_info = JSON.parse(stages);
+                    that.price = that.stage_info.price;
+                }else{
+                    that.$router.go(-1);
+                }
+            }else{
+                that.$router.go(-1);
+            }
+        }else{
+            that.$router.go(-1);
         }
         
     }
@@ -456,7 +497,7 @@ export default {
 .nextBtn {
     color: #ffffff;
     font-size: 0.28rem;
-    margin: 0.5rem auto 0;
+    margin: 0.5rem auto;
     width: 6.5rem;
     text-align: center;
     line-height: 0.8rem;

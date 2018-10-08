@@ -16,8 +16,12 @@
                 <img class="empty-ico" src="../../../static/img/empty_ico.png" alt="" @click="emptyFun()">
             </div>
             <!--右边按钮-->
+            
             <img v-if="showTitle.showShare === 1" class="head_right_search" src="../../../static/img/searchLogo.png" alt="">
             <img v-else-if="showTitle.showShare === 2" class="head_right_share" src="../../../static/img/share_ico.png" alt="">
+            <!-- <a v-else-if="showTitle.showShare === 2" class="mui-icon iconfont icon-send mui-pull-right" @click="openShare();" >
+                <img  class="head_right_share" src="../../../static/img/share_ico.png" alt="">
+            </a> -->
             <img v-else-if="showTitle.showShare === 3" :style="iconstyle" class="head_right_share" src="../../../static/img/menu_ico.png" alt="" @click="cliMenu">
             <img v-else-if="showTitle.showShare === 4" class="head_right_add" src="../../../static/img/header/hAdd_ico.png" alt="" @click="addCard">
             <transition name="fade">
@@ -127,6 +131,9 @@ export default {
             }else if(flag == 'message'){
                 that.$router.push({name:'MessageAll_Server'})
             }
+        },
+        openShare(){
+
         }
     }
 };

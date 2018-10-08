@@ -100,7 +100,7 @@ export default {
         };
     },
     methods: {
-        // 选择分期
+        // 选择
         seleStage(opera) {
             var stageOpera = this.stageOpera;
             for (var i in stageOpera) {
@@ -123,6 +123,7 @@ export default {
             all.order_id = order_id;
             all.price = price;
             var order_info = JSON.stringify(all);
+            sessionStorage.unpaid_o = order_info;
             this.$router.push({name:'Pay',query:{order_info}})
         },
         initTime(time){

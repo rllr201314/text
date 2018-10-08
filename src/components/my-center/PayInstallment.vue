@@ -31,7 +31,8 @@
                     <span class="strip-left">滞纳金</span><span>￥<span v-text="payData.delay_money"></span></span>
                 </div>
                 <div class="payInstall-strip ">
-                    <span class="strip-left">应付金额</span><span class="red-color">￥<span v-text="payData.total_money"></span></span>
+                    <span class="strip-left">应付金额</span>
+                    <span class="red-color">￥<span class="red-color" v-text="payData.total_money"></span></span>
                 </div>
             </div>
         </div>
@@ -60,6 +61,7 @@
                 payData:{},
                 time:null,
                 isCurrent:true,
+                order_info:null,
             }
         },
         methods:{
@@ -76,7 +78,7 @@
             getData(){
                 var that = this;
                 that.$axios.post('/api/order_stage',{
-                    order_id:that.$route.query.order
+                    order_id:that.order_info.order_id
                 }).then((res)=>{
                     console.log(res)
                     if(res.status == 200){
@@ -90,15 +92,53 @@
                 })
             },
             goPay(){
+                var that = this;
                 // 分期支付
-                
-            }
+                var stages = {};
+                if(that.isCurrent){//支付方式
+                    stages.way = 1;
+                    stages.price = that.allData.next_stage.total_money;
+                }else{
+                    stages.way = 2;
+                    stages.price = that.allData.end_stage.total_money;
+                }
+                stages.order = that.order_info.order_id;
+                stages = JSON.stringify(stages);
+                sessionStorage.stage = stages;
+                that.$router.push({name:'Pay',query:{stage:stages}})
+
+            },
+            // 判断是不是JSON字符串
+            isobjStr(str) {
+                if (typeof str == "string") {
+                    try {
+                        if (typeof JSON.parse(str) == "object") {
+                            return true;
+                        }
+                    } catch (e) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            },
         },
         mounted(){
             var that = this;
-            if(that.$route.query.order && that.$route.query.time){
-                that.getData();
-                that.time = that.$route.query.time;
+            if(that.$route.query.order){
+                var order_sn = sessionStorage.s_order;
+                var sn_order = that.$route.query.order;
+                if(sn_order == order_sn){
+                    if(that.isobjStr(sn_order)){
+                        that.order_info = JSON.parse(sn_order)
+                        that.time = that.order_info.time;
+                        that.getData();
+                    }else{
+                        that.$router.go(-1);
+                    }
+                }else{
+                    that.$router.go(-1);
+                }
             }else{
                 that.$router.go(-1);
             }

@@ -357,8 +357,9 @@ export default {
     font-size: 0.24rem;
     line-height: 0.36rem;
     margin-bottom: 0.2rem;
+    display: flex;
+    align-items: center;
 }
-
 .goods-type {
     text-align: center;
     width: 0.93rem;

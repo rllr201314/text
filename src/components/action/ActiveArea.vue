@@ -4,8 +4,8 @@
         <div class="active-content">
             <HotEvents v-bind:showHotTitle="showHotTitle"></HotEvents>
         </div>
-        <Hotline></Hotline>
-        <Footer></Footer>
+        <Hotline class="hotline"></Hotline>
+        <Footer class="footer"></Footer>
     </div>
 </template>
 <script>
@@ -35,7 +35,7 @@ export default {
     },
     mounted() {
         var that = this;
-        that.showTitle.title = that.$route.params.tit;
+        that.showTitle.title = that.$route.query.tit;
     }
 };
 </script>
@@ -43,9 +43,28 @@ export default {
 .active-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    /* padding-top:.88rem; */
+    padding:.88rem 0 2.8rem;
 }
 .active-content {
     padding: 0.2rem;
 }
+.hotline{
+    position:fixed;
+    bottom:2.1rem;
+    left:0;
+    right:0;
+    z-index:88;
+}
+.footer{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+}
 </style>
+<style>
+body{
+    height:100vh;
+}
+</style>
+
