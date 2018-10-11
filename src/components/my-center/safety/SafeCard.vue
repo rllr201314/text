@@ -110,7 +110,7 @@ export default {
             request.mobile = that.mobile;
             request.verify_code = that.$route.query.code;
             that.$axios
-                .post("/api/authentic_four",request)
+                .post(process.env.API_HOST+"authentic_four",request)
                 .then(res => {
                     console.log(res);
                     if (res.status == 200) {

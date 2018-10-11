@@ -7,7 +7,7 @@
             <div :class="seleTit == 1?'red-border':''" @click="seleTitFn(1)">审核中</div>
             <div :class="seleTit == 2?'red-border':''" @click="seleTitFn(2)">已下架</div>
         </div>
-        <div class="mygoods-con">
+        <div class="list-box-wrap" v-if="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 3">
                 <div class="minirefresh-scroll list">
                     <ul>
@@ -127,7 +127,7 @@
                 </div>
             </div>
         </div>
-        <NoData v-if="showNoData"></NoData>
+        <NoData class="nodata" v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
@@ -185,7 +185,7 @@ export default {
             console.log(opt+'--'+flag);
             var that = this;
             that.$axios
-                .post("/api/goods_information", {
+                .post(process.env.API_HOST+"goods_information", {
                     page: that.num_page, 
                     goods_status: opt
                 })
@@ -252,7 +252,7 @@ export default {
                 function(e) {
                     if (e.index == 1) {
                         that.$axios
-                            .post("/api/down_goods", {
+                            .post(process.env.API_HOST+"down_goods", {
                                 goods_id: goods_id
                             })
                             .then(res => {
@@ -385,6 +385,8 @@ export default {
     left: 0;
     right: 0;
     z-index: 66;
+    max-width:12rem;
+    margin:0 auto;
 }
 .seleTit div {
     width: 100%;
@@ -393,15 +395,7 @@ export default {
     border-bottom: 0.04rem solid #ff7e4a;
     color: #ff7e4a;
 }
-.mygoods-con {
-    /* margin-top:1.68rem; */
-    position: fixed;
-    top: 1.68rem;
-    left: 0;
-    right: 0;
-    padding: 0 0.2rem;
-    height: 11.4rem;
-}
+
 .goodsList {
     height: 11.4rem;
 }
@@ -577,11 +571,21 @@ export default {
     font-size: 0.26rem;
     color: #999999;
 }
-
+.list-box-wrap {
+    position:relative;
+    max-width:12rem;
+    margin:0 auto;
+    height:100vh;
+}
 .list-wrap {
+    top:1.68rem;
     padding:0 .2rem;
 }
 .list {
-    background: #f6f8fe;
+    background: #f6f6f6;
+}
+
+.nodata{
+    padding-top:1.68rem;
 }
 </style>

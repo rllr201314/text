@@ -5,18 +5,18 @@
         <div class="wait-content">
             <div class="wait-cell" v-for="item in goodsData">
                 <div class="gameLog">
-                    <img :src="item.log" alt="">
+                    <img :src="item.game_logo" alt="">
                 </div>
                 <div class="orderInfo">
                     <div class="order-num">
                         <span>订单号</span>
                         <span v-text="item.orderNum"></span>
-                        <span class="history-time" v-text="item.history_time"></span>
+                        <span class="history-time" v-text="item.create_time"></span>
                     </div>
-                    <div class="order-des" v-text="item.des"></div>
+                    <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
-                        <span class="good-price" v-text="item.price"></span>
-                        <span class="order-status" v-text="item.orderStatus"></span>
+                        <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
+                        <span class="order-status">待收货</span>
                     </div>
                 </div>
                 <div class="order-operate">
@@ -25,7 +25,7 @@
                         <span>联系客服</span>
                     </div>
                     <div class="right-operate">
-                        <span class="pay">查看</span>
+                        <span class="pay" @click="goStatus(item.order_id)">查看</span>
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@ export default {
         getData() {
             var that = this;
             that.$axios
-                .post("/api/seller_confirm")
+                .post(process.env.API_HOST+"seller_confirm")
                 .then(res => {
                     console.log(res);
                     if (res.status == 200) {
@@ -78,7 +78,13 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
-        }
+        },
+        goStatus(order_id) {
+            this.$router.push({
+                name: "SellTakeDelivery",
+                query: { order: order_id }
+            });
+        },
     },
     mounted() {
         var that = this;

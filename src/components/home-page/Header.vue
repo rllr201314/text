@@ -17,7 +17,7 @@
             </div>
             <!--右边按钮-->
             
-            <img v-if="showTitle.showShare === 1" class="head_right_search" src="../../../static/img/searchLogo.png" alt="">
+            <img v-if="showTitle.showShare === 1" class="head_right_search" src="../../../static/img/searchLogo.png" alt="" @click="cliSearch">
             <img v-else-if="showTitle.showShare === 2" class="head_right_share" src="../../../static/img/share_ico.png" alt="">
             <!-- <a v-else-if="showTitle.showShare === 2" class="mui-icon iconfont icon-send mui-pull-right" @click="openShare();" >
                 <img  class="head_right_share" src="../../../static/img/share_ico.png" alt="">
@@ -79,6 +79,12 @@ export default {
         },
     },
     methods: {
+        cliSearch(){
+            // 点击搜索
+            var that = this;
+            that.$router.push({name:'Buy'});
+            sessionStorage.buyOrsell = 1;
+        },
         // 点击菜单
         cliMenu() {
             this.showMenu = !this.showMenu;
@@ -117,8 +123,9 @@ export default {
             if (flag == "home") {
                 that.$router.push({ name: "HomePage" });
             } else if (flag == "sell") {
-                that.$router.push({ name: "Sell" });
+                that.$router.push({name: "Sell"});
                 sessionStorage.buyOrsell = 2;
+                that.reload();
             } else if (flag == "my") {
                 var token = that.$store.state.token;
                 if (token == undefined || token == "") {

@@ -1,7 +1,7 @@
 <template>
     <div class="message-all-wrap">
         <Header v-bind:showTitle="showTitle"></Header>
-        <div class="message-all-con">
+        <div class="list-box-wrap" v-if="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
                 <div class="minirefresh-scroll list-con">
                     <ul class="list">
@@ -55,8 +55,9 @@ export default {
         getData(flag) {
             var that = this;
             that.$axios
-                .post("/api/msg_info",{
-                    page:that.num
+                .post(process.env.API_HOST+"msg_info",{
+                    page:that.num,
+                    rows:15,
                 })
                 .then(res => {
                     console.log(res);
@@ -132,10 +133,6 @@ export default {
 .message-all-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top: 0.88rem;
-}
-.message-all-con {
-    padding-left: 0.2rem;
 }
 .message-strip {
     padding-right: 0.2rem;
@@ -183,11 +180,18 @@ export default {
 }
 
 
+.list-box-wrap {
+    padding-left: 0.2rem;
+    position:relative;
+    max-width:12rem;
+    margin:0 auto;
+    height:100vh;
+}
 .list-wrap {
     top:.88rem;
 }
 .list-con{
-    background: #f6f8fe;
+    background: #f6f6f6;
 }
 .list{
     background: #ffffff;

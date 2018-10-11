@@ -130,7 +130,7 @@ export default {
             if(select == "push"){
                 page = this.num;
             }
-            that.$axios.post('/api/income_detail',{
+            that.$axios.post(process.env.API_HOST+"income_detail",{
                 flag:flag,
                 page:page,
             }).then((res)=>{

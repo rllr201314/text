@@ -27,49 +27,50 @@
             </div>
             <div class="search" @click="getdiscuss('search')">搜索</div>
         </div>
-
-        <div id="minirefresh" class="minirefresh-wrap list-wrap">
-            <div class="minirefresh-scroll list">
-                <ul>
-                    <div class="goods-strip" v-for="item in goodsInfo" @click="goMessageDetails(item.goods_id)">
-                        <div class="goods-strip-title">
-                            <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                            <div class="goods-type" v-else>代练号</div>
-                            <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                            <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                            <div class="account-type" v-else>安卓混服</div>
-                            <div class="area" v-text="item.platform_name"></div>
-                        </div>
-                        <div class="goods-strip-content">
-                            <div class="goods-des" v-text="item.goods_title"></div>
-                            <div class="goods-ico">
-                                <img v-if="item.is_safe == 2" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
-                                <img v-if="item.is_stage == 2" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
-                                <img v-if="item.is_check == 2" src="../../../../static/img/goodscreen/verify.png" alt="">
-                                <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
+        <div class="list-box-wrap" v-if="!showNoData">
+            <div id="minirefresh" class="minirefresh-wrap list-wrap">
+                <div class="minirefresh-scroll list">
+                    <ul>
+                        <div class="goods-strip" v-for="item in goodsInfo" @click="goMessageDetails(item.goods_id)">
+                            <div class="goods-strip-title">
+                                <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                                <div class="goods-type" v-else>代练号</div>
+                                <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                <div class="account-type" v-else>安卓混服</div>
+                                <div class="area" v-text="item.platform_name"></div>
                             </div>
-                        </div>
-                        <div class="goods-strip-bottom">
-                            <div class="goods-price red-color" v-text="item.goods_price"></div>
-                            <div class="tran-price" v-if="item.order_state >= 2">
-                                <span>成交价</span>
-                                <span class="red-color">￥
-                                    <span v-text="item.goods_amount"></span>
-                                </span>
-                            </div>
-                            <div class="hint">
-                                <div class="bargain" v-if="item.order_state < 2 || item.order_state == ''">
-                                    <span>收到的议价：</span>
-                                    <span v-text="item.msg_count"></span>
+                            <div class="goods-strip-content">
+                                <div class="goods-des" v-text="item.goods_title"></div>
+                                <div class="goods-ico">
+                                    <img v-if="item.is_safe == 2" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
+                                    <img v-if="item.is_stage == 2" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
+                                    <img v-if="item.is_check == 2" src="../../../../static/img/goodscreen/verify.png" alt="">
+                                    <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
                                 </div>
-                                <div class="sale" v-if="item.order_state >= 2">已卖出</div>
+                            </div>
+                            <div class="goods-strip-bottom">
+                                <div class="goods-price red-color" v-text="item.goods_price"></div>
+                                <div class="tran-price" v-if="item.order_state >= 2">
+                                    <span>成交价</span>
+                                    <span class="red-color">￥
+                                        <span v-text="item.goods_amount"></span>
+                                    </span>
+                                </div>
+                                <div class="hint">
+                                    <div class="bargain" v-if="item.order_state < 2 || item.order_state == ''">
+                                        <span>收到的议价：</span>
+                                        <span v-text="item.msg_count"></span>
+                                    </div>
+                                    <div class="sale" v-if="item.order_state >= 2">已卖出</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
-        <NoData v-if="showNoData"></NoData>
+        <NoData class="nodata" v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
@@ -169,7 +170,7 @@ export default {
                 that.request.page = that.now_page;
             }
             that.$axios
-                .post("/api/preview_discuss", that.request)
+                .post(process.env.API_HOST+"preview_discuss", that.request)
                 .then(function(res) {
                     console.log(res);
                     if (res.status == 200) {
@@ -187,6 +188,7 @@ export default {
                             } else {
                                 that.goodsInfo = data;
                                 that.pages = res.data.data.last_page;
+                                
                                 if (data != "") {
                                     that.showNoData = false;
                                 } else {
@@ -225,7 +227,7 @@ export default {
         getCategory() {
             var that = this;
             that.$axios
-                .post("/api/category")
+                .post(process.env.API_HOST+"category")
                 .then(function(res) {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
@@ -285,13 +287,19 @@ export default {
 .messageAll-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top: 0.88rem;
 }
 .search-wrap {
     background: #ffffff;
     padding: 0.3rem 0 0.3rem 0.2rem;
     font-size: 0.24rem;
     color: #333333;
+    position: fixed;
+    top:.88rem;
+    left:0;
+    right:0;
+    max-width:12rem;
+    margin:0 auto;
+    z-index:999;
 }
 .search-left {
     display: inline-block;
@@ -505,10 +513,20 @@ input[type="number"] {
     color: #999999;
     font-size: 0.26rem;
 }
+
+.list-box-wrap {
+    position:relative;
+    max-width:12rem;
+    margin:0 auto;
+    height:100vh;
+}
 .list-wrap {
     top: 2.88rem;
 }
 .list {
-    background: #f6f8fe;
+    background: #f6f6f6;
+}
+.nodata{
+    padding-top:2.88rem;
 }
 </style>

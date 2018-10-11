@@ -61,7 +61,7 @@ export default {
         getData() {
             var that = this;
             that.$axios
-                .post("/api/buyer_trading")
+                .post(process.env.API_HOST+"buyer_trading")
                 .then(res => {
                     console.log(res);
                     if (res.status == 200) {

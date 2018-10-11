@@ -7,7 +7,7 @@
                 <div class="info-title">
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
                     <span>请选择支付方式</span>
-                    <span>（请在下单后45分钟之内完成支付）</span>
+                    <span v-text="hint"></span>
                 </div>
                 <div class="info-cell">
                     <div class="cell-tit">
@@ -81,35 +81,36 @@
                         实际支付
                     </div>
                     <div class="right-pay-info">
-                        <div class="pay-price red-color">
-                            ￥<span v-text="price"></span>
-                        </div>
                         <div class="isbalance" >
                             <div class="balance-left" @click="Balace('true')">
-                                <img :src="isbalace?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
+                                <img :src="deposit?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
                                 <span>使用押金抵扣</span>
                             </div>
                             <div  @click="Balace('false')">
-                                <img :src="!isbalace?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
+                                <img :src="isbalace?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
                                 <span>使用余额抵扣</span>
                             </div>
                         </div>
-                        <div class="deduction" >
-                            <div class="deduction-strip">押金抵扣 -￥3000</div>
-                            <div class="deduction-strip">押金抵扣 -￥3000</div>
+                        <div class="deduction" v-if="deposit || isbalace">
+                            <div class="deduction-strip" v-if="deposit">押金抵扣 -￥<span v-text="deposit_sum"></span></div>
+                            <div class="deduction-strip" v-if="isbalace">余额抵扣 -￥<span v-text="remaining_sum"></span></div>
+                        </div>
+                        <div class="pay-price red-color">
+                            ￥<span v-text="price"></span>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         <div class="nextBtn" @click="goPayFn" v-text="ok_text" v-if="showBtn"></div>
         <Loading v-if="showLoading"></Loading>
+        <PaySuccess v-if="showPaySuccess"></PaySuccess>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
 import Loading from "@/components/multi/Loading";
+import PaySuccess from "@/components/multi/PaySuccess";
 export default {
     name: "Pay",
     data() {
@@ -132,6 +133,12 @@ export default {
                     }
                 }
             },
+            hint:'（请在下单后45分钟之内完成支付）',
+            selePrice:true,//是否可以选择余额支付或者押金支付 下单成功后不可选择
+            showPaySuccess:false,
+            old_price:0,//价格
+            deposit_sum:0,//押金
+            remaining_sum:0,//余额
             showBtn:true,
             stage_info:null,
             order_id:null,
@@ -161,7 +168,8 @@ export default {
                     imgsrc: "./static/img/order/zfbpay.png"
                 }
             ],
-            isbalace:true,
+            isbalace:false,
+            deposit:false,
             payData: {
                 orderInfo: {
                     orderNum: "13823427342389423",
@@ -175,15 +183,42 @@ export default {
     },
     components: {
         Header,
-        Loading
+        Loading,
+        PaySuccess
     },
     methods: {
         Balace(flag){
+            // debugger;
             var that = this;
-            if(flag == 'true'){
-                that.isbalace = true;
-            }else if(flag == 'false'){
-                that.isbalace = false;
+            if(that.selePrice){//判断可不可以选余额或者押金支付，确认支付后不可再点击
+                if(flag == 'true'){
+                    that.deposit = !that.deposit;
+                    that.isbalace =false;
+                    if(!that.deposit){
+                        that.price = Number(that.old_price);
+                    }else{
+                        // that.price = Number(that.old_price) - Number(that.deposit_sum);
+                        if(Number(that.deposit_sum) > Number(that.price)){
+                            that.deposit_sum = that.price;
+                            that.price = 0;
+                        }else{
+                            that.price = Number(that.old_price) - Number(that.deposit_sum);
+                        }
+                    }
+                }else if(flag == 'false'){
+                    that.isbalace = !that.isbalace; 
+                    that.deposit =false;
+                    if(!that.isbalace){
+                        that.price = Number(that.old_price);
+                    }else{
+                        if(Number(that.remaining_sum) > Number(that.price)){
+                            that.remaining_sum = that.price;
+                            that.price = 0;
+                        }else{
+                            that.price = Number(that.old_price) - Number(that.remaining_sum);
+                        }
+                    }
+                }
             }
         },
         seleline(flag) {
@@ -283,8 +318,14 @@ export default {
                     request.payment_method = 4;//选择线下支付
                 }
             }
+            // 判断有没有用余额支付
+            if(that.isbalace){
+                request.is_remaining_sum = 1;
+            }else{
+                request.is_remaining_sum = 2;
+            }
             
-            that.$axios.post('/api/'+url,request).then((res)=>{
+            that.$axios.post(process.env.API_HOST+url,request).then((res)=>{
                 console.log(res);
                 that.showLoading = false;
                 if(res.status == 200){
@@ -293,17 +334,21 @@ export default {
                         that.componentsData.showTitle.goBack = 2;
                         if(that.is_line){
                             // 跳转页面 第三方接口
-                        }else{
+                        }else{//线下
                             var data = res.data.data;
                             that.off_line = false;
                             that.order_num = data.order_sn;
                             that.order_info = data.bank_account;
+                            that.selePrice = false;//点击下单不可以再选择余额支付
                             if(url == 'do_stage'){
                                 that.showBtn = false;
                             }else{
                                 that.ok_text = "查看订单";
                             }
                         }
+                    }else if(res.data.code == 201){//余额支付完成
+                        mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        that.$router.go(-1);
                     }else if(res.data.code == 401){
                         that.$router.push({
                             name: "AccountLogin",
@@ -319,15 +364,24 @@ export default {
                 console.log(err);
             })
         },
+        // 订单过来调取余额和需要支付的价格 和订单时间
         initTime(order_id){
             var that = this;
-            that.$axios('/api/order_time',{
+            that.$axios.post(process.env.API_HOST+"payment_info",{
                 order_id:order_id
             }).then((res)=>{
                 console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
-
+                        that.remaining_sum = res.data.data.remain_amount;
+                        that.price = res.data.data.order_amount;
+                        that.old_price = res.data.data.order_amount;
+                        that.hint = '（'+res.data.msg+'）';
+                        if(res.data.data.is_remaining == 2){
+                            that.selePrice = true;
+                        }else if(res.data.data.is_remaining == 1){
+                            that.selePrice = false;
+                        }
                     }
                 }
             }).catch((err)=>{
@@ -342,13 +396,28 @@ export default {
                 that.showLoading = true;
                 that.getData();
             }
+        },
+        getBanlan(order_id){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'',{
+                order_id:order_id
+            }).then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
         }
     },
     beforeRouteLeave(to, from, next) {
         if(to.path == '/place-order'){
             this.$router.go(-3);//跳转到选择游戏类型
         }else if(to.path == '/installment'){
-            this.$router.go(-1);//跳转到选择游戏类型
+            this.$router.go(-1);
         }else{
             next();
         }
@@ -362,6 +431,8 @@ export default {
                 if (that.isobjStr(request)) {
                     that.goods_info = JSON.parse(request);
                     that.price = that.goods_info.price;
+                    that.old_price = that.price;
+                    that.remaining_sum = that.goods_info.remaining_sum;
                 } else {
                     that.$router.go(-1);
                 }
@@ -376,6 +447,7 @@ export default {
                     var order = JSON.parse(order_id);
                     that.order_id = order.order_id;
                     that.price = order.price;
+                    that.initTime(that.order_id);
                 }else{
                     that.$router.go(-1);
                 }
@@ -389,6 +461,8 @@ export default {
                 if(that.isobjStr(stages)){
                     that.stage_info = JSON.parse(stages);
                     that.price = that.stage_info.price;
+                    that.old_price = that.stage_info.price;
+                    that.remaining_sum = that.stage_info.remaining_sum;
                 }else{
                     that.$router.go(-1);
                 }
@@ -450,6 +524,7 @@ export default {
     padding: 0.4rem 0;
     display: flex;
     justify-content: flex-start;
+    align-items: flex-end;
 }
 .red-color {
     color: #fa5856;

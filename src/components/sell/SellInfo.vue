@@ -602,7 +602,7 @@ export default {
         getTagCon(tag_type_id) {
             var that = this;
             that.$axios
-                .post("/api/tag_content", {
+                .post(process.env.API_HOST+"tag_content", {
                     category_id: that.category_id,
                     tag_type_id: tag_type_id
                 })
@@ -809,7 +809,7 @@ export default {
                 // that_req.goods_id = that.goods_id;
             }
             that.showLoading = true;
-            that.$axios.post("/api/"+url,that_req)
+            that.$axios.post(process.env.API_HOST+url,that_req)
                 .then(function(res) {
                     // console.log(res);
                     if (res.status == 200) {
@@ -890,7 +890,7 @@ export default {
             var that = this;
             // 请求标签大类
             that.$axios
-                .post("/api/tag_type", {
+                .post(process.env.API_HOST+"tag_type", {
                     category_id: that.category_id
                 })
                 .then(function(res) {
@@ -934,7 +934,7 @@ export default {
             // 请求选择参数
             // console.log(opt)
             that.$axios
-                .post("/api/other_config", {
+                .post(process.env.API_HOST+"other_config", {
                     category_id: opt.category_id,
                     operation_id: opt.operation_id
                 })
@@ -1045,7 +1045,7 @@ export default {
         getRedact(goods_id){
             var that = this;
             // console.log(that.$router);
-            that.$axios.post('/api/get_goods',{
+            that.$axios.post(process.env.API_HOST+"get_goods",{
                 goods_id:goods_id
             }).then((res) => {
                 if(res.status == 200){

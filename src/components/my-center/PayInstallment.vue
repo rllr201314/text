@@ -77,7 +77,7 @@
             },
             getData(){
                 var that = this;
-                that.$axios.post('/api/order_stage',{
+                that.$axios.post(process.env.API_HOST+"order_stage",{
                     order_id:that.order_info.order_id
                 }).then((res)=>{
                     console.log(res)
@@ -103,6 +103,7 @@
                     stages.price = that.allData.end_stage.total_money;
                 }
                 stages.order = that.order_info.order_id;
+                stages.remaining_sum = that.allData.remaining_sum;
                 stages = JSON.stringify(stages);
                 sessionStorage.stage = stages;
                 that.$router.push({name:'Pay',query:{stage:stages}})

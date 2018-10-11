@@ -176,7 +176,7 @@
                                 <span v-text="item.goods_price"></span>
                             </div>
                         </div>
-                        <div class="more-info">查看更多</div>
+                        <div class="more-info" v-if="false">查看更多</div>
                     </div>
                     <!-- div -->
                     <div class="goods-details-bottom">
@@ -285,7 +285,7 @@ export default {
                 });
             } else {
                 that.$axios
-                    .post("/api/collect", {
+                    .post(process.env.API_HOST+"collect", {
                         goods_id: that.goods_id
                     })
                     .then(function(res) {
@@ -305,6 +305,8 @@ export default {
                                         type: "div"
                                     });
                                 }
+                            }else{
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
                             }
                         }
                     })
@@ -333,7 +335,7 @@ export default {
             if (flag == "ok") {
                 if (that.bargain_price) {
                     that.$axios
-                        .post("/api/discuss", {
+                        .post(process.env.API_HOST+"discuss", {
                             goods_id: that.goods_id,
                             discuss_price: that.bargain_price
                         })
@@ -343,6 +345,8 @@ export default {
                                     duration: "short",
                                     type: "div"
                                 });
+                            }else{
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
                             }
                         })
                         .catch(function(err) {
@@ -391,7 +395,7 @@ export default {
             var that = this;
             that.showLoading = true;
             that.$axios
-                .post("/api/goods_detail", {
+                .post(process.env.API_HOST+"goods_detail", {
                     goods_id: that.goods_id
                 })
                 .then(function(res) {
@@ -428,7 +432,8 @@ export default {
                                 }
                             }
                         } else {
-                            // that.$router.go(-1);
+                            that.$router.go(-1);
+                            mui.toast(res.data.msg,{ duration:'short', type:'div' });
                         }
                     }
                 })

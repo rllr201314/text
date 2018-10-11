@@ -79,7 +79,7 @@ export default {
                     );
                 } else {
                     that.$axios
-                        .post("/api/verify_code", {
+                        .post(process.env.API_HOST+"verify_code", {
                             mobile: phone
                         })
                         .then(function(response) {
@@ -148,7 +148,7 @@ export default {
                     );
                 } else {
                     that.$axios
-                        .post("/api/do_register", {
+                        .post(process.env.API_HOST+"do_register", {
                             mobile: mobile,
                             verify_code: verify_code,
                             password: password

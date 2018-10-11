@@ -26,13 +26,13 @@ export default {
             var that = this;
             sessionStorage.buyOrsell == 1
             //买
-            that.$router.push({ name: "GoodScreen" });
+            that.$router.push({ name: "GoodScreen",query:{opt}});
             sessionStorage.opt = opt;
         },
         getData() {
             var that = this;
             that.$axios
-                .post("/api/category")
+                .post(process.env.API_HOST+"category")
                 .then(res => {
                     console.log(res);
                     if (res.status == 200) {

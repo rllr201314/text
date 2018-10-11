@@ -73,7 +73,7 @@ export default {
     methods:{
         getData(){
             var that = this;
-            that.$axios.post('/api/collection').then((res) => {
+            that.$axios.post(process.env.API_HOST+"collection").then((res) => {
                 console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
@@ -90,7 +90,7 @@ export default {
         },
         delData(){
             var that = this;
-            that.$axios.post('/api/clear_collection').then((res) => {
+            that.$axios.post(process.env.API_HOST+"clear_collection").then((res) => {
                 console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){

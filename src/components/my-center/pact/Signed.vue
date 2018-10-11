@@ -52,7 +52,7 @@ export default {
     methods:{
         getData(){
             var that = this;
-            that.$axios.post('/api/buyer_end_contract').then((res)=>{
+            that.$axios.post(process.env.API_HOST+"buyer_end_contract").then((res)=>{
                 console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
@@ -69,7 +69,7 @@ export default {
         },
         getInit(obj){
             var that = this;
-            that.$axios.post('/api/contract_token').then((res)=>{
+            that.$axios.post(process.env.API_HOST+"contract_token").then((res)=>{
                 if(res.status == 200){
                     if(res.data.code == 200){
                         if(res.data.data.token){

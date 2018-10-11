@@ -3,5 +3,16 @@
     margin:0;
 }
 body{
-    background:#F6F8FE !important;
+    max-width:12rem  !important;;
+    margin:0 auto;
+    /* background:#FFFFFF !important; */
+    height:100vh;
+    background:#f6f6f6;
+    line-height: .4rem; 
+}
+html{
+    background:#f6f8fe;
+}
+.mui-popover.mui-popover-action.mui-active{
+    max-width:12rem;
 }

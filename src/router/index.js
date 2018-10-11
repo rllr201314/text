@@ -69,6 +69,11 @@ export default new Router({
       component: (resolve) => require(['@/components/sell/SellTakeDelivery'], resolve)
     },
     {
+      path: '/buy', //出售-选择游戏
+      name: 'Buy',
+      component: (resolve) => require(['@/components/sell/SellPage'], resolve),
+    },
+    {
       path: '/sell', //出售-选择游戏
       name: 'Sell',
       component: (resolve) => require(['@/components/sell/SellPage'], resolve),

@@ -55,6 +55,7 @@
                 <div class="take-status-title">
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
                     <span>收货状态</span>
+                    <span class="award" v-if=" goodsInfo.is_arbitrate == 2">仲裁中</span>
                 </div>
                 <div class="take-cell-content">
                     <div class="confirm-receipt">
@@ -206,7 +207,7 @@ export default {
         },
         getData(){
             var that = this;
-            that.$axios.post('/api/seller_trade_status',{
+            that.$axios.post(process.env.API_HOST+"seller_trade_status",{
                 order_id:that.$route.query.order,
             }).then((res)=>{
                 console.log(res);
@@ -354,6 +355,11 @@ export default {
     height: 0.29rem;
     margin-left: 0.17rem;
     vertical-align: middle;
+}
+.take-status-title .award {
+    float: right;
+    font-size: 0.24rem;
+    color: #999999;
 }
 .take-cell-content {
     font-size: 0.26rem;

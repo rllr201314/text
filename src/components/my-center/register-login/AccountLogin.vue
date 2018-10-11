@@ -80,7 +80,7 @@ export default {
                 mui.toast("密码为6-16位数字、字母组合",{ duration:'short', type:'div' });
             } else {
                 that.$axios
-                    .post("/api/login", {
+                    .post(process.env.API_HOST+"login", {
                         mobile: mobile,
                         password: password
                     })

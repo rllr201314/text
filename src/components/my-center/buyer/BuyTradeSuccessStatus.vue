@@ -2,40 +2,42 @@
     <!-- 交易成功 -->
     <div class="tradeSuccess-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
-        <div id="minirefresh" class="minirefresh-wrap list-wrap">
-            <div class="minirefresh-scroll list">
-                <ul>
-                    <div class="tradeSuccess-cell" v-for="item in goodsData">
-                        <div class="gameLog">
-                            <img :src="item.game_logo" alt="">
+        <div class="list-box-wrap" v-if="!showNoData">
+            <div id="minirefresh" class="minirefresh-wrap list-wrap">
+                <div class="minirefresh-scroll list">
+                    <ul>
+                        <div class="tradeSuccess-cell" v-for="item in goodsData">
+                            <div class="gameLog">
+                                <img :src="item.game_logo" alt="">
+                            </div>
+                            <div class="orderInfo">
+                                <div class="order-num">
+                                    <span>订单号</span>
+                                    <span v-text="item.order_sn"></span>
+                                    <span class="history-time" v-text="item.create_time"></span>
+                                </div>
+                                <div class="order-des" v-text="item.goods_title"></div>
+                                <div class="price-status">
+                                    <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
+                                    <span class="order-status">交易成功</span>
+                                </div>
+                            </div>
+                            <div class="order-operate">
+                                <div class="left-operate">
+                                    <img src="../../../../static/img/my-center/contact_service.png" alt="">
+                                    <span>联系客服</span>
+                                </div>
+                                <div class="right-operate">
+                                    <span class="cancel" v-if="item.is_safe == 1" @click="lookChit(item.order_id)">查看保单</span>
+                                    <span class="pay" @click="goStatus(item.order_id)">查看</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="orderInfo">
-                            <div class="order-num">
-                                <span>订单号</span>
-                                <span v-text="item.order_sn"></span>
-                                <span class="history-time" v-text="item.create_time"></span>
-                            </div>
-                            <div class="order-des" v-text="item.goods_title"></div>
-                            <div class="price-status">
-                                <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
-                                <span class="order-status">交易成功</span>
-                            </div>
-                        </div>
-                        <div class="order-operate">
-                            <div class="left-operate">
-                                <img src="../../../../static/img/my-center/contact_service.png" alt="">
-                                <span>联系客服</span>
-                            </div>
-                            <div class="right-operate">
-                                <span class="cancel" v-if="item.is_safe == 1" @click="lookChit(item.order_id)">查看保单</span>
-                                <span class="pay" @click="goStatus(item.order_id)">查看</span>
-                            </div>
-                        </div>
-                    </div>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
-        <NoData v-if="showNoData"></NoData>
+        <NoData class="nodata" v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
@@ -70,7 +72,7 @@ export default {
             var that = this;
             if (flag) {
                 that.$axios
-                    .post("/api/buyer_trade_success", {
+                    .post(process.env.API_HOST+"buyer_trade_success", {
                         page: that.now_page
                     })
                     .then(res => {
@@ -95,7 +97,7 @@ export default {
                     });
             } else {
                 that.$axios
-                    .post("/api/buyer_trade_success")
+                    .post(process.env.API_HOST+"buyer_trade_success")
                     .then(res => {
                         console.log(res);
                         if (res.status == 200) {
@@ -169,7 +171,6 @@ export default {
 .tradeSuccess-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top: 0.88rem;
 }
 .tradeSuccess-cell {
     /* padding-left:.2rem; */
@@ -281,11 +282,21 @@ export default {
     background: #c6c6c6;
     margin-right: 0.2rem;
 }
+.list-box-wrap{
+    position:relative;
+    max-width:12rem;
+    margin:0 auto;
+    height:100vh;
+}
 .list-wrap {
     top: 0.88rem;
 }
 .list {
-    background: #f6f8fe;
+    background: #f6f6f6;
     padding: 0.2rem;
 }
+.nodata{
+    padding-top:0.88rem;
+}
+
 </style>

@@ -12,64 +12,66 @@
                 <span>待支付</span>
             </div>
         </div>
-        <div id="minirefresh" class="minirefresh-wrap list-wrap">
-            <div class="minirefresh-scroll list">
-                <ul>
-                    <div class="bragin-con" v-for="val in goodsInfo">
-                        <div class="con-tit" v-text="val.time"></div>
-                        <div class="goods-strip" v-for="(item,index) in val.data">
-                            <img v-if="item.order_state >= 2 &&　item.is_self == 1" class="deal-status" src="../../../../static/img/my-center/clinch.png" alt="">
-                            <img  v-if="item.order_state >= 2 &&　item.is_self == 2" class="deal-status" src="../../../../static/img/my-center/sale.png" alt="">
-                            <div class="goods-top">
-                                <div class="goods-strip-title">
-                                    <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
-                                    <div class="goods-type" v-else>代练号</div>
-                                    <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                    <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                                    <div class="account-type" v-else>安卓混服</div>
-                                    <div class="area" v-text="item.platform_name"></div>
-                                </div>
-                                <div class="goods-strip-content">
-                                    <div class="goods-des" v-text="item.goods_title"></div>
-                                    <div class="goods-ico">
-                                        <img v-if="item.is_safe == 1" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
-                                        <img v-if="item.is_stage == 1" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
-                                        <img v-if="item.is_check == 1" src="../../../../static/img/goodscreen/verify.png" alt="">
-                                        <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
-                                    </div>
-                                </div>
-                                <div class="goods-strip-bottom">
-                                    <span>原价</span>
-                                    <span class="goods-price" v-text="item.goods_price"></span>
-                                    <span v-if="item.is_agree == 1 && item.order_state == ''" class="p-bBtn" @click="goPayFn(item.order_state,item.goods_id)">前往支付</span>
+        <div class="list-box-wrap" v-if="!showNoData">
+            <div id="minirefresh" class="minirefresh-wrap list-wrap">
+               <div class="minirefresh-scroll list">
+                   <ul>
+                       <div class="bragin-con" v-for="val in goodsInfo">
+                           <div class="con-tit" v-text="val.time"></div>
+                           <div class="goods-strip" v-for="(item,index) in val.data">
+                               <img v-if="item.order_state >= 2 &&　item.is_self == 1" class="deal-status" src="../../../../static/img/my-center/clinch.png" alt="">
+                               <img  v-if="item.order_state >= 2 &&　item.is_self == 2" class="deal-status" src="../../../../static/img/my-center/sale.png" alt="">
+                               <div class="goods-top">
+                                   <div class="goods-strip-title">
+                                       <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
+                                       <div class="goods-type" v-else>代练号</div>
+                                       <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                       <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                       <div class="account-type" v-else>安卓混服</div>
+                                       <div class="area" v-text="item.platform_name"></div>
+                                   </div>
+                                   <div class="goods-strip-content">
+                                       <div class="goods-des" v-text="item.goods_title"></div>
+                                       <div class="goods-ico">
+                                           <img v-if="item.is_safe == 1" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
+                                           <img v-if="item.is_stage == 1" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
+                                           <img v-if="item.is_check == 1" src="../../../../static/img/goodscreen/verify.png" alt="">
+                                           <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
+                                       </div>
+                                   </div>
+                                   <div class="goods-strip-bottom">
+                                       <span>原价</span>
+                                       <span class="goods-price" v-text="item.goods_price"></span>
+                                       <span v-if="item.is_agree == 1 && item.order_state == ''" class="p-bBtn" @click="goPayFn(item.order_state,item.goods_id)">前往支付</span>
 
-                                    <span v-else-if="item.is_agree == 1 && item.order_state == 1 && item.is_self == 1" class="p-bBtn" @click="goPayFn(item.order_state,item.order_id,item.discuss_msg)">前往支付</span>
-                                    <span v-if="item.is_agree == 2 && item.order_state == ''" class="p-bBtn" @click="bargainFn(item.goods_id)">发起议价</span>
-                                </div>
-                            </div>
-                            <div class="goods-bot">
-                                <div class="sell-cell-top">
-                                    <img src="../../../../static/img/goodscreen/vertical.png" alt="">
-                                    <span>议价记录</span>
-                                </div>
-                                <div class="sell-cell-content">
-                                    <div class="sell-cell-strip" v-for="discuss in item.discuss_msg">
-                                        <div class="strip-left">
-                                            <span>出价</span>
-                                            <span class="bid">
-                                                ￥<span v-text="discuss.price"></span>
-                                            </span>
-                                        </div>
-                                        <div class="strip-con gray-bg" v-if="discuss.is_agree == -1">待回复</div>
-                                        <div class="strip-con green-bg" v-if="discuss.is_agree == 1">同意交易</div>
-                                        <div class="strip-con red-bg" v-if="discuss.is_agree == 2">拒绝</div>
-                                        <div class="time" v-text="discuss.create_time"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ul>
+                                       <span v-else-if="item.is_agree == 1 && item.order_state == 1 && item.is_self == 1" class="p-bBtn" @click="goPayFn(item.order_state,item.order_id,item.discuss_msg)">前往支付</span>
+                                       <span v-if="item.is_agree == 2 && item.order_state == ''" class="p-bBtn" @click="bargainFn(item.goods_id)">发起议价</span>
+                                   </div>
+                               </div>
+                               <div class="goods-bot">
+                                   <div class="sell-cell-top">
+                                       <img src="../../../../static/img/goodscreen/vertical.png" alt="">
+                                       <span>议价记录</span>
+                                   </div>
+                                   <div class="sell-cell-content">
+                                       <div class="sell-cell-strip" v-for="discuss in item.discuss_msg">
+                                           <div class="strip-left">
+                                               <span>出价</span>
+                                               <span class="bid">
+                                                   ￥<span v-text="discuss.price"></span>
+                                               </span>
+                                           </div>
+                                           <div class="strip-con gray-bg" v-if="discuss.is_agree == -1">待回复</div>
+                                           <div class="strip-con green-bg" v-if="discuss.is_agree == 1">同意交易</div>
+                                           <div class="strip-con red-bg" v-if="discuss.is_agree == 2">拒绝</div>
+                                           <div class="time" v-text="discuss.create_time"></div>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </ul>
+               </div>
             </div>
         </div>
         <div class="hoodle" v-show="showShade">
@@ -83,7 +85,7 @@
             </div>
         </div>
         <div class="shade" v-show="showShade"></div>
-        <NoData v-if="showNoData"></NoData>
+        <NoData class="nodata" v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
@@ -154,7 +156,7 @@ export default {
             var that = this;
             if (flag == "pay") {
                 if (that.bargain_price) {
-                    that.$axios.post("/api/discuss", {
+                    that.$axios.post(process.env.API_HOST+"discuss", {
                             goods_id: that.goods_id,
                             discuss_price: that.bargain_price
                         }).then(function(res) {
@@ -198,7 +200,7 @@ export default {
             }
             if (that.lastAgree != agree) {
                 that.$axios
-                    .post("api/goods_discuss", {
+                    .post(process.env.API_HOST+"goods_discuss", {
                         is_agree: agree
                     })
                     .then(function(res) {
@@ -285,7 +287,6 @@ export default {
 .bargain-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top:1.68rem;
 }
 .bargin-tit {
     line-height: 0.8rem;
@@ -296,6 +297,8 @@ export default {
     top:.88rem;
     left:0;
     right:0;
+    max-width: 12rem;
+    margin:0 auto;
 }
 .tit-box {
     font-size: 0.24rem;
@@ -593,10 +596,20 @@ input[type="number"] {
     font-size: 0.24rem;
 }
 
+.list-box-wrap{
+    position:relative;
+    max-width:12rem;
+    margin:0 auto;
+    height:100vh;
+}
 .list-wrap {
     top: 1.88rem;
 }
 .list {
-    background: #f6f8fe;
+    background: #f6f6f6;
+}
+
+.nodata{
+    padding-top:1.88rem;
 }
 </style>

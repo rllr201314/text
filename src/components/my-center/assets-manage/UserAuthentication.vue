@@ -129,7 +129,7 @@ export default {
         getData() {
             var that = this;
             that.$axios
-                .post("/api/account_config")
+                .post(process.env.API_HOST+"account_config")
                 .then(res => {
                     console.log(res);
                     if (res.status == 200) {
@@ -196,7 +196,7 @@ export default {
                 that.showLoading = true;
                 request.withdraw_method = that.seleVal;//提现方式
 
-                that.$axios.post('/api/add_account',request).then((res)=>{
+                that.$axios.post(process.env.API_HOST+"add_account",request).then((res)=>{
                     console.log(res);
                     that.showLoading = false;
                     if(res.status == 200){

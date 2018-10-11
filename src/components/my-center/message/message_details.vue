@@ -46,7 +46,7 @@ export default {
         },
         getData(msg_id){
             var that = this;
-            that.$axios.post('/api/msg_content',{
+            that.$axios.post(process.env.API_HOST+"msg_content",{
                 msg_id:msg_id
             }).then((res)=>{
                 console.log(res);

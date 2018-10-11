@@ -93,7 +93,7 @@ import Loading from "@/components/multi/Loading";
                 var that = this;
                 var cardData = that.cardData;
                 that.showLoading = true;
-                that.$axios.post('/api/default_account',{
+                that.$axios.post(process.env.API_HOST+"default_account",{
                     account_id:opt,
                 }).then((res)=>{
                     console.log(res);
@@ -117,7 +117,7 @@ import Loading from "@/components/multi/Loading";
             },
             getData(){
                 var that = this;
-                that.$axios.post('/api/account_info').then((res)=>{
+                that.$axios.post(process.env.API_HOST+"account_info").then((res)=>{
                     console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){

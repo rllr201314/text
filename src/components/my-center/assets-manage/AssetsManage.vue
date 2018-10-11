@@ -86,7 +86,7 @@
             },
             getData(){
                 var that = this;
-                that.$axios.post('/api/income_info').then((res)=>{
+                that.$axios.post(process.env.API_HOST+"income_info").then((res)=>{
                     console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){

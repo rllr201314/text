@@ -195,15 +195,18 @@
                 <img :src="item.issele?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt=""> {{item.name}}
             </div>
         </div>
+        <Loading class="black-bg" v-if="showNoData"></Loading>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header"; //头部
+import Loading from "@/components/multi/Loading";
 
 export default {
     name: "PlaceOrder",
     components: {
-        Header
+        Header,
+        Loading
     },
     data() {
         return {
@@ -217,6 +220,8 @@ export default {
                     title: "商品下单"
                 }
             },
+            showNoData:true,
+            remaining_sum:'',
             goodsInfo: {},
             stage: {},
             num: 1,
@@ -485,7 +490,7 @@ export default {
                 that.stageInfo = null;
                 that.show_periods = false;
             }else{
-                that.$axios.post('/api/self_stage',{
+                that.$axios.post(process.env.API_HOST+"self_stage",{
                     price:Number(that.goodsInfo.goods_price),
                     down_payment:that.custom_price
                 }).then((res)=>{
@@ -516,15 +521,17 @@ export default {
         getData() {
             var that = this;
             that.$axios
-                .post("/api/order_detail", {
+                .post(process.env.API_HOST+"order_detail", {
                     goods_id: that.$route.query.goods_id
                 })
                 .then(res => {
                     console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
+                            that.showNoData = false;
                             that.goodsInfo = res.data.data.goods_info;
                             that.stage = res.data.data.stage;
+                            that.remaining_sum = res.data.data.remaining_sum;
                             // 可以选择分期的话默认 首付30% 分一期 判断可购合同还是保险
                             that.stageInfo = that.stage.first_one_interest;
                             if(that.goodsInfo.discuss_price != 0){
@@ -549,6 +556,7 @@ export default {
                             }
 
                         }else if(res.data.code == 400){
+                            that.showNoData = true;
                             mui.alert(res.data.msg,'提示','确认',function(){
                                 that.$router.go(-1);
                             },'div')
@@ -645,6 +653,7 @@ export default {
                 request.compact = 2;
             }
             request.price = that.totalPrice;
+            request.remaining_sum = that.remaining_sum;
             request.goods_id = that.$route.query.goods_id;
             console.log(request);
             var request = JSON.stringify(request)
@@ -978,5 +987,9 @@ input[type="number"] {
 :-ms-input-placeholder {
     color: #999999;
     font-size: 0.24rem;
+}
+
+.black-bg{
+    background:rgba(255, 255,255, 1);
 }
 </style>

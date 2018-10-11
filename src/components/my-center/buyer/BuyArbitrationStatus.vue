@@ -5,22 +5,22 @@
         <div class="arbitration-content">
             <div class="arbitration-cell" v-for="item in goodsData">
                 <div class="gameLog">
-                    <img :src="item.log" alt="">
+                    <img :src="item.game_logo" alt="">
                 </div>
                 <div class="orderInfo">
                     <div class="order-num">
                         <span>订单号</span>
-                        <span v-text="item.orderNum"></span>
-                        <span class="history-time" v-text="item.history_time"></span>
+                        <span v-text="item.order_sn"></span>
+                        <span class="history-time" v-text="item.create_time"></span>
                     </div>
-                    <div class="order-des" v-text="item.des"></div>
+                    <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
-                        <span class="good-price" v-text="item.price"></span>
-                        <span class="order-status" v-text="item.orderStatus"></span>
+                        <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
+                        <span class="order-status">仲裁中</span>
                     </div>
                     <div class="arbitration">
                         <span class="gray">仲裁事由</span>
-                        <span v-text="item.arbitrationInfo"></span>
+                        <span v-text="item.reason"></span>
                     </div>
                 </div>
                 <div class="order-operate">
@@ -29,8 +29,8 @@
                         <span>联系客服</span>
                     </div>
                     <div class="right-operate">
-                        <span class="cancel">取消仲裁</span>
-                        <span class="pay">查看</span>
+                        <span class="cancel" @click="cancelArb(item.order_id)">取消仲裁</span>
+                        <span class="pay" @click="goStatus(item.order_id)">查看</span>
                     </div>
                 </div>
             </div>
@@ -66,7 +66,7 @@ export default {
         getData() {
             var that = this;
             that.$axios
-                .post("/api/buyer_arbitrate")
+                .post(process.env.API_HOST+"buyer_arbitrate")
                 .then(res => {
                     console.log(res);
                     if (res.status == 200) {
@@ -83,7 +83,27 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
-        }
+        },
+        goStatus(order_id) {
+            this.$router.push({
+                name: "BuyTakeDelivery",
+                query: { order: order_id }
+            });
+        },
+        // 取消仲裁
+        cancelArb(order_id){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'cancel_arbitrate',{
+                order_id:order_id
+            }).then((res)=>{
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        mui.toast(res.data.msg, { duration: "short", type: "div" });
+                        that.getData();
+                    }
+                }
+            })
+        },
     },
     mounted() {
         var that = this;

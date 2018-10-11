@@ -58,7 +58,7 @@ export default {
                 mui.toast("您的手机号不正确",{ duration:'short', type:'div' });
             } else {
                 that.$axios
-                    .post("/api/sms_code", {
+                    .post(process.env.API_HOST+"sms_code", {
                         mobile: phone
                     })
                     .then(function(response) {
@@ -97,7 +97,7 @@ export default {
                 mui.toast("密码为6-16位数字、字母组合",{ duration:'short', type:'div' });
             } else {
                 that.$axios
-                    .post("/api/find_password", {
+                    .post(process.env.API_HOST+"find_password", {
                         mobile: mobile,
                         verify_code: verify_code,
                         password: password

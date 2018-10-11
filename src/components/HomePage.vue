@@ -63,7 +63,7 @@ export default {
             showTitle:{
                 showBack:true,
                 showLogo:1,//显示头部log
-                showShare:2,//1搜索2分享3菜单
+                showShare:1,//1搜索2分享3菜单
                 showBg:false,
                 title:"",
             },
@@ -146,6 +146,7 @@ export default {
         max-width:12rem;
         margin:0 auto;
         padding-top:.88rem;
+        
     }
     .top{
         background-image: url("../../static/img/bg_big.png");

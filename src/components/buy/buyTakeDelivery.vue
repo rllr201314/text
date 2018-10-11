@@ -73,7 +73,8 @@
                     <span>收货状态</span>
                     <span class="red-color" v-if="takeType == -1">（如果您已检验账号没有问题，请确认交易）</span>
                     <span class="gray-border" v-if="goodsInfo.is_end == 1">已收货</span>
-                    <span class="award" @click="goArbitration" v-if="goodsInfo.is_arbitrate == 1">申请仲裁</span>
+                    <span class="award" @click="goArbitration" v-if=" goodsInfo.is_arbitrate == 1">申请仲裁</span>
+                    <span class="award" @click="cancelArb" v-if=" goodsInfo.is_arbitrate == 2">取消仲裁</span>
                 </div>
                 <div class="take-cell-content">
                     <!-- 验货跳过 -->
@@ -188,7 +189,7 @@ export default {
         // 确认交易
         agree(){
             var that = this;
-            that.$axios.post('/api/agree_trade',{
+            that.$axios.post(process.env.API_HOST+"agree_trade",{
                 order_id:that.goodsInfo.order_id
             }).then((res)=>{
                 console.log(res);
@@ -205,7 +206,7 @@ export default {
         // 确认收货
         endTrade(){
             var that = this;
-            that.$axios.post('/api/end_trade',{
+            that.$axios.post(process.env.API_HOST+"end_trade",{
                 order_id:that.goodsInfo.order_id
             }).then((res)=>{
                 console.log(res);
@@ -223,9 +224,23 @@ export default {
         goArbitration(){
             this.$router.push({name:'Arbitration',query:{order:this.goodsInfo.order_id}})
         },
+        // 取消仲裁
+        cancelArb(){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'cancel_arbitrate',{
+                order_id:that.goodsInfo.order_id
+            }).then((res)=>{
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        mui.toast(res.data.msg, { duration: "short", type: "div" });
+                        that.getData(that.goodsInfo.order_id);
+                    }
+                }
+            })
+        },
         getData(order_id){
             var that = this;
-            that.$axios.post('/api/buyer_trade_status',{
+            that.$axios.post(process.env.API_HOST+"buyer_trade_status",{
                 order_id:order_id
             }).then((res)=>{
                 console.log(res)

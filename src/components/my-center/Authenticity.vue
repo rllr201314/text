@@ -154,7 +154,7 @@ export default {
                 request.content = that.goods_name;
             }
             that.showLoading = true;
-            that.$axios.post('/api/authentic_kf',request).then((res)=>{
+            that.$axios.post(process.env.API_HOST+"authentic_kf",request).then((res)=>{
                 if(res.status == 200){
                     that.showLoading = false;
                     if(res.data.code == 200){

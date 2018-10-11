@@ -88,7 +88,7 @@ export default {
                 } else if (!phone.match(reg)) {
                     mui.toast("您输入的手机号不正确",{ duration:'short', type:'div' });
                 } else {
-                    that.$axios.post("/api/sms_code", {
+                    that.$axios.post(process.env.API_HOST+"sms_code", {
                             mobile: phone
                         })
                         .then(function(response) {
@@ -130,7 +130,7 @@ export default {
             } else if (verify_code == "" || verify_code.length < 6) {
                 mui.toast("您输入的验证码不正确",{ duration:'short', type:'div' });
             } else {
-                that.$axios.post("/api/sms_login", {
+                that.$axios.post(process.env.API_HOST+"sms_login", {
                         mobile: mobile,
                         verify_code: verify_code
                     })

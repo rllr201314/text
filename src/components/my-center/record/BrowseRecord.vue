@@ -2,63 +2,64 @@
     <!-- 浏览记录 -->
     <div class="browse-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
-
-        <div id="minirefresh" class="minirefresh-wrap list-wrap">
-            <div class="minirefresh-scroll list">
-                <ul>
-                    <div class="browse-con" v-if="!showNoData">
-                        <div class="sele">
-                            <span @click="clear('null')">清除失效</span>
-                            <span @click="clear('all')">清除所有记录</span>
-                        </div>
-                        <div class="browse-info">
-                            <div class="vertical"></div>
-                            <div class="browse-cell" v-for="item in goodsInfo">
-                                <div class="browse-cell-tit">
-                                    <span class="circle"></span>
-                                    <span v-text="item.time"></span>
-                                </div>
-                                <div class="browse-cell-con" v-for="ind in item.data">
-                                    <div class="browse-cell-con-top">
-                                        <div class="goods-strip-title">
-                                            <div class="goods-type" v-if="ind.deal_type == 1">成品号</div>
-                                            <div class="goods-type" v-else-if="ind.deal_type == 2">代练号</div>
-                                            <div class="account-type" v-if="ind.client_id == 1">安卓</div>
-                                            <div class="account-type" v-else-if="ind.client_id == 2">苹果</div>
-                                            <div class="account-type" v-else-if="ind.client_id == 3">安卓混服</div>
-                                            <div class="area" v-text="ind.platform_name"></div>
-                                        </div>
-                                        <div class="goods-strip-content">
-                                            <div class="goods-des" v-text="ind.goods_title"></div>
-                                        </div>
-                                        <div class="goods-strip-bottom">
-                                            <span class="goods-price">￥
-                                                <span v-text="ind.goods_price"></span>
-                                            </span>
-                                        </div>
+        <div class="list-box-wrap" v-if="!showNoData">
+            <div id="minirefresh" class="minirefresh-wrap list-wrap">
+                <div class="minirefresh-scroll list">
+                    <ul>
+                        <div class="browse-con" v-if="!showNoData">
+                            <div class="sele">
+                                <span @click="clear('null')">清除失效</span>
+                                <span @click="clear('all')">清除所有记录</span>
+                            </div>
+                            <div class="browse-info">
+                                <div class="vertical"></div>
+                                <div class="browse-cell" v-for="item in goodsInfo">
+                                    <div class="browse-cell-tit">
+                                        <span class="circle"></span>
+                                        <span v-text="item.time"></span>
                                     </div>
-                                    <div class="browse-cell-con-bot">
-                                        <div class="con-bot-box">
-                                            <img class="see" src="../../../../static/img/my-center/record/see.png" alt="">
-                                            <span v-text="ind.click_count"></span>
+                                    <div class="browse-cell-con" v-for="ind in item.data">
+                                        <div class="browse-cell-con-top">
+                                            <div class="goods-strip-title">
+                                                <div class="goods-type" v-if="ind.deal_type == 1">成品号</div>
+                                                <div class="goods-type" v-else-if="ind.deal_type == 2">代练号</div>
+                                                <div class="account-type" v-if="ind.client_id == 1">安卓</div>
+                                                <div class="account-type" v-else-if="ind.client_id == 2">苹果</div>
+                                                <div class="account-type" v-else-if="ind.client_id == 3">安卓混服</div>
+                                                <div class="area" v-text="ind.platform_name"></div>
+                                            </div>
+                                            <div class="goods-strip-content">
+                                                <div class="goods-des" v-text="ind.goods_title"></div>
+                                            </div>
+                                            <div class="goods-strip-bottom">
+                                                <span class="goods-price">￥
+                                                    <span v-text="ind.goods_price"></span>
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div class="con-bot-box">
-                                            <img class="collect" src="../../../../static/img/my-center/record/collect.png" alt="">
-                                            <span v-text="ind.collect_count"></span>
+                                        <div class="browse-cell-con-bot">
+                                            <div class="con-bot-box">
+                                                <img class="see" src="../../../../static/img/my-center/record/see.png" alt="">
+                                                <span v-text="ind.click_count"></span>
+                                            </div>
+                                            <div class="con-bot-box">
+                                                <img class="collect" src="../../../../static/img/my-center/record/collect.png" alt="">
+                                                <span v-text="ind.collect_count"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="hint" v-show="false">
+        <div class="hint" v-if="false">
             <img src="../../../../static/img/goods-details/left_solid.png" alt="">
             <span>没有更多记录啦</span><img src="../../../../static/img/goods-details/right_solid.png" alt="">
         </div>
-        <NoData v-if="showNoData"></NoData>
+        <NoData class="nodata" v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
@@ -93,7 +94,7 @@ export default {
             var that = this;
             if (flag == "null") {
                 that.$axios
-                    .post("/api/clear_history")
+                    .post(process.env.API_HOST+"clear_history")
                     .then(res => {
                         console.log(res);
                         if (res.status == 200) {
@@ -108,7 +109,7 @@ export default {
                     });
             } else if (flag == "all") {
                 that.$axios
-                    .post("/api/clear_all_history")
+                    .post(process.env.API_HOST+"clear_all_history")
                     .then(res => {
                         console.log(res);
                         if (res.status == 200) {
@@ -125,7 +126,7 @@ export default {
         getData(flag) {
             var that = this;
             that.$axios
-                .post("/api/history_info", {
+                .post(process.env.API_HOST+"history_info", {
                     page: that.now_page
                 })
                 .then(res => {
@@ -200,7 +201,6 @@ export default {
 .browse-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top: 0.88rem;
 }
 .browse-con {
     padding: 0 0.2rem;
@@ -396,10 +396,19 @@ export default {
     font-size: 0.24rem;
     vertical-align: middle;
 }
+.list-box-wrap{
+    position:relative;
+    max-width:12rem;
+    margin:0 auto;
+    height:100vh;
+}
 .list-wrap {
     top: 0.88rem;
 }
 .list {
     background: #f6f8fe;
+}
+.nodata{
+    padding-top:0.88rem;
 }
 </style>

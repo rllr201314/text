@@ -2,39 +2,42 @@
     <!-- 交易失败 -->
     <div class="failure-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
-        <div id="minirefresh" class="minirefresh-wrap list-wrap">
-            <div class="minirefresh-scroll list">
-                <ul>
-                    <div class="failure-cell" v-for="item in goodsData">
-                        <div class="gameLog">
-                            <img :src="item.log" alt="">
+        
+        <div class="list-box-wrap" v-if="!showNoData">
+            <div id="minirefresh" class="minirefresh-wrap list-wrap">
+                <div class="minirefresh-scroll list">
+                    <ul>
+                        <div class="failure-cell" v-for="item in goodsData">
+                            <div class="gameLog">
+                                <img :src="item.game_logo" alt="">
+                            </div>
+                            <div class="orderInfo">
+                                <div class="order-num">
+                                    <span>订单号</span>
+                                    <span v-text="item.order_sn"></span>
+                                    <span class="history-time" v-text="item.create_time"></span>
+                                </div>
+                                <div class="order-des" v-text="item.goods_title"></div>
+                                <div class="price-status">
+                                    <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
+                                    <span class="order-status">交易失败</span>
+                                </div>
+                                <div class="causer">
+                                    <span class="gray">原因</span>
+                                    <span v-text="item.reason"></span>
+                                </div>
+                            </div>
+                            <div class="order-operate">
+                                <div class="right-operate">
+                                    <span class="pay">查看商品</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="orderInfo">
-                            <div class="order-num">
-                                <span>订单号</span>
-                                <span v-text="item.orderNum"></span>
-                                <span class="history-time" v-text="item.history_time"></span>
-                            </div>
-                            <div class="order-des" v-text="item.des"></div>
-                            <div class="price-status">
-                                <span class="good-price" v-text="item.price"></span>
-                                <span class="order-status" v-text="item.orderStatus"></span>
-                            </div>
-                            <div class="causer">
-                                <span class="gray">原因</span>
-                                <span v-text="item.causer"></span>
-                            </div>
-                        </div>
-                        <div class="order-operate">
-                            <div class="right-operate">
-                                <span class="pay">查看商品</span>
-                            </div>
-                        </div>
-                    </div>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
-        <NoData v-if="showNoData"></NoData>
+        <NoData class="nodata" v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
@@ -69,7 +72,7 @@ export default {
             var that = this;
             if (flag) {
                 that.$axios
-                    .post("/api/seller_trade_fail", {
+                    .post(process.env.API_HOST+"seller_trade_fail", {
                         page: that.now_page
                     })
                     .then(res => {
@@ -94,7 +97,7 @@ export default {
                     });
             } else {
                 that.$axios
-                    .post("/api/seller_trade_fail")
+                    .post(process.env.API_HOST+"seller_trade_fail")
                     .then(res => {
                         console.log(res);
                         if (res.status == 200) {
@@ -156,7 +159,6 @@ export default {
 .failure-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top: 0.88rem;
 }
 .failure-content {
     padding: 0.2rem;
@@ -261,11 +263,21 @@ export default {
     border-radius: 0.04rem;
     background: #fe7649;
 }
+.list-box-wrap{
+    position:relative;
+    max-width:12rem;
+    margin:0 auto;
+    height:100vh;
+}
 .list-wrap {
     top: 0.88rem;
 }
 .list {
-    background: #f6f8fe;
+    background: #f6f6f6;
     padding: 0.2rem;
 }
+.nodata{
+    padding-top:0.88rem;
+}
+
 </style>

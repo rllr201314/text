@@ -52,7 +52,7 @@ export default {
             var that = this;
             if (that.isGetCode) {
                 that.$axios
-                    .post("/api/check_mobile", {
+                    .post(process.env.API_HOST+"check_mobile", {
                         mobile: that.$store.state.mobile
                     })
                     .then(function(res) {

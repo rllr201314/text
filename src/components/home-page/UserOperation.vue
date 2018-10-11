@@ -31,7 +31,7 @@
             seleOpt(flag){
                 var that = this;
                 if(flag == 'buy'){
-                    that.$router.push({name:'Sell'});
+                    that.$router.push({name:'Buy'});
                     sessionStorage.buyOrsell = 1;
                 }else if(flag == 'sell'){
                     that.$router.push({name:'Sell'});

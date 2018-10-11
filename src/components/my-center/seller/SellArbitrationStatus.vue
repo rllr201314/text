@@ -5,22 +5,22 @@
         <div class="arbitration-content">
             <div class="arbitration-cell" v-for="item in goodsData">
                 <div class="gameLog">
-                    <img :src="item.log" alt="">
+                    <img :src="item.game_logo" alt="">
                 </div>
                 <div class="orderInfo">
                     <div class="order-num">
                         <span>订单号</span>
-                        <span v-text="item.orderNum"></span>
-                        <span class="history-time" v-text="item.history_time"></span>
+                        <span v-text="item.order_sn"></span>
+                        <span class="history-time" v-text="item.create_time"></span>
                     </div>
-                    <div class="order-des" v-text="item.des"></div>
+                    <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
-                        <span class="good-price" v-text="item.price"></span>
-                        <span class="order-status" v-text="item.orderStatus"></span>
+                        <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
+                        <span class="order-status">仲裁中</span>
                     </div>
                     <div class="arbitration">
                         <span class="gray">仲裁事由</span>
-                        <span v-text="item.arbitrationInfo"></span>
+                        <span v-text="item.reason"></span>
                     </div>
                 </div>
                 <div class="order-operate">
@@ -66,7 +66,7 @@ export default {
         getData() {
             var that = this;
             that.$axios
-                .post("/api/seller_arbitrate")
+                .post(process.env.API_HOST+"seller_arbitrate")
                 .then(res => {
                     console.log(res);
                     if (res.status == 200) {
@@ -84,12 +84,12 @@ export default {
                     console.log(err);
                 });
         },
-        // goStatus(order_id) {
-        //     this.$router.push({
-        //         name: "SellTakeDelivery",
-        //         query: { order: order_id }
-        //     });
-        // },
+        goStatus(order_id) {
+            this.$router.push({
+                name: "SellTakeDelivery",
+                query: { order: order_id }
+            });
+        },
     },
     mounted() {
         var that = this;

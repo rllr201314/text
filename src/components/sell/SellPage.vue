@@ -5,7 +5,9 @@
         <div class="sell-page-content">
             <div class="search">
                 <img class="search-ico" src="../../../static/img/search_ico.png" alt="">
-                <input class="search-input" type="text" placeholder="请输入游戏名称" v-model="search_val" @input="searchFn">
+                <form action="javascript:return true;">
+                <input class="search-input" type="search" placeholder="请输入游戏名称" v-model="search_val" @input="searchFn">
+                </form>
                 <img class="empty-ico" src="../../../static/img/empty_ico.png" alt="" @click="emptyFun()">
             </div>
             <div class="search-history" v-if="historyNameList != ''">
@@ -106,33 +108,13 @@ export default {
         // 搜索
         searchFn() {
             var that = this;
-            // console.log(that.search_val);
-            // console.log(that.gameClassAll);
-            // var all = that.gameClassAll.is_other;
-            // console.log(all);
-            // var a = /^[A-Za-z]+$/;//字母
-            // var b = /^[\u4E00-\u9FA5]{2,4}$/;//汉字
-            // var c = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/;//汉字和字母
-            // var str = that.Trim(that.search_val,'g');
-            // if(str.match(a)){//字母
-            //     console.log('aaa');
-            //     console.log(str.match(a));
-            // }else if(str.match(b)){
-            //     console.log('---')
-            //     console.log(str.match(b));
-            // }else if(str.match(c)){
-            //     console.log('ddd');
-            //     console.log(str)
-            //     for(var i in all){
-            //         console.log(i);
-
-            //     }
-
-            // }
+            console.log(that.search_val)
+            that.getData();
         },
         // 选择游戏对应的字母
         seleGameClass(opt) {
             var that = this;
+            that.search_val = '';
             var gameClassfiy = that.gameClassfiy;
             for (var i in gameClassfiy) {
                 if (opt == gameClassfiy[i].name) {
@@ -158,11 +140,11 @@ export default {
         goSellOption(opt) {
             var that = this;
             var token = that.$store.state.token;
-            if (sessionStorage.getItem("buyOrsell") == 1) {
+            if (that.user_type == '/buy') {
                 //买
-                that.$router.push({ name: "GoodScreen" });
+                that.$router.push({ name: "GoodScreen",query:{opt}});
                 sessionStorage.opt = opt;
-            } else if (sessionStorage.getItem("buyOrsell") == 2) {
+            } else if (that.user_type == '/sell') {
                 //卖
                 if (token == undefined || token == "") {
                     mui.confirm(
@@ -177,8 +159,6 @@ export default {
                                         redirect: that.$router.currentRoute.name
                                     }
                                 });
-                            } else {
-                                that.$router.go(-1);
                             }
                         },
                         "div"
@@ -187,30 +167,15 @@ export default {
                     that.$router.push({ name: "SellOption", query: { opt } });
                 }
             }
-        }
-    },
-    beforeRouteLeave(to, from, next) {
-        if (to.path == "/good-list") {
-            to.meta.keepAlive = false;
-        }
-        next();
-    },
-    mounted() {
-        var that = this;
-        var user_type = sessionStorage.getItem("buyOrsell");
-        if (user_type != "" && user_type != null) {
-            if (user_type == 1) {
-                that.showTitle.title = "我要买";
-            } else if (user_type == 2) {
-                that.showTitle.title = "我要卖";
-            }
-            that.user_type = user_type;
-
+        },
+        getData(){
+            var that = this;
+            that.user_type = that.$route.path;
             that.$axios
-                .post("/api/category")
-                .then(function(response) {
-                    var res = response;
-                    // console.log(res);
+                .post(process.env.API_HOST+"category",{
+                    game_name:that.search_val
+                })
+                .then(function(res) {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             that.gameList = res.data.data.is_hot;
@@ -218,12 +183,31 @@ export default {
                         }
                     }
                 })
-                .catch(function(error) {
-                    console.log(error);
+                .catch(function(err) {
+                    console.log(err);
                 });
-        } else {
-            that.$router.go(-1);
         }
+    },
+    beforeRouteLeave(to, from, next) {
+        if (to.path == "/good-list") {
+            to.meta.keepAlive = false;
+        }
+        if(to.path == '/buy'){
+            this.showTitle.title="我要买"
+            this.user_type = to.path;
+        }
+        next();
+    },
+    mounted() {
+        var that = this;
+        var user_type = that.$route.path;
+        if(user_type == '/buy'){
+            that.showTitle.title = '我要买';
+        }else if(user_type == '/sell'){
+            that.showTitle.title = "我要卖";
+        }
+        that.getData();
+        
     }
 };
 </script>
@@ -253,8 +237,9 @@ export default {
     height: 0.76rem;
     font-size: 0.24rem;
     color: #999999;
-    padding: 0 0.52rem;
+    padding: 0 0.6rem;
     margin: 0;
+    background:#ffffff;
 }
 .search-ico {
     width: 0.32rem;

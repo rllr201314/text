@@ -73,7 +73,7 @@ export default {
             }else if(flag == 'no'){
                 opt = 2;
             }
-            that.$axios.post('/api/do_discuss_msg',{
+            that.$axios.post(process.env.API_HOST+"do_discuss_msg",{
                 discuss_id:id,
                 is_agree:opt,
             }).then((res)=>{
@@ -90,7 +90,7 @@ export default {
         },
         getData(){
             var that = this;
-            that.$axios.post('/api/discuss_msg',{
+            that.$axios.post(process.env.API_HOST+"discuss_msg",{
                 goods_id:that.$route.query.goods_id
             }).then(function(res){
                 console.log(res)

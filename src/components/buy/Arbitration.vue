@@ -202,7 +202,7 @@
             },
             getData(){
                 var that = this;
-                that.$axios.post('/api/arbitrate_info',{
+                that.$axios.post(process.env.API_HOST+"arbitrate_info",{
                     order_id:that.$route.query.order,
                 }).then((res)=>{
                     console.log(res);
@@ -210,6 +210,9 @@
                         if(res.data.code == 200){
                             that.arbitrate_info = res.data.data.arbitrate_info;
                             that.order_info = res.data.data.order_info;
+                        }else{
+                            mui.toast(res.data.msg, { duration: "short", type: "div" });
+                            that.$router.go(-1);
                         }
                     }
                 }).catch((err)=>{
@@ -251,7 +254,7 @@
                     }
                 }
                 request.order_id = that.order_info.order_id;
-                that.$axios.post('/api/do_arbitrate',request).then((res)=>{
+                that.$axios.post(process.env.API_HOST+"do_arbitrate",request).then((res)=>{
                     console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){
@@ -260,6 +263,7 @@
                             },'div')
                         }else{
                             mui.toast(res.data.msg, { duration: "short", type: "div" });
+                            that.$router.go(-1);
                         }
                     }
                 }).catch((err)=>{

@@ -9,7 +9,7 @@
             <div class="guaran-cell">
                 <div class="cell-tit">
                     <span class="red-color">保单基本信息</span>
-                    <span class="guBtn">申请理赔</span>
+                    <span class="guBtn" @click="goclaims()">申请理赔</span>
                 </div>
                 <div class="cell-con">
                     <div class="cell-strip">
@@ -88,7 +88,7 @@ export default {
     methods:{
         getData(){
             var that = this;
-            that.$axios.post('/api/arbitrate',{
+            that.$axios.post(process.env.API_HOST+"assurance",{
                 order_id:that.$route.query.order
             }).then((res)=>{
                 console.log(res)
@@ -100,6 +100,9 @@ export default {
             }).catch((err)=>{
                 console.log(err)
             })
+        },
+        goclaims(){
+            this.$router.push({name:'ApplySettlement'})
         }
     },
     mounted(){

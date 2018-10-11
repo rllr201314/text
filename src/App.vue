@@ -35,5 +35,8 @@ export default {
 
 <style>
 #app {
+  /* max-width:12rem;
+  margin:0 auto; */
+  background:#f6f6f6;
 }
 </style>

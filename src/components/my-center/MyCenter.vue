@@ -489,7 +489,7 @@ export default {
         },
         logoutFn(){
             var that = this;
-            that.$axios.post('/api/user_logout').then((res)=>{
+            that.$axios.post(process.env.API_HOST+"user_logout").then((res)=>{
                 console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
@@ -505,7 +505,7 @@ export default {
         },
         getData(){
             var that=this;
-            that.$axios.post('/api/user_info').then((res)=>{
+            that.$axios.post(process.env.API_HOST+"user_info").then((res)=>{
                 console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
@@ -568,6 +568,7 @@ export default {
     margin: 0 auto;
     padding-top:.88rem;
     position: relative;
+    background:#f6f6f6;
 }
 .mycenter-top {
     background-image: url(../../../static/img/my-center/h-bg.png);
@@ -605,7 +606,7 @@ export default {
     padding: 0 0.2rem;
     position: absolute;
     left: 0;
-    top: 3.2rem;
+    top: 3rem;
     right: 0;
 }
 .suspend-box {

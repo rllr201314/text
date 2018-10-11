@@ -26,7 +26,7 @@
                         <span v-text="item.phone"></span>
                     </div>
                     <div class="right-operate">
-                        <span class="pay">查看</span>
+                        <span class="pay" @click="goStatus(item.order_id)">查看</span>
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@ export default {
         getData() {
             var that = this;
             that.$axios
-                .post("/api/seller_trading")
+                .post(process.env.API_HOST+"seller_trading")
                 .then(res => {
                     console.log(res);
                     if (res.status == 200) {
@@ -79,7 +79,13 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
-        }
+        },
+        goStatus(order_id) {
+            this.$router.push({
+                name: "SellTakeDelivery",
+                query: { order: order_id }
+            });
+        },
     },
     mounted() {
         var that = this;

@@ -58,7 +58,7 @@
                     <div>请选择客户端类型</div>
                     <div class="search">
                         <img src="../../../static/img/search_ico.png" alt="">
-                        <input type="text" placeholder="搜索">
+                        <input type="search" placeholder="搜索"  v-model="mobile_content" @keyup.13="show('m')" ref="input1" @blur="out('m')">
                     </div>
                 </li>
                 <!-- 手机系统 -->
@@ -85,8 +85,10 @@
                 <!-- 区服 -->
                 <div class="server-area-box" v-if="showOpteration">
                     <div class="area-type-search">
-                        <input type="text" placeholder="搜索">
-                        <img class="search-area-ico" src="../../../static/img/search_ico.png" alt="">
+                        <form action="javascript:return true;">
+                            <input type="search" placeholder="搜索" v-model="area_content" @keyup.13="show('a')" ref="input1" @blur="out('a')">
+                            <img class="search-area-ico" src="../../../static/img/search_ico.png" alt="">
+                        </form>
                     </div>
                     <div class="area-type-content">
                         <div class="area-type-strip" v-for="item in optionData.area_info" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.server_name" @click="seleArea(item.server_id,'area')"></div>
@@ -95,7 +97,7 @@
                 <!-- 没有区的时候只显示服务器的 -->
                 <div class="server-area-box" v-if="!showOpteration">
                     <div class="area-type-search">
-                        <input type="text" placeholder="搜索">
+                        <input type="search" placeholder="搜索" v-model="area_content" @keyup.13="show('s')" ref="input1" @blur="out('s')">
                         <img class="search-area-ico" src="../../../static/img/search_ico.png" alt="">
                     </div>
                     <div class="area-type-content">
@@ -124,6 +126,8 @@ export default {
                     title: "我要卖"
                 }
             },
+            mobile_content:'',
+            area_content:'',
             showOpteration: true, //显示平台选择
             sellOptData: {
                 gameLog: "",
@@ -133,6 +137,7 @@ export default {
                 server: "未选择",
                 area:'未选择'
             },
+            oldData:{},
             optionData: {
                 merchand: [],
                 mobile: [],
@@ -153,6 +158,76 @@ export default {
         };
     },
     methods: {
+        // 隐藏键盘
+        show(flag){
+            this.$refs.input1.blur();
+            // console.log(flag);
+            // var that = this;
+            // if(flag == 'm'){
+            //     var text = that.mobile_content;
+            //     if(text == ""){
+            //         that.optionData.mobile = JSON.parse(JSON.stringify(that.oldData.mobile));
+            //     }else{
+            //         that.optionData.mobile =text;
+            //     }
+            // }
+            // console.log(this.content);
+        },
+        out(flag){
+            console.log(flag);
+            var that = this;
+            if(flag == 'm'){
+                var text = that.mobile_content;
+                if(text == ""){
+                    that.optionData.mobile = JSON.parse(JSON.stringify(that.oldData.mobile));
+                }else{
+                    var mobile = that.oldData.mobile;
+                    var obj = [];
+                    for(var i in mobile){
+                        if(mobile[i].platform_name.indexOf(text) != -1){
+                            obj.push(mobile[i]);
+                        }
+                    }
+                    if(obj != []){
+                        that.optionData.mobile = obj;
+                    }
+                }
+            }else if(flag == 's'){//没有服务器
+                var text = that.area_content;
+                if(text == ""){
+                    that.optionData.server_info = JSON.parse(JSON.stringify(that.oldData.server_info));
+                }else{
+                    var server_info = that.oldData.server_info;
+                    var obj = [];
+                    for(var i in server_info){
+                        if(server_info[i].area_name.indexOf(text) != -1){
+                            obj.push(server_info[i]);
+                        }
+                    }
+                    if(obj != []){
+                        that.optionData.server_info = obj;
+                    }
+                    // console.log(server_info)
+                }
+            }else if(flag == 'a'){
+                var text = that.area_content;
+                if(text == ""){
+                    that.optionData.area_info = JSON.parse(JSON.stringify(that.oldData.area_info));
+                }else{
+                    var area_info = that.oldData.area_info;
+                    var obj = [];
+                    for(var i in area_info){
+                        if(area_info[i].server_name.indexOf(text) != -1){
+                            obj.push(area_info[i]);
+                        }
+                    }
+                    if(obj != []){
+                        that.optionData.area_info = obj;
+                    }
+                    // console.log(server_info)
+                }
+            }
+        },
         // 显示那个下拉菜单
         showPop(flag) {
             var that = this;
@@ -209,6 +284,7 @@ export default {
         // 选择服务器--平台
         seleOperation(ind) {
             var that = this;
+            that.area_content = '';
             var operationAll = that.optionData.operation_info;
             for (var i in operationAll) {
                 if (ind == operationAll[i].area_id) {
@@ -255,7 +331,7 @@ export default {
         getOperation(operation_id) {
             var that = this;
             that.$axios
-                .post("/api/area_server", {
+                .post(process.env.API_HOST+"area_server", {
                     operation_id: operation_id
                 })
                 .then(function(res) {
@@ -271,6 +347,7 @@ export default {
                                         i
                                     ].ischeck = false;
                                 }
+                                that.oldData.server_info = JSON.parse(JSON.stringify(that.optionData.server_info));
                             } else {
                                 that.showOpteration = true;
                                 for (var i in res.data.data.area_info) {
@@ -286,6 +363,8 @@ export default {
                                 }
                                 that.optionData.operation_info = res.data.data.area_info;
                                 that.optionData.area_all = res.data.data.server_info;
+                                
+                                that.oldData.operation_info = JSON.parse(JSON.stringify(that.optionData.operation_info));
                                 that.getArea(that.optionData.operation_info[0].area_id);
                             }
                         }
@@ -306,6 +385,7 @@ export default {
                     info.push(all[i]);
                 }
             }
+            that.oldData.area_info = JSON.parse(JSON.stringify(that.optionData.area_info));
         },
         goNext() {
             var that = this;
@@ -346,9 +426,9 @@ export default {
         getConfig(opt){
             var that = this;
             that.$axios
-                .post("/api/category")
+                .post(process.env.API_HOST+"category")
                 .then(function(res) {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var resData = res.data.data.is_hot
@@ -370,15 +450,16 @@ export default {
             var that =this;
              // 请求商品类型 和 手机系统
             that.$axios
-                .post("/api/sys_config", {
+                .post(process.env.API_HOST+"sys_config", {
                     category_id: opt
                 })
                 .then(function(res) {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             that.optionData.merchand = res.data.data.deal_type;
                             that.optionData.mobile = res.data.data.platform;
+                            that.oldData = JSON.parse(JSON.stringify(that.optionData));
                         }else if(res.data.code == 401){
                             mui.confirm("请先登陆","提示",["取消", "确认"],
                                 function(e) {
@@ -408,7 +489,7 @@ export default {
     mounted() {
         var that = this;
         var opt = that.$route.query.opt;
-        console.log(opt);
+        // console.log(opt);
         if(opt == undefined || opt == ''){
             that.$router.go(-1); 
         }else{
@@ -651,6 +732,10 @@ export default {
 }
 
 /* ==========placeholder========= */
+input{
+    border:1px solid #D6D6D6;
+    background:#ffffff;
+}
 ::-webkit-input-placeholder {
     color: #999999;
     font-size: 0.24rem;
