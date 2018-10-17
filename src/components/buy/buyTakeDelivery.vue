@@ -101,12 +101,12 @@
                                 <img :src="passType?'../../../static/img/order/noSee.png':'../../../static/img/order/see.png'" alt="" @click="seePasswordFn">
                             </div>
                         </div>
-                        <div class="cargo" v-if="goodsInfo.is_end == 2 && isend" @click="endTrade">确认收货</div>
+                        <div class="cargo" v-if="goodsInfo.is_end == 2" @click="endTrade">确认收货</div>
                     </div>
                 </div>
             </div>
             <div class="take-bottom">交易过程中，如有任何疑问，请及时
-                <span class="red-color">咨询客服</span>
+                <a href="https://web.jiaxincloud.com/gray/mobile.html?&thirdJson={}&bg=FD8159&dialogLogo=0&dialogType=1&dialogMode=1&lang=cn&blinkTitle=1&orgName=mglhodd3enu2mg&appName=kgh431&appChannel=20003&quoteUrl=https://web.jiaxincloud.com&pageTitle=看个号客服&pageUrl=https://web.jiaxincloud.com/onekey.html?id=mglhodd3enu2mg&appName=kgh431&appChannel=20003&alone=1&jump=true&jump=true"><span class="red-color">咨询客服</span></a>
             </div>
         </div>
     </div>
@@ -131,8 +131,7 @@ export default {
                     title: "收货"
                 },
             },
-            isend:true,//确认收货显示
-            passType:true,
+            passType:false,
             goodsInfo:{},
             // 已收货状态 仲裁显示 **
             takeType: null, //1-申请验货 2-确认交易 3-换绑 4-确认收货 5-申请仲裁 || -1 确认交易 1&&2换绑  3确认收货 5-申请仲裁
@@ -213,7 +212,7 @@ export default {
                 if(res.status == 200){
                     if(res.data.code == 200){
                         mui.toast(res.data.msg, { duration: "short", type: "div" });
-                        that.isend = false;
+                        that.getData(that.$route.query.order);
                     }
                 }
             }).catch((err)=>{
@@ -222,7 +221,7 @@ export default {
         },
         // 申请仲裁
         goArbitration(){
-            this.$router.push({name:'Arbitration',query:{order:this.goodsInfo.order_id}})
+            this.$router.push({name:'Arbitration',query:{order:this.goodsInfo.order_id}});
         },
         // 取消仲裁
         cancelArb(){

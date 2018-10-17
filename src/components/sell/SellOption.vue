@@ -33,49 +33,36 @@
         <div class="okBtn" @click="goNext">下一步</div>
         <!-- 弹出框 -->
         <!-- 商品类型 -->
-        <div id="sheet-merchand" class="mui-popover mui-popover-bottom mui-popover-action">
-            <!-- 可选择菜单 -->
-            <ul class="pop-view">
-                <li class="pop-view-tit option-gray">
-                    <div>请选择商品类型</div>
-                </li>
+        <!-- <div id="sheet-merchand" class="mui-popover mui-popover-bottom mui-popover-action"> -->
+        <div v-show="showMenu_type" class="type-mu">
+            <div class="pop-view-tit option-gray">
+                请选择商品类型
+            </div>
+            <ul>
                 <!-- 商品类型 -->
                 <li class="option-black" v-for="item in optionData.merchand" @click="seleMerchand(item.value)" v-text="item.name"></li>
             </ul>
-            <!-- 取消菜单 -->
-            <ul class="pop-view">
-                <li class="mui-table-view-cell option-black">
-                    <a href="#sheet-merchand">取消</a>
-                </li>
-            </ul>
+            <div class="pop-view-bot" @click="hiddenFn">取消</div>
         </div>
         <!-- 弹出框 -->
         <!-- 手机系统 -->
-        <div id="sheet-mobile" class="mui-popover mui-popover-bottom mui-popover-action">
-            <!-- 可选择菜单 -->
-            <ul class="pop-view">
-                <li class="option-gray pop-view-tit">
-                    <div>请选择客户端类型</div>
-                    <div class="search">
-                        <img src="../../../static/img/search_ico.png" alt="">
-                        <input type="search" placeholder="搜索"  v-model="mobile_content" @keyup.13="show('m')" ref="input1" @blur="out('m')">
-                    </div>
-                </li>
-                <!-- 手机系统 -->
-                <div class="pop-view-mobil">
-                    <li class="option-black" v-for="item in optionData.mobile" @click="seleMobile(item.operation_id)" v-text="item.platform_name"></li>
+        <div v-show="showMenu_mobile" class="type-mu">
+            <div class="pop-view-tit option-gray">
+                <div>请选择客户端</div>
+                <div class="search">
+                    <img src="../../../static/img/search_ico.png" alt="">
+                    <input type="search" placeholder="搜索"  v-model="mobile_content" @keyup.13="show('m')" ref="input1" @blur="out('m')">
                 </div>
+            </div>
+            <!-- 手机系统 -->
+            <ul>
+                <li class="option-black" v-for="item in optionData.mobile" @click="seleMobile(item.operation_id)" v-text="item.platform_name"></li>
             </ul>
-            <!-- 取消菜单 -->
-            <ul class="pop-view">
-                <li class="mui-table-view-cell option-black">
-                    <a href="#sheet-mobile">取消</a>
-                </li>
-            </ul>
+            <div class="pop-view-bot" @click="hiddenFn">取消</div>
         </div>
         <!-- 弹出框 -->
         <!-- 服务器 -->
-        <div id="sheet-server" class="mui-popover mui-popover-bottom mui-popover-action">
+        <div v-show="showMenu_area" class="type-mu">
             <!-- 可选择菜单 -->
             <div class="screen-box server-type-box">
                 <!-- 平台 -->
@@ -106,6 +93,7 @@
                 </div>
             </div>
         </div>
+        <div class="share" v-show="showMenu_type || showMenu_mobile || showMenu_area" @click="hiddenFn"></div>
     </div>
 </template>
 <script>
@@ -126,6 +114,9 @@ export default {
                     title: "我要卖"
                 }
             },
+            showMenu_type:false,
+            showMenu_mobile:false,
+            showMenu_area:false,
             mobile_content:'',
             area_content:'',
             showOpteration: true, //显示平台选择
@@ -161,17 +152,6 @@ export default {
         // 隐藏键盘
         show(flag){
             this.$refs.input1.blur();
-            // console.log(flag);
-            // var that = this;
-            // if(flag == 'm'){
-            //     var text = that.mobile_content;
-            //     if(text == ""){
-            //         that.optionData.mobile = JSON.parse(JSON.stringify(that.oldData.mobile));
-            //     }else{
-            //         that.optionData.mobile =text;
-            //     }
-            // }
-            // console.log(this.content);
         },
         out(flag){
             console.log(flag);
@@ -231,6 +211,9 @@ export default {
         // 显示那个下拉菜单
         showPop(flag) {
             var that = this;
+            if(flag == "merchand"){
+                that.showMenu_type = true;
+            }
             if (flag == "server") {
                 if (that.sellOptData.mobile == "未选择") {
                     //还未请求平台数据
@@ -240,15 +223,17 @@ export default {
                     //请求完 默认选择第一个
                     that.sellOptData.server = that.optionData.operation_info[0].area_name;
                     that.sellOptData.area = that.optionData.operation_info[0].area_name;//存起来好拼接
-                    // that.
                 }
+                that.showMenu_area = true;
             }
-            mui("#sheet-" + flag).popover("toggle");
+            if(flag == 'mobile'){
+                that.showMenu_mobile = true;
+            }
         },
         // 选择商品类型
         seleMerchand(ind) {
             var that = this;
-            mui("#sheet-merchand").popover("toggle");
+            that.showMenu_type = false;
             var merchand = this.optionData.merchand;
             // console.log(merchand);
             for (var i in merchand) {
@@ -264,7 +249,7 @@ export default {
         // 选择手机系统
         seleMobile(ind) {
             var that = this;
-            mui("#sheet-mobile").popover("toggle");
+            that.showMenu_mobile = false;
             var mobile = that.optionData.mobile;
             // console.log(mobile);
             for (var i in mobile) {
@@ -301,8 +286,8 @@ export default {
         },
         // 选择服务器--区服
         seleArea(ind, opt) {
-            mui("#sheet-server").popover("toggle");
             var that = this;
+            that.showMenu_area = false;
             if (opt == "area") {
                 var areaAll = that.optionData.area_info;
                 for (var i in areaAll) {
@@ -326,6 +311,11 @@ export default {
                     areaAll[i].ischeck = false;
                 }
             }
+        },
+        hiddenFn(){
+            this.showMenu_type = false;
+            this.showMenu_mobile = false;
+            this.showMenu_area = false;
         },
         // 请求平台
         getOperation(operation_id) {
@@ -560,16 +550,6 @@ export default {
     vertical-align: middle;
 }
 
-/* 弹出框 */
-.option-gray {
-    color: #666666;
-    font-size: 0.28rem;
-}
-.option-black {
-    color: #333333;
-    font-size: 0.28rem;
-    font-weight: 100;
-}
 
 /* 下一步 */
 .okBtn {
@@ -701,8 +681,13 @@ export default {
 }
 .pop-view-mobil {
     height: 4rem;
-    overflow-y: auto;
+    overflow-y: scroll ;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
 }
+
 .search {
     width: 4.7rem;
     height: 0.65rem;
@@ -718,9 +703,9 @@ export default {
     z-index: 2;
 }
 .search input {
+    padding: 0 .6rem;
     height: 0.6rem;
     margin: 0;
-    padding: 0 0 0 0.6rem;
     line-height: 0.6rem;
     font-size: 0.24rem;
     position: absolute;
@@ -751,5 +736,51 @@ input{
 :-ms-input-placeholder {
     color: #999999;
     font-size: 0.24rem;
+}
+
+
+
+.type-mu{
+    min-height:2rem;
+    color: #333333;
+    font-size: 0.28rem;
+    background:#FFFFFF;
+    text-align:center;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:50;
+}
+.pop-view-tit,.pop-view-bot{
+    line-height: .9rem;
+}
+.type-mu ul{
+    border-top:1px solid #e5e5e5;
+    border-bottom:1px solid #e5e5e5;
+    max-height:4rem;
+    overflow-y:scroll;
+}
+/* 弹出框 */
+.option-gray {
+    color: #666666;
+    font-size: 0.28rem;
+}
+.option-black {
+    font-weight: 100;
+    line-height:.9rem;
+    border-bottom:1px solid #e5e5e5;
+}
+
+
+/* 遮罩 */
+.share{
+    background:rgba(0, 0, 0, .3);
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:40;
 }
 </style>

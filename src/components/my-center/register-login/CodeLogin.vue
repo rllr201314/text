@@ -70,9 +70,11 @@ export default {
         // 手机登录
         goAccount() {
             var that = this;
-            that.$router.replace({ name: "AccountLogin",params: {
-                        redirect: that.$router.currentRoute.params.redirect
-                    }});
+            if(that.$route.query.register == 1){
+                that.$router.replace({ name: "AccountLogin",query:{register:1}});
+            }else{
+                that.$router.replace({ name: "AccountLogin"});
+            }
         },
         // 注册
         goRegister() {
@@ -150,10 +152,7 @@ export default {
                                 }
                                 that.$store.commit("changeLogin",'1');//修改登录状态
                                 // 修改alert 尽量改 不需要用户点击 设置一秒后跳转
-                                // mui.alert(
-                                //     res.data.msg,
-                                //     "提示",
-                                //     "确定",
+                                // mui.alert(res.data.msg,"提示","确定",
                                 //     function() {
                                 //         // if(that.$router.currentRoute.params.redirect != undefined){
                                 //         //     that.$router.replace({
@@ -165,12 +164,14 @@ export default {
                                 //         //     });
                                 //         // }
                                 //         that.$router.go(-1);
-                                //     },
-                                //     "div"
-                                // );
+                                //     },"div");
                                 
                                 mui.toast(res.data.msg,{ duration:'short', type:'div' });
-                                that.$router.go(-1);
+                                if(that.$route.query.register == 1){
+                                    that.$router.go(-3);
+                                }else{
+                                    that.$router.go(-1);
+                                }
                             } else {
                                 mui.toast(res.data.msg,{ duration:'short', type:'div' });
                                 that.verify_code = "";

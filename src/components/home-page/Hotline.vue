@@ -3,7 +3,7 @@
     <div class="hotline-content">
         <img class="hotline-img" src="../../../static/img/phone_ico.png" alt="">
         <span>客服热线：</span>
-        <span class="hotline-num" v-text="tel"></span>
+        <span class="hotline-num" v-text="tel" @click="telFn"></span>
     </div>
 </template>
 
@@ -12,8 +12,13 @@
         name: "Hotline",
         data(){
            return{
-               tel:'400-0000-0000'
+               tel:'400-688-6860'
            }
+        },
+        methods:{
+            telFn(){
+                window.location.href = 'tel://' + this.tel;
+            }
         }
     }
 </script>

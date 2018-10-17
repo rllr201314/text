@@ -9,7 +9,7 @@
             <img src="../../../static/img/game_level_ico.png" alt="">
             <div>代练</div>
         </div>
-        <div class="cell user-stages">
+        <div class="cell user-stages" @click="seleOpt('stage')"> 
             <img src="../../../static/img/stages_ico.png" alt="">
             <div>分期</div>
         </div>
@@ -38,6 +38,9 @@
                     sessionStorage.buyOrsell = 2;
                 }else if(flag == 'active'){
                     that.$router.push({name:'ActivePage'})
+                }else if(flag == 'stage'){
+                    
+                    that.$router.push({ name: "BillInstallment" });
                 }
             }
         }

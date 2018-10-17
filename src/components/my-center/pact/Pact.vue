@@ -46,14 +46,20 @@ export default {
             },
             sign_num:0,
             end_num:0,
+            is_identify:null,
         };
     },
     methods:{
         goSign(flag){
-            if(flag == 'ture'){
-                this.$router.push({name:'Signature'})
+            var that = this;
+            if(that.is_identify != 1){
+                that.$router.push({name:'UserAuthentication',query:{type:that.is_identify}})
             }else{
-                this.$router.push({name:'Signed'})
+                if(flag == 'ture'){
+                    that.$router.push({name:'Signature'})
+                }else{
+                    that.$router.push({name:'Signed'})
+                }
             }
         },
         getData(){
@@ -64,6 +70,7 @@ export default {
                     if(res.data.code == 200){
                         that.sign_num = res.data.data.sign_contract;
                         that.end_num = res.data.data.end_contract;
+                        that.is_identify = res.data.data.is_identify;
                     }
                 }
             }).catch((err)=>{

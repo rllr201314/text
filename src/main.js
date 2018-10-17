@@ -6,23 +6,39 @@ import router from './router'
 import axios from 'axios'
 import Vuex from 'vuex'
 import store from './store/index'
-
+import qs from 'qs'
+import preview from 'vue-photo-preview'
+import 'vue-photo-preview/dist/skin.css'
+var options={
+  fullscreenEl:false, //关闭全屏按钮
+  maxSpreadZoom:2
+}
+Vue.use(preview,options)
 Vue.use(Vuex)
 
-// axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 // 添加请求拦截器
 axios.interceptors.request.use(config => {
   // 在发送请求之前做些什么
   //判断是否存在token，如果存在将每个页面header都添加token
-  if (store.state.token) {
-    config.headers.common['Authorization'] = store.state.token;
+  if(config.method  === 'post'){
+    if(!config.data){
+      config.data = {};
+      if (store.state.token) {
+        config.data.Authorization = store.state.token;
+      }
+    }else if(store.state.token) {
+      config.data.Authorization = store.state.token;
+    }
+    config.data = qs.stringify(config.data);
   }
+  
 
   return config;
 }, error => {
   // 对请求错误做些什么
   return Promise.reject(error);
 });
+
 
 // http response 拦截器
 axios.interceptors.response.use(
@@ -63,25 +79,7 @@ router.afterEach((to, from, next) => {
   window.scrollTo(0, 0);
   document.documentElement.scrollTop = document.body.scrollTop = 0;
 })
-// 判断是不是不是已登陆
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(m => m.meta.auth)) {
-    // 对路由进行验证     
-    if (store.state.isLogin == '1') { // 已经登陆       
-      next() // 正常跳转到你设置好的页面     
-    } else {
-      // 未登录则跳转到登陆界面，query:{ Rurl: to.fullPath}表示把当前路由信息传递过去方便登录后跳转回来；
-      next({
-        path: '/account-login',
-        query: {
-          Rurl: to.fullPath
-        }
-      })
-    }
-  } else {
-    next()
-  }
-})
+
 
 Vue.prototype.$axios = axios;
 Vue.config.productionTip = false

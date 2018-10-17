@@ -13,7 +13,7 @@
 <script>
 import Header from "@/components/home-page/Header";
 export default {
-    name:'Message_Details',
+    name:'Affichee_Details',
     data(){
         return {
             showTitle: {
@@ -21,7 +21,7 @@ export default {
                 showLogo: 2,
                 showShare: 3, //1搜索2分享3菜单
                 showBg: true,
-                title: "系统消息",
+                title: "",
             },
             info:{},
         }
@@ -44,12 +44,17 @@ export default {
                 return false;
             }
         },
-        getData_message(msg_id){
+        getData(article_id){
             var that = this;
-            that.$axios.post(process.env.API_HOST+"msg_content",{
-                msg_id:msg_id
+            that.$axios.post(process.env.API_HOST+"article_info",{
+                article_id:article_id
             }).then((res)=>{
                 console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.info = res.data.data
+                    }
+                }
             }).catch((err)=>{
                 console.log(err);
             })
@@ -58,13 +63,18 @@ export default {
     mounted(){
         var that = this;
         var sign = that.$route.query.sign;
-        if(sessionStorage.getItem('sign') == sign && sign){
-            if(that.isobjStr(sign)){
-                that.info = JSON.parse(sign);
-                that.getData_message(that.info.msg_id)
-            }else{
-                that.$router.go(-1);
-            }
+        // if(sessionStorage.getItem('sign') == sign && sign){
+        //     if(that.isobjStr(sign)){
+        //         that.info = JSON.parse(sign);
+        //         that.showTitle.title = "系统消息";
+        //         that.getData_message(that.info.msg_id)
+        //     }else{
+        //         that.$router.go(-1);
+        //     }
+        // }else
+         if(that.$route.query.article){
+            that.showTitle.title = that.$route.query.type;
+            that.getData(that.$route.query.article)
         }else{
             that.$router.go(-1);
         }

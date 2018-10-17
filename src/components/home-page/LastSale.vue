@@ -1,25 +1,23 @@
 <template>
     <!-- 首页近期成交 -->
     <div class="flow-wrap">
-        <div class="last-sale" v-show="flow.sale">
+        <div class="last-sale" v-if="flow.sale">
             <img class="sale-img" src="../../../static/img/deal_ico.png" alt="">
             <div class="sale-info">
                 <div>
                     <span class="last-text">近期成交</span>
-                    <span>累计安全交易{{num}}笔</span>
+                    <span>累计安全交易<span v-text="flow.count_info"></span>笔</span>
                 </div>
                 <div class="info-bottom">
-                    <span>【大话西游】</span>
-                    <span>xxxxxxx交易成功</span>
+                    <span>【<span v-text="flow.order_info.game_name"></span>】</span>
+                    <span><span v-text="flow.order_info.goods_title"></span>交易成功</span>
                 </div>
             </div>
             <div class="lase-price">
-                <span class="red-color">
-                    ￥2000
-                </span>
+                <span class="red-color">￥<span v-text="Number(flow.order_info.order_amount)"></span></span>
             </div>
         </div>
-        <div class="safe-wrap"  v-show="flow.safe">
+        <div class="safe-wrap"  v-if="flow.safe">
             <img class="sage-img" src="../../../static/img/safeguarg_ico.png" alt="">
             <div class="sale-info">
                 <div>

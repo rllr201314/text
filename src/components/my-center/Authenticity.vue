@@ -84,10 +84,11 @@
                 </div>
             </div>
             <div class="service">举报和投诉，请联系
-                <span class="go-service">在线客服</span>
+                <a href="https://web.jiaxincloud.com/gray/mobile.html?&thirdJson={}&bg=FD8159&dialogLogo=0&dialogType=1&dialogMode=1&lang=cn&blinkTitle=1&orgName=mglhodd3enu2mg&appName=kgh431&appChannel=20003&quoteUrl=https://web.jiaxincloud.com&pageTitle=看个号客服&pageUrl=https://web.jiaxincloud.com/onekey.html?id=mglhodd3enu2mg&appName=kgh431&appChannel=20003&alone=1&jump=true&jump=true"><span class="go-service">在线客服</span></a>
             </div>
+            <Footer class="footer"></Footer>
+            <div class="attt" v-if="showLoading" v-text="attt"></div>
         </div>
-        <Footer class="footer"></Footer>
         <Loading v-show="showLoading"></Loading>
     </div>
 </template>
@@ -108,6 +109,7 @@ export default {
             qq_num:'',
             nicename:'',
             showLoading:false,
+            attt:'',
         };
     },
     methods:{
@@ -155,6 +157,7 @@ export default {
             }
             that.showLoading = true;
             that.$axios.post(process.env.API_HOST+"authentic_kf",request).then((res)=>{
+                // mui.alert(JSON.stringify(res),'ti','que','','div');
                 if(res.status == 200){
                     that.showLoading = false;
                     if(res.data.code == 200){
@@ -184,17 +187,16 @@ export default {
                     }
                 }
             }).catch((err)=>{
-                console.log(err)
+                console.log(err);
+                // mui.alert(JSON.stringify(err),'tiii','shiii','','div');
+                that.attt = JSON.stringify(err);
             })
         }
     }
 };
 </script>
 <style>
- /* 让footer 定位到底部 */
-html,body,#app{
-    height:100%;
-}
+ 
  /* scoped 模式 访问不到 */
 .mui-toast-container{
     bottom:110px !important;
@@ -207,7 +209,7 @@ html,body,#app{
     max-width: 12rem;
     margin: 0 auto;
     position: relative;
-    height:100%;
+    min-height:100vh;
 }
 .authent-header {
     text-align: center;
@@ -394,11 +396,22 @@ input[type="number"] {
     color: #999999;
     font-size: 0.24rem;
 }
-.footer{
-    position:fixed;
+/* .footer{
+    position:absolute;
     bottom:0;
     left:0;
     right:0;
+} */
+.attt{
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    z-index:111111111111;
+    background:white;
+    width:5rem;
+    display: flex;
+    flex-wrap:wrap;
 }
 </style>
 

@@ -5,7 +5,7 @@
             <div class="title-txt">热门游戏</div>
         </div>
         <div class="hot-game-content">
-            <div class="hot-game-cell" v-for="item in hotGame" @click="goSellOption(item.category_id)">
+            <div class="hot-game-cell" v-for="item in hot_game" @click="goSellOption(item.category_id)">
                 <img :src="item.game_logo" alt="">
                 <div v-text="item.game_name"></div>
             </div>
@@ -16,6 +16,7 @@
 <script>
 export default {
     name: "HotGame",
+    props:['hot_game'],
     data() {
         return {
             hotGame: []
@@ -36,7 +37,7 @@ export default {
                 .then(res => {
                     console.log(res);
                     if (res.status == 200) {
-                        if (res.data.code) {
+                        if (res.data.code == 200) {
                             that.hotGame = res.data.data.is_hot;
                         }
                     }
@@ -47,7 +48,7 @@ export default {
         }
     },
     mounted() {
-        this.getData();
+        // this.getData();
     }
 };
 </script>

@@ -121,17 +121,17 @@
                 <div class="screen-strip-left sort-left-text">排序方式</div>
                 <div class="screen-strip-right">
                     <div class="screen-sort" @click="seleSort('down')">
-                        <img class="screen-sort-check" :src="screen_info.sortPrice.ischeck.downSort?screen_info.sortPrice.sortSrc.sortPriceOk:screen_info.sortPrice.sortSrc.sortPriceNo" alt="">
+                        <img class="screen-sort-check" :src="sortPrice.ischeck.downSort?sortPrice.sortSrc.sortPriceOk:sortPrice.sortSrc.sortPriceNo" alt="">
                         <span>价格从高到低</span>
                         <img class="screen-sort-ico" src="../../static/img/goodscreen/arrow_down.png" alt="">
                     </div>
                     <div class="screen-sort" @click="seleSort('up')">
-                        <img class="screen-sort-check" :src="screen_info.sortPrice.ischeck.upSort?screen_info.sortPrice.sortSrc.sortPriceOk:screen_info.sortPrice.sortSrc.sortPriceNo" alt="">
+                        <img class="screen-sort-check" :src="sortPrice.ischeck.upSort?sortPrice.sortSrc.sortPriceOk:sortPrice.sortSrc.sortPriceNo" alt="">
                         <span>价格从低到高</span>
                         <img class="screen-sort-ico" src="../../static/img/goodscreen/arrow_up.png" alt="">
                     </div>
                     <div class="screen-sort" @click="seleSort('more')">
-                        <img class="screen-sort-check" :src="screen_info.sortPrice.ischeck.moreSort?screen_info.sortPrice.sortSrc.sortPriceOk:screen_info.sortPrice.sortSrc.sortPriceNo" alt="">
+                        <img class="screen-sort-check" :src="sortPrice.ischeck.moreSort?sortPrice.sortSrc.sortPriceOk:sortPrice.sortSrc.sortPriceNo" alt="">
                         <span>收藏最多</span>
                     </div>
                 </div>
@@ -362,20 +362,19 @@ export default {
             // 服
             server_all: [], //全部的服务器
             server_info: [],
-            // 筛选条件
-            screen_info: {
-                // 单选----选择价格排序
-                sortPrice: {
-                    sortSrc: {
-                        sortPriceOk: "./static/img/goodscreen/okcheck.png",
-                        sortPriceNo: "./static/img/goodscreen/nocheck.png"
-                    },
-                    ischeck: {
-                        downSort: false,
-                        upSort: false,
-                        moreSort: false
-                    }
+            // 筛选条件// 单选----选择价格排序
+            sortPrice: {
+                sortSrc: {
+                    sortPriceOk: "./static/img/goodscreen/okcheck.png",
+                    sortPriceNo: "./static/img/goodscreen/nocheck.png"
                 },
+                ischeck: {
+                    downSort: false,
+                    upSort: false,
+                    moreSort: false
+                }
+            },
+            screen_info: {
                 // 单选----账号绑定
                 accountBind: [],
                 // 视频状态
@@ -526,9 +525,10 @@ export default {
         },
         // 隐藏---遮罩+筛选框
         hiddenScreenFun() {
-            var showInfoAll = this.screenInfoAll; //筛选框集合
-            var screentop = this.screenTop;
-            var screenbottom = this.screenBottom;
+            var that = this;
+            var showInfoAll = that.screenInfoAll; //筛选框集合
+            var screentop = that.screenTop;
+            var screenbottom = that.screenBottom;
             for (var i in showInfoAll) {
                 showInfoAll[i].isShow = false;
             }
@@ -539,10 +539,10 @@ export default {
                 screentop[i].ischeck = false;
             }
             for (var i in screenbottom) {
-                screenbottom[i].tit_bottom_src =
-                    "./static/img/goodscreen/downsolid.png";
+                screenbottom[i].tit_bottom_src = "./static/img/goodscreen/downsolid.png";
                 screenbottom[i].ischeck = false;
             }
+            that.okScreen('no');//传参是为了不让重复调用
         },
         // 选择账号类型
         seleAccount(value) {
@@ -678,33 +678,52 @@ export default {
         // 筛选--排序
         seleSort(flag) {
             var that = this;
-            var sortArr = this.screen_info.sortPrice.ischeck;
-            for (var i in sortArr) {
-                sortArr[i] = false;
-            }
+            var sortArr = that.sortPrice.ischeck;
             if (flag == "down") {
-                sortArr.downSort = true;
-                that.sort_collection = "";
-                that.sort_price = "1";
+                sortArr.moreSort = false;
+                sortArr.upSort  = false;
+                sortArr.downSort = !sortArr.downSort;
+                if(sortArr.downSort){
+                    that.sort_collection = "";
+                    that.sort_price = "1";
+                }else{
+                    that.sort_collection = "";
+                    that.sort_price = "";
+                }
             } else if (flag == "up") {
-                sortArr.upSort = true;
-                that.sort_collection = "";
-                that.sort_price = "2";
+                sortArr.downSort = false;
+                sortArr.moreSort  = false;
+                sortArr.upSort = !sortArr.upSort;
+                if(sortArr.upSort){
+                    that.sort_collection = "";
+                    that.sort_price = "2";
+                }else{
+                    that.sort_collection = "";
+                    that.sort_price = "";
+                }
             } else if (flag == "more") {
-                sortArr.moreSort = true;
-                that.sort_price = "";
-                that.sort_collection = "1";
+                sortArr.downSort = false;
+                sortArr.upSort  = false;
+                sortArr.moreSort = !sortArr.moreSort;
+                if(sortArr.moreSort){
+                    that.sort_price = "";
+                    that.sort_collection = "1";
+                }else{
+                    that.sort_collection = "";
+                    that.sort_price = "";
+                }
             }
         },
         // 筛选--类型
         seleScreen(flag, seleTag) {
             var that = this;
+            // 账号绑定
             if (flag == "accountBind") {
                 var accountBindAll = this.screen_info.accountBind;
                 if (seleTag == "4") {
                     for (var i in accountBindAll) {
                         if (seleTag == accountBindAll[i].value) {
-                            accountBindAll[i].ischeck = true;
+                            accountBindAll[i].ischeck = !accountBindAll[i].ischeck;
                             continue;
                         }
                         accountBindAll[i].ischeck = false;
@@ -712,63 +731,83 @@ export default {
                 } else {
                     for (var i in accountBindAll) {
                         if (seleTag == accountBindAll[i].value) {
-                            accountBindAll[i].ischeck = true;
+                            accountBindAll[i].ischeck = !accountBindAll[i].ischeck;
                         }
                         if (accountBindAll[i].value == "4") {
                             accountBindAll[i].ischeck = false;
                         }
                     }
                 }
-            } else if (flag == "videoStatus") {
+            } else if (flag == "videoStatus") {//视频绑定
                 var videoStatusAll = this.screen_info.videoStatus;
                 for (var i in videoStatusAll) {
                     if (seleTag == videoStatusAll[i].value) {
-                        videoStatusAll[i].ischeck = true;
+                        videoStatusAll[i].ischeck = !videoStatusAll[i].ischeck;
+                        if(videoStatusAll[i].ischeck){
+                            that.is_video = seleTag;
+                        }else{
+                            that.is_video = "";
+                        }
                         continue;
                     }
                     videoStatusAll[i].ischeck = false;
                 }
-                that.is_video = seleTag;
-            } else if (flag == "sellType") {
+            } else if (flag == "sellType") {//售价类型
                 var sellTypeAll = this.screen_info.sellType;
                 for (var i in sellTypeAll) {
                     if (seleTag == sellTypeAll[i].value) {
-                        sellTypeAll[i].ischeck = true;
+                        sellTypeAll[i].ischeck = !sellTypeAll[i].ischeck;
+                        if(sellTypeAll[i].ischeck){
+                            that.sell_type = seleTag;
+                        }else{
+                            that.sell_type = "";
+                        }
                         continue;
                     }
                     sellTypeAll[i].ischeck = false;
                 }
-                that.sell_type = seleTag;
-            } else if (flag == "isStages") {
+            } else if (flag == "isStages") {//是否分期
                 var isStagesAll = this.screen_info.isStages;
                 for (var i in isStagesAll) {
                     if (seleTag == isStagesAll[i].value) {
-                        isStagesAll[i].ischeck = true;
+                        isStagesAll[i].ischeck = !isStagesAll[i].ischeck;
+                        if(isStagesAll[i].ischeck){
+                            that.is_stage = seleTag;
+                        }else{
+                            that.is_stage = "";
+                        }
                         continue;
                     }
                     isStagesAll[i].ischeck = false;
                 }
-                that.is_stage = seleTag;
-            } else if (flag == "isInsurance") {
+            } else if (flag == "isInsurance") {//保险情况
                 var isInsuranceAll = this.screen_info.isInsurance;
                 for (var i in isInsuranceAll) {
                     if (seleTag == isInsuranceAll[i].value) {
-                        isInsuranceAll[i].ischeck = true;
+                        isInsuranceAll[i].ischeck = !isInsuranceAll[i].ischeck;
+                        if(isInsuranceAll[i].ischeck){
+                            that.is_safe = seleTag;
+                        }else{
+                            that.is_safe = "";
+                        }
                         continue;
                     }
                     isInsuranceAll[i].ischeck = false;
                 }
-                that.is_safe = seleTag;
-            } else if (flag == "levelType") {
+            } else if (flag == "levelType") {//等级
                 var levelTypeAll = this.screen_info.levelType;
                 for (var i in levelTypeAll) {
                     if (seleTag == levelTypeAll[i].value) {
-                        levelTypeAll[i].ischeck = true;
+                        levelTypeAll[i].ischeck = !levelTypeAll[i].ischeck;
+                        if(levelTypeAll[i].ischeck){
+                            that.role_level = seleTag;
+                        }else{
+                            that.role_level = "";
+                        }
                         continue;
                     }
                     levelTypeAll[i].ischeck = false;
                 }
-                that.role_level = seleTag;
             } else if (flag == "pokemon") {
                 console.log(seleTag);
                 var pokemonTypeAll = this.screen_info.pokemonType;
@@ -804,7 +843,7 @@ export default {
                 }
             }
         },
-        okScreen() {
+        okScreen(flag) {
             var that = this;
             var that_r = that.request;
             that_r.begin_price = that.begin_price;
@@ -822,15 +861,18 @@ export default {
             }
             if (safe_flag) {
                 that_r.is_bind = safe_str.substring(1);
+            }else{
+                that_r.is_bind = "";
             }
             that_r.is_video = that.is_video;
             that_r.sell_type = that.sell_type;
             that_r.is_stage = that.is_stage;
             that_r.is_safe = that.is_safe;
             that_r.role_level = that.role_level;
-
             that.getGoodsInfo(that.request);
-            that.hiddenScreenFun(); //隐藏筛选
+            if(!flag){
+               that.hiddenScreenFun(); //隐藏筛选
+            }
         },
         cancleScreen() {
             var that = this;

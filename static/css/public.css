@@ -16,3 +16,6 @@ html{
 .mui-popover.mui-popover-action.mui-active{
     max-width:12rem;
 }
+.pswp__top-bar{
+    top:.88rem !important;
+}

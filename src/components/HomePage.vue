@@ -3,15 +3,15 @@
   <div class="wrap">
       <div class="top">
           <Header v-bind:showTitle="showTitle"></Header>
-          <SwiperContent></SwiperContent>
+          <SwiperContent v-bind:swiperSrc="swiperSrc"></SwiperContent>
       </div>
       <div class="content">
-          <LastSale v-bind:flow="{sale:true,safe:false}"></LastSale>
+          <LastSale v-bind:flow="{sale:true,safe:false,order_info,count_info}"></LastSale>
           <UserOperation></UserOperation>
           <GameDivision></GameDivision>
-          <HotGame></HotGame>
+          <HotGame v-bind:hot_game="hot_game"></HotGame>
           <LastSale v-bind:flow="{sale:false,safe:true}"></LastSale>
-          <Notice></Notice>
+          <Notice v-bind:notice="notice"></Notice>
           <InsuranceCell></InsuranceCell>
       </div>
       <UserHelp></UserHelp>
@@ -37,7 +37,7 @@
                 </div>
           </div>
       </div>
-      <div class="shade" v-show="isShowShage"></div>
+      <div class="shade" v-show="isShowShage" @click="hiddenShage"></div>
   </div>
 </template>
 
@@ -68,7 +68,11 @@ export default {
                 title:"",
             },
             isShowShage:false,//是否显示遮罩和活动弹框
-            
+            swiperSrc:'',//轮播图
+            hot_game:'',//热门游戏
+            order_info:'',//近期交易
+            count_info:'',//累计交易
+            notice:'',//公告
             activeData:[{
                 logImg:'./static/img/mh_cont.png',
                 tit:'竞拍：100级万寸神宠',
@@ -87,6 +91,24 @@ export default {
         showActive(){
             this.isShowShage = !this.isShowShage;
         },
+        hiddenShage(){
+            this.isShowShage = false;
+        },
+        getData(){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'home').then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.notice = res.data.data.article_info;
+                        that.swiperSrc = res.data.data.loop_info;
+                        that.hot_game = res.data.data.hot_nfo;
+                        that.order_info = res.data.data.order_info;
+                        that.count_info = res.data.data.count_info;
+                    }
+                }
+            })
+        }
         
     },
     components: {
@@ -103,6 +125,7 @@ export default {
         Footer
     },
     mounted(){
+        this.getData();
         // // 活动倒计时----
         // var time = null;
         // var second=5; 

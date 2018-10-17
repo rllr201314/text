@@ -3,6 +3,10 @@
     <div class="bargain-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="bargin-tit">
+            <div class="tit-box" @click="barginTypeFn('all')">
+                <img :src="seleType.all?'../../../../static/img/goodscreen/okcheck.png':'../../../../static/img/goodscreen/nocheck.png'" alt="">
+                <span>全部</span>
+            </div>
             <div class="tit-box" @click="barginTypeFn('reply')">
                 <img :src="seleType.reply?'../../../../static/img/goodscreen/okcheck.png':'../../../../static/img/goodscreen/nocheck.png'" alt="">
                 <span>待回复</span>
@@ -113,10 +117,11 @@ export default {
             goods_id:'',
             bargain_price:'',
             seleType: {
-                reply: true,
-                pay: false
+                all:true,
+                reply: false,
+                pay: false,
             },
-            lastAgree: "",
+            lastAgree: " ",
             goodsInfo: [],
             now_page:1,
             pages:'',
@@ -184,19 +189,27 @@ export default {
             if (flag == "pay") {
                 that.seleType.reply = false;
                 that.seleType.pay = true;
-            } else {
-                that.seleType.reply = true;
+                that.seleType.all = false;
+            } else if(flag == 'reply'){
+                that.seleType.reply =true;
                 that.seleType.pay = false;
+                that.seleType.all = false;
+            }else if(flag == 'all'){
+                that.seleType.all = true;
+                that.seleType.pay = false;
+                that.seleType.reply = false;
             }
             that.getdiscuss('refresh');
         },
         getdiscuss(flag) {
             var that = this;
-            var agree;
-            if (that.seleType.reply) {
+            var agree = "";
+            if (that.seleType.reply &&　!that.seleType.pay) {
                 agree = -1;
-            } else {
+            } else if(!that.seleType.reply &&　that.seleType.pay){
                 agree = 1;
+            }else if(that.seleType.all){
+                agree = ''
             }
             if (that.lastAgree != agree) {
                 that.$axios
@@ -350,6 +363,10 @@ export default {
     font-size: 0.24rem;
     line-height: 0.36rem;
     margin-bottom: 0.2rem;
+    display:flex;
+    align-items: center;
+    justify-content: flex-start;
+
 }
 /* 精品 */
 .goods-type {

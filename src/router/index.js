@@ -10,9 +10,9 @@ if (sessionStorage.getItem('token')) {
 if (sessionStorage.getItem('mobile')) {
   store.commit('set_mobile', sessionStorage.getItem('mobile'))
 }
-if (sessionStorage.getItem('i')) {
-  store.commit('changeLogin', sessionStorage.getItem('i'))
-}
+// if (sessionStorage.getItem('i')) {
+//   store.commit('changeLogin', sessionStorage.getItem('i'))
+// }
 
 Vue.use(Router)
 
@@ -324,6 +324,18 @@ export default new Router({
       path: '/message-info',
       name: 'Message_Details',
       component: (resolve) => require(['@/components/my-center/message/message_details'], resolve),
+    },
+    // 公告列表
+    {
+      path: '/affiche-info',
+      name: 'Affiche',
+      component: (resolve) => require(['@/components/my-center/message/Affiche'], resolve),
+    },
+    // 公告详细
+    {
+      path: '/affiche',
+      name: 'Affiche_Details',
+      component: (resolve) => require(['@/components/my-center/message/Affiche_details'], resolve),
     },
     {
       path: '/apply-settlement',

@@ -59,7 +59,7 @@
                             </div>
                             <div class="upimg-cell">
                                 <img src="../../../static/img/order/add_img.png" alt="">
-                                <input type="file" id="upImg" accept="image/*" multiple capture @change="addImg">
+                                <input type="file" id="upImg" accept="image/*" multiple  @change="addImg">
                             </div>
                         </div>
                     </div>
@@ -176,7 +176,7 @@
                 <div class="sell-cell-content">
                     <div class="sell-strip">
                         <span class="sell-video">游戏帐号</span>
-                        <input type="number" placeholder="请输入游戏帐号" v-model="requestData.account">
+                        <input type="text" placeholder="请输入游戏帐号" v-model="requestData.account">
                     </div>
                     <div class="sell-strip">
                         <span class="sell-video">游戏密码</span>
@@ -199,7 +199,7 @@
                 <div class="sele-tit">已选标签（
                     <span v-text="sellData.seleTag.length"></span>/5）</div>
                 <div class="sele-con">
-                    <div class="sele-tag" v-for="item in sellData.seleTag" v-text="item.tag_content"></div>
+                    <div class="sele-tag" v-for="item in sellData.seleTag" v-text="item.tag_content" @click="seleTagCon(item.tag_id)"></div>
                 </div>
             </div>
             <!-- 可选择菜单 -->
@@ -499,6 +499,7 @@ export default {
             var that = this;
             var tagContent = that.sellData.tagContent;
             var seleTag = that.sellData.seleTag;
+            console.log(seleTag)
             for (var i in tagContent) {
                 if (tagContent[i].tag_id == tag_id) {
                     if (tagContent[i].ischeck) {

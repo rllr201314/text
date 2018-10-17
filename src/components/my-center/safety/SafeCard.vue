@@ -36,14 +36,17 @@
             <span class="statement-tit">声明：</span>
             <span>本认证信息已接入公安系统，对于一切认证身份均具有法律效力</span>
         </div>
+        <Loading  v-if="showLoading"></Loading>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import Loading from "@/components/multi/Loading";
 export default {
     name: "SafeCard",
     components: {
-        Header
+        Header,
+        Loading
     },
     data() {
         return {
@@ -57,6 +60,7 @@ export default {
                 }
             },
             username: "",
+            showLoading:false,
             id_num: "",
             card_num: "",
             mobile: "",
@@ -103,6 +107,7 @@ export default {
         },
         nextBtn() {
             var that = this;
+            that.showLoading = true;
             var request = {};
             request.name = that.username;
             request.id_no = that.id_num;
@@ -115,13 +120,14 @@ export default {
                     console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
-                            mui.toast(res.data.msg, { duration: "short",type: "div"});
-                            // 跳页面
+                            that.showLoading = false;
+                            mui.alert(res.data.msg,'提示','确认',function(){
+                                // 跳页面
+                                that.$router.push({name:'SafeSuccess'})
+                            },'div');
+                            
                         } else {
-                            mui.toast(res.data.msg, {
-                                duration: "short",
-                                type: "div"
-                            });
+                            mui.alert(res.data.msg,'提示','确认','','div');
                             if (res.data.code == 401) {
                                 that.$router.push({ name: "AccountLogin" });
                             }

@@ -4,7 +4,7 @@
         <div class="swiper-container" id="swiper-content">
             <div class="swiper-wrapper">
                 <div class="swiper-slide present-page" v-for="item in imgList">
-                    <img :src="item.img_url" alt="">
+                    <img :src="item.img_url" preview preview-text="">
                 </div>
             </div>
             <div class="swiper-pagination"></div>
@@ -25,7 +25,7 @@ export default {
                 loop:true,
                 autoplay : 3000,
                 // initialSlide :0,//第一个显示的图片默认为0
-                autoplayDisableOnInteraction:false,//用户操作完是否自动切换
+                autoplayDisableOnInteraction:true,//用户操作完是否自动切换
                 pagination : '.swiper-pagination',
             })
         }
@@ -35,6 +35,7 @@ export default {
         var time = setInterval(function(){
             if(that.imgList != ''){
                 that.swiper();
+                that.$previewRefresh()
                 clearInterval(time);
             }
         },300)

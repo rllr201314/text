@@ -367,6 +367,7 @@ export default {
     margin-bottom: 0.2rem;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
 }
 .goods-type {
     text-align: center;

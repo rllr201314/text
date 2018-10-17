@@ -95,29 +95,12 @@ export default {
                                 if(mobile){
                                     that.$store.commit("set_mobile",mobile);
                                 }
-                                that.$store.commit("changeLogin",'1')
-                                // mui.alert(
-                                //     res.data.msg,
-                                //     "提示",
-                                //     "确定",
-                                //     function() {
-                                //         // if(that.$router.currentRoute.params.redirect != undefined){
-                                //         //     that.$router.replace({
-                                //         //         name: that.$router.currentRoute.params.redirect
-                                //         //     });
-                                //         // }else{
-                                //         //     that.$router.push({
-                                //         //         name: "MyCenter"
-                                //         //     });
-                                //         // }
-                                //         that.$router.go(-1);
-                                        
-                                //     },
-                                //     "div"
-                                // );
-                                
                                 mui.toast(res.data.msg,{ duration:'short', type:'div' });
-                                that.$router.go(-1);
+                                if(that.$route.query.register == 1){
+                                    that.$router.go(-3);
+                                }else{
+                                    that.$router.go(-1);
+                                }
                             } else {
                                 mui.toast(res.data.msg,{ duration:'short', type:'div' });
                                 that.password = "";
@@ -132,9 +115,11 @@ export default {
         // 短信登录
         goVerifyCode() {
             var that =this;
-            that.$router.replace({ name: "CodeLogin",params: {
-                        redirect: that.$router.currentRoute.params.redirect
-                    }});
+            if(that.$route.query.register == 1){
+                that.$router.replace({ name: "CodeLogin",query:{register:1}});
+            }else{
+                that.$router.replace({ name: "CodeLogin",});
+            }
         },
         // 注册
         goRegister() {

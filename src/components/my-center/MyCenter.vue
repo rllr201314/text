@@ -98,12 +98,12 @@
                     <div class="vertical-bg"></div>
                     <div class="box-content-cell">
                         <div class="manage-des">冻结余额</div>
-                        <div class="manage-detail" v-text="myData.manageData.frostBalance"></div>
+                        <div class="manage-detail"><span v-text="myData.manageData.frostBalance"></span>元</div>
                     </div>
                     <div class="vertical-bg"></div>
                     <div class="box-content-cell">
                         <div class="manage-des">押金</div>
-                        <div class="manage-detail" v-text="myData.manageData.cashPledge"></div>
+                        <div class="manage-detail"><span v-text="myData.manageData.cashPledge"></span>元</div>
                     </div>
                 </div>
             </div>
@@ -159,8 +159,8 @@
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-
-                <div class="sell-strip">
+                <a href="https://web.jiaxincloud.com/gray/mobile.html?&thirdJson={}&bg=FD8159&dialogLogo=0&dialogType=1&dialogMode=1&lang=cn&blinkTitle=1&orgName=mglhodd3enu2mg&appName=kgh431&appChannel=20003&quoteUrl=https://web.jiaxincloud.com&pageTitle=看个号客服&pageUrl=https://web.jiaxincloud.com/onekey.html?id=mglhodd3enu2mg&appName=kgh431&appChannel=20003&alone=1&jump=true&jump=true">
+                    <div class="sell-strip">
                     <div class="left-strip service">
                         <img src="../../../static/img/my-center/service.png" alt="">
                         <span>联系客服</span>
@@ -169,6 +169,7 @@
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
+                </a>
             </div>
             <div class="strip-wrap">
                 <div class="sell-strip" @click="goSele('changePassword')">
@@ -214,6 +215,7 @@ export default {
                 }
             },
             myData: {
+                is_identify:'',is_bank:null,//实名认证-是否绑定银行卡
                 userStatus: 2,
                 userTypeOpt: {
                     usertype: true, //true是买家 false是卖家
@@ -346,16 +348,16 @@ export default {
                     ]
                 },
                 manageData: {
-                    usableBalance: "",
-                    frostBalance: "666元",
+                    usableBalance: "0",
+                    frostBalance: "0元",
                     cashPledge: "0元"
                 },
-                comNews: 19,
-                pactNews: 99,
+                comNews: '',
+                pactNews: '',
                 phoneNum: "",
                 sellNum: "",
                 buyNum: "",
-                integral: "2345"
+                integral: ""
             }
         };
     },
@@ -421,13 +423,25 @@ export default {
                     
                 } else if (flag == "commissionManage") {
                     //佣金管理
-                    that_r.push({ name: "CommissionManage" });
+                    // that_r.push({ name: "CommissionManage" });
                 } else if (flag == "assetsManage") {
                     //资产管理
                     that_r.push({ name: "AssetsManage" });
                 } else if (flag == "withdrawDeposit") {
-                    //提现
-                    that_r.push({ name: "WithdrawDeposit" });
+                    // 提现
+                    if(Number(that.myData.manageData.usableBalance) > 0){
+                        if(that.myData.is_identify == 1){
+                            if(that.myData.is_bank == 1){
+                                that_r.push({ name: "WithdrawDeposit" });
+                            }else{
+                                that.$router.push({name:'UserAuthentication',query:{type:that.myData.is_identify}})
+                            }
+                        }else{
+                            that.$router.push({name:'UserAuthentication',query:{type:that.myData.is_identify}})
+                        }
+                    }else{
+                        mui.toast('可提现金额不足', {duration: "short",type: "div"});
+                    }
                 } else if (flag == "b_unpaid") {
                     // 买家 头部导航栏
                     //待支付
@@ -463,10 +477,10 @@ export default {
                 } else if (flag == "voucher") {
                     // 买家 底部导航栏
                     //代金券
-                    that_r.push({ name: "Voucher" });
+                    // that_r.push({ name: "Voucher" });
                 } else if (flag == "myAuction") {
                     //我的竞拍
-                    that_r.push({ name: "MyAuction" });
+                    // that_r.push({ name: "MyAuction" });
                 } else if (flag == "bill") {
                     //分期账单
                     that_r.push({ name: "BillInstallment" });
@@ -514,28 +528,11 @@ export default {
                         that.myData.phoneNum = data.user_info.username;
                         that.myData.sellNum = data.user_info.sell_count;
                         that.myData.buyNum = data.user_info.buy_count;
-                        that.myData.manageData.usableBalance = data.user_info.total_money;
-                    }else if(res.data.code == 401){
-                        // that.$router.push({name: "AccountLogin"})
-                        mui.confirm(
-                                res.data.msg,
-                                "提示",
-                                ["取消", "确认"],
-                                e => {
-                                    if (e.index == 1) {
-                                        that.$router.push({
-                                            name: "AccountLogin",
-                                            params: {
-                                                redirect: "Details"
-                                            }
-                                        });
-                                    } else {
-                                        that.$router.go(-1);
-                                    }
-                                    console.log(e);
-                                },
-                                "div"
-                            );
+                        that.myData.manageData.usableBalance = Number(data.user_info.total_money);//可用余额
+                        that.myData.manageData.frostBalance = Number(data.user_info.limit_money);//冻结金额
+                        that.myData.manageData.cashPledge = Number(data.user_info.deposit);//押金
+                        that.myData.is_identify = data.user_info.is_identify;
+                        that.myData.is_bank = data.user_info.is_bank;
                     }
                 }
             }).catch((err)=>{
@@ -569,6 +566,7 @@ export default {
     padding-top:.88rem;
     position: relative;
     background:#f6f6f6;
+    min-height:100vh;
 }
 .mycenter-top {
     background-image: url(../../../static/img/my-center/h-bg.png);
@@ -588,7 +586,7 @@ export default {
     -moz-border-radius: 50%;
     border-radius: 50%;
     overflow: hidden;
-    margin: 0.3rem auto;
+    margin:0 auto  0.3rem;
 }
 .user-log img {
     width: 1rem;
@@ -848,6 +846,9 @@ export default {
 .service img {
     width: 0.27rem;
     height: 0.25rem;
+}
+.service span{
+    color:#666666;
 }
 .write img {
     width: 0.25rem;

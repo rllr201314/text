@@ -7,8 +7,10 @@
         </div>
         <div class="vertical"></div>
         <div class="consult" @click="toLink('refer')">
-            <img src="../../../static/img/dialog_ico.png" alt="">
-            <span>在线咨询</span>
+            <a href="https://web.jiaxincloud.com/gray/mobile.html?&thirdJson={}&bg=FD8159&dialogLogo=0&dialogType=1&dialogMode=1&lang=cn&blinkTitle=1&orgName=mglhodd3enu2mg&appName=kgh431&appChannel=20003&quoteUrl=https://web.jiaxincloud.com&pageTitle=看个号客服&pageUrl=https://web.jiaxincloud.com/onekey.html?id=mglhodd3enu2mg&appName=kgh431&appChannel=20003&alone=1&jump=true&jump=true">
+                <img src="../../../static/img/dialog_ico.png" alt="">
+                <span>在线咨询</span>
+            </a>
         </div>
         <div class="vertical"></div>
         <div class="sell" @click="toLink('sell')">
@@ -69,6 +71,9 @@
     .consult img{
         width:.28rem;
         height:.28rem;
+    }
+    .consult span{
+        color:#666666;
     }
     .sell img{
         width:.26rem;

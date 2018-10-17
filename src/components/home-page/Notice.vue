@@ -2,10 +2,19 @@
     <!-- 公告 -->
     <div class="notice-wrap">
         <div class="notice-top">
-            <div class="notice-title">公告</div>
+            <div class="title-left">
+                <img src="../../../static/img/goodscreen/vertical.png" alt="">
+                <span>资讯公告</span>
+            </div>
+            <div class="title-right" @click="goMessage">
+                <span>更多</span>
+                <img src="../../../static/img/order/next.png" alt="">
+            </div>
         </div>
         <div class="notice-content">
-            <div class="notice-content-text" v-for="item in text" v-text="item.name"></div>
+            <div class="notice-content-text" v-for="(item,index) in notice" @click="go_detail(item.article_id,item.type)">
+                <span class="orange_color" v-text="'['+item.type+']'"></span> <span v-text="item.title"></span><span class="right" v-text="item.create_time"></span>
+            </div>
         </div>
     </div>
 </template>
@@ -13,9 +22,17 @@
 <script>
     export default {
         name: "Notice",
+        props:['notice'],
         data(){
             return{
-                text:[{name:'1.2018-9-10看个号平台改版了'},{name:'1.2018-9-10看个号平台改版了'}]
+            }
+        },
+        methods:{
+            goMessage(){
+                this.$router.push({name:'Affiche'})
+            },
+            go_detail(id,type){
+                this.$router.push({name:'Affiche_Details',query:{article:id,type:type}})
             }
         }
     }
@@ -55,5 +72,41 @@
     }
     .notice-content-text{
         margin-top:.25rem;
+        position: relative;
     }
+    .right{
+        position: absolute;
+        top:0;
+        right:0;
+    }
+    .title-left {
+        display: inline-block;
+    }
+    .title-left span {
+        display: inline-block;
+        color: #333333;
+        font-size: 0.28rem;
+    }
+    .title-left img {
+        width: 0.15rem;
+        height: 0.35rem;
+        margin-left: 0.17rem;
+        vertical-align: middle;
+    }
+    .orange_color{
+        color:#FF7E4A;
+    }
+.title-right {
+    float: right;
+    margin-right:.2rem;
+}
+.title-right img {
+    width: 0.13rem;
+    height: 0.24rem;
+    vertical-align: middle;
+}
+.title-right span {
+    font-size: 0.24rem;
+    color: #999999;
+}
 </style>

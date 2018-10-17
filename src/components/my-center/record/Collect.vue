@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="bragin-con">
-            <div class="goods-strip" v-for="item in goodsInfo">
+            <div class="goods-strip" v-for="item in goodsInfo" @click="goDetail(item.goods_id)">
                 <div class="goods-strip-title">
                     <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
                     <div class="goods-type" v-else>代练号</div>
@@ -100,7 +100,13 @@ export default {
             }).catch((err) => {
                 console.log(err)
             })
-        }
+        },
+        goDetail(goods_id) {
+            this.$router.push({
+                name: "Details",
+                query: { goods_id: goods_id }
+            });
+        },
     },
     mounted(){
         var that = this;

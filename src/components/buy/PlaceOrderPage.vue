@@ -174,13 +174,18 @@
                 </div>
             </div>
         </div>
-        <div class="protocol" @click="lookFn">
-            <img :src="protocol?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
-            <div>
-                我已阅读
-                <span class="red-color">《看个号平台交易协议》</span>
+        <div class="protocol">
+            <img :src="protocol?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="" @click="lookFn">
+            <div>我已阅读<span class="red-color" @click="getProtocol">《看个号平台交易协议》</span>
             </div>
         </div>
+        <!-- 协议 -->
+        <div class="pop-view" v-show="showPro">
+            <div class="pop-view-box" v-html="protocalText"></div>
+            <div class="pop-view-btn" @click="hiddenPro('true')">确认已读</div>
+            <img class="hidden-pro" @click="hiddenPro('false')" src="../../../static/img/empty_ico.png" alt="">
+        </div>
+
         <div class="nextBtn" @click="goPayFn">下一步</div>
         <!-- 遮罩 -->
         <div class="orderShare" v-show="showOrderShare"></div>
@@ -220,6 +225,10 @@ export default {
                     title: "商品下单"
                 }
             },
+            
+            showPro:false,//是否显示协议
+            protocalText:'',//协议
+            protocol: true, //阅读协议
             showNoData:true,
             remaining_sum:'',
             goodsInfo: {},
@@ -272,7 +281,6 @@ export default {
             showCompact:false,
             down_price:null,//首付
             stage_num:null,//期数---
-            protocol: true, //阅读协议
             showDownPayBox: false, //首付选项显示
             showStageBox: false, //分期选项显示
             showInpDownPay: false, //自定义分期显示
@@ -291,6 +299,28 @@ export default {
         };
     },
     methods: {
+        // 协议
+        getProtocol(){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'protocol_safe').then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.protocalText = res.data.data;
+                        that.showPro = true;
+                        that.showOrderShare = true;
+                    }
+                }
+            })
+        },
+        hiddenPro(flag){
+            var that = this;
+            that.showPro = false;
+            that.showOrderShare = false;
+            if(flag == 'true'){
+                that.protocol = true;
+            }
+        },
         // 商品数量
         addbtn(flag) {
             var that = this;
@@ -347,12 +377,11 @@ export default {
         showOpera(opt) {
             if (opt == "downPay") {
                 this.showDownPayBox = true;
-
-                var mo = function(e) {
-                    e.preventDefault();
-                };
-                document.body.style.overflow = "hidden";
-                document.addEventListener("touchmove", mo, false); //禁止页面滑动
+                // var mo = function(e) {
+                //     e.preventDefault();
+                // };
+                // document.body.style.overflow = "hidden";
+                // document.addEventListener("touchmove", mo, false); //禁止页面滑动
             } else if (opt == "stage") {
                 this.showStageBox = true;
             }
@@ -426,12 +455,12 @@ export default {
             that.showDownPayBox = false; //隐藏分期首付选项
             that.showOrderShare = false; //隐藏遮罩
 
-            // 滚动条可移动
-            var mo = function(e) {
-                e.preventDefault();
-            };
-            document.body.style.overflow = ""; //出现滚动条
-            document.removeEventListener("touchmove", mo, false);
+            // // 滚动条可移动
+            // var mo = function(e) {
+            //     e.preventDefault();
+            // };
+            // document.body.style.overflow = ""; //出现滚动条
+            // document.removeEventListener("touchmove", mo, false);
         },
         // 选择分期--期数
         seleStage(opera) {
@@ -991,5 +1020,49 @@ input[type="number"] {
 
 .black-bg{
     background:rgba(255, 255,255, 1);
+}
+
+
+/* 协议 */
+.pop-view{
+    background:#ffffff;
+    position: fixed;
+    top:1.3rem;
+    left:.3rem;
+    right:.3rem;
+    z-index:15;
+    padding-top:.2rem;
+    border-radius: .1rem;
+}
+.pop-view-box{
+    padding:.2rem;
+    max-height:75vh;
+    overflow-y:scroll;
+}
+.pop-view-btn{
+    color: #ffffff;
+    font-size: 0.28rem;
+    margin: 0.3rem auto;
+    width: 6.5rem;
+    text-align: center;
+    line-height: 0.8rem;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    background: -webkit-linear-gradient(#fd915f, #fc534a);
+    background: -o-linear-gradient(#fd915f, #fc534a);
+    background: -moz-linear-gradient(#fd915f, #fc534a);
+    background: linear-gradient(to right, #fd915f, #fc534a);
+}
+.hidden-pro{
+    width:.24rem;
+    height:.24rem;
+    background:#e5e5e5;
+    position: absolute;
+    top:.1rem;
+    right:.15rem;
 }
 </style>

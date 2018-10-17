@@ -60,6 +60,8 @@ export default {
                             that.num = res.data.data.length;
                             that.signatureData = res.data.data;
                             YHT.init(that.signatureData[0].app_id,that.getInit);
+                        }else{
+                            that.showNoData = true;
                         }
                     }
                 }

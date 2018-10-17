@@ -3,8 +3,8 @@
     <div class="swiper-index-wrap">
         <div class="swiper-container" id="indexSwiper">
             <div class="swiper-wrapper">
-                <div class="swiper-slide" v-for="(item,index) in imgList">
-                    <img :src="item.name" alt="">
+                <div class="swiper-slide" v-for="(item,index) in swiperSrc">
+                    <img :src="item.img" alt="" @click="jump(item.img_url)">
                 </div>
             </div>
         </div>
@@ -14,9 +14,15 @@
 <script>
     export default {
         name: "SwiperContent",
+        props:['swiperSrc'],
         data(){
             return{
-                imgList:[{name:'static/img/swiper_cont.png'},{name:'static/img/mh_ico.png'},{name:'static/img/swiper_cont.png'},{name:'static/img/swiper_cont.png'}]
+                imgList:[{img:'static/img/swiper_cont.png'},{img:'static/img/mh_ico.png'},{img:'static/img/swiper_cont.png'},{img:'static/img/swiper_cont.png'}]
+            }
+        },
+        methods:{
+            jump(url){
+                this.$router.push({path:url})
             }
         },
         mounted(){
@@ -24,7 +30,7 @@
                 loop:true,
                 autoplay : 3000,
                 // initialSlide :0,//第一个显示的图片默认为0
-                autoplayDisableOnInteraction:false,//用户操作完是否自动切换
+                autoplayDisableOnInteraction:true,//用户操作完是否自动切换
 
                 effect : 'coverflow',//切换方式
 

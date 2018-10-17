@@ -9,7 +9,7 @@
             <div class="safe-cell success-content">
                 <img src="../../../../static/img/my-center/safe/success.png" alt="">
                 <div>恭喜您认证已通过</div>
-                <div class="success">完成</div>
+                <div class="success" @click="goMycenter">完成</div>
             </div>
         </div>
     </div>
@@ -33,6 +33,11 @@ export default {
                 }
             }
         };
+    },
+    methods:{
+        goMycenter(){
+            this.$router.push({name:'MyCenter'})
+        }
     }
 };
 </script>
@@ -40,6 +45,7 @@ export default {
 .safe-authentic-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .safe-authentic-content {
     padding: 0.2rem;

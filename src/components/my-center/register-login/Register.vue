@@ -22,12 +22,18 @@
                 <img :src="registerData.protocol?'../../../../static/img/goodscreen/okcheck.png':'../../../../static/img/goodscreen/nocheck.png'" alt="" @click="seleProtocol">
                 <div>
                     我已阅读
-                    <span class="red-color">《看个号用户基础服务协议》</span>
+                    <span class="red-color" @click="getProtocol">《看个号用户基础服务协议》</span>
                 </div>
             </div>
-            <div class="nextBtn" @click="loginFn('register')">登录</div>
+            <div class="nextBtn" @click="loginFn('register')">注册</div>
             <div class="goLogin" @click="loginFn('login')">登录已有帐号</div>
         </div>
+        <div class="pop-view" v-show="showPro">
+            <div class="pop-view-box" v-html="protocalText"></div>
+            <div class="pop-view-btn" @click="hiddenPro('true')">确认已读</div>
+            <img class="hidden-pro" @click="hiddenPro('false')" src="../../../../static/img/empty_ico.png" alt="">
+        </div>
+        <div class="share" v-show="showPro"></div>
     </div>
 </template>
 <script>
@@ -48,6 +54,8 @@ export default {
                     title: "注册"
                 }
             },
+            showPro:false,
+            protocalText:'',
             hintCode: "获取验证码",
             isGetCode: true,
             password: "",
@@ -61,6 +69,25 @@ export default {
     methods: {
         seleProtocol() {
             this.registerData.protocol = !this.registerData.protocol;
+        },
+        getProtocol(){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'protocol_reg').then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.protocalText = res.data.data;
+                        that.showPro = true;
+                    }
+                }
+            })
+        },
+        hiddenPro(flag){
+            var that = this;
+            that.showPro = false;
+            if(flag == 'true'){
+                that.registerData.protocol = true;
+            }
         },
         getCode() {
             var that = this;
@@ -146,6 +173,14 @@ export default {
                         "",
                         "div"
                     );
+                }else if(!that.registerData.protocol){
+                    mui.alert(
+                        "请阅读并同意《看个号用户基础服务协议》",
+                        "提示",
+                        "确定",
+                        "",
+                        "div"
+                    );
                 } else {
                     that.$axios
                         .post(process.env.API_HOST+"do_register", {
@@ -163,20 +198,12 @@ export default {
                                         "提示",
                                         "确定",
                                         function() {
-                                            that.$router.push({
-                                                name: "MyCenter"
-                                            });
+                                            that.$router.push({name: "AccountLogin",query:{register:1}});
                                         },
                                         "div"
                                     );
                                 } else {
-                                    mui.alert(
-                                        res.data.msg,
-                                        "提示",
-                                        "确定",
-                                        "",
-                                        "div"
-                                    );
+                                    mui.alert(res.data.msg,"提示","确定","","div");
                                     that.verify_code = "";
                                     that.password = "";
                                 }
@@ -330,6 +357,58 @@ input[type="number"] {
 :-ms-input-placeholder {
     color: #999999;
     font-size: 0.26rem;
+}
+
+
+.pop-view{
+    background:#ffffff;
+    position: fixed;
+    top:1.3rem;
+    left:.3rem;
+    right:.3rem;
+    z-index:15;
+    padding-top:.2rem;
+    border-radius: .1rem;
+}
+.pop-view-box{
+    padding:.2rem;
+    max-height:75vh;
+    overflow-y:scroll;
+}
+.pop-view-btn{
+    color: #ffffff;
+    font-size: 0.28rem;
+    margin: 0.3rem auto;
+    width: 6.5rem;
+    text-align: center;
+    line-height: 0.8rem;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    background: -webkit-linear-gradient(#fd915f, #fc534a);
+    background: -o-linear-gradient(#fd915f, #fc534a);
+    background: -moz-linear-gradient(#fd915f, #fc534a);
+    background: linear-gradient(to right, #fd915f, #fc534a);
+}
+.hidden-pro{
+    width:.24rem;
+    height:.24rem;
+    background:#e5e5e5;
+    position: absolute;
+    top:.1rem;
+    right:.15rem;
+}
+.share{
+    background:rgba(0, 0, 0, 0.5);
+    z-index:10;
+    position: fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
 }
 </style>
 

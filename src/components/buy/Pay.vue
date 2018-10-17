@@ -104,13 +104,13 @@
         </div>
         <div class="nextBtn" @click="goPayFn" v-text="ok_text" v-if="showBtn"></div>
         <Loading v-if="showLoading"></Loading>
-        <PaySuccess v-if="showPaySuccess"></PaySuccess>
+        <!-- <PaySuccess v-if="showPaySuccess"></PaySuccess> -->
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
 import Loading from "@/components/multi/Loading";
-import PaySuccess from "@/components/multi/PaySuccess";
+// import PaySuccess from "@/components/multi/PaySuccess";
 export default {
     name: "Pay",
     data() {
@@ -184,7 +184,7 @@ export default {
     components: {
         Header,
         Loading,
-        PaySuccess
+        // PaySuccess
     },
     methods: {
         Balace(flag){
@@ -330,7 +330,8 @@ export default {
                 that.showLoading = false;
                 if(res.status == 200){
                     if(res.data.code == 200){
-                        mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        // mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        mui.alert(res.data.msg,'提示','确认','','div');
                         that.componentsData.showTitle.goBack = 2;
                         if(that.is_line){
                             // 跳转页面 第三方接口
@@ -347,7 +348,8 @@ export default {
                             }
                         }
                     }else if(res.data.code == 201){//余额支付完成
-                        mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        // mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        mui.alert(res.data.msg,'提示','确认','','div');
                         that.$router.go(-1);
                     }else if(res.data.code == 401){
                         that.$router.push({
@@ -357,7 +359,8 @@ export default {
                             }
                         });
                     }else{
-                        mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        // mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        mui.alert(res.data.msg,'提示','确认','','div');
                     }
                 }
             }).catch((err)=>{

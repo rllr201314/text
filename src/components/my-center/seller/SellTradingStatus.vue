@@ -23,7 +23,7 @@
                     <div class="left-operate">
                         <img src="../../../../static/img/my-center/user_ico.png" alt="">
                         <span>买家</span>
-                        <span v-text="item.phone"></span>
+                        <span v-text="item.buyer_username"></span>
                     </div>
                     <div class="right-operate">
                         <span class="pay" @click="goStatus(item.order_id)">查看</span>

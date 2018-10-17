@@ -73,6 +73,7 @@ export default {
                         if (res.data.code == 200) {
                             if(res.data.data == ''){
                                 that.showNoData = true;
+                                that.goodsData = [];
                             }else{
                                 that.showNoData = false;
                                 that.goodsData = res.data.data;
