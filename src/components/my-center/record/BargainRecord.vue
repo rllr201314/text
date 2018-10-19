@@ -437,6 +437,7 @@ export default {
 .goods-ico {
     float: right;
     text-align: right;
+    display:flex;
 }
 .goods-ico img {
     width: 0.36rem;

@@ -26,7 +26,7 @@
                     <input type="number" placeholder="请填写您实名开户的银行卡账号" v-model="card_num">
                 </div>
                 <div class="safe-strip">
-                    <span class="strip-left">联系电话</span>
+                    <span class="strip-left">银行卡预留电话</span>
                     <input type="number" placeholder="请填写您的联系电话" v-model="mobile">
                 </div>
             </div>
@@ -127,6 +127,7 @@ export default {
                             },'div');
                             
                         } else {
+                            that.showLoading = false;
                             mui.alert(res.data.msg,'提示','确认','','div');
                             if (res.data.code == 401) {
                                 that.$router.push({ name: "AccountLogin" });

@@ -22,7 +22,7 @@
                     </ul>
                 </div>
                 <div>
-                    <input type="text" placeholder="请输入游戏名称" v-model="goods_title">
+                    <input type="text" placeholder="请输入商品名称" v-model="goods_title">
                 </div>
             </div>
             <div class="search" @click="getdiscuss('search')">搜索</div>
@@ -43,9 +43,9 @@
                             <div class="goods-strip-content">
                                 <div class="goods-des" v-text="item.goods_title"></div>
                                 <div class="goods-ico">
-                                    <img v-if="item.is_safe == 2" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
-                                    <img v-if="item.is_stage == 2" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
-                                    <img v-if="item.is_check == 2" src="../../../../static/img/goodscreen/verify.png" alt="">
+                                    <img v-if="item.is_safe == 1" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
+                                    <img v-if="item.is_stage == 1" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
+                                    <img v-if="item.is_check == 1" src="../../../../static/img/goodscreen/verify.png" alt="">
                                     <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
                                 </div>
                             </div>
@@ -437,6 +437,7 @@ export default {
 .goods-ico {
     float: right;
     text-align: right;
+    display:flex;
 }
 .goods-ico img {
     width: 0.36rem;

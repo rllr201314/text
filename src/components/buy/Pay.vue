@@ -104,6 +104,7 @@
         </div>
         <div class="nextBtn" @click="goPayFn" v-text="ok_text" v-if="showBtn"></div>
         <Loading v-if="showLoading"></Loading>
+        <div id="pay_card"></div>
         <!-- <PaySuccess v-if="showPaySuccess"></PaySuccess> -->
     </div>
 </template>
@@ -178,7 +179,7 @@ export default {
                     
                     lastTime: "22:22"
                 }
-            }
+            },
         };
     },
     components: {
@@ -335,6 +336,8 @@ export default {
                         that.componentsData.showTitle.goBack = 2;
                         if(that.is_line){
                             // 跳转页面 第三方接口
+                            $('#pay_card').html(res.data.data.pay_url);//银联
+                            $('#pay_form').submit();//银联
                         }else{//线下
                             var data = res.data.data;
                             that.off_line = false;
@@ -376,7 +379,7 @@ export default {
                 console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
-                        that.remaining_sum = res.data.data.remain_amount;
+                        that.remaining_sum = Number(res.data.data.remain_amount);
                         that.price = res.data.data.order_amount;
                         that.old_price = res.data.data.order_amount;
                         that.hint = '（'+res.data.msg+'）';
@@ -435,7 +438,7 @@ export default {
                     that.goods_info = JSON.parse(request);
                     that.price = that.goods_info.price;
                     that.old_price = that.price;
-                    that.remaining_sum = that.goods_info.remaining_sum;
+                    that.remaining_sum = Number(that.goods_info.remaining_sum);
                 } else {
                     that.$router.go(-1);
                 }
@@ -465,7 +468,7 @@ export default {
                     that.stage_info = JSON.parse(stages);
                     that.price = that.stage_info.price;
                     that.old_price = that.stage_info.price;
-                    that.remaining_sum = that.stage_info.remaining_sum;
+                    that.remaining_sum = Number(that.stage_info.remaining_sum);
                 }else{
                     that.$router.go(-1);
                 }

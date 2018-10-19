@@ -7,6 +7,23 @@
             <div :class="seleTit == 1?'red-border':''" @click="seleTitFn(1)">审核中</div>
             <div :class="seleTit == 2?'red-border':''" @click="seleTitFn(2)">已下架</div>
         </div>
+
+        <div class="search-wrap">
+            <div class="sele-type" @click="showPopver('category')">
+                <span v-text="category_text"></span>
+                <img src="../../../static/img/goodscreen/downsolid.png" alt="">
+            </div>
+            <div id="category" class="mui-popover">
+                <ul class="mui-table-view">
+                    <li class="mui-table-view-cell" v-for="item in category_type" v-text="item.game_name" @click="showText('category',item.category_id)"></li>
+                </ul>
+            </div>
+            <div>
+                <input type="text" placeholder="请输入商品名称" v-model="goods_name">
+            </div>
+            <div class="search" @click="getData(seleTit,'refresh','search')">搜索</div>
+        </div>
+
         <div class="list-box-wrap" v-if="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 3">
                 <div class="minirefresh-scroll list">
@@ -160,10 +177,55 @@ export default {
             auditData: [],
             removeData: [],
             pages: 1,
-            num_page: 1
+            num_page: 1,
+
+            
+            
+            category_text: "游戏类型",
+            category_type: [],
+            goods_name:'',
+            c_id: "",
         };
     },
     methods: {
+        // 显示弹出框
+        showPopver(flag) {
+            mui(`#${flag}`).popover("toggle");
+        },
+        // 获取游戏类型
+        getCategory() {
+            var that = this;
+            that.$axios
+                .post(process.env.API_HOST+"category")
+                .then(function(res) {
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            var category = res.data.data.is_hot;
+                            category.unshift({
+                                category_id: "",
+                                game_name: "全部"
+                            });
+                            that.category_type = category;
+                            console.log(that.category_type);
+                        }
+                    }
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
+        },// 选择隐藏弹框
+        showText(flag, val) {
+            var that = this;
+            mui(`#${flag}`).popover("toggle");
+            var categoryArr = that.category_type;
+            for (var i in categoryArr) {
+                if (val == categoryArr[i].category_id) {
+                    that.category_text = categoryArr[i].game_name;
+                    that.c_id = categoryArr[i].category_id;
+                    break;
+                }
+            }
+        },
         seleTitFn(opt) {
             var that = this;
             that.seleTit = opt;
@@ -181,14 +243,18 @@ export default {
                 }
             }
         },
-        getData(opt, flag) {
+        getData(opt, flag,search) {
             console.log(opt+'--'+flag);
             var that = this;
+            var request = {};
+            request.page = that.num_page;
+            request.goods_status = opt;
+            if(search == 'search'){
+                request.category_id = that.c_id;
+                request.goods_title = that.goods_name;
+            }
             that.$axios
-                .post(process.env.API_HOST+"goods_information", {
-                    page: that.num_page, 
-                    goods_status: opt
-                })
+                .post(process.env.API_HOST+"goods_information",request)
                 .then(res => {
                     console.log(res);
                     if (res.status == 200) {
@@ -365,6 +431,7 @@ export default {
         var that = this;
         that.getData(that.seleTit, "refresh");
         that.refresh();
+        that.getCategory();
     }
 };
 </script>
@@ -587,5 +654,77 @@ export default {
 
 .nodata{
     padding-top:1.68rem;
+}
+
+
+
+
+
+
+
+
+.search-wrap {
+    padding: 0.3rem 0 0.3rem 0.2rem;
+    font-size: 0.24rem;
+    color: #333333;
+    position: fixed;
+    top:1.68rem;
+    left:0;
+    right:0;
+    max-width:12rem;
+    margin:0 auto;
+    z-index:999;
+    display:flex;
+    justify-content:space-around;
+    align-items: center;
+}
+.sele-type {
+    width: 2.3rem;
+    height: 0.5rem;
+    line-height: 0.5rem;
+    -webkit-border-radius: 0.06rem;
+    -moz-border-radius: 0.06rem;
+    border-radius: 0.06rem;
+    border: 1px solid #d2d2d2;
+    padding: 0 0.1rem;
+    display: inline-block;
+    position: relative;
+}
+#category {
+    top: .8rem;
+    left: .35rem;
+    width: 2.3rem;
+}
+.sele-type img {
+    width: 0.2rem;
+    height: 0.1rem;
+    position: absolute;
+    top: calc(50% - 0.05rem);
+    right: 0.2rem;
+}
+.search {
+    font-size: 0.22rem;
+    display: inline-block;
+    width: 0.65rem;
+    height: 0.44rem;
+    background: #fe7649;
+    color: #ffffff;
+    text-align: center;
+    line-height: 0.44rem;
+    -webkit-border-radius: 0.04rem;
+    -moz-border-radius: 0.04rem;
+    border-radius: 0.04rem;
+    -webkit-box-shadow: 0.01rem 0.02rem 0.1rem #fe7649;
+    -moz-box-shadow: 0.01rem 0.02rem 0.1rem #fe7649;
+    box-shadow: 0.01rem 0.02rem 0.1rem #fe7649;
+}
+
+input {
+    margin: 0;
+    padding: 0.1rem;
+    font-size: 0.24rem;
+    /* border: none; */
+    width: 3.5rem;
+    height: 0.5rem;
 }
 </style>

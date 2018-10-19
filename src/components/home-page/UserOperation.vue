@@ -6,8 +6,8 @@
             <div>账号</div>
         </div>
         <div class="cell user-level">
-            <img src="../../../static/img/game_level_ico.png" alt="">
-            <div>代练</div>
+            <img src="../../../static/img/rent.png" alt="">
+            <div>租号</div>
         </div>
         <div class="cell user-stages" @click="seleOpt('stage')"> 
             <img src="../../../static/img/stages_ico.png" alt="">
@@ -39,8 +39,12 @@
                 }else if(flag == 'active'){
                     that.$router.push({name:'ActivePage'})
                 }else if(flag == 'stage'){
-                    
-                    that.$router.push({ name: "BillInstallment" });
+                    // if(that.$store.token){
+                        that.$router.push({ name: "BillInstallment" });
+                    // }else{
+                    //     mui.toast('请先登录',{ duration:'short', type:'div' });
+                    //     that.$router.push({name: 'AccountLogin'});
+                    // }
                 }
             }
         }

@@ -5,11 +5,11 @@
             <div class="sortTit">
                 <span class="titText">出价记录</span>
                 <div class="sort-wrap">
-                    <div class="sele-sort">
+                    <div class="sele-sort" @click="sortFn('price')">
                         <img src="../../../../static/img/goodscreen/sort_ico.png" alt="">
                         <span>按照价格排序</span>
                     </div>
-                    <div class="sele-sort">
+                    <div class="sele-sort" @click="sortFn('time')">
                         <img src="../../../../static/img/goodscreen/sort_ico.png" alt="">
                         <span>按照时间排序</span>
                     </div>
@@ -61,10 +61,39 @@ export default {
                 }
             },
             showNoData:false,
-            messageData:[]
+            messageData:[],
+            sort_price:'',
+            is_price:true,//第一次点降序
+            is_time:false,//默认是降序 所以再点的时候就是升序
+            sort_time:1,//1-降序 2-升序
         };
     },
     methods:{
+        sortFn(flag){
+            var that = this;
+            if(flag == 'price'){
+                if(that.is_price){
+                    that.sort_price = 1;
+                    that.is_price = false;
+                    mui.toast('价格降序',{ duration:'short', type:'div' });
+                }else{
+                    that.sort_price = 2;
+                    that.is_price = true
+                    mui.toast('价格升序',{ duration:'short', type:'div' });
+                }
+            }else if(flag == 'time'){
+                if(that.is_time){
+                    that.sort_time = 1;
+                    that.is_time = false;
+                    mui.toast('时间降序',{ duration:'short', type:'div' });
+                }else{
+                    that.sort_time = 2;
+                    that.is_time = true;
+                    mui.toast('时间升序',{ duration:'short', type:'div' });
+                }
+            };
+            that.getData();
+        },
         Agree(flag,id){
             var that = this;
             var opt;
@@ -91,7 +120,9 @@ export default {
         getData(){
             var that = this;
             that.$axios.post(process.env.API_HOST+"discuss_msg",{
-                goods_id:that.$route.query.goods_id
+                goods_id:that.$route.query.goods_id,
+                sort_price:that.sort_price,
+                sort_time:that.sort_time
             }).then(function(res){
                 console.log(res)
                 if(res.status == 200){

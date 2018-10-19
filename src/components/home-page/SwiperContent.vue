@@ -17,20 +17,24 @@
         props:['swiperSrc'],
         data(){
             return{
-                imgList:[{img:'static/img/swiper_cont.png'},{img:'static/img/mh_ico.png'},{img:'static/img/swiper_cont.png'},{img:'static/img/swiper_cont.png'}]
+                imgList:[{img:'static/img/swiper_cont.png',img_url:'https://www.baidu.com'},{img:'static/img/mh_ico.png'},{img:'static/img/swiper_cont.png'},{img:'static/img/swiper_cont.png'}]
             }
         },
         methods:{
             jump(url){
-                this.$router.push({path:url})
+                // this.$router.push({path:url})
+                window.location.href = url;
             }
         },
         mounted(){
-            var mySwiper = new Swiper ('#indexSwiper', {
+            var that = this;
+            that.mySwiper = new Swiper ('#indexSwiper', {
                 loop:true,
                 autoplay : 3000,
                 // initialSlide :0,//第一个显示的图片默认为0
-                autoplayDisableOnInteraction:true,//用户操作完是否自动切换
+                observer:true,//修改swiper自己或子元素时，自动初始化swiper
+                observeParents:true,//修改swiper的父元素时，自动初始化swiper
+                autoplayDisableOnInteraction:false,//用户操作完是否自动切换
 
                 effect : 'coverflow',//切换方式
 
@@ -45,7 +49,14 @@
                     modifier: 1,
                     slideShadows : false,
                 }
-            })
+            });
+            var time = setInterval(function(){
+                if(that.swiperSrc){
+                    that.mySwiper.startAutoplay()//重新开始轮播
+                    that.mySwiper.reLoop()//重新计算slides个数
+                    clearInterval(time);
+                }
+            },500)
         }
     }
 </script>
@@ -53,6 +64,7 @@
 <style scoped>
 #indexSwiper{
     width:100%;
+    padding-top:.2rem;
 }
 .swiper-slide{
     width:6.3rem;

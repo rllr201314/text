@@ -21,7 +21,7 @@
                     <div class="withdraw-strip">
                         <div class="left-strip">可提现金额</div>
                         <div class="right-strip">
-                            <span>￥</span><span v-text="withdrawInfo.remain_amount"></span>
+                            <span>￥</span><span v-text="Number(withdrawInfo.remain_amount)"></span>
                             <span class="blue-color" @click="withdrawAll('balance')">全部提取</span>
                         </div>
                     </div>
@@ -121,7 +121,7 @@ import Loading from "@/components/multi/Loading";
                     if(price < 1){
                         mui.toast('提现金额不能小于1', {duration: "short",type: "div"});
                         return false;
-                    }else if(price > that.withdrawInfo.remain_amount){
+                    }else if(Number(price) > Number(that.withdrawInfo.remain_amount)){
                         mui.toast('提现金额不能大于余额', {duration: "short",type: "div"});
                         return false;
                     }else{
@@ -145,7 +145,8 @@ import Loading from "@/components/multi/Loading";
                     console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){
-                            that.getData();
+                            // that.getData();
+                            that.$router.go(-1);
                         }
                         that.showLoading = false;
                         that.balance_price = '';

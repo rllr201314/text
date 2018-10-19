@@ -31,7 +31,7 @@
                 <img src="../../../../static/img/goods-details/right_solid.png" alt="">
             </div>
             <div class="login-type-content">
-                <img class="wechat" src="../../../../static/img/my-center/wx_ico.png" alt="">
+                <img class="wechat" src="../../../../static/img/my-center/wx_ico.png" alt="" @click="wxLogin" v-if="iswechat || agent_type == 1">
                 <img src="../../../../static/img/my-center/qq_ico.png" alt="">
             </div>
         </div>
@@ -57,8 +57,28 @@ export default {
                 }
             },
             phone: "",
-            password: ""
+            password: "",
+            authUrl:'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb71e735dd0db7b41&redirect_uri=http%3a%2f%2f192.168.1.177%3a8800%2faccount-login&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect',//重定向地址得换
+            agent_type:null,//1是pc/2是移动
+            iswechat:false,//是不是微信浏览器
         };
+    },
+    created(){
+        if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+            this.agent_type = 2;
+        } else {
+            this.agent_type = 1;
+        }
+        var ua = window.navigator.userAgent.toLowerCase();
+        if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+            this.iswechat =  true;
+        }else{
+            this.iswechat =  false;
+        }
+        var code = this.getUrlParam('code');
+        if (code) {
+            this.getAuthInfo(code);
+        }
     },
     methods: {
         gobake(){
@@ -110,6 +130,35 @@ export default {
                     .catch(function(error) {
                         console.log(error);
                     });
+            }
+        },
+        // 获取code
+        getUrlParam(key) {
+            var reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        },
+        // 发送token
+        getAuthInfo(code) {
+            var that = this;
+            that.$axios.post(process.env.API_HOST+"mp_auth",{
+                code:code
+            }).then((res)=>{
+                // 部署完成后测试-------------------------------------------------------
+            }).catch((err)=>{
+                console.log(err)
+            })
+        },
+        // 微信登录
+        wxLogin(){
+            var that = this;
+            if(that.agent_type == 1){
+
+            }else if(that.agent_type == 2){
+                if(that.iswechat){//是微信浏览器
+                    window.location.href = this.authUrl;
+                }
             }
         },
         // 短信登录

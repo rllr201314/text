@@ -179,7 +179,7 @@
                 </div>
             </div>
             <div class="screen-type-bottom">
-                <div class="ok-screen-btn" @click="okScreen">确认</div>
+                <div class="ok-screen-btn" @click="okScreen('flag')">确认</div>
                 <div class="no-screen-btn" @click="cancleScreen">取消</div>
             </div>
         </div>
@@ -542,7 +542,7 @@ export default {
                 screenbottom[i].tit_bottom_src = "./static/img/goodscreen/downsolid.png";
                 screenbottom[i].ischeck = false;
             }
-            that.okScreen('no');//传参是为了不让重复调用
+            that.okScreen();//传参是为了不让重复调用
         },
         // 选择账号类型
         seleAccount(value) {
@@ -870,7 +870,7 @@ export default {
             that_r.is_safe = that.is_safe;
             that_r.role_level = that.role_level;
             that.getGoodsInfo(that.request);
-            if(!flag){
+            if(flag){
                that.hiddenScreenFun(); //隐藏筛选
             }
         },

@@ -9,12 +9,18 @@
                     <span>累计安全交易<span v-text="flow.count_info"></span>笔</span>
                 </div>
                 <div class="info-bottom">
-                    <span>【<span v-text="flow.order_info.game_name"></span>】</span>
-                    <span><span v-text="flow.order_info.goods_title"></span>交易成功</span>
+                    <vueSeamlessScroll :data="flag?flow.order_info:list" class="seamless-warp" :class-option="defaultOption">
+                        <ul  class="stript-info">
+                            <li v-for="(item,index) in flow.order_info" :key="index" class="stript">
+                                <span>【<span v-text="item.game_name"></span>】</span>
+                                <span><span class="goods-title" v-text="item.goods_title"></span>交易成功</span>
+                                <div class="lase-price">
+                                    <span class="red-color">￥<span v-text="Number(item.order_amount)"></span></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </vueSeamlessScroll>
                 </div>
-            </div>
-            <div class="lase-price">
-                <span class="red-color">￥<span v-text="Number(flow.order_info.order_amount)"></span></span>
             </div>
         </div>
         <div class="safe-wrap"  v-if="flow.safe">
@@ -24,30 +30,85 @@
                     <span class="last-text">保险理赔</span>
                 </div>
                 <div class="info-bottom">
-                    <img src="../../../static/img/safe_ico.png" alt="">
-                    <span>xxxxxxx交易成功</span>
+                    <vueSeamlessScroll :data="flag?flow.safe_info:list" class="seamless-warp" :class-option="safeOption">
+                        <ul  class="stript-info">
+                            <li v-for="(item,index) in flow.safe_info" :key="index" class="stript">
+                                <span class="goods-title" v-text="item.goods_title"></span>
+                                 <div class="lase-price">
+                                    <span>获得保险赔偿</span>
+                                    <span  class="red-color">
+                                        ￥2000
+                                    </span>
+                                </div>
+                            </li>
+                        </ul>
+                    </vueSeamlessScroll>
                 </div>
-            </div>
-            <div class="lase-price">
-                <span>获得保险赔偿</span>
-                <span  class="red-color">
-                    ￥2000
-                </span>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    export default {
-        name: "LastSale",
-        props:['flow'],
-        data(){
-            return {
-                num:'1234'
-            }
+import vueSeamlessScroll from 'vue-seamless-scroll'
+export default {
+    name: "LastSale",
+    props:['flow'],
+    data(){
+        return {
+            flag:false,
+            list:[]
         }
+    },
+    components:{
+        vueSeamlessScroll
+    },
+    computed:{
+        defaultOption:function(){
+            return {
+                step:0.2, //步长 越大滚动速度越快
+                limitMoveNum:3, //启动无缝滚动最小数据量 this.dataList.length
+
+                hoverStop: false, //是否启用鼠标hover控制
+                direction: 1, //1 往上 0 往下
+                openWatch: true, //开启data实时监听
+                singleHeight: 0, //单条数据高度有值hoverStop关闭
+                waitTime: 1000 //单步停止等待时间
+
+            }
+        },
+        safeOption:function(){
+            return {
+                step:0.1, //步长 越大滚动速度越快
+                limitMoveNum:3, //启动无缝滚动最小数据量 this.dataList.length
+
+                hoverStop: false, //是否启用鼠标hover控制
+                direction: 1, //1 往上 0 往下
+                openWatch: true, //开启data实时监听
+                singleHeight: 0, //单条数据高度有值hoverStop关闭
+                waitTime: 1000 //单步停止等待时间
+
+            }
+        }
+    },
+    mounted(){
+        var that = this;
+        var time =setInterval(function(){
+            if(that.flow.order_info){
+                clearInterval(time);
+                that.flag = true;
+                console.log(that.flow);
+            }
+        },500);
+        var time1 =setInterval(function(){
+            if(that.flow.safe_info){
+                clearInterval(time1);
+                that.flag = true;
+                console.log(that.flow);
+            }
+        },500)
     }
+}
 </script>
 
 <style scoped>
@@ -61,12 +122,13 @@
         width:.5rem;
         height: .56rem;
         margin-right: .27rem;
+        vertical-align: middle;
     }
     .sage-img{
-        
         width:.5rem;
         height: .64rem;
         margin-right: .27rem;
+        vertical-align: middle;
     }
     .last-text{
         color:#FC604E;
@@ -79,6 +141,18 @@
         color:#666666;
         font-size: .24rem;
         display: inline-block;
+        vertical-align: middle;
+    }
+    .seamless-warp{
+        height:.4rem;
+        overflow: hidden;
+    }
+    .stript-info{
+        list-style: none;
+        width:6rem;
+    }
+    .stript{
+        position: relative;;
     }
     .lase-price{
         font-size: .24rem;
@@ -99,5 +173,12 @@
     }
     .info-bottom span{
         vertical-align: middle;
+    }
+    .goods-title{
+        display: inline-block;
+        max-width:2rem;
+        overflow: hidden;
+        white-space:nowrap;/*不显示的地方用省略号...代替*/
+        text-overflow:ellipsis;/* 支持 IE */
     }
 </style>

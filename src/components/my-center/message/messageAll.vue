@@ -44,7 +44,7 @@ export default {
         };
     },
     components: {
-        Header
+        Header,NoData
     },
     methods: {
         goDetail(data){

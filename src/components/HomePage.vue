@@ -10,16 +10,17 @@
           <UserOperation></UserOperation>
           <GameDivision></GameDivision>
           <HotGame v-bind:hot_game="hot_game"></HotGame>
-          <LastSale v-bind:flow="{sale:false,safe:true}"></LastSale>
+          <LastSale v-bind:flow="{sale:false,safe:true,safe_info}"></LastSale>
           <Notice v-bind:notice="notice"></Notice>
           <InsuranceCell></InsuranceCell>
       </div>
       <UserHelp></UserHelp>
       <HotLine></HotLine>
       <Footer></Footer>
-      <div class="open-active" @click="showActive()">
+      <div class="open-active" @click="showActive()" :style="iconstyle">
           <img src="../../static/img/active_ico.png" alt="">
       </div>
+      
       <div class="active-page" v-show="isShowShage">
           <div class="active-title">商品活动</div>
           <div class="active-content">
@@ -67,10 +68,12 @@ export default {
                 showBg:false,
                 title:"",
             },
+            iconTranslateX:0,//活动图片往左
             isShowShage:false,//是否显示遮罩和活动弹框
             swiperSrc:'',//轮播图
             hot_game:'',//热门游戏
             order_info:'',//近期交易
+            safe_info:'',//保险理赔
             count_info:'',//累计交易
             notice:'',//公告
             activeData:[{
@@ -87,12 +90,28 @@ export default {
 
         }
     },
+    computed:{    
+        iconstyle(){//图标动态样式      
+            let arr = new Array(); 
+            arr.push('transition:0.5s;')
+            arr.push('transform:translateX('+this.iconTranslateX+'rem)');
+            // arr.push('rotate('+this.iconrotate+'deg);');
+            return arr.join("");    
+        },
+    },
     methods: {
         showActive(){
-            this.isShowShage = !this.isShowShage;
+            var that = this;
+            that.isShowShage = !that.isShowShage;
+            if(that.isShowShage){
+                that.iconTranslateX=-.7;
+            }else{
+                that.iconTranslateX = 0;
+            }
         },
         hiddenShage(){
             this.isShowShage = false;
+            this.iconTranslateX = 0;
         },
         getData(){
             var that = this;
@@ -105,6 +124,7 @@ export default {
                         that.hot_game = res.data.data.hot_nfo;
                         that.order_info = res.data.data.order_info;
                         that.count_info = res.data.data.count_info;
+                        that.safe_info = res.data.data.safe_info;
                     }
                 }
             })
@@ -169,12 +189,11 @@ export default {
         max-width:12rem;
         margin:0 auto;
         padding-top:.88rem;
-        
     }
     .top{
         background-image: url("../../static/img/bg_big.png");
         background-repeat: no-repeat;
-        background-size: 100% 3rem;
+        background-size: 100% 2.8rem;
     }
     .content{
         padding:.2rem;
@@ -191,7 +210,7 @@ export default {
         -moz-box-shadow: 1px 3px 9px #FE7649;
         box-shadow: 1px 3px 9px #FE7649;
         position:fixed;
-        right:.2rem;
+        right:-.5rem;
         top:50%;
         z-index: 10;
     }
@@ -211,6 +230,7 @@ export default {
         -webkit-border-radius: .06rem;
         -moz-border-radius: .06rem;
         border-radius: .06rem;
+        transition:0.5s;
     }
     .active-title{
         width:3.63rem;

@@ -18,7 +18,7 @@
                                         <span class="circle"></span>
                                         <span v-text="item.time"></span>
                                     </div>
-                                    <div class="browse-cell-con" v-for="ind in item.data">
+                                    <div class="browse-cell-con" v-for="ind in item.data" @click="godetail(ind.goods_status,ind.goods_id)">
                                         <div class="browse-cell-con-top">
                                             <div class="goods-strip-title">
                                                 <div class="goods-type" v-if="ind.deal_type == 1">成品号</div>
@@ -121,6 +121,15 @@ export default {
                     .catch(err => {
                         console.log(err);
                     });
+            }
+        },
+        // 跳转详情
+        godetail(status,id){
+            console.log(status)
+            if(status == 1){
+                this.$router.push({name: "Details",query: { goods_id: id }});
+            }else{
+                mui.toast("该商品已失效", {duration: "short",type: "div"});
             }
         },
         getData(flag) {

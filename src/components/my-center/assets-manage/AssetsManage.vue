@@ -79,7 +79,7 @@
                 var that = this;
                 // 判断有有没有绑定银行卡
                 if(that.assetsData.is_bank == 1){
-                    that.$router.push({name:'CardManage',query:{type:that.assetsData.is_bank}})
+                    that.$router.push({name:'CardManage',query:{type:that.assetsData.is_bank,identify:that.assetsData.is_identify}})
                 }else if(that.assetsData.is_bank == 2){
                     that.$router.push({name:'UserAuthentication',query:{type:that.assetsData.is_identify}})
                 }
@@ -104,10 +104,18 @@
             // 提现
             goShow(){
                 var that = this;
-                if(that.assetsData.is_bank == 1){
-                    that.$router.push({name:'WithdrawDeposit',query:{type:that.assetsData.is_bank}})
+                if(Number(that.assetsData.total_money) <= 0){
+                    mui.toast('可提现金额不足', {duration: "short",type: "div"});
                 }else{
-                    mui.toast("请先设置提现账户", {duration: "short",type: "div"});
+                    if(that.assetsData.is_identify == 1){
+                        if(that.assetsData.is_bank == 1){
+                            that.$router.push({name:'WithdrawDeposit',query:{type:that.assetsData.is_bank}})
+                        }else{
+                            mui.toast("请先设置提现账户", {duration: "short",type: "div"});
+                        }
+                    }else{
+                        that.$router.push({name:'UserAuthentication',query:{type:that.assetsData.is_identify}})
+                    }
                 }
             }
         },

@@ -96,7 +96,7 @@ export default {
         },
         // + 添加提现账号
         addCard(){
-            this.$router.push({name:'UserAuthentication',query:{type:1}});
+            this.$router.push({name:'UserAuthentication',query:{type:this.showTitle.identify}});
         },
         seleLink(flag) {
             var that = this;

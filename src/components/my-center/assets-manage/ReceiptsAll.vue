@@ -174,6 +174,9 @@ export default {
 };
 </script>
 <style scoped>
+.minirefresh-scroll{
+    background:none;
+}
 .receiptAll-wrap {
     max-width: 12rem;
     margin: 0 auto;
@@ -215,6 +218,8 @@ export default {
 }
 .green-color {
     color: #45c773;
+    
+    background: none;
 }
 
 .receiptAll-des {
@@ -231,7 +236,7 @@ export default {
     top: 2rem;
 }
 .list-box{
-    background: #f6f8fe;
+    background: #f6f6f6
 }
 .list {
     background: #ffffff;

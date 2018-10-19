@@ -126,7 +126,7 @@
                     <!-- /////88888888888888888888888888888888888888888888888888888888888888888888888888888888888888 -->
                     <div class="sell-strip" v-if="safeOrCompact.showSafe">
                         <div>
-                            <div class="sell-left">是否为购买保险</div>
+                            <div class="sell-left">保险服务</div>
                             <div class="strip-radio-right">
                                 <div class="opera" @click="seleOpera('safe')">
                                     <img :src="sellData.optSafe?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">
@@ -148,7 +148,7 @@
                     </div>
                     <div class="sell-strip" v-if="safeOrCompact.showCompact">
                         <div>
-                            <div class="sell-left">是否为购买合同</div>
+                            <div class="sell-left">合同服务</div>
                             <div class="strip-radio-right">
                                 <div class="opera" @click="seleOpera('safe')">
                                     <img :src="sellData.optSafe?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">

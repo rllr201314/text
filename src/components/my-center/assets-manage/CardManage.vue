@@ -4,7 +4,7 @@
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="cardmanage-content">
             <div class="add-card" v-if="pageType==1">
-                <img src="../../../../static/img/assets-manage/bank_card.png" alt="">
+                <img src="../../../../static/img/assets-manage/bank_card.png" alt="" @click="addCard">
                 <div>您还未绑定任何银行卡，请先完成绑定</div>
             </div>
             <div class="manange-card" v-else-if="pageType==2">
@@ -14,7 +14,7 @@
                 </div>
                 <div class="manange-content">
                     <div class="manange-strip" v-for="item in cardData" @click="seleBank(item.account_id)">
-                        <img class="bank-ico" src="../../../../static/img/assets-manage/gs_ico.png" alt="">
+                        <img class="bank-ico" :src="item.withdraw_method == 1?'../../../../static/img/assets-manage/yl.png':'../../../../static/img/assets-manage/zfb.png'" alt="">
                         <div class="bank-info" v-if="item.withdraw_method == 1">
                             <div class="bank-name" v-text="item.open_bank"></div>
                             <div class="bank-num">银行卡：<span v-text="item.account"></span></div>
@@ -49,6 +49,7 @@ import Loading from "@/components/multi/Loading";
                         showShare:4,//1搜索2分享3菜单
                         showBg:true,//是否显示背景
                         title:"选择银行卡",
+                        identify:null,
                     }
                 },
                 showLoading:false,
@@ -79,6 +80,7 @@ import Loading from "@/components/multi/Loading";
             }else{
                 that.$router.go(-1);
             }
+            that.comData.showTitle.identify = that.$route.query.identify;
             if(this.pageType == 1){
                 this.comData.showTitle.showShare = 5;
             }else{
@@ -88,6 +90,9 @@ import Loading from "@/components/multi/Loading";
             }
         },
         methods:{
+            addCard(){
+                this.$router.push({name:'UserAuthentication',query:{type:this.$route.query.identify}});
+            },
             // 选择默认账户
             seleBank(opt){
                 var that = this;
@@ -184,8 +189,8 @@ import Loading from "@/components/multi/Loading";
         position: relative;
     }
     .bank-ico{
-        width:.57rem;
-        height:.57rem;
+        width:.58rem;
+        height:.58rem;
         vertical-align: middle;
         margin-right:.2rem;
     }

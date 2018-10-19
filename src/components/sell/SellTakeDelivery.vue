@@ -79,7 +79,7 @@
                         </div>
                         <div class="intie" v-if="takeType == 1||　takeType == 2">
                             <img src="../../../static/img/order/speed.png" alt="">
-                            <span>客服正在为您火速换绑中，请您耐心等待</span>
+                            <span>为协助买家换绑，客服会与您取得联系，请保持手机接听畅通</span>
                         </div>
                     </div>
                     <div v-if="takeType == 3 && is_end == 2">
