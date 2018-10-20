@@ -91,7 +91,7 @@ import Loading from "@/components/multi/Loading";
             // 选择默认银行卡
             seleCard(){
                 var that = this;
-                that.$router.push({name:'CardManage',query:{type:1}})
+                that.$router.push({name:'CardManage',query:{type:1,identify:that.$route.query.type}})
             },
             // 全部提现
             withdrawAll(flag){
@@ -173,6 +173,9 @@ import Loading from "@/components/multi/Loading";
         },
         mounted(){
             this.getData();
+            if(this.$route.query.status == 2){
+                this.withdrawStatus = false;
+            }
         }
     
     }

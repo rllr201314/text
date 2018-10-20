@@ -432,7 +432,7 @@ export default {
                     if(Number(that.myData.manageData.usableBalance) > 0){
                         if(that.myData.is_identify == 1){
                             if(that.myData.is_bank == 1){
-                                that_r.push({ name: "WithdrawDeposit" });
+                                that_r.push({ name: "WithdrawDeposit",query:{type:that.myData.is_identify}});
                             }else{
                                 that.$router.push({name:'UserAuthentication',query:{type:that.myData.is_identify}})
                             }

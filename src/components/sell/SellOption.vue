@@ -46,12 +46,12 @@
         </div>
         <!-- 弹出框 -->
         <!-- 手机系统 -->
-        <div v-show="showMenu_mobile" class="type-mu">
+        <div v-show="showMenu_mobile" class="type-mu" :class="go_up?'go-top':''">
             <div class="pop-view-tit option-gray">
                 <div>请选择客户端</div>
                 <div class="search">
                     <img src="../../../static/img/search_ico.png" alt="">
-                    <input type="search" placeholder="搜索"  v-model="mobile_content" @keyup.13="show('m')" ref="input1" @blur="out('m')">
+                    <input type="search" placeholder="搜索"  v-model="mobile_content" @keyup.13="show('m')" ref="input1" @blur="out('m')" @focus="focusFn">
                 </div>
             </div>
             <!-- 手机系统 -->
@@ -62,7 +62,7 @@
         </div>
         <!-- 弹出框 -->
         <!-- 服务器 -->
-        <div v-show="showMenu_area" class="type-mu">
+        <div v-show="showMenu_area" class="type-mu" :class="go_up?'go-top':''">
             <!-- 可选择菜单 -->
             <div class="screen-box server-type-box">
                 <!-- 平台 -->
@@ -73,7 +73,7 @@
                 <div class="server-area-box" v-if="showOpteration">
                     <div class="area-type-search">
                         <form action="javascript:return true;">
-                            <input type="search" placeholder="搜索" v-model="area_content" @keyup.13="show('a')" ref="input1" @blur="out('a')">
+                            <input type="search" placeholder="搜索" v-model="area_content" @keyup.13="show('a')" ref="input1" @blur="out('a')"  @focus="focusFn">
                             <img class="search-area-ico" src="../../../static/img/search_ico.png" alt="">
                         </form>
                     </div>
@@ -84,7 +84,7 @@
                 <!-- 没有区的时候只显示服务器的 -->
                 <div class="server-area-box" v-if="!showOpteration">
                     <div class="area-type-search">
-                        <input type="search" placeholder="搜索" v-model="area_content" @keyup.13="show('s')" ref="input1" @blur="out('s')">
+                        <input type="search" placeholder="搜索" v-model="area_content" @keyup.13="show('s')" ref="input1" @blur="out('s')"  @focus="focusFn">
                         <img class="search-area-ico" src="../../../static/img/search_ico.png" alt="">
                     </div>
                     <div class="area-type-content">
@@ -145,16 +145,22 @@ export default {
                 operation_id:'',//系统类型
                 area_id:'',
                 server_id:'',
-            }
+            },
+            go_up:false,
         };
     },
     methods: {
+        focusFn(){
+            this.go_up = true;//让弹出框上来
+        },
         // 隐藏键盘
         show(flag){
             this.$refs.input1.blur();
+            this.go_up = false;
         },
         out(flag){
             console.log(flag);
+            this.go_up = false;//隐藏键盘让弹出框下去
             var that = this;
             if(flag == 'm'){
                 var text = that.mobile_content;
@@ -782,5 +788,10 @@ input{
     right:0;
     bottom:0;
     z-index:40;
+}
+
+
+.go-top{
+    /* bottom:1.5rem; */
 }
 </style>

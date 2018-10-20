@@ -23,7 +23,8 @@
                     <div class="goods-ico">
                         <img v-if="item.is_safe == 1" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
                         <img v-if="item.is_stage == 1" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
-                        <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/verify.png" alt="">
+                        <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
+                        <!-- <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">   验证 -->
                     </div>
                 </div>
                 <div class="goods-strip-bottom">

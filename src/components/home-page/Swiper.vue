@@ -3,8 +3,8 @@
     <div class="swiper-wrap">
         <div class="swiper-container" id="swiper-content">
             <div class="swiper-wrapper">
-                <div class="swiper-slide present-page" v-for="item in imgList">
-                    <img :src="item.img_url" preview preview-text="">
+                <div class="swiper-slide present-page" v-for="(item,index) in list">
+                    <img :src="item.img_url" preview>
                 </div>
             </div>
             <div class="swiper-pagination"></div>
@@ -16,7 +16,9 @@
 export default {
     name: "Swiper",
     data() {
-        return {};
+        return {
+            list:[]
+        };
     },
     props: ["imgList"],
     methods: {
@@ -35,7 +37,8 @@ export default {
         var time = setInterval(function(){
             if(that.imgList != ''){
                 that.swiper();
-                that.$previewRefresh()
+                that.$previewRefresh();
+                that.list = JSON.parse(JSON.stringify(that.imgList));
                 clearInterval(time);
             }
         },300)

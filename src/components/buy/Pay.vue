@@ -352,8 +352,10 @@ export default {
                         }
                     }else if(res.data.code == 201){//余额支付完成
                         // mui.toast(res.data.msg,{ duration:'short', type:'div' });
-                        mui.alert(res.data.msg,'提示','确认','','div');
-                        that.$router.go(-1);
+                        mui.alert(res.data.msg,'提示','确认',function(){
+                            that.$router.push({name:'BuyTradingStatus'});
+                        },'div');
+                        
                     }else if(res.data.code == 401){
                         that.$router.push({
                             name: "AccountLogin",
@@ -397,7 +399,7 @@ export default {
         goPayFn(){
             var that = this;
             if(!that.is_line && !that.off_line){
-                that.$router.push({name: "BuyOrderAll" })
+                that.$router.push({name: "BuyUnpaidStatus" });//未支付
             }else{
                 that.showLoading = true;
                 that.getData();

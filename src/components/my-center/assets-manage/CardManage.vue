@@ -54,19 +54,7 @@ import Loading from "@/components/multi/Loading";
                 },
                 showLoading:false,
                 pageType:1 ,//控制页面是添加银行卡还是选择银行卡----
-                cardData:[{
-                    key:1,
-                    bank_ico:'./static/img/assets-manage/gs_ico.png',
-                    bank_name:'中国工商银行',
-                    bank_num:'储蓄卡(6217********0788)',
-                    isSele:true,
-                },{
-                    key:2,
-                    bank_ico:'./static/img/assets-manage/zg_ico.png',
-                    bank_name:'中国银行',
-                    bank_num:'储蓄卡(6217********0788)',
-                    isSele:false,
-                }]
+                cardData:[]
             }
         },
         mounted(){
@@ -115,6 +103,7 @@ import Loading from "@/components/multi/Loading";
                         }
                         that.showLoading = false;
                         mui.toast(res.data.msg, {duration: "short",type: "div"});
+                        that.$router.go(-1);
                     }
                 }).catch((err)=>{
                     console.log(err)

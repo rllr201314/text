@@ -764,9 +764,13 @@ export default {
     display: flex;
     justify-content: space-between;
 }
-
+.goods-info-left{
+    width: 40%;
+    overflow: hidden;
+}
 .goods-info-left div {
     margin-bottom: 0.1rem;
+    white-space: nowrap;
 }
 .goods-info-right div {
     margin-bottom: 0.1rem;

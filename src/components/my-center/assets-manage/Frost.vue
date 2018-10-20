@@ -75,6 +75,7 @@
     .frost-wrap{
         max-width:12rem;
         margin:0 auto;
+        padding-top:.88rem;
     }
     .frost-content{
         padding:.2rem;

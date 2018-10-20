@@ -17,14 +17,14 @@
                 </div>
             </div>
             <div class="manage-cell">
-                <div class="manage-strip">
+                <div class="manage-strip" @click="goFrost">
                     <span class="manage-lefttext">提现冻结资金</span>
                     <div class="right-opt" >
                         <span>￥<span v-text="assetsData.limit_money"></span></span>
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                <div class="manage-strip">
+                <div class="manage-strip" @click="goPledge">
                     <span class="manage-lefttext">押金</span>
                     <div class="right-opt" >
                         <span>￥0</span>
@@ -81,6 +81,22 @@
                 if(that.assetsData.is_bank == 1){
                     that.$router.push({name:'CardManage',query:{type:that.assetsData.is_bank,identify:that.assetsData.is_identify}})
                 }else if(that.assetsData.is_bank == 2){
+                    that.$router.push({name:'UserAuthentication',query:{type:that.assetsData.is_identify}})//没有绑定银行卡
+                }
+            },
+            // 提现冻结资金
+            goFrost(){
+                this.$router.push({name:'Frost'})
+            },
+            goPledge(){
+                var that = this;
+                if(that.assetsData.is_identify == 1){
+                    if(that.assetsData.is_bank == 1){
+                        that.$router.push({name:'WithdrawDeposit',query:{type:that.assetsData.is_bank,status:2}})
+                    }else{
+                        mui.toast("请先设置提现账户", {duration: "short",type: "div"});
+                    }
+                }else{
                     that.$router.push({name:'UserAuthentication',query:{type:that.assetsData.is_identify}})
                 }
             },

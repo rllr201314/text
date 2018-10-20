@@ -163,8 +163,8 @@ export default {
                     }
                 ],
                 gamePrint: 8,
-                account: "dsjjf@126.com",
-                password: "15659894465"
+                account: "",
+                password: ""
             }
         };
     },
