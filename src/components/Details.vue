@@ -136,83 +136,112 @@
                     <div class="showBox-right" v-show="safeOrflow.flow">
                         <div class="flow-left">
                             <img src="../../static/img/goods-details/flow.png" alt="">
-                    </div>
-                            <div class="flow-right">
-                                <div class="flow-title">下单支付</div>
-                                <div class="flow-content">支付成功，进入与 [联系发货客服] 聊天界面</div>
-                                <div class="flow-title">等待发货</div>
-                                <div class="flow-content">客服登录卖家账号，为买家发货。</div>
-                                <div class="flow-content">部分游戏需要买家同时在线才能发货，</div>
-                                <div class="flow-content">请保持在线并及时与发货客服沟通。</div>
-                                <div class="flow-content red-color">重要：道具交易不使用QQ沟通，谨防骗子！</div>
-                                <div class="flow-title">买家收货</div>
-                                <div class="flow-content">在游戏内取货</div>
-                                <div class="flow-title">确认收货</div>
-                                <div class="flow-content">买家确认收货</div>
-                                <div class="flow-title">交易成功</div>
-                            </div>
+                        </div>
+                        <div class="flow-right">
+                            <div class="flow-title">下单支付</div>
+                            <div class="flow-content">支付成功，进入与 [联系发货客服] 聊天界面</div>
+                            <div class="flow-title">等待发货</div>
+                            <div class="flow-content">客服登录卖家账号，为买家发货。</div>
+                            <div class="flow-content">部分游戏需要买家同时在线才能发货，</div>
+                            <div class="flow-content">请保持在线并及时与发货客服沟通。</div>
+                            <div class="flow-content red-color">重要：道具交易不使用QQ沟通，谨防骗子！</div>
+                            <div class="flow-title">买家收货</div>
+                            <div class="flow-content">在游戏内取货</div>
+                            <div class="flow-title">确认收货</div>
+                            <div class="flow-content">买家确认收货</div>
+                            <div class="flow-title">交易成功</div>
                         </div>
                     </div>
                 </div>
-                <!-- 猜你喜欢 -->
-                <div class="guess" v-if="recommendData != ''">
-                    <img src="../../static/img/goods-details/left_solid.png" alt="">
-                    <span>猜你喜欢</span><img src="../../static/img/goods-details/right_solid.png" alt="">
+            </div>
+        <!-- 猜你喜欢 -->
+        <div class="guess" v-if="recommendData != ''">
+            <img src="../../static/img/goods-details/left_solid.png" alt="">
+            <span>猜你喜欢</span><img src="../../static/img/goods-details/right_solid.png" alt="">
+        </div>
+        <!-- 商品列表 -->
+        <div v-if="recommendData != ''">
+            <div class="goods-strip" v-for="item in recommendData" @click="goDetail(item.goods_id)">
+                <div class="goods-strip-title">
+                    <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                    <div class="goods-type" v-else-if="item.deal_type == 2">代练号</div>
+                    <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                    <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                    <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                    <div class="area" v-if="item.server_name != null" v-text="item.area_name +'>' + item.server_name"></div>
+                    <div class="area" v-else v-text="item.area_name"></div>
                 </div>
-                    <!-- 商品列表 -->
-                    <div v-if="recommendData != ''">
-                        <div class="goods-strip" v-for="item in recommendData" @click="goDetail(item.goods_id)">
-                            <div class="goods-strip-title">
-                                <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                                <div class="goods-type" v-else-if="item.deal_type == 2">代练号</div>
-                                <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                                <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                <div class="area" v-if="item.server_name != null" v-text="item.area_name +'>' + item.server_name"></div>
-                                <div class="area" v-else v-text="item.area_name"></div>
-                            </div>
-                            <div class="goods-des" v-text="item.goods_title"></div>
-                            <div class="goods-price">￥
-                                <span v-text="item.goods_price"></span>
-                            </div>
-                        </div>
-                        <div class="more-info" v-if="false">查看更多</div>
-                    </div>
-                    <!-- div -->
-                    <div class="goods-details-bottom">
-                        <div class="share goods-details-bottom-left">
-                            <img src="../../static/img/goods-details/share_ico.png" alt="">
-                            <div>分享</div>
-                        </div>
-                        <div class="collect goods-details-bottom-left" @click="collect()">
-                            <img :src="detailData.is_collect == 1?'./static/img/goods-details/ok_collect_ico.png':'./static/img/goods-details/no_collect_ico.png'" alt="">
-                            <div>收藏</div>
-                        </div>
-                        <div class="bargain goods-details-bottom-right" v-if="detailData.sell_type == 2" @click="bargainFn">议价</div>
-                        <div class="goods-details-bottom-right" v-if="detailData.sell_type == 1"></div>
-                        <div class="buy goods-details-bottom-right" @click="buyFn">立即购买</div>
-                    </div>
-                    <!-- 议价弹框 -->
-                    <div class="hoodle" v-show="showShade">
-                        <img src="../../static/img/my-center/record/bargain_tit.png" alt="">
-                        <div class="hoodle-con">
-                            <input type="number" placeholder="请输入您的出价" v-model="bargain_price">
-                        </div>
-                            <div class="hoodle-btn">
-                                <div class="okBtn" @click="goBargain('ok')">确认</div>
-                                <div class="cancelBtn" @click="goBargain('no')">取消</div>
-                            </div>
-                        </div>
-                        <div class="shade" v-show="showShade"></div>
-                        <NoData v-if="showNoData"></NoData>
-                        <Loading v-if="showLoading"></Loading>
-                    </div>
+                <div class="goods-des" v-text="item.goods_title"></div>
+                <div class="goods-price">￥
+                    <span v-text="item.goods_price"></span>
+                </div>
+            </div>
+            <div class="more-info" v-if="false">查看更多</div>
+        </div>
+        <!-- div -->
+        <div class="goods-details-bottom">
+            <div class="share goods-details-bottom-left" @click="showShareFn">
+                <img src="../../static/img/goods-details/share_ico.png" alt="">
+                <div>分享</div>
+            </div>
+            <div class="collect goods-details-bottom-left" @click="collect()">
+                <img :src="detailData.is_collect == 1?'./static/img/goods-details/ok_collect_ico.png':'./static/img/goods-details/no_collect_ico.png'" alt="">
+                <div>收藏</div>
+            </div>
+            <div class="bargain goods-details-bottom-right" v-if="detailData.sell_type == 2" @click="bargainFn">议价</div>
+            <div class="goods-details-bottom-right" v-if="detailData.sell_type == 1"></div>
+            <div class="buy goods-details-bottom-right" @click="buyFn">立即购买</div>
+        </div>
+        <!-- 议价弹框 -->
+        <div class="hoodle" v-show="showShade">
+            <img src="../../static/img/my-center/record/bargain_tit.png" alt="">
+            <div class="hoodle-con">
+                <input type="number" placeholder="请输入您的出价" v-model="bargain_price">
+            </div>
+            <div class="hoodle-btn">
+                <div class="okBtn" @click="goBargain('ok')">确认</div>
+                <div class="cancelBtn" @click="goBargain('no')">取消</div>
+            </div>
+        </div>
+        <!-- 分享弹出框 -->
+        <div id="sheet-share" class="mui-popover mui-popover-bottom mui-popover-action">
+            <!-- 可选择菜单 -->
+            <div class="pop-view">
+                <div class="pop-hint">
+                    分享到其他平台提高浏览量，更快速的卖出商品
+                </div>
+                <div class="pop-box" @click="shareFn('wechatFriend')">
+                    <img src="../../static/img/share/wechat.png" alt="">
+                    <div>微信好友</div>
+                </div>
+                <div class="pop-box" @click="shareFn('wechatTimeline')">
+                    <img src="../../static/img/share/pyq.png" alt="">
+                    <div>朋友圈</div>
+                </div>
+                <div class="pop-box" @click="copyFn()" :data-clipboard-text="url" id="copy">
+                    <img src="../../static/img/share/copy_link.png" alt="">
+                    <div>复制链接</div>
+                </div>
+            </div>
+            <!-- 取消菜单 -->
+            <ul class="pop-view">
+                <li class="mui-table-view-cell option-black">
+                    <a href="#sheet-share">取消</a>
+                </li>
+            </ul>
+        </div>
+        <div class="shade" v-show="showShade"></div>
+        <NoData v-if="showNoData"></NoData>
+        <Loading v-if="showLoading"></Loading>
+
+    </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
 import Swiper from "@/components/home-page/Swiper";
 import NoData from "@/components/multi/NoData";
 import Loading from "@/components/multi/Loading";
+import NativeShare from 'nativeshare'//分享
 export default {
     inject: ["reload"],
     name: "Details",
@@ -232,6 +261,9 @@ export default {
                 // 商品列表
                 // 商品信息
             },
+            nativeShare:null,//分享
+            url:null,//当前页的url
+
             showLoading:false,
             goods_id: null,
             showNoData: false,
@@ -271,6 +303,93 @@ export default {
         // 验证客服
         goVerify() {
             this.$router.push({ name: "Authenticity" });
+        },
+        // 分享
+        shareFn(command){
+            mui("#sheet-share").popover("toggle");
+            var that = this;
+            var shareData = {
+                title: '看个号',
+                desc: 'NativeShare是一个整合了各大移动端浏览器调用原生分享的插件',
+                // 如果是微信该link的域名必须要在微信后台配置的安全域名之内的。
+                link: that.url,
+                icon: 'https://pic3.zhimg.com/v2-080267af84aa0e97c66d5f12e311c3d6_xl.jpg',
+                // 不要过于依赖以下两个回调，很多浏览器是不支持的
+                success: function() {
+                    alert('success')
+                },
+                fail: function() {
+                    alert('fail')
+                }
+            }
+            that.nativeShare.setShareData(shareData);
+            var browser={
+                versions:function(){
+                  var u = navigator.userAgent, app = navigator.appVersion;
+                  console.log(u)
+                  return {
+                      trident: u.indexOf('Trident') > -1, //IE内核
+                      presto: u.indexOf('Presto') > -1, //opera内核
+                      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,//火狐内核
+                      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+                      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                      android: u.indexOf('Android') > -1 || u.indexOf('Adr') > -1, //android终端
+                      iPhone: u.indexOf('iPhone') > -1 , //是否为iPhone或者QQHD浏览器
+                      iPad: u.indexOf('iPad') > -1, //是否iPad
+                      webApp: u.indexOf('Safari') == -1, //是否web应该程序，没有头部与底部
+                      weixin: u.indexOf('MicroMessenger') > -1, //是否微信 （2015-01-22新增）
+                      qq: u.match(/\sQQ/i) == " qq" //是否QQ
+                    };
+                }(),
+                // language:(navigator.browserLanguage || navigator.language).toLowerCase()
+            }
+            try{
+                that.nativeShare.call(command)
+                //  如果是微信 
+                if(browser.versions.weixin){
+                    mui.alert('请选择浏览器右上角的分享按钮','提示','确认','','div');
+                }
+            }catch(err){
+                // console.log(err);
+                // //判断是否IE内核
+                // if(browser.versions.trident){ alert("is IE"); }
+                // //判断是否webKit内核
+                if(browser.versions.webKit){ 
+                    mui.alert('请选择浏览器下方的分享按钮','提示','确认','','div');
+                }
+                // //判断是否移动端
+                if(browser.versions.mobile||browser.versions.android||browser.versions.ios){ 
+                    // alert("移动端");
+                }
+                if(browser.versions.weixin){
+                    mui.alert('请选择浏览器右上角的分享按钮','提示','确认','','div');
+                }
+                //检测浏览器语言
+
+                // var currentLang = navigator.language;   //判断除IE外其他浏览器使用语言
+                // if(!currentLang){//判断IE浏览器使用语言
+                //     currentLang = navigator.browserLanguage;
+                // }
+            }
+        },
+        // 复制
+        copyFn() {
+            mui("#sheet-share").popover("toggle");
+            let that = this;
+            let clipboard = new ClipboardJS("#copy");
+            clipboard.on("success", function(e) {
+                clipboard.destroy();
+                mui.toast("复制成功",{ duration:'short', type:'div' });
+            });
+            clipboard.on("error", function(e) {
+                clipboard.destory();
+                mui.toast("请重新点击复制",{ duration:'short', type:'div' });
+            });
+        },
+        // 显示分享
+        showShareFn(){
+            mui("#sheet-share").popover("toggle");
         },
         // 收藏
         collect() {
@@ -450,6 +569,8 @@ export default {
         ) {
             that.goods_id = that.$route.query.goods_id;
             that.getData();
+            that.nativeShare = new NativeShare();
+            that.url = window.location.href;
         } else {
             that.$router.go(-1);
         }
@@ -1031,6 +1152,42 @@ input[type="number"] {
     color: #333333;
     width: 5.5rem;
     line-height: 0.43rem;
+}
+
+
+
+.pop-view {
+    margin-top: 10px;
+    background: #ffffff;
+    list-style: none;
+}
+.pop-hint{
+    line-height:.9rem;
+    text-align:center;
+    font-size:.28rem;
+    color:#999999;
+    background:#F5F5F5;
+}
+.pop-box {
+    margin:.3rem .3rem .4rem;
+    font-size:.28rem;
+    color:#999999;
+    text-align: center;
+    display: inline-block;
+}
+.pop-view img{
+    width:.8rem;
+    height:.8rem;
+}
+
+.pop-view li {
+    text-align: center;
+    line-height: 0.9rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.pop-view a {
+    padding: 0;
 }
 </style>
 

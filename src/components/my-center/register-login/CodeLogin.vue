@@ -363,7 +363,7 @@ export default {
 }
 
 .login-type {
-    margin-top: 2rem;
+    margin-top: 1rem;
     text-align: center;
 }
 .login-type-title {

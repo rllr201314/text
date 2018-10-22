@@ -645,7 +645,7 @@ export default {
     height:100vh;
 }
 .list-wrap {
-    top:1.68rem;
+    top:2.58rem;
     padding:0 .2rem;
 }
 .list {

@@ -126,8 +126,12 @@ export default {
         // 跳转详情
         godetail(status,id){
             console.log(status)
-            if(status == 1){
-                this.$router.push({name: "Details",query: { goods_id: id }});
+            if(status == 3){
+                this.$router.push({name: "Details",query: {goods_id:id}});
+            }else if(status == 4){
+                mui.toast("该商品已下架", {duration: "short",type: "div"});
+            }else if(status == 5){
+                mui.toast("该商品已售出", {duration: "short",type: "div"});
             }else{
                 mui.toast("该商品已失效", {duration: "short",type: "div"});
             }

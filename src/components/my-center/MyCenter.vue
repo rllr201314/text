@@ -174,7 +174,7 @@
             <div class="strip-wrap">
                 <div class="sell-strip" @click="goSele('changePassword')">
                     <div class="left-strip write">
-                        <img src="../../../static/img/my-center/write.png" alt="">
+                        <img src="../../../static/img/my-center/amend.png" alt="">
                         <span>修改密码</span>
                     </div>
                     <div class="right-opt">
@@ -569,7 +569,7 @@ export default {
     min-height:100vh;
 }
 .mycenter-top {
-    background-image: url(../../../static/img/my-center/h-bg.png);
+    background-image: url(../../../static/img/my-center/header.png);
     background-repeat: no-repeat;
     background-size: 100% 3.8rem;
     padding-bottom: 0.9rem;
@@ -735,8 +735,8 @@ export default {
     font-size: 0.28rem;
 }
 .title-left img {
-    width: 0.13rem;
-    height: 0.29rem;
+    width: 0.08rem;
+    height: 0.25rem;
     margin-left: 0.17rem;
     vertical-align: middle;
 }

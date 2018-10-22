@@ -93,5 +93,6 @@ export default {
 .hot-game-cell img {
     width: 1.05rem;
     height: 1.06rem;
+    border-radius: .1rem;
 }
 </style>

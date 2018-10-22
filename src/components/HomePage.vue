@@ -211,7 +211,7 @@ export default {
         box-shadow: 1px 3px 9px #FE7649;
         position:fixed;
         right:-.5rem;
-        top:50%;
+        top:30%;
         z-index: 10;
     }
     .open-active img{
@@ -225,7 +225,7 @@ export default {
         background:#FFFFFF;
         position:fixed;
         right:1.5rem;
-        top:53%;
+        top:33%;
         z-index:11;
         -webkit-border-radius: .06rem;
         -moz-border-radius: .06rem;

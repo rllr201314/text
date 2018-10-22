@@ -157,7 +157,7 @@ export default {
             document.addEventListener("touchmove", mo, false); //禁止页面滑动
             that.goods_id = goods_id;
         },
-        goBargain(e) {
+        goBargain(flag) {
             var that = this;
             if (flag == "pay") {
                 if (that.bargain_price) {
@@ -167,6 +167,8 @@ export default {
                         }).then(function(res) {
                             if (res.status == 200) {
                                 mui.alert(res.data.msg,"提示","确认","","div");
+                                that.getdiscuss('refresh');
+
                             }
                         }).catch(function(err) {
                             console.log(err);

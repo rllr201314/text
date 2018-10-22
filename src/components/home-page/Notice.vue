@@ -88,8 +88,8 @@
         font-size: 0.28rem;
     }
     .title-left img {
-        width: 0.15rem;
-        height: 0.35rem;
+        width: 0.08rem;
+        height: 0.25rem;
         margin-left: 0.17rem;
         vertical-align: middle;
     }

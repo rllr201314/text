@@ -275,6 +275,7 @@ export default {
 }
 .green-color{
     color:#45C773;
+    background:none;
 }
 .green-bg{
     background:#45C773;

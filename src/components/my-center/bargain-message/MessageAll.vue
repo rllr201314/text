@@ -45,8 +45,8 @@
                                 <div class="goods-ico">
                                     <img v-if="item.is_safe == 1" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
                                     <img v-if="item.is_stage == 1" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
-                                    <img v-if="item.is_check == 1" src="../../../../static/img/goodscreen/verify.png" alt="">
-                                    <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
+                                    <img v-if="item.is_check == 2" src="../../../../static/img/goodscreen/verify.png" alt="">
+                                    <img v-if="item.is_compact == 2" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
                                 </div>
                             </div>
                             <div class="goods-strip-bottom">
@@ -435,9 +435,10 @@ export default {
     color: #333333;
 }
 .goods-ico {
+    width:2rem;
     float: right;
-    text-align: right;
     display:flex;
+    justify-content: flex-end;
 }
 .goods-ico img {
     width: 0.36rem;

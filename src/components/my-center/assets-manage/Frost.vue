@@ -5,27 +5,38 @@
         <div class="frost-content">
             <div class="frost-cell">
                 <div class="frost-strip" v-for="item in frostData">
-                    <div class="frost-strip-tit" v-text="item.title">冻结金额</div>
+                    <div class="frost-strip-tit">冻结金额</div>
                     <div class="frost-strip-cen">
-                        <span class="cen-ico" :class="item.issuc?'green-bg':'red-bg'"  v-text="item.ico"></span>
-                        <span class="time" v-text="item.time"></span>
-                        <span class="price" v-text="item.price"></span>
+                        <!-- <span class="cen-ico" :class="item.issuc?'green-bg':'red-bg'"  v-text="item.ico"></span> -->
+                        <span v-if="item.status == 1" class="cen-ico yellow-bg">提现中</span>
+                        <span v-if="item.status == 2"  class="cen-ico green-bg">提现成功</span>
+                        <span v-if="item.status == 3"  class="cen-ico red-bg">提现失败</span>
+                        <span class="time" v-text="item.create_time"></span>
+                        <span class="price"><span v-text="item.out_money"></span>元</span>
                     </div>
                     <div class="frost-strip-bot">
+                        <span>收款账号：</span>
+                        <span class="remark" v-text="item.account_name"></span>
+                        <span class="remark" v-text="item.bank_account"></span>
+                    </div>
+                    <div class="frost-strip-bot" v-if="item.reject_reason">
                         <span>备注：</span>
-                        <span class="remark" v-text="item.remark"></span>
+                        <span class="remark" v-text="item.reject_reason"></span>
                     </div>
                 </div>
             </div>
         </div>
+        <NoData class="nodata" v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
-    import Header from '@/components/home-page/Header'
+import Header from '@/components/home-page/Header'
+import NoData from "@/components/multi/NoData";
     export default {
         name:'Frost',
         components:{
             Header,
+            NoData
         },
         data(){
             return {
@@ -38,36 +49,32 @@
                         title:"冻结资金明细",
                     }
                 },
-                frostData:[{
-                    title:'冻结金额',
-                    ico:'提现中',
-                    time:'2018-08-09  9:00:00',
-                    price:'1000.00元',
-                    remark:'收款账户  工商银行 6110*********12312',
-                    issuc:true,
-                },{
-                    title:'冻结金额',
-                    ico:'提现中',
-                    time:'2018-08-09  9:00:00',
-                    price:'1000.00元',
-                    remark:'收款账户  工商银行 6110*********12312',
-                    issuc:false,
-                },{
-                    title:'冻结金额',
-                    ico:'提现中',
-                    time:'2018-08-09  9:00:00',
-                    price:'1000.00元',
-                    remark:'收款账户  工商银行 6110*********12312',
-                    issuc:true,
-                },{
-                    title:'冻结金额',
-                    ico:'提现中',
-                    time:'2018-08-09  9:00:00',
-                    price:'1000.00元',
-                    remark:'收款账户  工商银行 6110*********12312',
-                    issuc:false,
-                }]
+                frostData:[],
+                showNoData:false,
             }
+        },
+        methods:{
+            getData(){
+                var that = this;
+                that.$axios.post(process.env.API_HOST+'withdraw_info').then((res)=>{
+                    console.log(res);
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            if(res.data.data != ''){
+                                that.showNoData = false;
+                                that.frostData = res.data.data;
+                            }else{
+                                that.showNoData = true;
+                            }
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err)
+                })
+            }
+        },
+        mounted(){
+            this.getData();
         }
     }
 </script>
@@ -107,7 +114,7 @@
         display: inline-block;
     }
     .cen-ico{
-        padding:.03rem;
+        padding:.05rem;
         margin-right:.1rem;
         font-size:.2rem;
         line-height: .2rem;
@@ -115,10 +122,13 @@
         vertical-align: middle;
     }
     .green-bg{
-        background:#FE7649;
+        background:#45C773;
     }
     .red-bg{
-        background:#45C773;
+        background:#FE7649;
+    }
+    .yellow-bg{
+        background:#FEC126;
     }
     .time{
         color:#999999;
