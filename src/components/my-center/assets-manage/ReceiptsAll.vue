@@ -125,7 +125,7 @@ export default {
             if(opt == 2){
                 flag = 2;
             }else if(opt == 3){
-                flag == 1;
+                flag = 1;
             }
             if(select == "push"){
                 page = this.num;

@@ -75,20 +75,23 @@
             </div>
             <!-- 商品描述 -->
             <div class="goods-details-info">
-                <!-- <GoodsInfo v-bind:goodsInfo="componentsData.goodsInfo"></GoodsInfo> -->
                 <div class="goods-info-content">
-                    <div class="goods-info-content-left">
-                        <div class="goods-basic-left">基本信息</div>
-                        <div class="goods-level-left">等级</div>
-                        <div class="goods-school-left">门派</div>
-                        <div class="goods-des-left">商品描述</div>
+                    <div class="goods-info-strip">
+                        <div class="text-left">基本信息</div>
+                        <div class="text-right" v-if="detailData.server_name != null" v-text="detailData.platform_name + '>' +　detailData.area_name+'>'+detailData.server_name"></div>
+                        <div class="text-right" v-else v-text="detailData.platform_name + '>' +　detailData.area_name"></div>
                     </div>
-                    <div class="goods-info-content-right">
-                        <div class="goods-basic-right" v-if="detailData.server_name != null" v-text="detailData.platform_name + '>' +　detailData.area_name+'>'+detailData.server_name"></div>
-                        <div class="goods-basic-right" v-else v-text="detailData.platform_name + '>' +　detailData.area_name"></div>
-                        <div class="goods-level-right"><span v-text="detailData.role_level"></span>级</div>
-                        <div class="goods-school-right" v-text="detailData.faction_name"></div>
-                        <div class="goods-des-right" v-text="detailData.goods_description"></div>
+                    <div class="goods-info-strip">
+                        <div class="text-left">等级</div>
+                        <div class="text-right"><span v-text="detailData.role_level"></span>级</div>
+                    </div>
+                    <div class="goods-info-strip">
+                        <div class="text-left">门派</div>
+                        <div class="text-right" v-text="detailData.faction_name"></div>
+                    </div>
+                    <div class="goods-info-strip">
+                        <div class="text-left">商品描述</div>
+                        <div class="text-right" v-text="detailData.goods_description"></div>
                     </div>
                 </div>
             </div>
@@ -107,8 +110,8 @@
                 <div class="vedio-content" v-if="detailData.video_url != null">视频</div>
 
                 <div class="vidio-bottom">
-                    <div :class="safeOrflow.safe?'red-border':'black-border'" @click="cliflow('safe')">安全服务</div>
                     <div :class="safeOrflow.flow?'red-border':'black-border'" @click="cliflow('flow')">购买流程</div>
+                    <div :class="safeOrflow.safe?'red-border':'black-border'" @click="cliflow('safe')">安全服务</div>
                 </div>
                 <div class="showBox">
                     <div class="showBox-left" v-show="safeOrflow.safe">
@@ -273,8 +276,8 @@ export default {
             recommendData: {},
             // 显示安全服务是购买流程
             safeOrflow: {
-                safe: true,
-                flow: false
+                safe: false,
+                flow: true
             },
             // 账号绑定
             accountBind: {
@@ -326,7 +329,6 @@ export default {
             var browser={
                 versions:function(){
                   var u = navigator.userAgent, app = navigator.appVersion;
-                  console.log(u)
                   return {
                       trident: u.indexOf('Trident') > -1, //IE内核
                       presto: u.indexOf('Presto') > -1, //opera内核
@@ -852,7 +854,7 @@ export default {
 }
 
 .showBox-right {
-    padding: 0 0 0.2rem 0.2rem;
+    padding:0.2rem 0.2rem;
 }
 
 .flow-left img {
@@ -1132,26 +1134,20 @@ input[type="number"] {
     padding: 0.2rem;
     font-size: 0.26rem;
 }
-.goods-info-content-left,
-.goods-info-content-right {
-    display: inline-block;
-    vertical-align: top;
+.goods-info-strip{
+    display:flex;
+    align-items: top;
+    margin-bottom:.1rem;
 }
-.goods-info-content-left div{
-    line-height: .5rem;
-}
-.goods-info-content-right div {
-    line-height: .5rem;
-}
-.goods-info-content-left {
+.text-left{
     color: #666666;
-    width: 1.5rem;
-    line-height: 0.43rem;
+    min-width:1.5rem;
+    margin-right:.3rem;
 }
-.goods-info-content-right {
+.text-right{
     color: #333333;
-    width: 5.5rem;
-    line-height: 0.43rem;
+    word-break: break-all;
+    white-space: normal;
 }
 
 

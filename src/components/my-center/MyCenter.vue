@@ -45,7 +45,10 @@
             <div class="suspend-box">
                 <div class="operation-box">
                     <div class="operation-title">
-                        <div class="user-type" @click="seleUserType('buy')" :class="myData.userTypeOpt.usertype?'red-color':''">我是买家</div>
+                        <div class="user-type" @click="seleUserType('buy')" :class="myData.userTypeOpt.usertype?'red-color':''">
+                            我是买家
+                            <span v-show="buyer_msg == 1" class="red-circle"></span>
+                        </div>
                         <div class="user-type" @click="seleUserType('sell')" :class="myData.userTypeOpt.usertype?'':'red-color'">我是卖家</div>
                     </div>
                     <div class="operation-content" v-show="myData.userTypeOpt.usertype">
@@ -68,6 +71,7 @@
                         <div class="cell" v-for="item in myData.userTypeOpt.buyCon" :class="item.name" @click="goSele(item.link)">
                             <img :src="item.imgSrc" alt="">
                             <span v-text="item.val"></span>
+                            <span v-if="item.msg" class="red-circle" v-show="buyer_msg == 1"></span>
                         </div>
                     </div>
                     <div class="operation-content" v-show="!myData.userTypeOpt.usertype">
@@ -214,6 +218,7 @@ export default {
                     goBack: 1
                 }
             },
+            buyer_msg:null,
             myData: {
                 is_identify:'',is_bank:null,//实名认证-是否绑定银行卡
                 userStatus: 2,
@@ -320,7 +325,8 @@ export default {
                             name: "bargain",
                             imgSrc: "./static/img/my-center/bargain.png",
                             val: "发起的议价",
-                            link: "bargain"
+                            link: "bargain",
+                            msg:true
                         }
                     ],
                     sellCon: [
@@ -533,6 +539,8 @@ export default {
                         that.myData.manageData.cashPledge = Number(data.user_info.deposit);//押金
                         that.myData.is_identify = data.user_info.is_identify;
                         that.myData.is_bank = data.user_info.is_bank;
+                        that.buyer_msg = data.user_info.buyer_discuss_msg;
+                        that.myData.pactNews = data.user_info.compact_count;
                     }
                 }
             }).catch((err)=>{
@@ -645,6 +653,18 @@ export default {
     display: inline-block;
     width: 49.2%;
     line-height: 0.7rem;
+    position: relative;
+}
+.operation-title span{
+    position:absolute;
+    top:.15rem;
+}
+.red-circle{
+    width:.12rem;
+    height:.12rem;
+    border-radius: 100%;
+    background:#F31000;
+    display: inline-block;
 }
 .operation-content {
     display: flex;
@@ -702,6 +722,14 @@ export default {
 .bill img {
     width: 0.24rem;
     height: 0.26rem;
+}
+.bargain {
+    position:relative;
+}
+.bargain .red-circle{
+    position: absolute;
+    top:0;
+    left:.16rem;
 }
 .bargain img {
     width: 0.23rem;

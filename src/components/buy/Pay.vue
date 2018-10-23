@@ -102,6 +102,15 @@
                 </div>
             </div>
         </div>
+        <div class="pop-view" v-show="show_pop">
+            <div>您正在使用余额抵扣/押金抵扣</div>
+            <input type="password" placeholder="请输入看个号平台的交易密码">
+            <div class="btn-all">
+                <div class="btn okbtn">确认</div>
+                <div class="btn canclebtn">取消</div>
+            </div>
+        </div>
+        <div class="share" v-show="show_pop"></div>
         <div class="nextBtn" @click="goPayFn" v-text="ok_text" v-if="showBtn"></div>
         <Loading v-if="showLoading"></Loading>
         <div id="pay_card"></div>
@@ -134,6 +143,7 @@ export default {
                     }
                 }
             },
+            show_pop:false,
             hint:'（请在下单后45分钟之内完成支付）',
             selePrice:true,//是否可以选择余额支付或者押金支付 下单成功后不可选择
             showPaySuccess:false,
@@ -352,9 +362,16 @@ export default {
                         }
                     }else if(res.data.code == 201){//余额支付完成
                         // mui.toast(res.data.msg,{ duration:'short', type:'div' });
-                        mui.alert(res.data.msg,'提示','确认',function(){
-                            that.$router.push({name:'BuyTradingStatus'});
-                        },'div');
+                       
+                        if(that.$route.query.stage){
+                             mui.alert(res.data.msg,'提示','确认',function(){
+                                that.$router.go(-1);
+                            },'div');
+                        }else{
+                             mui.alert(res.data.msg,'提示','确认',function(){
+                                that.$router.push({name:'BuyTradingStatus'});
+                            },'div');
+                        }
                         
                     }else if(res.data.code == 401){
                         that.$router.push({
@@ -522,9 +539,9 @@ export default {
     color: #999999;
 }
 .info-title img {
-    width: 0.13rem;
-    height: 0.29rem;
-    margin-top: 0.1rem;
+    width: 0.08rem;
+    height: 0.25rem;
+    margin-right:.1rem;
 }
 
 .pay-info {
@@ -709,6 +726,56 @@ export default {
 }
 .black-border {
     border: 1px dashed #dcdcdc;
+}
+
+
+
+
+
+.pop-view{
+    width:5rem;
+    height:3.28rem;
+    background:#FFFFFF;
+    padding:.31rem;
+    color:#666666;
+    font-size:.28rem;
+    line-height:.6rem;
+    border-radius: .1rem;
+    position:fixed;
+    top:30%;
+    left:calc(50% - 2.5rem);
+    z-index:15;
+}
+.pop-view input{
+    font-size:.24rem;
+    color:#999999;
+    margin:0;
+}
+.btn-all{
+    display:flex;
+    justify-content: flex-start;
+}
+.btn{
+    width:1.89rem;
+    border-radius: .3rem;
+    text-align:center;
+    margin:0 .15rem;
+    color:#ffffff;
+    margin-top:.4rem;
+}
+.okbtn{
+    background:#FC534A;
+}
+.canclebtn{
+    background:#C6C6C6;
+}
+.share{
+    background:rgba(0,0,0,0.3);
+    position:fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
 }
 </style>
 

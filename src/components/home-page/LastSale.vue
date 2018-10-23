@@ -97,14 +97,12 @@ export default {
             if(that.flow.order_info){
                 clearInterval(time);
                 that.flag = true;
-                console.log(that.flow);
             }
         },500);
         var time1 =setInterval(function(){
             if(that.flow.safe_info){
                 clearInterval(time1);
                 that.flag = true;
-                console.log(that.flow);
             }
         },500)
     }

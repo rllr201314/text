@@ -74,8 +74,9 @@
                             </div>
                             <div class="upImgBtn">提交验货</div><span class="upImg-hint">（最多上传8张图片）</span>
                         </div>
-                        <div class="intie" v-if="takeType == -1">
-                            <span>等待买家确认交易</span>
+                        <div class="intie" v-if="takeType == -1 ||　takeType == -2">
+                            <span v-if="takeType == -2">等待买家验号</span>
+                            <span v-if="takeType == -1">等待买家确认交易</span>
                         </div>
                         <div class="intie" v-if="takeType == 1||　takeType == 2">
                             <img src="../../../static/img/order/speed.png" alt="">
@@ -122,7 +123,7 @@ export default {
             takeData: {
                 takeTypeImg: [
                     {
-                        key: 0,
+                        key: -2,
                         imgsrc: "./static/img/sell/one.png"
                     },
                     {

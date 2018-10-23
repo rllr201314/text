@@ -239,7 +239,7 @@
             <!-- 取消菜单 -->
             <ul class="pop-view">
                 <li class="mui-table-view-cell option-black">
-                    <a href="#sheet-merchand">取消</a>
+                    <a href="#sheet-faction">取消</a>
                 </li>
             </ul>
         </div>
@@ -257,7 +257,7 @@
             <!-- 取消菜单 -->
             <ul class="pop-view">
                 <li class="mui-table-view-cell option-black">
-                    <a href="#sheet-merchand">取消</a>
+                    <a href="#sheet-sex">取消</a>
                 </li>
             </ul>
         </div>
@@ -275,7 +275,7 @@
             <!-- 取消菜单 -->
             <ul class="pop-view">
                 <li class="mui-table-view-cell option-black">
-                    <a href="#sheet-merchand">取消</a>
+                    <a href="#sheet-accountType">取消</a>
                 </li>
             </ul>
         </div>
@@ -1192,8 +1192,8 @@ export default {
 }
 
 .sell-cell-top img {
-    width: 0.13rem;
-    height: 0.29rem;
+    width: 0.08rem;
+    height: 0.25rem;
     margin-left: 0.17rem;
     vertical-align: middle;
 }

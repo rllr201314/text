@@ -13,17 +13,17 @@
                 <span v-text="category_text"></span>
                 <img src="../../../static/img/goodscreen/downsolid.png" alt="">
             </div>
-            <div id="category" class="mui-popover">
-                <ul class="mui-table-view">
-                    <li class="mui-table-view-cell" v-for="item in category_type" v-text="item.game_name" @click="showText('category',item.category_id)"></li>
-                </ul>
-            </div>
+            
             <div>
                 <input type="text" placeholder="请输入商品名称" v-model="goods_name">
             </div>
             <div class="search" @click="getData(seleTit,'refresh','search')">搜索</div>
         </div>
-
+        <div id="category" class="mui-popover">
+            <ul class="mui-table-view">
+                <li class="mui-table-view-cell" v-for="item in category_type" v-text="item.game_name" @click="showText('category',item.category_id)"></li>
+            </ul>
+        </div>
         <div class="list-box-wrap" v-if="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 3">
                 <div class="minirefresh-scroll list">
@@ -657,12 +657,6 @@ export default {
 }
 
 
-
-
-
-
-
-
 .search-wrap {
     padding: 0.3rem 0 0.3rem 0.2rem;
     font-size: 0.24rem;
@@ -673,10 +667,17 @@ export default {
     right:0;
     max-width:12rem;
     margin:0 auto;
-    z-index:999;
+    z-index:950;
     display:flex;
     justify-content:space-around;
     align-items: center;
+}
+#category {
+    top: 2.5rem;
+    left: .35rem;
+    width: 2.3rem;
+    font-size: 0.24rem;
+    color: #333333;
 }
 .sele-type {
     width: 2.3rem;
@@ -690,11 +691,7 @@ export default {
     display: inline-block;
     position: relative;
 }
-#category {
-    top: .8rem;
-    left: .35rem;
-    width: 2.3rem;
-}
+
 .sele-type img {
     width: 0.2rem;
     height: 0.1rem;

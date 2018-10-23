@@ -338,11 +338,6 @@ export default new Router({
       component: (resolve) => require(['@/components/my-center/message/Affiche_details'], resolve),
     },
     {
-      path: '/apply-settlement',
-      name: 'ApplySettlement',
-      component: (resolve) => require(['@/components/ApplySettlement'], resolve),
-    },
-    {
       path: '*',
       component: (resolve) => require(['@/components/multi/NoData'], resolve)
     },

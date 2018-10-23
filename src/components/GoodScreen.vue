@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-        <div class="list-box-wrap" v-if="!showNoData">
+        <div class="list-box-wrap" v-show="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
                 <div class="minirefresh-scroll list">
                     <ul>
@@ -179,7 +179,7 @@
                 </div>
             </div>
             <div class="screen-type-bottom">
-                <div class="ok-screen-btn" @click="okScreen('flag')">确认</div>
+                <div class="ok-screen-btn" @click="okScreen">确认</div>
                 <div class="no-screen-btn" @click="cancleScreen">取消</div>
             </div>
         </div>
@@ -199,7 +199,7 @@
             @click="seleScreen('school',item.name)"></div>
         </div>
         <!-- 遮罩 -->
-        <div class="goodscreen-shade" v-show="screenInfoAll[7].isShow" @click="hiddenScreenFun()"></div>
+        <div class="goodscreen-shade" v-show="screenInfoAll[7].isShow" @click="hiddenScreenFun('flag')"></div>
 
         <NoData class="nodata" v-if="showNoData"></NoData>
     </div>
@@ -524,7 +524,7 @@ export default {
             }
         },
         // 隐藏---遮罩+筛选框
-        hiddenScreenFun() {
+        hiddenScreenFun(flag) {
             var that = this;
             var showInfoAll = that.screenInfoAll; //筛选框集合
             var screentop = that.screenTop;
@@ -542,7 +542,9 @@ export default {
                 screenbottom[i].tit_bottom_src = "./static/img/goodscreen/downsolid.png";
                 screenbottom[i].ischeck = false;
             }
-            that.okScreen();//传参是为了不让重复调用
+            if(flag){
+              that.okScreen();//传参是为了不让重复调用
+            }
         },
         // 选择账号类型
         seleAccount(value) {
@@ -843,7 +845,7 @@ export default {
                 }
             }
         },
-        okScreen(flag) {
+        okScreen() {
             var that = this;
             var that_r = that.request;
             that_r.begin_price = that.begin_price;
@@ -870,23 +872,22 @@ export default {
             that_r.is_safe = that.is_safe;
             that_r.role_level = that.role_level;
             that.getGoodsInfo(that.request);
-            if(flag){
-               that.hiddenScreenFun(); //隐藏筛选
-            }
+            that.hiddenScreenFun(); //隐藏筛选
+            
         },
         cancleScreen() {
             var that = this;
-            that.request.is_stage = "";
-            that.request.is_safe = "";
-            that.request.is_compact = "";
-            that.request.sell_type = "";
-            that.request.is_bind = "";
-            that.request.role_level = "";
-            that.request.begin_price = "";
-            that.request.end_price = "";
-            that.request.sort_price = "";
-            that.request.sort_collection = "";
-            that.request.is_video = "";
+            that.request.is_stage = null;
+            that.request.is_safe = null;
+            that.request.is_compact = null;
+            that.request.sell_type = null
+            that.request.is_bind = null
+            that.request.role_level = null
+            that.request.begin_price = null
+            that.request.end_price = null;
+            that.request.sort_price = null
+            that.request.sort_collection = null
+            that.request.is_video = null
             var accountBindAll = that.screen_info.accountBind;
             for (var i in accountBindAll) {
                 accountBindAll[i].ischeck = false;
@@ -927,6 +928,8 @@ export default {
             for (var i in schoolTypeAll) {
                 schoolTypeAll[i].ischeck = false;
             }
+            // debugger;
+            console.log(that.request);
             that.getGoodsInfo(that.request);
             that.hiddenScreenFun(); //隐藏筛选
         },
@@ -1023,6 +1026,7 @@ export default {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var data = res.data.data.data;
+                            // 上拉加载
                             if(flag){
                                 if(data == ''){
                                     that.miniRefresh.endUpLoading(true);
@@ -1038,7 +1042,7 @@ export default {
                                 if(data == ""){
                                     that.showNoData = true;
                                     that.goodsInfo = "";
-                                    that.miniRefresh.endDownLoading();
+                                    // that.miniRefresh.endDownLoading();
                                 }else{
                                     that.goodsInfo = res.data.data.data;
                                     that.pages = res.data.data.last_page;
@@ -1119,7 +1123,7 @@ export default {
             that.miniRefresh = new MiniRefresh({
                 container: "#minirefresh",
                 down: {
-                    isAuto: false,
+                    isAuto: true,
                     bounceTime: 500,
                     callback: () => {
                         that.request.page = 1;

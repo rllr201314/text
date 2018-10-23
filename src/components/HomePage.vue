@@ -116,7 +116,7 @@ export default {
         getData(){
             var that = this;
             that.$axios.post(process.env.API_HOST+'home').then((res)=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.notice = res.data.data.article_info;

@@ -14,28 +14,33 @@
                     <div class="goods-info">
                         <div class="goods-info-title" v-text="goodsInfo.goods_title"></div>
                         <div class="goods-info-box">
-                            <div class="goods-info-left">
+                            <div class="goods-info-strip">
                                 <div class="text-left">系统</div>
-                                <div class="text-left">客户端</div>
-                                <div class="text-left">所在区服</div>
-                                <div class="text-left">等级</div>
-                                <div class="text-left">门派</div>
-                                <div class="text-left">商品类型</div>
-                            </div>
-                            <div class="goods-info-right">
                                 <div class="text-right"   v-if="goodsInfo.client_id == 1">安卓</div>
                                 <div class="text-right"  v-else-if="goodsInfo.client_id == 2">苹果</div>
                                 <div class="text-right"  v-else-if="goodsInfo.client_id == 3">安卓混服</div>
-
+                            </div>
+                            <div class="goods-info-strip">
+                                <div class="text-left">客户端</div>
                                 <div class="text-right"  v-text="goodsInfo.platform_name"></div>
+                            </div>
+                            <div class="goods-info-strip">
+                                <div class="text-left">所在区服</div>
                                 <div class="text-right" v-if="goodsInfo.server_name != null" v-text=" goodsInfo.area_name+'>'+goodsInfo.server_name"></div>
                                 <div class="text-right" v-else v-text="goodsInfo.area_name"></div>
+                            </div>
+                            <div class="goods-info-strip">
+                                <div class="text-left">等级</div>
                                 <div class="text-right"><span v-text="goodsInfo.role_level"></span>级</div>
+                            </div>
+                            <div class="goods-info-strip">
+                                <div class="text-left">门派</div>
                                 <div class="text-right" v-text="goodsInfo.faction_name"></div>
+                            </div>
+                            <div class="goods-info-strip">
+                                <div class="text-left">商品类型</div>
                                 <div class="text-right" v-if="goodsInfo.deal_type == 1">成品号</div>
                                 <div class="text-right" v-else>代练号</div>
-                                <div class="text-right" v-text="goodsInfo.account_bind"></div>
-                                <div class="text-right" v-text="goodsInfo.account_bind"></div>
                             </div>
                         </div>
                     </div>
@@ -78,7 +83,7 @@
                 </div>
                 <div class="take-cell-content">
                     <!-- 验货跳过 -->
-                    <div class="cargo" v-if="takeType == 1 && false">申请验货</div>
+                    <div class="cargo" v-if="takeType == -2" @click="verifyFn">申请验货</div>
                     <div class="cargo" v-if="takeType == -1" @click="agree">确认交易</div>
                     <div class="intie" v-if="takeType == 1||　takeType == 2">
                         <img src="../../../static/img/order/speed.png" alt="">
@@ -138,7 +143,7 @@ export default {
             takeData: {
                 takeTypeImg: [
                     {
-                        key: 0,
+                        key: -2,
                         imgsrc: "./static/img/order/one.png"
                     },
                     {
@@ -184,6 +189,23 @@ export default {
         // 查看密码
         seePasswordFn(){
             this.passType = !this.passType;
+        },
+        // 申请验货
+        verifyFn(){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'verify_goods',{
+                order_id:that.goodsInfo.order_id
+            }).then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err);
+            });
+            window.location.href = 'https://web.jiaxincloud.com/gray/mobile.html?&thirdJson={}&bg=FD8159&dialogLogo=0&dialogType=1&dialogMode=1&lang=cn&blinkTitle=1&orgName=mglhodd3enu2mg&appName=kgh431&appChannel=20003&quoteUrl=https://web.jiaxincloud.com&pageTitle=看个号客服&pageUrl=https://web.jiaxincloud.com/onekey.html?id=mglhodd3enu2mg&appName=kgh431&appChannel=20003&alone=1&jump=true&jump=true';
         },
         // 确认交易
         agree(){
@@ -341,8 +363,8 @@ export default {
     font-size: 0.24rem;
 }
 .take-status-title img {
-    width: 0.13rem;
-    height: 0.29rem;
+    width: 0.08rem;
+    height: 0.25rem;
     margin-left: 0.17rem;
     vertical-align: middle;
 }
@@ -450,9 +472,9 @@ export default {
     vertical-align: middle;
 }
 .goods-info-top img {
-    width: 0.13rem;
-    height: 0.35rem;
-    margin: 0.1rem 0 0 0.17rem;
+    width: 0.08rem;
+    height: 0.25rem;
+    margin: 0 0 0 0.17rem;
     vertical-align: middle;
     vertical-align: middle;
 }
@@ -460,17 +482,17 @@ export default {
     padding: 0.2rem 0;
     font-size: 0.26rem;
     color: #666666;
+    display:flex;
+    align-items: center;
+    justify-content:space-between;
 }
 .goods-info-content img {
     width: 1.1rem;
     height: 1.1rem;
-    margin: 0 0.6rem 0 0.35rem;
-    vertical-align: middle;
+    margin: 0 0 0 0.35rem;
 }
-.goods-info {
-    display: inline-block;
-    width: 4.8rem;
-    vertical-align: middle;
+.goods-info{
+    width:70%;
 }
 .goods-info-title {
     overflow: hidden;
@@ -479,23 +501,13 @@ export default {
     color: #333333;
     margin-bottom: 0.15rem;
 }
-.goods-info-left,
-.goods-info-right {
-    display: inline-block;
-    vertical-align: middle;
+.goods-info-strip{
+    display: flex;
+    align-items: top;
 }
-.goods-info-left div {
-    margin-bottom: 0.1rem;
-}
-.goods-info-right div {
-    margin-bottom: 0.1rem;
-    color: #333333;
-}
-.goods-info-left {
-    margin-right: 0.35rem;
-}
-.contact-content {
-    padding-left: 0.2rem;
+.text-left{
+    min-width: 1.1rem;
+    margin-right:.3rem;
 }
 
 /* ==========input========= */

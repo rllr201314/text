@@ -19,9 +19,6 @@
             
             <img v-if="showTitle.showShare === 1" class="head_right_search" src="../../../static/img/searchLogo.png" alt="" @click="cliSearch">
             <img v-else-if="showTitle.showShare === 2" class="head_right_share" src="../../../static/img/share_ico.png" alt="">
-            <!-- <a v-else-if="showTitle.showShare === 2" class="mui-icon iconfont icon-send mui-pull-right" @click="openShare();" >
-                <img  class="head_right_share" src="../../../static/img/share_ico.png" alt="">
-            </a> -->
             <img v-else-if="showTitle.showShare === 3" :style="iconstyle" class="head_right_share" src="../../../static/img/menu_ico.png" alt="" @click="cliMenu">
             <img v-else-if="showTitle.showShare === 4" class="head_right_add" src="../../../static/img/header/hAdd_ico.png" alt="" @click="addCard">
             <transition name="fade">
@@ -37,10 +34,12 @@
                     <div class="take" @click="toPage('take')">
                         <img src="../../../static/img/header-menu/take_ico.png" alt="">
                         <span>收货</span>
+                        <span v-show="confirm_trade == 1" class="red-circle"></span>
                     </div>
                     <div class="service" @click="toPage('message')">
                         <img src="../../../static/img/header-menu/service_ico.png" alt="">
                         <span>消息</span>
+                        <span v-show="is_msg == 1" class="red-circle"></span>
                     </div>
                     <div class="user" @click="toPage('my')">
                         <img src="../../../static/img/header-menu/user_ico.png" alt="">
@@ -65,10 +64,14 @@ export default {
         return {
             showMenu: false ,//是否显示菜单
             iconrotate:0,//旋转de
+            confirm_trade:null,
+            is_msg:null,
         };
     },
     props: ["showTitle"],
-    mounted() {},
+    mounted() {
+        this.getMsg();
+    },
     computed:{    
         iconstyle(){//图标动态样式      
             let arr = new Array(); 
@@ -141,8 +144,21 @@ export default {
                 that.$router.push({name:'BuyWaitReceiveStatus'})
             }
         },
-        openShare(){
-
+        getMsg(){
+            var that = this;
+            if(that.$store.state.token){
+                that.$axios.post(process.env.API_HOST+'tip_msg').then((res)=>{
+                    console.log(res);
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            that.is_msg = res.data.data.is_msg;
+                            that.confirm_trade = res.data.data.confirm_trade;
+                        }
+                    }
+                }).catch((err)=>{
+                    console.log(err);
+                })
+            }
         }
     }
 };
@@ -344,5 +360,26 @@ export default {
     right: 0;
     background: rgba(0, 0, 0, 0);
     z-index: 8;
+}
+.take,.service{
+    position:relative;
+}
+.service .red-circle{
+    position: absolute;
+    top:.23rem;
+    left:.23rem;
+}
+.take .red-circle{
+    position: absolute;
+    top:.23rem;
+    left:.23rem;
+}
+
+.red-circle{
+    width:.12rem;
+    height:.12rem;
+    border-radius: 100%;
+    background:#F31000;
+    display: inline-block;
 }
 </style>

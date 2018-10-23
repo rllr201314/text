@@ -30,6 +30,7 @@
                         <div class="order-num">
                             <span>订单号 </span>
                             <span class="black-color" v-text="item.order_sn"></span>
+                            <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="item.order_sn" @click="copyFn()" id="copy">
                             <span class="refund" @click="goPayFn(item.order_id,item.next_time)">我要还款</span>
                         </div>
                         <div class="goods-des" v-text="item.goods_title"></div>
@@ -86,6 +87,19 @@
             }
         },
         methods:{
+             // 复制
+            copyFn() {
+                let that = this;
+                let clipboard = new ClipboardJS("#copy");
+                clipboard.on("success", function(e) {
+                    clipboard.destroy();
+                    mui.toast("复制成功",{ duration:'short', type:'div' });
+                });
+                clipboard.on("error", function(e) {
+                    clipboard.destory();
+                    mui.toast("请重新点击复制",{ duration:'short', type:'div' });
+                });
+            },
             showStageFun(ind,flag){
                 this.orderData[ind].showStage = !this.orderData[ind].showStage;
             },
@@ -296,4 +310,9 @@
     .periodsNum{
         min-width:.8rem;
     }
+
+.copy-img {
+    width: 0.2rem;
+    height: 0.24rem;
+}
 </style>
