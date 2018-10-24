@@ -11,21 +11,18 @@
                 <div class="cell-con">
                     <div class="sell-strip">
                         <span class="sell-lefttext">手机号</span>
-                        <input type="number" placeholder=" 请填写您的绑定手机号">
-                        <div class="right-opt">
-                            <span class="orange-color">前往认证</span>
-                        </div>
+                        <span v-text="mobile"></span>
                     </div>
-                    <div class="sell-strip">
+                    <div class="sell-strip" @click="showOpt">
                         <span class="sell-lefttext">理赔事由</span>
                         <div class="right-opt">
-                            <span>请选择事由</span>
+                            <span v-text="type"></span>
                             <img src="../../static/img/order/next.png" alt="">
                         </div>
                     </div>
                     <div class="sell-strip">
                         <span class="sell-des">商品描述</span>
-                        <textarea name="des" id="arbdes" cols="25" rows="3" placeholder="请对商品进行描述"></textarea>
+                        <textarea name="des" id="arbdes" cols="25" rows="3" placeholder="请对商品进行描述(200字以内)" v-model="des" maxlength="200"></textarea>
                     </div>
                     <div class="sell-strip">
                         <div class="sell-strip-title">
@@ -48,7 +45,20 @@
                 </div>
             </div>
         </div>
-        <div class="nextBtn">提交申请</div>
+        <div class="nextBtn" @click="subData">提交申请</div>
+        <!-- 分享弹出框 -->
+        <div id="sheet" class="mui-popover mui-popover-bottom mui-popover-action">
+            <!-- 可选择菜单 -->
+            <ul class="pop-view">
+                <li v-for="item in sele_type" v-text="item.title" @click="seleTypeFn(item.assurance_type)"></li>
+            </ul>
+            <!-- 取消菜单 -->
+            <ul class="pop-view">
+                <li class="mui-table-view-cell option-black">
+                    <a href="#sheet">取消</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 <script>
@@ -69,6 +79,12 @@ export default {
                     title: "申请理赔"
                 }
             },
+            o_id:null,
+            mobile:null,
+            type:'请选择事由',
+            id:null,
+            sele_type:null,
+            des:'',
             upImgAll: {
                 imgSrc: [],
                 imgData: {
@@ -78,20 +94,26 @@ export default {
         };
     },
     methods: {
+        showOpt(){
+            mui("#sheet").popover("toggle");
+        },
+        seleTypeFn(key){
+            mui("#sheet").popover("toggle");
+            var that = this;
+            for(var i in that.sele_type){
+                if(key == that.sele_type[i].assurance_type){
+                    that.type = that.sele_type[i].title;
+                    that.id = key;
+                    break;
+                }
+            }
+        },
         // 添加图片
         addImg(event) {
             var that = this;
             var imgSrcArr = that.upImgAll.imgSrc;
             if (imgSrcArr.length >= 5) {
-                mui.alert(
-                    "图片上传到达上限",
-                    "提示",
-                    "确认",
-                    function() {
-                        return;
-                    },
-                    "div"
-                );
+                mui.alert("图片上传到达上限","提示","确认",'',"div");
             } else if (imgSrcArr.length < 5) {
                 var arr = [];
                 let imgArr = event.target.files;
@@ -100,23 +122,11 @@ export default {
                     let type = imgArr[i].type; //文件的类型，判断是否是图片
                     let size = imgArr[i].size; //文件的大小，判断图片的大小
                     if (that.upImgAll.imgData.accept.indexOf(type) == -1) {
-                        mui.alert(
-                            "请选择我们支持的图片格式！",
-                            "提示",
-                            "确认",
-                            null,
-                            "div"
-                        );
+                        mui.alert("请选择我们支持的图片格式！","提示","确认",null,"div");
                         return false;
                     }
                     if (size > 3145728) {
-                        mui.alert(
-                            "请选择3M以内的图片！",
-                            "提示",
-                            "确认",
-                            null,
-                            "div"
-                        );
+                        mui.alert("请选择3M以内的图片！","提示","确认",null,"div");
                         return false;
                     }
 
@@ -125,11 +135,11 @@ export default {
 
                     var fileName = imgArr[i].name;
                     reader.onload = function(e) {
-                        var imgMsg = {
-                            name: fileName, //获取文件名
-                            base64: this.result //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
-                        };
-                        imgSrcArr.push(imgMsg);
+                        // var imgMsg = {
+                        //     name: fileName, //获取文件名
+                        //     base64: this.result //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
+                        // };
+                        imgSrcArr.push(this.result);
                     };
                 }
             }
@@ -137,6 +147,47 @@ export default {
         delImg(ind) {
             var imgList = this.upImgAll.imgSrc;
             imgList.splice(ind, 1);
+        },
+        getconfig(){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'assurance_type').then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.sele_type = res.data.data;
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err);
+            })
+        },
+        subData(){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'do_assurance',{
+                order_id:that.o_id,
+                assurance_type:that.id,
+                mobile:that.mobile,
+                reason:that.des,
+                images:that.upImgAll.imgSrc
+            }).then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err);
+            })
+        }
+    },
+    mounted(){
+        this.getconfig();
+        this.mobile = this.$store.state.mobile;
+        if(this.$route.query.o_id){
+            this.o_id = this.$route.query.o_id;
+        }else{
+            this.$router.go(-1);
         }
     }
 };
@@ -339,5 +390,21 @@ input[type="number"] {
 :-ms-input-placeholder {
     color: #999999;
     font-size: 0.24rem;
+}
+
+.pop-view {
+    margin-top: 10px;
+    background: #ffffff;
+    list-style: none;
+}
+
+.pop-view li {
+    text-align: center;
+    line-height: 0.9rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.pop-view a {
+    padding: 0;
 }
 </style>

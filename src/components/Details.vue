@@ -46,7 +46,7 @@
             </div>
         </div>
         <!-- 服务保障 -->
-        <div class="safe-info detail-info">
+        <div class="safe-info detail-info" v-if="detailData.is_safe == 1 || detailData.is_stage == 1 || detailData.is_check == 1 || detailData.is_compact == 1">
             <div class="info-left">服务保障</div>
             <div class="info-right safe-info-right">
                 <img v-if="detailData.is_safe == 1" src="../../static/img/goodscreen/safe_ico.png" alt="">
@@ -54,25 +54,25 @@
                 <img v-if="detailData.is_check == 1" src="../../static/img/goodscreen/verify.png" alt="">
                 <img v-if="detailData.is_compact == 1" src="../../static/img/goodscreen/contract_ico.png" alt="">
             </div>
-            </div>
-            <!-- 账号绑定 -->
-            <div class="accountBind-info detail-info">
-                <div class="info-left">账号绑定</div>
-                <div class="info-right">
-                    <div class="user-bind">
-                        <img :src="accountBind.userBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
-                        <span>绑定身份证</span>
-                    </div>
-                    <div class="user-bind">
-                        <img :src="accountBind.phoneBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
-                        <span>绑定手机</span>
-                    </div>
-                    <div class="user-bind">
-                        <img :src="accountBind.emailBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
-                        <span>绑定邮箱</span>
-                    </div>
+        </div>
+        <!-- 账号绑定 -->
+        <div class="accountBind-info detail-info">
+            <div class="info-left">账号绑定</div>
+            <div class="info-right">
+                <div class="user-bind">
+                    <img :src="accountBind.userBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
+                    <span>绑定身份证</span>
+                </div>
+                <div class="user-bind">
+                    <img :src="accountBind.phoneBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
+                    <span>绑定手机</span>
+                </div>
+                <div class="user-bind">
+                    <img :src="accountBind.emailBind?'../../../static/img/goods-details/nobind_ico.png':'../../static/img/goods-details/okbind_ico.png'" alt="">
+                    <span>绑定邮箱</span>
                 </div>
             </div>
+        </div>
             <!-- 商品描述 -->
             <div class="goods-details-info">
                 <div class="goods-info-content">
@@ -441,11 +441,11 @@ export default {
             console.log(token);
             if (token) {
                 this.showShade = true;
-                var mo = function(e) {
-                    e.preventDefault();
-                };
-                document.body.style.overflow = "hidden";
-                document.addEventListener("touchmove", mo, false); //禁止页面滑动
+                // var mo = function(e) {
+                //     e.preventDefault();
+                // };
+                // document.body.style.overflow = "hidden";
+                // document.addEventListener("touchmove", mo, false); //禁止页面滑动
             } else {
                 that.$router.push({ name: "AccountLogin" });
             }
@@ -483,11 +483,11 @@ export default {
             }
             that.bargain_price = "";
             that.showShade = false;
-            var mo = function(e) {
-                e.preventDefault();
-            };
-            document.body.style.overflow = ""; //出现滚动条
-            document.removeEventListener("touchmove", mo, false);
+            // var mo = function(e) {
+            //     e.preventDefault();
+            // };
+            // document.body.style.overflow = ""; //出现滚动条
+            // document.removeEventListener("touchmove", mo, false);
         },
         // 购买
         buyFn() {
@@ -1133,6 +1133,7 @@ input[type="number"] {
 .goods-info-content {
     padding: 0.2rem;
     font-size: 0.26rem;
+    display: block;
 }
 .goods-info-strip{
     display:flex;

@@ -153,7 +153,6 @@
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-
                 <div class="sell-strip" @click="goSele('authenticity')">
                     <div class="left-strip see">
                         <img src="../../../static/img/my-center/see.png" alt="">
@@ -163,16 +162,25 @@
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                <a href="https://web.jiaxincloud.com/gray/mobile.html?&thirdJson={}&bg=FD8159&dialogLogo=0&dialogType=1&dialogMode=1&lang=cn&blinkTitle=1&orgName=mglhodd3enu2mg&appName=kgh431&appChannel=20003&quoteUrl=https://web.jiaxincloud.com&pageTitle=看个号客服&pageUrl=https://web.jiaxincloud.com/onekey.html?id=mglhodd3enu2mg&appName=kgh431&appChannel=20003&alone=1&jump=true&jump=true">
-                    <div class="sell-strip">
-                    <div class="left-strip service">
-                        <img src="../../../static/img/my-center/service.png" alt="">
-                        <span>联系客服</span>
+                <div class="sell-strip" @click="goSele('safe')">
+                    <div class="left-strip safe">
+                        <img src="../../../static/img/my-center/safe.png" alt="">
+                        <span>安全中心</span>
                     </div>
                     <div class="right-opt">
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
+                <a href="https://web.jiaxincloud.com/gray/mobile.html?&thirdJson={}&bg=FD8159&dialogLogo=0&dialogType=1&dialogMode=1&lang=cn&blinkTitle=1&orgName=mglhodd3enu2mg&appName=kgh431&appChannel=20003&quoteUrl=https://web.jiaxincloud.com&pageTitle=看个号客服&pageUrl=https://web.jiaxincloud.com/onekey.html?id=mglhodd3enu2mg&appName=kgh431&appChannel=20003&alone=1&jump=true&jump=true">
+                    <div class="sell-strip">
+                        <div class="left-strip service">
+                            <img src="../../../static/img/my-center/service.png" alt="">
+                            <span>联系客服</span>
+                        </div>
+                        <div class="right-opt">
+                            <img src="../../../static/img/order/next.png" alt="">
+                        </div>
+                    </div>
                 </a>
             </div>
             <div class="strip-wrap">
@@ -383,10 +391,7 @@ export default {
             var that = this;
             var token = that.$store.state.token;
             if (token == undefined || token == "") {
-                mui.confirm(
-                    "请先登陆",
-                    "提示",
-                    ["取消", "确认"],
+                mui.confirm("请先登陆","提示",["取消", "确认"],
                     function(e) {
                         if (e.index == 1) {
                             that.$router.push({
@@ -504,6 +509,8 @@ export default {
                 } else if (flag == "messageAll") {
                     //议价消息
                     that_r.push({ name: "MessageAll" });
+                }else if(flag == "safe"){
+                    that_r.push({name:'Safety_Center',query:{type:that.myData.is_identify}});
                 }
             }
         },
@@ -870,6 +877,10 @@ export default {
 .see img {
     width: 0.33rem;
     height: 0.21rem;
+}
+.safe img {
+    width: 0.26rem;
+    height: 0.29rem;
 }
 .service img {
     width: 0.27rem;

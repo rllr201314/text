@@ -5,7 +5,11 @@
         <div class="userauthentic-content">
             <div class="add-card" v-if="pageType==1">
                 <img src="../../../../static/img/assets-manage/user_card.png" alt="">
-                <div>为了您的资金安全，请先完成个人实名认证</div>
+                <div v-if="status">
+                    <div>交易密码主要用于保护您的账户余额和押金余额的安全。</div>
+                    <div>请先完成实名认证</div>
+                </div>
+                <div v-else>为了您的资金安全，请先完成个人实名认证</div>
                 <div class="go-authentic" @click="goAuthentication">前往认证</div>
             </div>
 
@@ -113,7 +117,8 @@ export default {
             seleVal: "",
             zfb: "",
             bank_num: "",
-            bank_text: ""
+            bank_text: "",
+            status:null,
         };
     },
     mounted() {
@@ -126,6 +131,9 @@ export default {
             } else {
                 that.comData.showTitle.title = '实名认证';
                 that.pageType = 1;
+                if(that.$route.query.status){
+                    that.status = that.$route.query.status;
+                }
             }
         } else {
             that.$router.go(-1);

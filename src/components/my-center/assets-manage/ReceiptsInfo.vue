@@ -5,24 +5,24 @@
         <div class="receiptInfo-content">
             <div class="receiptInfo-num">
                 <div class="left">流水号</div>
-                <div class="right" v-text="infoData.num"></div>
+                <div class="right" v-text="infoData.bill_sn"></div>
             </div>
             <div class="receiptInfo">
                 <div class="strip">
                     <div class="left">类型</div>
-                    <div class="right" v-text="infoData.type"></div>
+                    <div class="right" v-text="infoData.title"></div>
                 </div>
                 <div class="strip">
                     <div class="left">金额</div>
-                    <div class="right" v-text="infoData.price"></div>
+                    <div class="right">
+                        <span v-if="infoData.flag == 1">+</span>
+                        <span v-else>-</span>
+                        <span v-text="infoData.money"></span>元
+                    </div>
                 </div>
                 <div class="strip">
                     <div class="left">时间</div>
-                    <div class="right" v-text="infoData.time"></div>
-                </div>
-                <div class="strip">
-                    <div class="left">余额</div>
-                    <div class="right" v-text="infoData.balance"></div>
+                    <div class="right" v-text="infoData.create_time"></div>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
 <script>
     import Header from '@/components/home-page/Header'
     export default {
-        name:'ReceiptsAll',
+        name:'ReceiptsInfo',
         components:{
             Header,
         },
@@ -46,24 +46,38 @@
                         title:"收支明细",
                     }
                 },
-                infoData:{
-                    num:'20118393939393939393',
-                    type:'收入',
-                    price:'+2000.0元',
-                    time:'2018-09-09 9:00:00',
-                    balance:'0.0元',
-                }
-
-                
+                infoData:{},
             }
         },
         methods:{
-            
+            // 判断是不是JSON字符串
+            isobjStr(str) {
+                if (typeof str == "string") {
+                    try {
+                        if (typeof JSON.parse(str) == "object") {
+                            return true;
+                        }
+                    } catch (e) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            },
+        },
+        mounted(){
+            var that = this;
+            var data = that.$route.query.info;
+            if(that.isobjStr(data)){
+                that.infoData = JSON.parse(data);
+            }else{
+                that.$router.go(-1);
+            }
         }
     }
 </script>
 <style scoped>
-    .receiptAll-wrap{
+    .receiptInfo-wrap{
         max-width: 12rem;
         margin:0 auto;
         padding-top:.88rem;

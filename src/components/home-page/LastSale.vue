@@ -68,7 +68,7 @@ export default {
             return {
                 step:0.2, //步长 越大滚动速度越快
                 limitMoveNum:3, //启动无缝滚动最小数据量 this.dataList.length
-
+                
                 hoverStop: false, //是否启用鼠标hover控制
                 direction: 1, //1 往上 0 往下
                 openWatch: true, //开启data实时监听

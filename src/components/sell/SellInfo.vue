@@ -11,11 +11,11 @@
                 <div class="sell-cell-content">
                     <div class="sell-strip">
                         <span class="sell-lefttext">商品标题</span>
-                        <input type="text" placeholder="请输入商品标题" v-model="requestData.goods_title">
+                        <input type="text" placeholder="请输入商品标题(20字以内)" v-model="requestData.goods_title" maxlength="20">
                     </div>
                     <div class="sell-strip">
                         <span class="sell-lefttext">角色等级</span>
-                        <input type="number" placeholder="请输入角色等级" v-model="requestData.role_level">
+                        <input type="number" placeholder="请输入角色等级" v-model="requestData.role_level" maxlength="3">
                     </div>
                     <div class="sell-strip" @click="showPop('faction')">
                         <span class="sell-lefttext">职业</span>
@@ -33,7 +33,7 @@
                     </div>
                     <div class="sell-strip">
                         <span class="sell-des">商品描述</span>
-                        <textarea name="des" id="arbdes" cols="25" rows="3" placeholder="请对商品进行描述" v-model="requestData.goods_description"></textarea>
+                        <textarea name="des" id="arbdes" cols="25" rows="3" placeholder="请对商品进行描述(200字以内)" v-model="requestData.goods_description" maxlength="200"></textarea>
                     </div>
                     <div class="sell-strip">
                         <div class="sell-strip-title">
@@ -113,15 +113,15 @@
                     </div>
                     <div class="sell-strip" v-show="requestData.sell_type == 2">
                         <span class="sell-lefttext">商品最高价</span>
-                        <input type="number" placeholder="填写商品最高的出价" v-model="requestData.goods_price">
+                        <input type="number" placeholder="填写商品最高的出价" v-model="requestData.goods_price" maxlength="7">
                     </div>
                     <div class="sell-strip" v-show="requestData.sell_type == 2">
                         <span class="sell-lefttext">商品最低价</span>
-                        <input type="number" placeholder="填写可以接受最低的议价价格" v-model="requestData.min_price">
+                        <input type="number" placeholder="填写可以接受最低的议价价格" v-model="requestData.min_price" maxlength="7">
                     </div>
                     <div class="sell-strip" v-show="requestData.sell_type == 1">
                         <span class="sell-lefttext">商品售价</span>
-                        <input type="number" placeholder="填写商品价格" v-model="requestData.goods_price">
+                        <input type="number" placeholder="填写商品价格" v-model="requestData.goods_price" maxlength="7">
                     </div>
                     <!-- /////88888888888888888888888888888888888888888888888888888888888888888888888888888888888888 -->
                     <div class="sell-strip" v-if="safeOrCompact.showSafe">
@@ -1051,6 +1051,7 @@ export default {
             }).then((res) => {
                 if(res.status == 200){
                     if(res.data.code == 200){
+                        that.showLoading = false;
                         // console.log(res.data.data);
                         var data = res.data.data;
                         that.category_id = data.category_id;
@@ -1067,7 +1068,6 @@ export default {
                         that_req.role_level = data.role_level;
                         that_req.goods_title = data.goods_title;
                         that_req.goods_description = data.goods_description;
-                        that_req.account = data.account;
                         that_req.mobile = data.mobile;
                         that_req.wx = data.wx;
                         that_req.video_url = data.video_url;
@@ -1147,6 +1147,7 @@ export default {
                 that.getConfig(opt,opt.flag);//请求选择参数
                 that.editOrpublish = 1;
             }else if(opt.flag == 2){
+                that.showLoading = true;
                 that.getRedact(opt.g);
                 that.comData.showTitle.title = "编辑";
                 that.editOrpublish = 2;

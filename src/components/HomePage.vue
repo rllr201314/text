@@ -17,7 +17,7 @@
       <UserHelp></UserHelp>
       <HotLine></HotLine>
       <Footer></Footer>
-      <div class="open-active" @click="showActive()" :style="iconstyle">
+      <div class="open-active" @click="showActive()" :style="iconstyle" v-if="false">
           <img src="../../static/img/active_ico.png" alt="">
       </div>
       

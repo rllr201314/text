@@ -11,11 +11,11 @@
             <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="showBox == 1">
                 <div class="minirefresh-scroll list-box">
                     <ul class="list">
-                        <div class="receiptAll-strip" v-for="item in cellData">
+                        <div class="receiptAll-strip" v-for="item in cellData" @click="receiptDetail(item)">
                             <div class="receiptAll-des" v-text="item.title"></div>
                             <div class="receiptAll-time" v-text="item.create_time"></div>
                             <div class="receiptAll-price green-color" v-if="item.flag == 1">+<span v-text="item.money"></span></div>
-                            <div class="receiptAll-price green-color" v-if="item.flag == 2">-<span v-text="item.money"></span></div>
+                            <div class="receiptAll-price red-color" v-if="item.flag == 2">-<span v-text="item.money"></span></div>
                         </div>
                     </ul>
                 </div>
@@ -23,11 +23,10 @@
             <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="showBox == 2">
                 <div class="minirefresh-scroll list-box">
                     <ul class="list">
-                        <div class="receiptAll-strip" v-for="item in cellData">
+                        <div class="receiptAll-strip" v-for="item in cellData" @click="receiptDetail(item)">
                             <div class="receiptAll-des" v-text="item.title"></div>
                             <div class="receiptAll-time" v-text="item.create_time"></div>
-                            <div class="receiptAll-price green-color" v-if="item.flag == 1">+<span v-text="item.money"></span></div>
-                            <div class="receiptAll-price green-color" v-if="item.flag == 2">-<span v-text="item.money"></span></div>
+                            <div class="receiptAll-price red-color" v-if="item.flag == 2">-<span v-text="item.money"></span></div>
                         </div>
                     </ul>
                 </div>
@@ -35,11 +34,10 @@
             <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="showBox == 3">
                 <div class="minirefresh-scroll list-box">
                     <ul class="list">
-                        <div class="receiptAll-strip" v-for="item in cellData">
+                        <div class="receiptAll-strip" v-for="item in cellData" @click="receiptDetail(item)">
                             <div class="receiptAll-des" v-text="item.title"></div>
                             <div class="receiptAll-time" v-text="item.create_time"></div>
                             <div class="receiptAll-price green-color" v-if="item.flag == 1">+<span v-text="item.money"></span></div>
-                            <div class="receiptAll-price green-color" v-if="item.flag == 2">-<span v-text="item.money"></span></div>
                         </div>
                     </ul>
                 </div>
@@ -87,6 +85,11 @@ export default {
                 this.showBox = 3;
                 this.getData(3,'refresh');
             }
+        },
+        receiptDetail(data){
+            console.log(data);
+            var info = JSON.stringify(data);
+            this.$router.push({name:'ReceiptsInfo',query:{info:info}})
         },
         refresh() {
             var that = this;
@@ -218,7 +221,10 @@ export default {
 }
 .green-color {
     color: #45c773;
-    
+    background: none;
+}
+.red-color{
+    color:#FF5E5E;
     background: none;
 }
 

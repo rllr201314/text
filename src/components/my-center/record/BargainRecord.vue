@@ -45,7 +45,7 @@
                                    </div>
                                    <div class="goods-strip-bottom">
                                        <span>原价</span>
-                                       <span class="goods-price" v-text="item.goods_price"></span>
+                                       <span class="goods-price">￥<span v-text="item.goods_price"></span></span>
                                        <span v-if="item.is_agree == 1 && item.order_state == ''" class="p-bBtn" @click="goPayFn(item.order_state,item.goods_id)">前往支付</span>
 
                                        <span v-else-if="item.is_agree == 1 && item.order_state == 1 && item.is_self == 1" class="p-bBtn" @click="goPayFn(item.order_state,item.order_id,item.discuss_msg)">前往支付</span>

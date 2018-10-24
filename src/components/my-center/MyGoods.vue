@@ -25,10 +25,11 @@
             </ul>
         </div>
         <div class="list-box-wrap" v-if="!showNoData">
+            <!-- 已上架 -->
             <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 3">
                 <div class="minirefresh-scroll list">
                     <ul>
-                        <div class="arbitration-cell" v-for="item in putawayData">
+                        <div class="arbitration-cell" v-for="item in putawayData" @click="goDetail(item.goods_id)">
                             <div class="arbitration-box">
                                 <div class="gameLog">
                                     <img :src="item.game_logo" alt="">
@@ -38,7 +39,7 @@
                                         <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
                                         <div class="goods-type" v-else>代练号</div>
                                         <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                        <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                        <div class="account-ios" v-else-if="item.client_id == 2">苹果</div>
                                         <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
                                         <div class="area" v-text="item.platform_name"></div>
                                     </div>
@@ -54,7 +55,7 @@
                             </div>
                             <div class="order-operate">
                                 <div class="right-operate">
-                                    <span class="pay" @click="downGoods(item.goods_id)">下架</span>
+                                    <span class="pay" @click.stop="downGoods(item.goods_id)">下架</span>
                                 </div>
                             </div>
                         </div>
@@ -98,7 +99,7 @@
                     </ul>
                 </div>
             </div>
-            <!-- 审核中 -->
+            <!-- 已下架 -->
             <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 2">
                 <div class="minirefresh-scroll list">
                     <ul>
@@ -231,28 +232,32 @@ export default {
             that.seleTit = opt;
             if (opt == 3) {
                 if (that.putawayData == "") {
+                    that.num_page = 1;
                     that.getData(that.seleTit, "refresh"); //上架
                 }
             } else if (opt == 1) {
                 if (that.auditData == "") {
+                    that.num_page = 1;
                     that.getData(that.seleTit, "refresh"); //审核中
                 }
             } else if (opt == 2) {
                 if (that.removeData == "") {
+                    that.num_page = 1;
                     that.getData(that.seleTit, "refresh"); //已下架
                 }
             }
         },
         getData(opt, flag,search) {
-            console.log(opt+'--'+flag);
+            // console.log(opt+'--'+flag);
             var that = this;
             var request = {};
-            request.page = that.num_page;
             request.goods_status = opt;
             if(search == 'search'){
+                that.num_page = 1;
                 request.category_id = that.c_id;
                 request.goods_title = that.goods_name;
             }
+            request.page = that.num_page;
             that.$axios
                 .post(process.env.API_HOST+"goods_information",request)
                 .then(res => {
@@ -264,7 +269,7 @@ export default {
                             if (flag == "refresh") {
                                 if(data == ""){
                                     that.showNoData = true;
-                                    that.miniRefresh.endDownLoading();
+                                    // that.miniRefresh.endDownLoading();
                                     that.putawayData = '';
                                     that.removeData = '';
                                     that.auditData = '';
@@ -395,6 +400,13 @@ export default {
                 },
                 "div"
             );
+        },
+        // 去详情
+        goDetail(id){
+             this.$router.push({
+                name: "Details",
+                query: { goods_id: id }
+            });
         },
         refresh() {
             var that = this;
@@ -632,6 +644,18 @@ export default {
         rgba(132, 240, 178, 1),
         rgba(73, 209, 202, 1)
     );
+    margin-right: 0.1rem;
+}
+.account-ios {
+    text-align: center;
+    /* width:.7rem; */
+    padding: 0 0.1rem;
+    height: 0.36rem;
+    background: -webkit-linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
+    background: -o-linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
+    background: -moz-linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
+    background:linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
+    display: inline-block;
     margin-right: 0.1rem;
 }
 .area {

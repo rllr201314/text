@@ -37,7 +37,8 @@
                     that.$router.push({name:'Sell'});
                     sessionStorage.buyOrsell = 2;
                 }else if(flag == 'active'){
-                    that.$router.push({name:'ActivePage'})
+                    // that.$router.push({name:'ActivePage'})
+                    mui.toast('暂未开放',{ duration:'short', type:'div' });
                 }else if(flag == 'stage'){
                     // if(that.$store.token){
                         that.$router.push({ name: "BillInstallment" });

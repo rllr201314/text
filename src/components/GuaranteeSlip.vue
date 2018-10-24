@@ -102,11 +102,10 @@ export default {
             })
         },
         goclaims(){
-            this.$router.push({name:'ApplySettlement'})
+            this.$router.push({name:'ApplySettlement',query:{o_id:this.orderInfo.order_id}})
         }
     },
     mounted(){
-        console.log(this.$route.query.order);
         this.getData();
     }
 };

@@ -337,6 +337,18 @@ export default new Router({
       name: 'Affiche_Details',
       component: (resolve) => require(['@/components/my-center/message/Affiche_details'], resolve),
     },
+    // 安全中心
+    {
+      path: '/safety-center',
+      name: 'Safety_Center',
+      component: (resolve) => require(['@/components/my-center/SafetyCenter'], resolve),
+    },
+    // 设置安全密码
+    {
+      path: '/set-password',
+      name: 'Set_Password',
+      component: (resolve) => require(['@/components/my-center/SetPassword'], resolve),
+    },
     {
       path: '*',
       component: (resolve) => require(['@/components/multi/NoData'], resolve)

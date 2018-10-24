@@ -1,7 +1,9 @@
 <template>
     <div class="footer">
         <div>看个号7*24小时为您提供安全快捷的服务</div>
-        <div>晋ICP备18DD2812号-1</div>
+        <div>浙网文（2018）9053-741号</div>
+        <div>晋ICP备18002812号-1</div>
+        <div>晋公网安备14072902000115号</div>
         <div>杭州古都科技有限公司灵石县分公司@2018-2028</div>
         <div>kangehao.com版权所有</div>
     </div>

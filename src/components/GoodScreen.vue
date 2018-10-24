@@ -33,7 +33,7 @@
                                 <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
                                 <div class="goods-type" v-else-if="item.deal_type_id == 2">代练号</div>
                                 <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                <div class="account-ios" v-else-if="item.client_id == 2">苹果</div>
                                 <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
                                 <div class="area" v-text="item.area_name"></div>
                             </div>
@@ -43,6 +43,7 @@
                                     <img v-if="item.is_safe == 1" src="../../static/img/goodscreen/safe_ico.png" alt="">
                                     <img v-if="item.is_stage == 1" src="../../static/img/goodscreen/stages_ico.png" alt="">
                                     <img v-if="item.is_check == 1" src="../../static/img/goodscreen/verify.png" alt="">
+                                    <img v-if="item.is_compact == 1" src="../../static/img/goodscreen/contract_ico.png" alt="">
                                  </div>
                             </div>
                             <div class="goods-strip-bottom">
@@ -1663,6 +1664,18 @@ input[type="number"] {
         rgba(132, 240, 178, 1),
         rgba(73, 209, 202, 1)
     );
+    display: inline-block;
+    margin-right: 0.1rem;
+}
+.account-ios {
+    text-align: center;
+    /* width:.7rem; */
+    padding: 0 0.1rem;
+    height: 0.36rem;
+    background: -webkit-linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
+    background: -o-linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
+    background: -moz-linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
+    background:linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
     display: inline-block;
     margin-right: 0.1rem;
 }

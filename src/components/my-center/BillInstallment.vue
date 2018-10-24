@@ -55,7 +55,7 @@
                                     <img v-if="val.flag == 1" src="../../../static/img/my-center/suc_refund.png" alt="">
                                 </div>
                                 <span class="periodsNum" v-text="val.stage_title"></span>
-                                <span v-text="val.stage_value"></span>
+                                <span class="gray-color" v-text="val.stage_value"></span>
                             </div>
                         </div>
                     </div>
@@ -293,7 +293,9 @@
         display: inline-block;
         margin-right:.3rem;
     }
-
+    .gray-color{
+        color:#999999;
+    }
 
 
     .suc-refund{
