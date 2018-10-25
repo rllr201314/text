@@ -98,6 +98,7 @@ export default {
                     .then(res => {
                         console.log(res);
                         if (res.status == 200) {
+                            this.getData();
                             mui.toast(res.data.msg, {
                                 duration: "short",
                                 type: "div"
