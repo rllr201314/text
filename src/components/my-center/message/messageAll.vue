@@ -4,6 +4,10 @@
         <div class="list-box-wrap" v-if="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
                 <div class="minirefresh-scroll list-con">
+                  <div class="btn-all-read">
+                    <img src="../../../../static/img/ic_all_read.png"/>
+                    <span @click="changeToRead()">全部标记为已读</span>
+                  </div>
                     <ul class="list">
                         <div class="message-strip" v-for="item in messagesData" @click="goDetail(item)">
                             <div class="left">
@@ -120,7 +124,25 @@ export default {
                     }
                 }
             });
-        }
+        },
+      changeToRead() {
+        mui.toast('暂未开放', {duration: "short",type: "div"});
+        var that = this;
+        that.$axios
+          .post(process.env.API_HOST + "", {})
+          .then(res => {
+            console.log(res);
+            if (res.status == 200) {
+              if (res.data.code == 200) {
+                mui.toast(res.data.msg, {duration: "short", type: "div"});
+                that.getData();
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     },
     mounted() {
         var that = this;
@@ -166,7 +188,7 @@ export default {
 }
 .message-title div{
     width:4.5rem;
-    overflow:hidden; /*超出的部分隐藏起来。*/ 
+    overflow:hidden; /*超出的部分隐藏起来。*/
     white-space:nowrap;/*不显示的地方用省略号...代替*/
     text-overflow:ellipsis;/* 支持 IE */
 }
@@ -199,6 +221,28 @@ export default {
 }
 .list :last-child{
     border:0;
+}
+
+.btn-all-read {
+  color: #999999;
+  font-size: 0.24rem;
+  height: 0.8rem;
+  line-height: 0.8rem;
+  text-align: right;
+  right: 0.2rem;
+  top: 0;
+  z-index: 2;
+}
+
+.btn-all-read img {
+  width: 0.27rem;
+  height: 0.23rem;
+}
+
+.btn-all-read span {
+  float: right;
+  padding-left: 0.15rem;
+  padding-right: 0.15rem;
 }
 </style>
 
