@@ -175,7 +175,7 @@
                     <div class="sell-strip">
                         <div class="left-strip service">
                             <img src="../../../static/img/my-center/service.png" alt="">
-                            <span>联系客服</span>
+                            <span @click="$common.linkServer()">联系客服</span>
                         </div>
                         <div class="right-opt">
                             <img src="../../../static/img/order/next.png" alt="">

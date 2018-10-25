@@ -39,7 +39,7 @@ axios.interceptors.request.use(config => {
     }
     config.data = qs.stringify(config.data);
   }
-  
+
 
   return config;
 }, error => {
@@ -94,6 +94,9 @@ router.afterEach((to, from, next) => {
 
 Vue.prototype.$axios = axios;
 Vue.config.productionTip = false
+
+import common from '../static/js/common.js'
+Vue.prototype.$common = common
 
 /* eslint-disable no-new */
 new Vue({

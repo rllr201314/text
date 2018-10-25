@@ -25,7 +25,7 @@
                             <div class="order-operate">
                                 <div class="left-operate">
                                     <img src="../../../../static/img/my-center/contact_service.png" alt="">
-                                    <span>联系客服</span>
+                                    <span @click="$common.linkServer()">联系客服</span>
                                 </div>
                                 <div class="right-operate">
                                     <span class="cancel" v-if="item.is_safe == 1" @click="lookChit(item.order_id)">查看保单</span>
