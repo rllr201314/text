@@ -101,14 +101,17 @@
                 </div>
             </div>
         </div>
+      <NoData v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import NoData from "@/components/multi/NoData";
 export default {
     name: "MyAuction",
     components: {
-        Header
+        Header,
+        NoData
     },
     data() {
         return {
@@ -118,48 +121,12 @@ export default {
                     showLogo: 2, //显示头部title文字
                     showShare: 3, //1搜索2分享3菜单
                     showBg: true, //是否显示背景
-                    title: "待确认收货"
+                    title: "我的竞拍"
                 }
             },
             auction_status: true, //判断是--待支付--还是--我参与
-            goodsData: [
-                {
-                    log: "./static/img/mh_ico.png",
-                    orderNum: "123456789",
-                    history_time: "10分钟前",
-                    des: "梦幻西游xxxxxxxxxxxxxxxxxxxxx...",
-                    price: "￥13200",
-                    auction_status: 1,
-                    people: 33,
-                    up_price: "￥222",
-                    time_h: 5,
-                    time_m: 49
-                },
-                {
-                    log: "./static/img/mh_ico.png",
-                    orderNum: "123456789",
-                    history_time: "10分钟前",
-                    des: "梦幻西游xxxxxxxxxxxxxxxxxxxxx...",
-                    price: "￥13200",
-                    auction_status: 2,
-                    people: 66,
-                    up_price: "￥222",
-                    time_h: 5,
-                    time_m: 49
-                },
-                {
-                    log: "./static/img/mh_ico.png",
-                    orderNum: "123456789",
-                    history_time: "10分钟前",
-                    des: "梦幻西游xxxxxxxxxxxxxxxxxxxxx...",
-                    price: "￥13200",
-                    auction_status: 3,
-                    people: 101,
-                    up_price: "￥222",
-                    time_h: 5,
-                    time_m: 49
-                }
-            ]
+            goodsData: [],
+            showNoData:true,
         };
     },
     methods: {

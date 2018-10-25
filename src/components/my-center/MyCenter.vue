@@ -489,10 +489,10 @@ export default {
                 } else if (flag == "voucher") {
                     // 买家 底部导航栏
                     //代金券
-                    // that_r.push({ name: "Voucher" });
+                    that_r.push({ name: "Voucher" });
                 } else if (flag == "myAuction") {
                     //我的竞拍
-                    // that_r.push({ name: "MyAuction" });
+                    that_r.push({ name: "MyAuction" });
                 } else if (flag == "bill") {
                     //分期账单
                     that_r.push({ name: "BillInstallment" });

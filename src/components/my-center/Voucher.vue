@@ -20,14 +20,17 @@
                 <img class="v-pastimg" v-if="item.is_past" src="../../../static/img/my-center/past.png" alt="">
             </div>
         </div>
+      <NoData v-if="showNoData"></NoData>
     </div>
 </template>
 <script>
     import Header from '@/components/home-page/Header'
+    import NoData from "@/components/multi/NoData";
     export default {
         name:'Voucher',
         components:{
             Header,
+            NoData
         },
         data(){
             return {
@@ -40,31 +43,8 @@
                         title:"代金券",
                     }
                 },
-                voucherData:[{
-                    price:'15',
-                    v_title:'抢购代金券',
-                    v_des:'购买商品满1000元可以使用',
-                    v_time:'2018-09-09',
-                    is_past:false,//未过期
-                },{
-                    price:'15',
-                    v_title:'抢购代金券',
-                    v_des:'购买商品满1000元可以使用',
-                    v_time:'2018-09-09',
-                    is_past:true,//过期
-                },{
-                    price:'15',
-                    v_title:'抢购代金券',
-                    v_des:'购买商品满1000元可以使用',
-                    v_time:'2018-09-09',
-                    is_past:true,
-                },{
-                    price:'15',
-                    v_title:'抢购代金券',
-                    v_des:'购买商品满1000元可以使用',
-                    v_time:'2018-09-09',
-                    is_past:true,
-                }]
+                voucherData:[],
+                showNoData:true,
             }
         }
     }
