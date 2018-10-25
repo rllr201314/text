@@ -539,7 +539,7 @@ export default {
     color: #666666;
 }
 .right-opt {
-    width: 3rem;
+    width: 5rem;
     text-align: right;
     float: right;
     font-size: 0.24rem;
