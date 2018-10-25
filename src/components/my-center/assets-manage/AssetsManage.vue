@@ -41,7 +41,7 @@
                         <img src="../../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
-                <div class="manage-strip" >
+                <div class="manage-strip" @click="goVoucher">
                     <span class="manage-lefttext">我的代金券</span>
                     <div class="right-opt" >
                         <span>您有0张代金券可使用</span>
@@ -133,6 +133,9 @@
                         that.$router.push({name:'UserAuthentication',query:{type:that.assetsData.is_identify}})
                     }
                 }
+            },
+            goVoucher(){
+                this.$router.push({name: "Voucher"});
             }
         },
         mounted(){

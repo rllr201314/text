@@ -31,14 +31,14 @@
                         </div>
                         <div class="upimg-content">
                             <div class="img-cell" v-for="(item,index) in upImgAll.imgSrc">
-                                <img :src="item.base64" alt="">
+                                <img :src="item" alt="">
                                 <div class="delImg" @click="delImg(index)">
                                     <img src="../../static/img/order/delete_img.png" alt="">
                                 </div>
                             </div>
                             <div class="upimg-cell">
                                 <img src="../../static/img/order/add_img.png" alt="">
-                                <input type="file" id="upImg" accept="image/*" multiple capture @change="addImg">
+                                <input type="file" id="upImg" accept="image/*" multiple @change="addImg">
                             </div>
                         </div>
                     </div>
@@ -112,24 +112,35 @@ export default {
         addImg(event) {
             var that = this;
             var imgSrcArr = that.upImgAll.imgSrc;
-            if (imgSrcArr.length >= 5) {
-                mui.alert("图片上传到达上限","提示","确认",'',"div");
-            } else if (imgSrcArr.length < 5) {
-                var arr = [];
-                let imgArr = event.target.files;
-                console.log(imgArr);
+            var imgLen = imgSrcArr.length;
+            console.log(imgLen);
+            if (imgLen >= 5) {
+               mui.toast("图片选择到达上限", { duration: "short", type: "div" });
+            } else if (imgLen < 5) {
+                var imgArr = [];
+                var fileLen = event.target.files.length;
+                var allLen = imgLen + fileLen;
+                if (allLen > 5) {
+                    var addImg = 5 - imgLen;
+                    for (var i = 0; i < addImg; i++) {
+                        imgArr.push(event.target.files[i]);
+                    }
+                    mui.toast("图片选择超过上限,只保存5张", { duration: "short", type: "div" });
+                }else {
+                    imgArr = event.target.files;
+                }
                 for (var i = 0; i < imgArr.length; i++) {
+                    console.log('-------');
                     let type = imgArr[i].type; //文件的类型，判断是否是图片
                     let size = imgArr[i].size; //文件的大小，判断图片的大小
                     if (that.upImgAll.imgData.accept.indexOf(type) == -1) {
-                        mui.alert("请选择我们支持的图片格式！","提示","确认",null,"div");
+                        mui.toast("请选择我们支持的图片格式！", { duration: "short", type: "div" });
                         return false;
                     }
-                    if (size > 3145728) {
-                        mui.alert("请选择3M以内的图片！","提示","确认",null,"div");
+                    if (size > 2097152) {
+                        mui.toast("请选择2M以内的图片！", { duration: "short", type: "div" });
                         return false;
                     }
-
                     var reader = new FileReader();
                     reader.readAsDataURL(imgArr[i]);
 
@@ -137,7 +148,7 @@ export default {
                     reader.onload = function(e) {
                         // var imgMsg = {
                         //     name: fileName, //获取文件名
-                        //     base64: this.result //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
+                        //     img_url: this.result //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
                         // };
                         imgSrcArr.push(this.result);
                     };
@@ -163,6 +174,16 @@ export default {
         },
         subData(){
             var that = this;
+            if(that.id == ''){
+                mui.toast("理赔事件选择不能为空", { duration: "short", type: "div" });
+                return false;
+            }else if(that.des == ""){
+                mui.toast("理赔原因不能为空", { duration: "short", type: "div" });
+                return false;
+            }else if(that.upImgAll.imgSrc == ''){
+                mui.toast("理赔图片不能为空", { duration: "short", type: "div" });
+                return false;
+            }
             that.$axios.post(process.env.API_HOST+'do_assurance',{
                 order_id:that.o_id,
                 assurance_type:that.id,
@@ -173,7 +194,11 @@ export default {
                 console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
-
+                        mui.alert(res.data.msg,'提示','确认',function(){
+                            that.$router.go(-1);
+                        },'div');
+                    }else{
+                        mui.alert(res.data.msg,'提示','确认','','div');
                     }
                 }
             }).catch((err)=>{
@@ -182,6 +207,19 @@ export default {
         }
     },
     mounted(){
+        // 图片多选 判断手机类型
+        if (getIos()) {
+            $("#upImg").removeAttr("capture");
+        }
+        function getIos() {
+            var ua = navigator.userAgent.toLowerCase();
+            if (ua.match(/iPhone\sOS/i) == "iphone os") {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
         this.getconfig();
         this.mobile = this.$store.state.mobile;
         if(this.$route.query.o_id){
@@ -222,9 +260,9 @@ export default {
     font-size: 0.28rem;
 }
 .cell-tit img {
-    width: 0.16rem;
-    height: 0.4rem;
-    margin: 0.1rem 0 0 0.17rem;
+    width: 0.08rem;
+    height: 0.25rem;
+    margin: 0 0 0 0.17rem;
     vertical-align: middle;
 }
 .cell-con {

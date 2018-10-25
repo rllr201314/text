@@ -194,8 +194,8 @@
         font-size:.28rem;
     }
     .info-title img{
-        width:.13rem;
-        height:.29rem;
+        width: 0.08rem;
+        height: 0.25rem;
         margin-left:.17rem;
         vertical-align:middle;
     }

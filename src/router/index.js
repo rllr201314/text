@@ -349,6 +349,18 @@ export default new Router({
       name: 'Set_Password',
       component: (resolve) => require(['@/components/my-center/SetPassword'], resolve),
     },
+    // 微信支付
+    {
+      path: '/wechat-pay',
+      name: 'WechatPay',
+      component: (resolve) => require(['@/components/buy/WechatPay'], resolve),
+    },
+    // 支付宝
+    {
+      path: '/ali-pay',
+      name: 'AliPay',
+      component: (resolve) => require(['@/components/buy/AliPay'], resolve),
+    },
     {
       path: '*',
       component: (resolve) => require(['@/components/multi/NoData'], resolve)

@@ -69,6 +69,7 @@ axios.interceptors.response.use(
     console.log(error);
     if(error.response.status == 500){
       router.go(-1);
+      store.commit('del_token');
     }
     // if (error.response) {
     //   switch (error.response.status) {

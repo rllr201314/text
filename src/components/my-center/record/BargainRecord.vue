@@ -46,10 +46,10 @@
                                    <div class="goods-strip-bottom">
                                        <span>原价</span>
                                        <span class="goods-price">￥<span v-text="item.goods_price"></span></span>
-                                       <span v-if="item.is_agree == 1 && item.order_state == ''" class="p-bBtn" @click="goPayFn(item.order_state,item.goods_id)">前往支付</span>
-
+                                       <span v-if="item.is_agree == 1 && item.order_state == ''" class="p-bBtn" @click="goPayFn(item.order_state,item.goods_id,item.discuss_msg)">前往支付</span>
                                        <span v-else-if="item.is_agree == 1 && item.order_state == 1 && item.is_self == 1" class="p-bBtn" @click="goPayFn(item.order_state,item.order_id,item.discuss_msg)">前往支付</span>
-                                       <span v-if="item.is_agree == 2 && item.order_state == ''" class="p-bBtn" @click="bargainFn(item.goods_id)">发起议价</span>
+
+                                       <span v-if="item.is_agree == 2 || item.is_agree == 3 && item.order_state == ''" class="p-bBtn" @click="bargainFn(item.goods_id)">发起议价</span>
                                    </div>
                                </div>
                                <div class="goods-bot">
@@ -150,12 +150,13 @@ export default {
         bargainFn(goods_id,e) {
             var that = this;
             that.showShade = true;
-            var mo = function(e) {
-                e.preventDefault();
-            };
-            document.body.style.overflow = "hidden";
-            document.addEventListener("touchmove", mo, false); //禁止页面滑动
             that.goods_id = goods_id;
+
+            // var mo = function(e) {
+            //     e.preventDefault();
+            // };
+            // document.body.style.overflow = "hidden";
+            // document.addEventListener("touchmove", mo, false); //禁止页面滑动
         },
         goBargain(flag) {
             var that = this;
@@ -166,9 +167,9 @@ export default {
                             discuss_price: that.bargain_price
                         }).then(function(res) {
                             if (res.status == 200) {
-                                mui.alert(res.data.msg,"提示","确认","","div");
-                                that.getdiscuss('refresh');
-
+                                mui.alert(res.data.msg,"提示","确认",function(){
+                                    that.getdiscuss('refresh',true);
+                                },"div");
                             }
                         }).catch(function(err) {
                             console.log(err);
@@ -180,11 +181,12 @@ export default {
             }
             that.bargain_price = "";
             that.showShade = false;
-            var mo = function(e) {
-                e.preventDefault();
-            };
-            document.body.style.overflow = ""; //出现滚动条
-            document.removeEventListener("touchmove", mo, false);
+            
+            // var mo = function(e) {
+            //     e.preventDefault();
+            // };
+            // document.body.style.overflow = ""; //出现滚动条
+            // document.removeEventListener("touchmove", mo, false);
         },
         barginTypeFn(flag) {
             var that = this;
@@ -203,7 +205,7 @@ export default {
             }
             that.getdiscuss('refresh');
         },
-        getdiscuss(flag) {
+        getdiscuss(flag,refresh) {
             var that = this;
             var agree = "";
             if (that.seleType.reply &&　!that.seleType.pay) {
@@ -213,7 +215,7 @@ export default {
             }else if(that.seleType.all){
                 agree = ''
             }
-            if (that.lastAgree != agree) {
+            if (that.lastAgree != agree || refresh) {
                 that.$axios
                     .post(process.env.API_HOST+"goods_discuss", {
                         is_agree: agree
@@ -307,7 +309,7 @@ export default {
     line-height: 0.8rem;
     background: #ffffff;
     padding-left: 0.2rem;
-    z-index:9999;
+    z-index:88;
     position:fixed;
     top:.88rem;
     left:0;

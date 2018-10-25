@@ -1,10 +1,12 @@
 <template>
     <div class="top-header">
         <div v-bind:class="showTitle.showBg?'rebBg':'header'">
-            <!--左边按钮 个人中心-->
-            <img v-if="showTitle.showBack" class="user-tit-img" src="../../../static/img/userLog.png" alt="" @click="seleLink('mycenter')">
-            <!-- 回退 -->
-            <img v-else class="back-tit-img" src="../../../static/img/header/back_ico.png" alt="" @click="seleLink('rollback')">
+            <div class="">
+                <!--左边按钮 个人中心-->
+                <img v-if="showTitle.showBack" class="user-tit-img" :src="my_msg == 1 ?'../../../static/img/userLog_msg.png':'../../../static/img/userLog.png'" alt="" @click="seleLink('mycenter')">
+                <!-- 回退 -->
+                <img v-else class="back-tit-img" src="../../../static/img/header/back_ico.png" alt="" @click="seleLink('rollback')">
+            </div>
             <!--中间标题-->
             <img v-if="showTitle.showLogo == 1" class="titImg" src="../../../static/img/tit_content_img.png" alt="">
             <div v-else-if="showTitle.showLogo == 2" class="titText" v-html="showTitle.title"></div>
@@ -66,6 +68,7 @@ export default {
             iconrotate:0,//旋转de
             confirm_trade:null,
             is_msg:null,
+            my_msg:null,
         };
     },
     props: ["showTitle"],
@@ -152,6 +155,7 @@ export default {
                         if(res.data.code == 200){
                             that.is_msg = res.data.data.is_msg;
                             that.confirm_trade = res.data.data.confirm_trade;
+                            that.my_msg = res.data.data.my_msg;
                         }
                     }
                 }).catch((err)=>{
@@ -310,7 +314,7 @@ export default {
     -moz-border-radius: 0.06rem;
     border-radius: 0.06rem;
     overflow: hidden;
-    z-index: 10;
+    z-index: 99;
 }
 .tohome,
 .tosell,

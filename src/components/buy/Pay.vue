@@ -104,10 +104,10 @@
         </div>
         <div class="pop-view" v-show="show_pop">
             <div>您正在使用余额抵扣/押金抵扣</div>
-            <input type="password" placeholder="请输入看个号平台的交易密码">
+            <input type="password" placeholder="请输入看个号平台的交易密码" v-model="password">
             <div class="btn-all">
-                <div class="btn okbtn">确认</div>
-                <div class="btn canclebtn">取消</div>
+                <div class="btn okbtn" @click="subPass">确认</div>
+                <div class="btn canclebtn" @click="hiddenPop">取消</div>
             </div>
         </div>
         <div class="share" v-show="show_pop"></div>
@@ -143,6 +143,7 @@ export default {
                     }
                 }
             },
+            password:'',//安全交易密码
             show_pop:false,
             hint:'（请在下单后45分钟之内完成支付）',
             selePrice:true,//是否可以选择余额支付或者押金支付 下单成功后不可选择
@@ -181,15 +182,17 @@ export default {
             ],
             isbalace:false,
             deposit:false,
-            payData: {
-                orderInfo: {
-                    orderNum: "13823427342389423",
-                    orderTime: "2018-08-08 9:00",
-                    orderPrice: "￥2000",
+            // payData: {
+            //     orderInfo: {
+            //         orderNum: "13823427342389423",
+            //         orderTime: "2018-08-08 9:00",
+            //         orderPrice: "￥2000",
                     
-                    lastTime: "22:22"
-                }
-            },
+            //         lastTime: "22:22"
+            //     }
+            // },
+            link:null,
+            submitData:null,
         };
     },
     components: {
@@ -330,12 +333,35 @@ export default {
                 }
             }
             // 判断有没有用余额支付
-            if(that.isbalace){
+            if(that.isbalace &&　Number(that.remaining_sum) > 0){
                 request.is_remaining_sum = 1;
+                that.show_pop = true;
+                that.link = url;
+                that.submitData = request;
             }else{
                 request.is_remaining_sum = 2;
+                that.subData(url,request);
             }
-            
+            that.showLoading = true;
+        },
+        // 提交安全交易密码
+        subPass(){
+            var that = this;
+            that.submitData.password = that.password;
+            that.subData(that.link,that.submitData);
+            that.show_pop = false;
+            that.password = '';
+        },
+        // 取消交易密码弹窗
+        hiddenPop(){
+            var that = this;
+            that.show_pop = false;
+            that.password = '';
+            that.showLoading = false;
+        },
+        // 提交信息
+        subData(url,request){
+            var that = this;
             that.$axios.post(process.env.API_HOST+url,request).then((res)=>{
                 console.log(res);
                 that.showLoading = false;
@@ -345,9 +371,26 @@ export default {
                         mui.alert(res.data.msg,'提示','确认','','div');
                         that.componentsData.showTitle.goBack = 2;
                         if(that.is_line){
-                            // 跳转页面 第三方接口
-                            $('#pay_card').html(res.data.data.pay_url);//银联
-                            $('#pay_form').submit();//银联
+                            var type = that.online;
+                            var type_id = '';
+                            for(var i in type){
+                                if(type[i].issele == true){
+                                    type_id = type[i].key;
+                                    break;
+                                }
+                            }
+                            console.log(type_id);
+                            if(type_id == 3){
+                                // 跳转页面 第三方接口
+                                $('#pay_card').html(res.data.data.pay_url);//银联
+                                $('#pay_form').submit();//银联
+                            }else if(type_id == 2){
+                                // 支付宝
+                                that.$router.push({name:'AliPay',query:{url:res.data.data.pay_url}})
+                            }else if(type_id == 1){
+                                // 微信
+                                that.$router.push({name:'WechatPay',query:{url:res.data.data.pay_url}})
+                            }
                         }else{//线下
                             var data = res.data.data;
                             that.off_line = false;
@@ -362,7 +405,6 @@ export default {
                         }
                     }else if(res.data.code == 201){//余额支付完成
                         // mui.toast(res.data.msg,{ duration:'short', type:'div' });
-                       
                         if(that.$route.query.stage){
                              mui.alert(res.data.msg,'提示','确认',function(){
                                 that.$router.go(-1);
@@ -372,14 +414,20 @@ export default {
                                 that.$router.push({name:'BuyTradingStatus'});
                             },'div');
                         }
-                        
+                    }else if(res.data.code == 202){
+                        // 未实名认证
+                        mui.alert(res.data.msg,'提示','确认',function(){
+                                that.$router.push({name:'UserAuthentication',query:{type:2,status:1}})
+                            },'div');
+                    }else if(res.data.code == 203){
+                        // 未设置安全交易密码
+                        mui.alert(res.data.msg,'提示','确认',function(){
+                                that.$router.push({name:'Safety_Center',query:{type:1}});//type:1，已实名认证
+                            },'div');
                     }else if(res.data.code == 401){
-                        that.$router.push({
-                            name: "AccountLogin",
-                            params: {
-                                redirect: "Details"
-                            }
-                        });
+                         mui.alert(res.data.msg,'提示','确认',function(){
+                                that.$router.push({name: "AccountLogin",});
+                            },'div');
                     }else{
                         // mui.toast(res.data.msg,{ duration:'short', type:'div' });
                         mui.alert(res.data.msg,'提示','确认','','div');
@@ -418,7 +466,7 @@ export default {
             if(!that.is_line && !that.off_line){
                 that.$router.push({name: "BuyUnpaidStatus" });//未支付
             }else{
-                that.showLoading = true;
+                // 调支付
                 that.getData();
             }
         },
@@ -748,6 +796,7 @@ export default {
 }
 .pop-view input{
     font-size:.24rem;
+    width:100%;
     color:#999999;
     margin:0;
 }

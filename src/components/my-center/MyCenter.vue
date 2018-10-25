@@ -49,7 +49,10 @@
                             我是买家
                             <span v-show="buyer_msg == 1" class="red-circle"></span>
                         </div>
-                        <div class="user-type" @click="seleUserType('sell')" :class="myData.userTypeOpt.usertype?'':'red-color'">我是卖家</div>
+                        <div class="user-type" @click="seleUserType('sell')" :class="myData.userTypeOpt.usertype?'':'red-color'">
+                            我是卖家
+                            <span v-show="seller_msg == 1" class="red-circle"></span>
+                        </div>
                     </div>
                     <div class="operation-content" v-show="myData.userTypeOpt.usertype">
                         <div class="cell" v-for="item in myData.userTypeOpt.buyTit" :class="item.name" @click="goSele(item.link)">
@@ -78,6 +81,7 @@
                         <div class="cell" v-for="item in myData.userTypeOpt.sellCon" :class="item.name" @click="goSele(item.link)">
                             <img :src="item.imgSrc" alt="">
                             <span v-text="item.val"></span>
+                            <span v-if="item.msg" class="red-circle" v-show="seller_msg == 1"></span>
                         </div>
                     </div>
                 </div>
@@ -149,7 +153,7 @@
                         <span>电子合同</span>
                     </div>
                     <div class="right-opt">
-                        <span class="red-bg" v-text="myData.pactNews"></span>
+                        <span class="red-bg" v-if="myData.pactNews > 0" v-text="myData.pactNews"></span>
                         <img src="../../../static/img/order/next.png" alt="">
                     </div>
                 </div>
@@ -227,6 +231,7 @@ export default {
                 }
             },
             buyer_msg:null,
+            seller_msg:null,
             myData: {
                 is_identify:'',is_bank:null,//实名认证-是否绑定银行卡
                 userStatus: 2,
@@ -357,14 +362,15 @@ export default {
                             name: "news",
                             imgSrc: "./static/img/my-center/news.png",
                             val: "议价消息",
-                            link: "messageAll"
+                            link: "messageAll",
+                            msg:true
                         }
                     ]
                 },
                 manageData: {
                     usableBalance: "0",
-                    frostBalance: "0元",
-                    cashPledge: "0元"
+                    frostBalance: "0",
+                    cashPledge: "0"
                 },
                 comNews: '',
                 pactNews: '',
@@ -497,8 +503,12 @@ export default {
                     //分期账单
                     that_r.push({ name: "BillInstallment" });
                 } else if (flag == "bargain") {
-                    //发起的议价
-                    that_r.push({ name: "BargainRecord" });
+                    //发起的议价-------------------------------------------------------------
+                    // if(that.buyer_msg == 1){
+                    //     that_r.push({ name: "BargainRecord" });
+                    // }else{
+                        that_r.push({ name: "BargainRecord" });
+                    // }
                 } else if (flag == "sell") {
                     // 卖家 底部导航栏
                     //我要卖
@@ -549,6 +559,7 @@ export default {
                         that.myData.is_bank = data.user_info.is_bank;
                         that.buyer_msg = data.user_info.buyer_discuss_msg;
                         that.myData.pactNews = data.user_info.compact_count;
+                        that.seller_msg = data.user_info.seller_discuss_msg;
                     }
                 }
             }).catch((err)=>{
@@ -754,6 +765,14 @@ export default {
 .news img {
     width: 0.25rem;
     height: 0.25rem;
+}
+.news{
+    position:relative;
+}
+.news .red-circle{
+    position: absolute;
+    top:0;
+    left:.16rem;
 }
 
 /* 资产管理 */
