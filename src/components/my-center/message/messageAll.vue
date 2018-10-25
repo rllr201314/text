@@ -12,7 +12,7 @@
                         <div class="message-strip" v-for="item in messagesData" @click="goDetail(item)">
                             <div class="left">
                                 <img src="../../../../static/img/message.png" alt="">
-                                <div class="mark" v-if="item.is_read == 2"></div>
+                                <div class="mark" :hidden="item.is_read == 1"></div>
                                 <div class="message-title">
                                     <div class="title" v-text="item.title"></div>
                                     <div class="gray-color" v-text="item.content"></div>
@@ -126,16 +126,17 @@ export default {
             });
         },
       changeToRead() {
-        mui.toast('暂未开放', {duration: "short",type: "div"});
         var that = this;
         that.$axios
-          .post(process.env.API_HOST + "", {})
+          .post(process.env.API_HOST + "msg_read", {})
           .then(res => {
             console.log(res);
             if (res.status == 200) {
               if (res.data.code == 200) {
                 mui.toast(res.data.msg, {duration: "short", type: "div"});
-                that.getData();
+                that.getData("refresh");
+              } else if (res.data.code == 201) {
+                mui.toast(res.data.msg, {duration: "short", type: "div"});
               }
             }
           })
@@ -176,6 +177,7 @@ export default {
     top:.05rem;
     left:.7rem;
 }
+
 .left img {
     width: 0.88rem;
     height: 0.88rem;
