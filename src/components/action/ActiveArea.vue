@@ -50,7 +50,7 @@ export default {
 }
 .hotline{
     position:fixed;
-    bottom:2.9rem;
+    bottom:3.0rem;
     left:0;
     right:0;
     z-index:88;

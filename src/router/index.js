@@ -254,6 +254,14 @@ export default new Router({
       path: '/active-area', //活动页
       name: 'ActiveArea',
       component: (resolve) => require(['@/components/action/ActiveArea'], resolve),
+    },{
+      path: '/special-area', //专区页
+      name: 'SpecialArea',
+      component: (resolve) => require(['@/components/action/SpecialArea'], resolve),
+    },{
+      path: '/gold-goods', //金币号专区
+      name: 'GoldGoods',
+      component: (resolve) => require(['@/components/action/GoldGoods'], resolve),
     }, {
       path: '/auction', //竞拍页
       name: 'AuctionPage',

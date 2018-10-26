@@ -1,17 +1,21 @@
 <template>
     <!-- 专区模块 -->
     <div class="game-division">
-        <div class="division-cell cell-mh" @click="goArea('mh')">
+      <!--金币号-->
+        <div class="division-cell cell-mh" @click="goGold()">
             <img src="../../../static/img/chunk/jbh.png" alt="">
         </div>
-        <div class="division-cell cell-dh" @click="goArea('dh')">
+      <!--寄租-->
+        <div class="division-cell cell-dh" @click="goArea('0')">
             <img src="../../../static/img/chunk/zh.png" alt="">
         </div>
-        <div class="division-cell cell-clx" @click="goArea('clx')">
+      <!--藏宝阁-->
+        <div class="division-cell cell-clx" @click="goArea('1')">
             <img src="../../../static/img/chunk/cbg.png" alt="">
         </div>
-        <div class="division-cell expect-content">
-            <img src="../../../static/img/chunk/hs.png" alt="">
+      <!--充值-->
+        <div class="division-cell expect-content" @click="goArea(2)">
+            <img src="../../../static/img/chunk/recharge.png" alt="">
         </div>
     </div>
 </template>
@@ -20,16 +24,14 @@
     export default {
         name: "GameDivision",
         methods:{
-            goArea(flag){
-                var that = this;
-                if(flag == 'mh'){
-                    that.$router.push({name:'ActiveArea',query:{tit:'梦幻西游活动专区'}})
-                }else if(flag == 'dh'){
-                    that.$router.push({name:'ActiveArea',params:{tit:'大话西游活动专区'}})
-                }else if(flag == 'clx'){
-                    that.$router.push({name:'ActiveArea',params:{tit:'楚留香活动专区'}})
-                }
-            }
+          goArea(flag) {
+            var that = this;
+            that.$router.push({name: 'SpecialArea', query: {type: flag}});
+          },
+          goGold() {
+            var that = this;
+            that.$router.push({name: 'GoldGoods'});
+          },
         }
     }
 </script>
