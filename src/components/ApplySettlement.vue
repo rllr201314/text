@@ -434,6 +434,8 @@ input[type="number"] {
     margin-top: 10px;
     background: #ffffff;
     list-style: none;
+    font-size: 0.26rem;
+    color: #666666;
 }
 
 .pop-view li {
