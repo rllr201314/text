@@ -83,7 +83,7 @@
                 </div>
                 <div class="take-cell-content">
                     <!-- 验货跳过 -->
-                    <div class="cargo" v-if="takeType == -2" @click="verifyFn">申请验货</div>
+                    <div class="cargo" v-if="takeType == -2" @click="verifyFn">申请验号</div>
                     <div class="cargo" v-if="takeType == -1" @click="agree">确认交易</div>
                     <div class="intie" v-if="takeType == 1||　takeType == 2">
                         <img src="../../../static/img/order/speed.png" alt="">
@@ -199,13 +199,12 @@ export default {
                 console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
-
+                      that.getData(that.goodsInfo.order_id,true);
                     }
                 }
             }).catch((err)=>{
                 console.log(err);
             });
-            window.location.href = 'https://web.jiaxincloud.com/gray/mobile.html?&thirdJson={}&bg=FD8159&dialogLogo=0&dialogType=1&dialogMode=1&lang=cn&blinkTitle=1&orgName=mglhodd3enu2mg&appName=kgh431&appChannel=20003&quoteUrl=https://web.jiaxincloud.com&pageTitle=看个号客服&pageUrl=https://web.jiaxincloud.com/onekey.html?id=mglhodd3enu2mg&appName=kgh431&appChannel=20003&alone=1&jump=true&jump=true';
         },
         // 确认交易
         agree(){
@@ -259,7 +258,7 @@ export default {
                 }
             })
         },
-        getData(order_id){
+        getData(order_id,flag){
             var that = this;
             that.$axios.post(process.env.API_HOST+"buyer_trade_status",{
                 order_id:order_id
@@ -269,6 +268,9 @@ export default {
                     if(res.data.code == 200){
                         that.goodsInfo = res.data.data;
                         that.takeType = that.goodsInfo.bind_status;
+                        if(flag){
+                          that.$common.linkServer();
+                        }
                     }
                 }
             }).catch((err)=>{
