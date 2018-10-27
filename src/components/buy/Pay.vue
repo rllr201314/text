@@ -115,6 +115,7 @@
         <Loading v-if="showLoading"></Loading>
         <div id="pay_card"></div>
         <!-- <PaySuccess v-if="showPaySuccess"></PaySuccess> -->
+      <img :hidden="is_line" @click="$common.linkServer()" class="link-server" src="../../../static/img/link_server.png" />
     </div>
 </template>
 <script>
@@ -826,5 +827,13 @@ export default {
     bottom:0;
     right:0;
 }
+
+  .link-server{
+    position: fixed;
+    width: 0.9rem;
+    height: 0.9rem;
+    top: 5rem;
+    right: 0.1rem;
+  }
 </style>
 

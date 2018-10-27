@@ -135,7 +135,7 @@ export default {
               if (res.data.code == 200) {
                 mui.toast(res.data.msg, {duration: "short", type: "div"});
                 that.getData("refresh");
-              } else if (res.data.code == 201) {
+              } else if (res.data.code == 204) {
                 mui.toast(res.data.msg, {duration: "short", type: "div"});
               }
             }
