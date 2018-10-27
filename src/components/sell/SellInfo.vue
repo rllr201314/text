@@ -15,7 +15,7 @@
                     </div>
                     <div class="sell-strip">
                         <span class="sell-lefttext">角色等级</span>
-                        <input type="number" placeholder="请输入角色等级" v-model="requestData.role_level" maxlength="3">
+                        <input type="number" placeholder="请输入角色等级" v-model="requestData.role_level" oninput="if(value.length>3)value=value.slice(0,3)">
                     </div>
                     <div class="sell-strip" @click="showPop('faction')">
                         <span class="sell-lefttext">职业</span>
@@ -113,15 +113,15 @@
                     </div>
                     <div class="sell-strip" v-show="requestData.sell_type == 2">
                         <span class="sell-lefttext">商品最高价</span>
-                        <input type="number" placeholder="填写商品最高的出价" v-model="requestData.goods_price" maxlength="7">
+                        <input type="number" placeholder="填写商品最高的出价" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
                     </div>
                     <div class="sell-strip" v-show="requestData.sell_type == 2">
                         <span class="sell-lefttext">商品最低价</span>
-                        <input type="number" placeholder="填写可以接受最低的议价价格" v-model="requestData.min_price" maxlength="7">
+                        <input type="number" placeholder="填写可以接受最低的议价价格" v-model="requestData.min_price" oninput="if(value.length>7)value=value.slice(0,7)">
                     </div>
                     <div class="sell-strip" v-show="requestData.sell_type == 1">
                         <span class="sell-lefttext">商品售价</span>
-                        <input type="number" placeholder="填写商品价格" v-model="requestData.goods_price" maxlength="7">
+                        <input type="number" placeholder="填写商品价格" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
                     </div>
                     <!-- /////88888888888888888888888888888888888888888888888888888888888888888888888888888888888888 -->
                     <div class="sell-strip" v-if="safeOrCompact.showSafe">
