@@ -307,8 +307,8 @@ export default {
     font-size: 0.28rem;
 }
 .manange-top img {
-    width: 0.13rem;
-    height: 0.29rem;
+    width: 0.08rem;
+    height: 0.25rem;
     margin-left: 0.17rem;
     vertical-align: middle;
 }

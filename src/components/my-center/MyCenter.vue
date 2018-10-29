@@ -439,8 +439,9 @@ export default {
                     console.log(that_r);
                     
                 } else if (flag == "commissionManage") {
-                    //佣金管理
+                    //佣金管理SafeUser
                     // that_r.push({ name: "CommissionManage" });
+                    that_r.push({ name: "SafeUser" });
                     mui.toast('暂未开放', {duration: "short",type: "div"});
                 } else if (flag == "assetsManage") {
                     //资产管理

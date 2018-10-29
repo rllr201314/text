@@ -7,9 +7,10 @@
         </div>
         <div class="safe-authentic-content">
             <div class="safe-cell">
-                <div class="safe-cell-tit">请将面部头像放入框内</div>
-                <!-- 直接调用摄像头 -->
-                <input type="file" accept="video/*" capture="camera">  
+                <div class="safe-cell-tit">
+                    <img src="../../../../static/img/warn/failure.png" alt="">
+                </div>
+                <button @click="face">提交</button>
             </div>
         </div>
         <div class="statement">
@@ -37,6 +38,40 @@ export default {
                 }
             }
         };
+    },
+    methods:{
+        tokenUnableListener(obj){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+"veriface_token").then((res)=>{
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        if(res.data.data.token){
+                            YHTVF.setToken(res.data.data.token);
+                            //重新设置token，从请求头获取token
+                            YHTVF.do(obj);//调用此方法，会继续执行上次未完成的操作o
+                        }
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err);
+            })
+        },
+        face(){
+            var that = this;
+            var backURL='http://www.kangehao.com:8010/safe-success';//识别完成返回地址,请以“http”或者“https”协议开始
+            YHTVF.queryVF(
+                function successFun(url){
+                    window.open(url);
+                },
+                function failFun(data){
+                    console.log(data);
+                },
+                backURL
+            );
+        }
+    },
+    mounted(){
+        YHTVF.init("AppID", this.tokenUnableListener);//必须初始化YHTVF
     }
 };
 </script>
@@ -44,6 +79,7 @@ export default {
 .safe-authentic-wrap {
     max-width: 12rem;
     margin: 0 auto;
+    padding-top:.88rem;
 }
 .safe-authentic-content {
     padding: 0.2rem;
@@ -71,6 +107,10 @@ export default {
     padding:.5rem 0 .3rem;
     text-align: center;
     color:#666666;
+}
+.safe-cell-tit img{
+    width:1.51rem;
+    height:1.44rem;
 }
 
 

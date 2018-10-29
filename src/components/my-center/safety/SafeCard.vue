@@ -118,8 +118,7 @@ export default {
                             mui.alert(res.data.msg,'提示','确认',function(){
                                 // 跳页面
                                 // that.$router.push({name:'SafeSuccess'});
-                                that.face();
-
+                                that.face();//人脸识别
                             },'div');
                         } else {
                             that.showLoading = false;
@@ -134,7 +133,7 @@ export default {
                     console.log(err);
                 });
         },
-        tokenUnableListener(){
+        tokenUnableListener(obj){
             var that = this;
             that.$axios.post(process.env.API_HOST+"veriface_token").then((res)=>{
                 if(res.status == 200){
@@ -152,18 +151,15 @@ export default {
         },
         face(){
             var that = this;
-            var backURL='http://http://www.kangehao.com:8010/safe-success';//识别完成返回地址,请以“http”或者“https”协议开始
-            var notifyId='';//第三方异步回调ID  -------
+            var backURL='http://www.kangehao.com:8010/safe-success';//识别完成返回地址,请以“http”或者“https”协议开始
             YHTVF.queryVF(
                 function successFun(url){
                     window.open(url);
                 },
                 function failFun(data){
                     console.log(data);
-                    that.$router.push({name:"SafeUser"})
                 },
-                backURL,
-                notifyId
+                backURL
             );
         }
     },

@@ -31,7 +31,7 @@
             that.mySwiper = new Swiper ('#indexSwiper', {
                 loop:true,
                 autoplay : 3000,
-                // initialSlide :0,//第一个显示的图片默认为0
+                initialSlide :1,//第一个显示的图片默认为0
                 observer:true,//修改swiper自己或子元素时，自动初始化swiper
                 observeParents:true,//修改swiper的父元素时，自动初始化swiper
                 autoplayDisableOnInteraction:false,//用户操作完是否自动切换
