@@ -441,7 +441,7 @@ export default {
                 } else if (flag == "commissionManage") {
                     //佣金管理
                     // that_r.push({ name: "CommissionManage" });
-                  mui.toast('暂未开放', {duration: "short",type: "div"});
+                    mui.toast('暂未开放', {duration: "short",type: "div"});
                 } else if (flag == "assetsManage") {
                     //资产管理
                     that_r.push({ name: "AssetsManage" });

@@ -26,8 +26,8 @@
                     <input type="number" placeholder="请填写您实名开户的银行卡账号" v-model="card_num">
                 </div>
                 <div class="safe-strip">
-                    <span class="strip-left">银行卡预留电话</span>
-                    <input type="number" placeholder="请填写您的联系电话" v-model="mobile">
+                    <span class="strip-left">手机号</span>
+                    <input type="number" placeholder="请填写您银行预留的联系电话" v-model="mobile">
                 </div>
             </div>
         </div>
@@ -79,17 +79,11 @@ export default {
             let type = imgArr.type; //文件的类型，判断是否是图片
             let size = imgArr.size; //文件的大小，判断图片的大小
             if (that.upimg.imgData.indexOf(type) == -1) {
-                mui.alert(
-                    "请选择我们支持的图片格式！",
-                    "提示",
-                    "确认",
-                    null,
-                    "div"
-                );
+                mui.alert("请选择我们支持的图片格式！","提示","确认",null,"div");
                 return false;
             }
             if (size > 3145728) {
-                mui.alert("请选择3M以内的图片！", "提示", "确认", null, "div");
+                mui.alert("请选择3M以内的图片！", "提示", "确认",null, "div");
                 return false;
             }
 
@@ -123,9 +117,10 @@ export default {
                             that.showLoading = false;
                             mui.alert(res.data.msg,'提示','确认',function(){
                                 // 跳页面
-                                that.$router.push({name:'SafeSuccess'})
+                                // that.$router.push({name:'SafeSuccess'});
+                                that.face();
+
                             },'div');
-                            
                         } else {
                             that.showLoading = false;
                             mui.alert(res.data.msg,'提示','确认','','div');
@@ -138,7 +133,42 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
+        },
+        tokenUnableListener(){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+"veriface_token").then((res)=>{
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        if(res.data.data.token){
+                            YHTVF.setToken(res.data.data.token);
+                            //重新设置token，从请求头获取token
+                            YHTVF.do(obj);//调用此方法，会继续执行上次未完成的操作o
+                        }
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err);
+            })
+        },
+        face(){
+            var that = this;
+            var backURL='http://http://www.kangehao.com:8010/safe-success';//识别完成返回地址,请以“http”或者“https”协议开始
+            var notifyId='';//第三方异步回调ID  -------
+            YHTVF.queryVF(
+                function successFun(url){
+                    window.open(url);
+                },
+                function failFun(data){
+                    console.log(data);
+                    that.$router.push({name:"SafeUser"})
+                },
+                backURL,
+                notifyId
+            );
         }
+    },
+    mounted(){
+        YHTVF.init("AppID", this.tokenUnableListener);//必须初始化YHTVF
     }
 };
 </script>

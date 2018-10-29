@@ -51,7 +51,7 @@
                 }
             });
             var time = setInterval(function(){
-                if(that.swiperSrc){
+                if(that.swiperSrc != ''){
                     that.mySwiper.startAutoplay()//重新开始轮播
                     that.mySwiper.reLoop()//重新计算slides个数
                     clearInterval(time);

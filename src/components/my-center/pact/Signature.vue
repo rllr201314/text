@@ -90,7 +90,7 @@ export default {
             var that = this;
             //合同签署页面
             YHT.signContract(function successFun(url) {
-                    console.log(url);
+                    // console.log(url);
                     window.open(url);
                 },
                 function failFun(data) {

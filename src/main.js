@@ -11,18 +11,11 @@ import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
 var options={
   fullscreenEl:false, //关闭全屏按钮
-  maxSpreadZoom:2,
-  // mainClass: 'pswp--minimal--dark',
-  // barsSize: {top: 0, bottom: 0},
-  // captionEl: false,
-  // fullscreenEl: false,
-  // shareEl: false,
-  // bgOpacity: 0.85,
-  // tapToClose: true,
-  // tapToToggleControls: false
+  // maxSpreadZoom:2,
 }
 Vue.use(preview,options);
 Vue.use(Vuex)
+
 
 // 添加请求拦截器
 axios.interceptors.request.use(config => {

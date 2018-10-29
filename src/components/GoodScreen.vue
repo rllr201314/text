@@ -434,6 +434,7 @@ export default {
         //一键清空
         emptyFun() {
             this.request.content = '';
+            this.getGoodsInfo(this.request);
         },
         // 隐藏键盘
         show(){

@@ -56,13 +56,13 @@
     methods: {
       getData() {
         var that = this;
-        that.$axios
-          .post(process.env.API_HOST + "gold_list", {})
+        that.$axios.post(process.env.API_HOST + "gold_list")
           .then(res => {
-            if (res.status == 200) {
-              if (res.data.code == 200) {
+            console.log(res);
+            if (res.data.status == 200) {
+              // if (res.data.code == 200) {
                 that.golds = res.data.data;
-              }
+              // }
             }
           })
           .catch(err => {

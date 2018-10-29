@@ -259,10 +259,7 @@ export default {
                     showShare: 3, //1搜索2分享
                     showBg: true, //是否显示背景
                     title: "商品详情"
-                },
-                imgList: [] //轮播图
-                // 商品列表
-                // 商品信息
+                }
             },
             nativeShare:null,//分享
             url:null,//当前页的url
@@ -531,8 +528,7 @@ export default {
                                 that.showNoData = false;
                                 that.detailData = data.goods_info;
                                 that.recommendData = data.recommendInfo;
-                                that.componentsData.imgList =
-                                    that.detailData.goods_images;
+                                that.componentsData.imgList = that.detailData.goods_images;
                                 var bind = data.account_bind;
                                 for (var i in data.goods_info.account_bind) {
                                     if (data.goods_info.account_bind[i] == 1) {
@@ -551,6 +547,9 @@ export default {
                                         that.accountBind.emailBind = true;
                                     }
                                 }
+                                
+                                // that.swiper();
+                                // that.$previewRefresh(); 
                             }
                         } else {
                             that.$router.go(-1);
@@ -561,7 +560,7 @@ export default {
                 .catch(function(err) {
                     console.log(err);
                 });
-        }
+        },
     },
     mounted() {
         var that = this;
@@ -1186,6 +1185,8 @@ input[type="number"] {
 .pop-view a {
     padding: 0;
 }
+
+
 </style>
 
 

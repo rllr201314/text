@@ -1,47 +1,47 @@
 <template>
     <!-- 详情轮播图 -->
     <div class="swiper-wrap">
-        <div class="swiper-container" id="swiper-content">
+        <div class="swiper-container" id="swiper-content-photo">
             <div class="swiper-wrapper">
-                <div class="swiper-slide present-page" v-for="(item,index) in list">
-                    <img :src="item.img_url" preview>
+                <div class="swiper-slide present-page" v-for="item in imgList">
+                    <img :src="item.img_url" alt="" preview>
                 </div>
             </div>
             <div class="swiper-pagination"></div>
         </div>
+        <div id="swiper-container3"></div>
     </div>
 </template>
 
 <script>
 export default {
     name: "Swiper",
+    props: ["imgList"],
     data() {
         return {
-            list:[]
+            list:null,
         };
     },
-    props: ["imgList"],
     methods: {
         swiper() {
-            var mySwiper = new Swiper ('#swiper-content', {
-                loop:true,
+            var mySwiper_photo = new Swiper ('#swiper-content-photo',{
+                // loop:true,
                 autoplay : 3000,
-                // initialSlide :0,//第一个显示的图片默认为0
-                autoplayDisableOnInteraction:true,//用户操作完是否自动切换
-                pagination : '.swiper-pagination',
-            })
+                pagination:'.swiper-pagination',
+                autoplayDisableOnInteraction:false,//用户操作完是否自动切换
+
+            });
         }
     },
     mounted() {
         var that = this;
-        var time = setInterval(function(){
+        var timer = setInterval(function(){
             if(that.imgList != ''){
                 that.swiper();
                 that.$previewRefresh();
-                that.list = JSON.parse(JSON.stringify(that.imgList));
-                clearInterval(time);
+                clearInterval(timer);
             }
-        },300)
+        },1000)
     }
 };
 </script>
@@ -51,7 +51,7 @@ export default {
     width: 100%;
     height: 4rem;
 }
-.present-page img {
+.present-page img{
     width: 100%;
     height: 4rem;
 }
