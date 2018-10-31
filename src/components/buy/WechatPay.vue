@@ -8,7 +8,7 @@
             <div class="con">
                 <vue-qr :text="url" :size="210"></vue-qr>
                 <div class="hint">
-                    <div>暂时只支持手机手机扫码</div>
+                    <div>暂时只支持手机扫码</div>
                     <div>不支持长按识别</div>
                 </div>
             </div>
@@ -16,6 +16,7 @@
                 <img src="../../../static/img/wechatpay.png" alt="">
                 <span>微信支付</span>
             </div>
+            <div class="hint-bot">付款完成后请<span class="orange-color" @click="goBuyAll">点击此处</span></div>
         </div>
     </div>
 </template>
@@ -38,6 +39,11 @@ export default {
                 title:"微信支付",
             },
             url:'',
+        }
+    },
+    methods:{
+        goBuyAll(){
+            this.$router.push({name:'BuyOrderAll'})
         }
     },
     mounted(){
@@ -90,5 +96,14 @@ export default {
     height:1rem;
     margin-right:.25rem;
     vertical-align: middle;
+}
+.hint-bot{
+    font-size:.26rem;
+    color:#666666;
+    margin-top:.3rem;
+}
+.orange-color{
+    color:#ff7e4a;
+    text-decoration: underline;
 }
 </style>

@@ -207,7 +207,7 @@ export default {
 .list-box-wrap {
     padding-left: 0.2rem;
     position:relative;
-    max-width:12rem;
+    max-width:640px;
     margin:0 auto;
     height:100vh;
 }

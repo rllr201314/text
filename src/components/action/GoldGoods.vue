@@ -17,15 +17,9 @@
         </div>
         <div>
           <div class="layout-title" v-for="gold in golds">
-            <div class="item-width-value-left">
-              {{gold.server}}
-            </div>
-            <div class="item-width-value-center">
-              {{gold.price}}
-            </div>
-            <div class="item-width-value-right">
-              {{gold.bind}}
-            </div>
+            <div class="item-width-value-left" v-text="gold.server"></div>
+            <div class="item-width-value-center" v-text="gold.price"></div>
+            <div class="item-width-value-right" v-text="gold.bind"></div>
           </div>
         </div>
       </div>
@@ -34,7 +28,7 @@
 </template>
 
 <script>
-  import Header from "../home-page/Header";
+  import Header from "@/components/home-page/Header";
 
   export default {
     name: "GoldGoods",
@@ -53,22 +47,31 @@
     mounted() {
       this.getData();
     },
-    methods: {
-      getData() {
+    methods:{
+      // getData() {
+      //   var that = this;
+      //   that.$axios.post(process.env.API_HOST+"gold_list")
+      //     .then(res => {
+      //       // console.log(res);
+      //       if (res.data.status == 200) {
+      //         // if (res.data.code == 200) {
+      //           that.golds = res.data.data;
+      //         // }
+      //       }
+      //     })
+      //     .catch(err => {
+      //       console.log(err);
+      //     })
+      // },
+      getData(){
         var that = this;
-        that.$axios.post(process.env.API_HOST + "gold_list")
-          .then(res => {
-            // console.log(res);
-            if (res.data.status == 200) {
-              // if (res.data.code == 200) {
-                that.golds = res.data.data;
-              // }
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          })
-      },
+        that.$axios.post(process.env.API_HOST+"gold_list").then((res)=>{
+          console.log(res);
+          if(res.data.status == 200){
+            that.golds = res.data.data;
+          }
+        })
+      }
     }
   }
 </script>

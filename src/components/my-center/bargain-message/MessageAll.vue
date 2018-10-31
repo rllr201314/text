@@ -296,7 +296,7 @@ export default {
     top:.88rem;
     left:0;
     right:0;
-    max-width:12rem;
+    max-width:640px;
     margin:0 auto;
     z-index:999;
 }
@@ -518,7 +518,7 @@ input[type="number"] {
 
 .list-box-wrap {
     position:relative;
-    max-width:12rem;
+    max-width:640px;
     margin:0 auto;
     height:100vh;
 }

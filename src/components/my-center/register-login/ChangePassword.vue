@@ -7,11 +7,11 @@
                 <div class="register-strip">
                     <img class="code-ico" src="../../../../static/img/my-center/code_ico.png" alt="">
                     <input type="number" placeholder="请输入验证码" v-model="verify_code">
-                    <span class="get-code" @click="getCode">获取验证码</span>
+                    <span class="get-code" @click="getCode" v-text="hintCode"></span>
                 </div>
                 <div class="register-strip">
                     <img class="pass-ico" src="../../../../static/img/my-center/password_ico.png" alt="">
-                    <input type="password" placeholder="请输入8~20个字符作为密码" v-model="password">
+                    <input type="password" placeholder="请输入6~16个字符作为密码" v-model="password">
                 </div>
             </div>
             <div class="protocol">
@@ -43,36 +43,74 @@ export default {
             phoneNum: "",
             showPhone: "",
             verify_code: "",
-            password: ""
+            password: "",
+            hintCode: "获取验证码",
+            isGetCode: true,
         };
     },
     methods: {
         // 获取验证码
         getCode() {
             var that = this;
-            var phone = that.phoneNum;
-            var reg = /^1[3-9][0-9]{9}$/g;
-            if (phone == "") {
-                mui.toast("手机号码不能为空",{ duration:'short', type:'div' });
-            } else if (!phone.match(reg)) {
-                mui.toast("您的手机号不正确",{ duration:'short', type:'div' });
-            } else {
-                that.$axios
-                    .post(process.env.API_HOST+"sms_code", {
-                        mobile: phone
-                    })
-                    .then(function(res) {
-                        if (res.status == 200) {
-                            if (res.data.code == 200) {
-                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
-                            } else {
-                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
+            // var phone = that.phoneNum;
+            // var reg = /^1[3-9][0-9]{9}$/g;
+            // if (phone == "") {
+            //     mui.toast("手机号码不能为空",{ duration:'short', type:'div' });
+            // } else if (!phone.match(reg)) {
+            //     mui.toast("您的手机号不正确",{ duration:'short', type:'div' });
+            // } else {
+            //     that.$axios
+            //         .post(process.env.API_HOST+"sms_code", {
+            //             mobile: phone
+            //         })
+            //         .then(function(res) {
+            //             if (res.status == 200) {
+            //                 if (res.data.code == 200) {
+            //                     mui.toast(res.data.msg,{ duration:'short', type:'div' });
+            //                 } else {
+            //                     mui.toast(res.data.msg,{ duration:'short', type:'div' });
+            //                 }
+            //             }
+            //         })
+            //         .catch(function(error) {
+            //             console.log(error);
+            //         });
+            // }
+            if (that.isGetCode) {
+                var phone = that.phoneNum;
+                var reg = /^1[3-9][0-9]{9}$/g;
+                if (phone == "") {
+                    mui.alert("手机号码不能为空", "提示", "确定", "", "div");
+                } else if (!phone.match(reg)) {
+                    mui.alert("您输入的手机号不正确","提示", "确定","","div");
+                } else {
+                    that.$axios
+                        .post(process.env.API_HOST+"sms_code", {
+                            mobile: phone
+                        })
+                        .then(function(res) {
+                            if (res.status == 200) {
+                                if (res.data.code == 200) {
+                                    that.hintCode = 60;
+                                    that.isGetCode = false;
+                                    var time = setInterval(function() {
+                                        that.hintCode--;
+                                        if (that.hintCode <= 0) {
+                                            clearInterval(time);
+                                            that.isGetCode = true;
+                                            that.hintCode = "获取验证码";
+                                        }
+                                    }, 1000);
+                                    mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                                } else {
+                                    mui.alert(res.data.msg,"提示","确认","","");
+                                }
                             }
-                        }
-                    })
-                    .catch(function(error) {
-                        console.log(error);
-                    });
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
+                }
             }
         },
         // 确认
@@ -178,7 +216,8 @@ export default {
     color: #fe7649;
     font-size: 0.22rem;
     line-height: 0.6rem;
-    padding: 0 0.4rem;
+    width: 1.9rem;
+    text-align: center;
     border: 1px solid #fe7649;
     -webkit-border-radius: 0.15rem;
     -moz-border-radius: 0.15rem;

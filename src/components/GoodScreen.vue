@@ -47,7 +47,7 @@
                                  </div>
                             </div>
                             <div class="goods-strip-bottom">
-                                <div class="goods-price" v-text="item.goods_price"></div>
+                                <div class="goods-price">￥<span v-text="item.goods_price"></span></div>
                                 <div class="bargain" v-if="item.sell_type == 2">可议价</div>
                             </div>
                         </div>
@@ -85,7 +85,7 @@
                 <!-- 服 -->
                 <div class="server-area-box" v-if="showArea">
                     <div class="area-type-search">
-                        <input type="text" placeholder="搜索">
+                        <input type="text" placeholder="搜索" v-model="area_content" @keyup.13="showKey()" ref="input1" @blur="outKey('s')" >
                         <img class="search-area-ico" src="../../static/img/search_ico.png" alt="">
                     </div>
                     <div class="area-type-content">
@@ -97,7 +97,7 @@
                     <!-- 没区的时候只显示服 -->
                 <div class="server-area-box" v-if="!showArea">
                     <div class="area-type-search">
-                        <input type="text" placeholder="搜索">
+                        <input type="text" placeholder="搜索" v-model="area_content" @keyup.13="showKey()" ref="input1" @blur="outKey('a')">
                         <img class="search-area-ico" src="../../static/img/search_ico.png" alt="">
                     </div>
                     <div class="area-type-content">
@@ -263,6 +263,8 @@ export default {
             sort_price: "",
             sort_collection: "",
 
+            area_content:'',//区服搜索内容
+
             // 筛选---之上
             screenTop: [
                 {
@@ -363,6 +365,7 @@ export default {
             // 服
             server_all: [], //全部的服务器
             server_info: [],
+            old_server:[],
             // 筛选条件// 单选----选择价格排序
             sortPrice: {
                 sortSrc: {
@@ -440,6 +443,45 @@ export default {
         show(){
             this.$refs.input1.blur();
             this.getGoodsInfo(this.request);
+        },
+        showKey(){
+            this.$refs.input1.blur();
+        },
+        outKey(flag){
+            var that = this;
+            if(flag == 'a'){//没有服务器
+                var text = that.area_content;
+                if(text == ""){
+                    that.server_info = JSON.parse(JSON.stringify(that.old_server));
+                }else{
+                    var server_info = that.old_server;
+                    var obj = [];
+                    for(var i in server_info){
+                        if(server_info[i].area_name.indexOf(text) != -1){
+                            obj.push(server_info[i]);
+                        }
+                    }
+                    if(obj != []){
+                        that.server_info = obj;
+                    }
+                }
+            }else if(flag == 's'){
+                var text = that.area_content;
+                if(text == ""){
+                    that.server_info = JSON.parse(JSON.stringify(that.old_server));
+                }else{
+                    var server_info = that.old_server;
+                    var obj = [];
+                    for(var i in server_info){
+                        if(server_info[i].server_name.indexOf(text) != -1){
+                            obj.push(server_info[i]);
+                        }
+                    }
+                    if(obj != []){
+                        that.server_info = obj;
+                    }
+                }
+            }
         },
         out(){
             this.getGoodsInfo(this.request);
@@ -677,7 +719,7 @@ export default {
                 that.request.server_id = "";
                 that.getGoodsInfo(that.request);
             }
-            console.log(that.seleOpe);
+            // console.log(that.seleOpe);
         },
         // 筛选--排序
         seleSort(flag) {
@@ -813,7 +855,7 @@ export default {
                     levelTypeAll[i].ischeck = false;
                 }
             } else if (flag == "pokemon") {
-                console.log(seleTag);
+                // console.log(seleTag);
                 var pokemonTypeAll = this.screen_info.pokemonType;
                 for (var i in pokemonTypeAll) {
                     if (seleTag == pokemonTypeAll[i].name) {
@@ -930,8 +972,7 @@ export default {
             for (var i in schoolTypeAll) {
                 schoolTypeAll[i].ischeck = false;
             }
-            // debugger;
-            console.log(that.request);
+            // console.log(that.request);
             that.getGoodsInfo(that.request);
             that.hiddenScreenFun(); //隐藏筛选
         },
@@ -944,7 +985,7 @@ export default {
                     category_id: that.request.category_id
                 })
                 .then(function(res) {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var platform = res.data.data; //平台
@@ -965,17 +1006,19 @@ export default {
         getServer(operation_id) {
             var that = this;
             that.$axios
-                .post(process.env.API_HOST+"area_server", {
+                .post(process.env.API_HOST+"area_server", {//--------------------------------------------------
                     operation_id: operation_id
                 })
                 .then(function(res) {
-                    console.log(res);
+                    // console.log(res);
                     if (res.data.data.server_info == "") {
                         that.showArea = false;
+                        that.old_server = res.data.data.area_info;
                         that.server_info = res.data.data.area_info;
                         for (var i in that.server_info) {
                             that.server_info[i].ischeck = false;
                         }
+                        
                     } else {
                         that.showArea = true;
                         for (var i in res.data.data.area_info) {
@@ -990,6 +1033,7 @@ export default {
                         }
                         that.area_info = res.data.data.area_info;
                         that.server_all = res.data.data.server_info;
+                        that.old_server = res.data.data.server_info;
                         that.getArea(that.area_info[0].area_id);
                     }
                 })
@@ -1066,7 +1110,7 @@ export default {
                     category_id: category_id
                 })
                 .then(function(res) {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var deal_type = res.data.data.deal_type;
@@ -1348,7 +1392,7 @@ export default {
     text-align: center;
     display: inline-block;
     vertical-align: top;
-    height: 4.1rem;
+    height: 6rem;
     overflow-y: auto;
 }
 .operation-type-strip {
@@ -1399,7 +1443,7 @@ export default {
     color: #666666;
     font-size: 0.24rem;
     padding-left: 0.3rem;
-    height: 3rem;
+    height: 5rem;
     overflow-y: auto;
 }
 .area-type-strip {
@@ -1726,7 +1770,7 @@ input[type="number"] {
     text-align: center;
     font-size: 0.2rem;
     color: #999999;
-    padding: 0.02rem 0.06rem;
+    padding: 0.02rem 0.1rem;
     border: 1px solid #b5b5b5;
     border-top-left-radius: 0.18rem;
     border-top-right-radius: 0.18rem;

@@ -51,8 +51,12 @@ export default {
     width: 100%;
     height: 4rem;
 }
+.present-page{
+    height: 4rem;
+    overflow: hidden;
+}
 .present-page img{
     width: 100%;
-    height: 4rem;
+    height: auto;
 }
 </style>

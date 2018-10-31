@@ -15,6 +15,7 @@
                 <img src="../../../static/img/alipay.png" alt="">
                 <span>支付宝支付</span>
             </div>
+            <div class="hint-bot">付款完成后请<span class="orange-color" @click="goBuyAll">点击此处</span></div>
         </div>
     </div>
 </template>
@@ -37,6 +38,11 @@ export default {
                 title:"支付宝支付",
             },
             url:'',
+        }
+    },
+    methods:{
+        goBuyAll(){
+            this.$router.push({name:'BuyOrderAll'})
         }
     },
     mounted(){
@@ -89,5 +95,14 @@ export default {
     height:1rem;
     margin-right:.25rem;
     vertical-align: middle;
+}
+.hint-bot{
+    font-size:.26rem;
+    color:#666666;
+    margin-top:.3rem;
+}
+.orange-color{
+    color:#ff7e4a;
+    text-decoration: underline;
 }
 </style>

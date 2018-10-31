@@ -302,7 +302,7 @@ export default {
 </script>
 <style scoped>
 .bargain-wrap {
-    max-width: 12rem;
+    /* max-width: 12rem; */
     margin: 0 auto;
 }
 .bargin-tit {
@@ -314,7 +314,7 @@ export default {
     top:.88rem;
     left:0;
     right:0;
-    max-width: 12rem;
+    max-width: 640px;
     margin:0 auto;
 }
 .tit-box {
@@ -620,7 +620,7 @@ input[type="number"] {
 
 .list-box-wrap{
     position:relative;
-    max-width:12rem;
+    max-width:640px;
     margin:0 auto;
     height:100vh;
 }

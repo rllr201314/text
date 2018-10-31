@@ -464,7 +464,7 @@ export default {
     left: 0;
     right: 0;
     z-index: 66;
-    max-width:12rem;
+    max-width:640px;
     margin:0 auto;
 }
 .seleTit div {
@@ -664,7 +664,7 @@ export default {
 }
 .list-box-wrap {
     position:relative;
-    max-width:12rem;
+    max-width:640px;
     margin:0 auto;
     height:100vh;
 }
@@ -689,7 +689,7 @@ export default {
     top:1.68rem;
     left:0;
     right:0;
-    max-width:12rem;
+    max-width:640px;
     margin:0 auto;
     z-index:950;
     display:flex;

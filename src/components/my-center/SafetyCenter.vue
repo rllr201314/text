@@ -21,7 +21,7 @@
                         <span class="red-border" v-else>未设置</span>
                     </div>
                 </div>
-                <div class="pact-strip">
+                <div class="pact-strip" v-if="false">
                     <div class="left-strip">
                         <span>绑定微信</span>
                     </div>

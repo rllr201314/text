@@ -159,7 +159,7 @@ export default {
             this.go_up = false;
         },
         out(flag){
-            console.log(flag);
+            // console.log(flag);
             this.go_up = false;//隐藏键盘让弹出框下去
             var that = this;
             if(flag == 'm'){
@@ -757,6 +757,8 @@ input{
     left:0;
     right:0;
     z-index:50;
+    max-width: 640px;
+    margin:0 auto;
 }
 .pop-view-tit,.pop-view-bot{
     line-height: .9rem;

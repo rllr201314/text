@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="nextBtn" @click="loginFn">登录</div>
-        <div class="login-type">
+        <div class="login-type" v-if="false">
             <div class="login-type-title">
                 <img src="../../../../static/img/goods-details/left_solid.png" alt="">
                 <span>第三方授权登录</span>
@@ -127,7 +127,7 @@ export default {
         },
         // 注册
         goRegister() {
-            this.$router.push({ name: "Register" });
+            this.$router.replace({ name: "Register" });
         },
         getCode() {
             var that = this;

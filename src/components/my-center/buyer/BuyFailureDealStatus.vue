@@ -2,36 +2,38 @@
     <!-- 交易失败 -->
     <div class="failure-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
-        <div id="minirefresh" class="minirefresh-wrap list-wrap">
-            <div class="minirefresh-scroll list">
-                <ul>
-                    <div class="failure-cell" v-for="item in goodsData">
-                        <div class="gameLog">
-                            <img :src="item.game_logo" alt="">
+        <div class="list-box-wrap" v-if="!showNoData">
+            <div id="minirefresh" class="minirefresh-wrap list-wrap">
+                <div class="minirefresh-scroll list">
+                    <ul>
+                        <div class="failure-cell" v-for="item in goodsData">
+                            <div class="gameLog">
+                                <img :src="item.game_logo" alt="">
+                            </div>
+                            <div class="orderInfo">
+                                <div class="order-num">
+                                    <span>订单号</span>
+                                    <span v-text="item.order_sn"></span>
+                                    <span class="history-time" v-text="item.create_time"></span>
+                                </div>
+                                <div class="order-des" v-text="item.goods_title"></div>
+                                <div class="price-status">
+                                    <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
+                                    <span class="order-status">交易失败</span>
+                                </div>
+                                <div class="causer">
+                                    <span class="gray">原因</span>
+                                    <span v-text="item.reason"></span>
+                                </div>
+                            </div>
+                            <div class="order-operate">
+                                <div class="right-operate">
+                                    <span class="pay" @click="lookGood">查看商品</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="orderInfo">
-                            <div class="order-num">
-                                <span>订单号</span>
-                                <span v-text="item.order_sn"></span>
-                                <span class="history-time" v-text="item.create_time"></span>
-                            </div>
-                            <div class="order-des" v-text="item.goods_title"></div>
-                            <div class="price-status">
-                                <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
-                                <span class="order-status">交易失败</span>
-                            </div>
-                            <div class="causer">
-                                <span class="gray">原因</span>
-                                <span v-text="item.reason"></span>
-                            </div>
-                        </div>
-                        <div class="order-operate">
-                            <div class="right-operate">
-                                <span class="pay">查看商品</span>
-                            </div>
-                        </div>
-                    </div>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
         <NoData v-if="showNoData"></NoData>
@@ -65,6 +67,9 @@ export default {
         };
     },
     methods: {
+        lookGood(){
+            mui.toast("交易失败的订单不能查看", { duration: "short", type: "div" });
+        },
         getData(flag) {
             var that = this;
             if (flag) {
@@ -254,6 +259,12 @@ export default {
     -moz-border-radius: 0.04rem;
     border-radius: 0.04rem;
     background: #fe7649;
+}
+.list-box-wrap{
+    position:relative;
+    max-width:640px;
+    margin:0 auto;
+    height:100vh;
 }
 .list-wrap {
     top: 0.88rem;

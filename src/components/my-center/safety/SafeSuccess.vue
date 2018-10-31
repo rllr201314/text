@@ -43,7 +43,7 @@ export default {
     },
     methods:{
         goMycenter(){
-            if(this.type == 1){
+            if(this.dent_type == 1){
                 this.$router.push({name:'MyCenter'})
             }else{
                 this.$router.push({name:'SafePhone'});
@@ -59,12 +59,10 @@ export default {
                         that.dent_type = res.data.data.is_identify;
                         if(that.dent_type == 1){
                             that.hint = "恭喜您认证已通过";
-                            console.log(that.hint)
                             that.btnText = "完成";
                         }else{
                             that.hint = "您的实名认证信息和人脸识别信息不符请重新认证";
                             that.btnText = "重新认证";
-                            console.log(that.hint)
                         }
                     }
                 }

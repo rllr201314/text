@@ -284,7 +284,7 @@ export default {
 }
 .list-box-wrap{
     position:relative;
-    max-width:12rem;
+    max-width:640px;
     margin:0 auto;
     height:100vh;
 }

@@ -5,7 +5,7 @@
             <Header v-bind:showTitle="comData.showTitle"></Header>
             <div class="user-login" v-if="myData.userStatus == 1">
                 <div class="user-log">
-                    <img src="../../../static/img/my-center/user_log.png" alt="">
+                    <img :src="head_img" alt="">
                 </div>
                 <div class="user-status">
                     <span class="user-login" @click="goSele('login')">登录</span>
@@ -15,7 +15,7 @@
             </div>
             <div class="user-info" v-if="myData.userStatus == 2">
                 <div class="left-user-info">
-                    <img src="../../../static/img/my-center/user_log.png" alt="">
+                    <img :src="head_img" alt="">
                 </div>
                 <div class="right-user-info">
                     <div class="user-phone">
@@ -232,6 +232,7 @@ export default {
             },
             buyer_msg:null,
             seller_msg:null,
+            head_img:null,
             myData: {
                 is_identify:'',is_bank:null,//实名认证-是否绑定银行卡
                 userStatus: 2,
@@ -552,6 +553,7 @@ export default {
                         that.buyer_msg = data.user_info.buyer_discuss_msg;
                         that.myData.pactNews = data.user_info.compact_count;
                         that.seller_msg = data.user_info.seller_discuss_msg;
+                        that.head_img = data.user_info.head_img;
                     }
                 }
             }).catch((err)=>{

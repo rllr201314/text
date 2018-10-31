@@ -140,7 +140,7 @@
                         </div>
                         <div class="safe-hint">
                             <div class="sell-left">(保险费用为总价的{{safeOrCompact.parcent}}%)</div>
-                            <div class="strip-radio-right" v-if="safeOrCompact.isMax">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
+                            <div class="strip-radio-right">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
                             <div class="strip-radio-right">
 
                             </div>
@@ -162,7 +162,7 @@
                         </div>
                         <div class="safe-hint">
                             <div class="sell-left">(合同费用为总价的{{safeOrCompact.parcent}}%)</div>
-                            <div class="strip-radio-right" v-if="safeOrCompact.isMax">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
+                            <div class="strip-radio-right">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
                         </div>
                     </div>
                 </div>
@@ -313,9 +313,9 @@ export default {
             safeOrCompact: {
                 //-------------------------------------------------------------------**********************************************
                 showSafe: false, //显示保险
-                showNOSafe: false, //显示可以选择
+                showNoSafe: false, //显示可以选择
                 showCompact: false, //显示保险
-                showNOCompact: false, //显示可以选择
+                showNoCompact: false, //显示可以选择
                 parcent: "",
                 isMax: false,
                 maxPrice: ""
@@ -391,7 +391,6 @@ export default {
             var that = this;
             var imgSrcArr = that.sellData.upimgAll.imgSrc;
             var imgLen = imgSrcArr.length;
-            console.log(imgLen);
             if (imgLen >= 9) {
                mui.toast("图片选择到达上限", { duration: "short", type: "div" });
             } else if (imgLen < 9) {
@@ -408,7 +407,6 @@ export default {
                     imgArr = event.target.files;
                 }
                 for (var i = 0; i < imgArr.length; i++) {
-                    console.log('-------');
                     let type = imgArr[i].type; //文件的类型，判断是否是图片
                     let size = imgArr[i].size; //文件的大小，判断图片的大小
                     if (that.sellData.upimgAll.imgData.accept.indexOf(type) == -1) {
@@ -440,7 +438,6 @@ export default {
         },
         // 账号绑定
         seleSafe(flag) {
-            console.log(flag)
             var safeArr = this.sellData.seleSafeData.safe;
             if (flag == "4") {
                 for (var i in safeArr) {
@@ -499,7 +496,7 @@ export default {
             var that = this;
             var tagContent = that.sellData.tagContent;
             var seleTag = that.sellData.seleTag;
-            console.log(seleTag)
+            // console.log(seleTag)
             for (var i in tagContent) {
                 if (tagContent[i].tag_id == tag_id) {
                     if (tagContent[i].ischeck) {
@@ -667,10 +664,11 @@ export default {
             }
 
             var tagAll = that.sellData.showTag;
-            if (tagAll.length == 0) {
-                mui.alert("请选择商品标签", "提示", "确认", "", "div");
-                return false;
-            } else {
+            // if (tagAll.length == 0) {
+            //     mui.alert("请选择商品标签", "提示", "确认", "", "div");
+            //     return false;
+            // } else
+            if(tagAll.length > 0) {
                 var str = "";
                 for (var i in tagAll) {
                     str += "," + tagAll[i].tag_id;
@@ -728,7 +726,7 @@ export default {
             var compact = that.safeOrCompact.showCompact;
             var noCompact = that.safeOrCompact.showNoCompact;
             var safe = that.safeOrCompact.showSafe;
-            var noSafe = that.safeOrCompact.showNOSafe;
+            var noSafe = that.safeOrCompact.showNoSafe;
             if (compact) {
                 // console.log('合同');
                 that_req.is_compact = 1;
@@ -841,7 +839,6 @@ export default {
             var max_compact = chargeInfo.max_compact;
             var max_safe = chargeInfo.max_safe;
             var safe_rate = chargeInfo.safe_rate;
-            // console.log(chargeInfo);
             // 是否显示合同
             if (force_compact == 1) {
                 that.safeOrCompact.showCompact = true;
@@ -857,34 +854,27 @@ export default {
             }
             if (that.safeOrCompact.showCompact == true) {
                 that.safeOrCompact.parcent = parseInt(compact_rate * 100);
-                if (max_compact > 0) {
-                    that.safeOrCompact.isMax = true;
-                    that.safeOrCompact.maxPrice = max_compact;
-                } else {
-                    that.safeOrCompact.isMax = false;
-                }
+                that.safeOrCompact.isMax = true;
+                that.safeOrCompact.maxPrice = max_compact;
             }
+
             // 是否显示保险
             if (force_safe == 1) {
                 that.safeOrCompact.showSafe = true;
-                that.safeOrCompact.showNOSafe = false;
+                that.safeOrCompact.showNoSafe = false;
             } else if (force_safe == 2) {
                 if (is_safe == 1) {
                     that.safeOrCompact.showSafe = true;
-                    that.safeOrCompact.showNOSafe = true;
+                    that.safeOrCompact.showNoSafe = true;
                 } else if (is_safe == 2) {
                     that.safeOrCompact.showSafe = false;
-                    that.safeOrCompact.showNOSafe = false;
+                    that.safeOrCompact.showNoSafe = false;
                 }
             }
             if (that.safeOrCompact.showSafe == true) {
                 that.safeOrCompact.parcent = parseInt(safe_rate * 100);
-                if (max_compact > 0) {
-                    that.safeOrCompact.isMax = true;
-                    that.safeOrCompact.maxPrice = max_safe;
-                } else {
-                    that.safeOrCompact.isMax = false;
-                }
+                that.safeOrCompact.isMax = true;
+                that.safeOrCompact.maxPrice = max_safe;
             }
         },
         getTagType(){

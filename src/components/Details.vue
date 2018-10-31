@@ -24,7 +24,7 @@
             </div>
         </div>
         <!-- 卖家信息 -->
-        <div class="seller-info">
+        <div class="seller-info" v-if="false">
             <img class="user-head-log" :src="detailData.head_img" alt="">
             <div class="seller-info-right">
                 <div class="seller-right-top">
@@ -568,6 +568,11 @@ export default {
             that.$route.query.goods_id != "" &&
             that.$route.query.goods_id != undefined
         ) {
+            
+            // var url = window.location.href;
+            // var id = String(url).split('goods_id=')[1];
+            // that.goods_id = id;
+            // console.log(id);
             that.goods_id = that.$route.query.goods_id;
             that.getData();
             that.nativeShare = new NativeShare();

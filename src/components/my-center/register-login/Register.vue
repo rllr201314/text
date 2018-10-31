@@ -192,7 +192,7 @@ export default {
                                         "提示",
                                         "确定",
                                         function() {
-                                            that.$router.push({name: "AccountLogin",query:{register:1}});
+                                            that.$router.replace({name: "AccountLogin",query:{register:1}});
                                         },
                                         "div"
                                     );
@@ -208,7 +208,7 @@ export default {
                         });
                 }
             } else if (opt == "login") {
-                that.$router.push({
+                that.$router.replace({
                     name: "AccountLogin"
                 });
             }

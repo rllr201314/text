@@ -29,7 +29,7 @@
                             </div>
                             <div class="order-operate">
                                 <div class="right-operate">
-                                    <span class="pay">查看商品</span>
+                                    <span class="pay" @click="lookGood">查看商品</span>
                                 </div>
                             </div>
                         </div>
@@ -68,6 +68,9 @@ export default {
         };
     },
     methods: {
+        lookGood(){
+            mui.toast("交易失败的订单不能查看", { duration: "short", type: "div" });
+        },
         getData(flag) {
             var that = this;
             if (flag) {
@@ -265,7 +268,7 @@ export default {
 }
 .list-box-wrap{
     position:relative;
-    max-width:12rem;
+    max-width:640px;
     margin:0 auto;
     height:100vh;
 }
