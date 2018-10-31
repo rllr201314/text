@@ -58,7 +58,7 @@
         var that = this;
         that.$axios.post(process.env.API_HOST + "gold_list")
           .then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.data.status == 200) {
               // if (res.data.code == 200) {
                 that.golds = res.data.data;

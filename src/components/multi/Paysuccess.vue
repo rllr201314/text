@@ -18,7 +18,7 @@ export default {
     },
     methods:{
         add(){
-            console.log(this.show);
+            // console.log(this.show);
             this.show = !this.show;
         }
     }

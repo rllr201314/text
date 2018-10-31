@@ -5,7 +5,7 @@
             <Header v-bind:showTitle="comData.showTitle"></Header>
             <div class="user-login" v-if="myData.userStatus == 1">
                 <div class="user-log">
-                    <img src="../../../static/img/mh_ico.png" alt="">
+                    <img src="../../../static/img/my-center/user_log.png" alt="">
                 </div>
                 <div class="user-status">
                     <span class="user-login" @click="goSele('login')">登录</span>
@@ -396,31 +396,26 @@ export default {
         goSele(flag) {
             var that = this;
             var token = that.$store.state.token;
+            if(flag == 'login'){
+                that.$router.push({name: "AccountLogin"});
+                return false;
+            }else if(flag == 'register'){
+                that.$router.push({ name: "Register" });
+                return false;
+            }
+
             if (token == undefined || token == "") {
                 mui.confirm("请先登陆","提示",["取消", "确认"],
                     function(e) {
                         if (e.index == 1) {
-                            that.$router.push({
-                                name: "AccountLogin",
-                                params: {
-                                    redirect: that.$router.currentRoute.name
-                                }
-                            });
+                            that.$router.push({name: "AccountLogin"});
                         }
                     },
                     "div"
                 );
             } else {
                 var that_r = that.$router;
-                // debugger;
-                if (flag == "login") {
-                    that_r.push({
-                        name: "AccountLogin",
-                        params: { redirect: that_r.currentRoute.name }
-                    });
-                } else if (flag == "register") {
-                    that_r.push({ name: "Register" });
-                } else if (flag == "changePassword") {
+                 if (flag == "changePassword") {
                     // 修改密码
                     that_r.push({ name: "ChangePassword" });
                 } else if (flag == "authenticity") {
@@ -435,13 +430,9 @@ export default {
                 } else if (flag == "collect") {
                     //收藏
                     that_r.push({name: "Collect"});
-                    console.log(flag);
-                    console.log(that_r);
-                    
                 } else if (flag == "commissionManage") {
                     //佣金管理SafeUser
                     // that_r.push({ name: "CommissionManage" });
-                    that_r.push({ name: "SafeUser" });
                     mui.toast('暂未开放', {duration: "short",type: "div"});
                 } else if (flag == "assetsManage") {
                     //资产管理
@@ -529,7 +520,7 @@ export default {
         logoutFn(){
             var that = this;
             that.$axios.post(process.env.API_HOST+"user_logout").then((res)=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.$router.push({name:'HomePage'});
@@ -545,7 +536,7 @@ export default {
         getData(){
             var that=this;
             that.$axios.post(process.env.API_HOST+"user_info").then((res)=>{
-                console.log(res)
+                // console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
                         var data = res.data.data;
@@ -594,7 +585,7 @@ export default {
     padding-top:.88rem;
     position: relative;
     background:#f6f6f6;
-    min-height:100vh;
+    min-height:130vh;
 }
 .mycenter-top {
     background-image: url(../../../static/img/my-center/header.png);

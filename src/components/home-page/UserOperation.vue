@@ -5,7 +5,7 @@
             <img src="../../../static/img/user_cont.png" alt="">
             <div>账号</div>
         </div>
-        <div class="cell user-level">
+        <div class="cell user-level" @click="rent">
             <img src="../../../static/img/rent.png" alt="">
             <div>租号</div>
         </div>
@@ -21,12 +21,22 @@
             <img src="../../../static/img/sell_cont.png" alt="">
             <div>我要卖</div>
         </div>
+        <div class="rent-code" v-show="showPop">
+            <img src="../../../static/img/rent_code.png" alt="">
+            <div>扫一扫添加租号客服微信</div>
+        </div>
+        <div class="share" v-show="showPop" @click="rent"></div>
     </div>
 </template>
 
 <script>
     export default {
         name: "UserOperation",
+        data(){
+            return{
+                showPop:false,
+            }
+        },
         methods:{
             seleOpt(flag){
                 var that = this;
@@ -39,14 +49,17 @@
                 }else if(flag == 'active'){
                     // that.$router.push({name:'ActivePage'})
                     mui.toast('暂未开放',{ duration:'short', type:'div' });
-                }else if(flag == 'stage'){
-                    // if(that.$store.token){
+                }else if(flag == 'stage'){//分期
+                    if(that.$store.state.token){
                         that.$router.push({ name: "BillInstallment" });
-                    // }else{
-                    //     mui.toast('请先登录',{ duration:'short', type:'div' });
-                    //     that.$router.push({name: 'AccountLogin'});
-                    // }
+                    }else{
+                        mui.toast('请先登录',{ duration:'short', type:'div' });
+                        that.$router.push({name: 'AccountLogin'});
+                    }
                 }
+            },
+            rent(){
+                this.showPop = !this.showPop;
             }
         }
     }
@@ -93,5 +106,31 @@
     .user-sell img{
         width:.51rem;
         height:.5rem;
+    }
+    .rent-code{
+        width:4rem;
+        position:fixed;
+        top:40%;
+        z-index:10002;
+        background: #FFFFFF;
+        text-align:center;
+        padding:.4rem 0;
+        border-radius: .1rem;
+        font-size:.3rem;
+        color:#666666;
+    }
+    .rent-code img{
+        width:2.52rem;
+        height:2.52rem;
+        margin-bottom:.2rem;
+    }
+    .share{
+        position:fixed;
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+        background:rgba(0,0,0,0.5);
+        z-index:10000;
     }
 </style>

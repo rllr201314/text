@@ -89,7 +89,7 @@ import Loading from "@/components/multi/Loading";
                 that.$axios.post(process.env.API_HOST+"default_account",{
                     account_id:opt,
                 }).then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){
                             var cardData = that.cardData;
@@ -112,7 +112,7 @@ import Loading from "@/components/multi/Loading";
             getData(){
                 var that = this;
                 that.$axios.post(process.env.API_HOST+"account_info").then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){
                             that.cardData = res.data.data;

@@ -61,9 +61,7 @@ export default {
                     .post(process.env.API_HOST+"sms_code", {
                         mobile: phone
                     })
-                    .then(function(response) {
-                        console.log(response.data);
-                        var res = response;
+                    .then(function(res) {
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 mui.toast(res.data.msg,{ duration:'short', type:'div' });
@@ -102,9 +100,7 @@ export default {
                         verify_code: verify_code,
                         password: password
                     })
-                    .then(function(response) {
-                        console.log(response);
-                        var res = response;
+                    .then(function(res) {
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 // mui.alert(

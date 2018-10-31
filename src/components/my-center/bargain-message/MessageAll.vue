@@ -172,7 +172,7 @@ export default {
             that.$axios
                 .post(process.env.API_HOST+"preview_discuss", that.request)
                 .then(function(res) {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var data = res.data.data.data;
@@ -237,7 +237,6 @@ export default {
                                 game_name: "全部"
                             });
                             that.category_type = category;
-                            console.log(that.category_type);
                         }
                     }
                 })

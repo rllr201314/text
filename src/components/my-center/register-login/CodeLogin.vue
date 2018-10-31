@@ -142,9 +142,7 @@ export default {
                     that.$axios.post(process.env.API_HOST+"sms_code", {
                             mobile: phone
                         })
-                        .then(function(response) {
-                            console.log(response.data);
-                            var res = response;
+                        .then(function(res) {
                             if (res.status == 200) {
                                 if (res.data.code == 200) {
                                     that.hintCode = 60;
@@ -185,9 +183,7 @@ export default {
                         mobile: mobile,
                         verify_code: verify_code
                     })
-                    .then(function(response) {
-                        console.log(response);
-                        var res = response;
+                    .then(function(res) {
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 if (res.data.data.token) {

@@ -196,7 +196,7 @@ export default {
             that.$axios.post(process.env.API_HOST+'verify_goods',{
                 order_id:that.goodsInfo.order_id
             }).then((res)=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                       that.getData(that.goodsInfo.order_id,true);
@@ -212,7 +212,7 @@ export default {
             that.$axios.post(process.env.API_HOST+"agree_trade",{
                 order_id:that.goodsInfo.order_id
             }).then((res)=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         mui.toast(res.data.msg, { duration: "short", type: "div" });
@@ -229,7 +229,7 @@ export default {
             that.$axios.post(process.env.API_HOST+"end_trade",{
                 order_id:that.goodsInfo.order_id
             }).then((res)=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         mui.toast(res.data.msg, { duration: "short", type: "div" });
@@ -263,7 +263,7 @@ export default {
             that.$axios.post(process.env.API_HOST+"buyer_trade_status",{
                 order_id:order_id
             }).then((res)=>{
-                console.log(res)
+                // console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.goodsInfo = res.data.data;

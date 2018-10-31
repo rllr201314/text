@@ -3,8 +3,8 @@
     margin:0;
 }
 body{
-    max-width:12rem  !important;;
-    margin:0 auto;
+    /* max-width:12rem  !important;; */
+    /* margin:0 auto; */
     /* background:#FFFFFF !important; */
     height:100vh;
     background:#f6f6f6;
@@ -13,12 +13,17 @@ body{
 html{
     background:#f6f8fe;
 }
-.mui-popover.mui-popover-action.mui-active{
-    max-width:12rem;
+#app{
+    max-width: 640px;
+    min-width: 300px;
+    min-height:100vh;
+    margin:0 auto;
+    box-shadow: 0 -3px 0.03rem 0 rgba(0,0,0,.5);
 }
-/* .pswp__top-bar{
-    top:.88rem !important;
-} */
+.mui-popover.mui-popover-action.mui-active{
+    max-width: 640px;
+    min-width: 300px;
+}
 .pswp{
     z-index:10000 !important;
 }

@@ -303,7 +303,7 @@ export default {
         getProtocol(){
             var that = this;
             that.$axios.post(process.env.API_HOST+'protocol_safe').then((res)=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.protocalText = res.data.data;
@@ -335,7 +335,7 @@ export default {
         },
         // 选择分期和保险
         seleOpera(flag) {
-            console.log(flag);
+            // console.log(flag);
             var that = this;
             if (flag == "nostage") {
                 that.operaStage.stage = false;
@@ -507,7 +507,6 @@ export default {
         // 自定义
         customFn(){
             var that = this;
-            console.log()
             if((Number(that.goodsInfo.goods_price) * 0.3) > that.custom_price){
                 mui.alert('自定义分期首付金额不可低于原价30%','提示','确认','','div');
                 that.customInfo =null;
@@ -523,7 +522,7 @@ export default {
                     price:Number(that.goodsInfo.goods_price),
                     down_payment:that.custom_price
                 }).then((res)=>{
-                    console.log(res)
+                    // console.log(res)
                     if(res.status == 200){
                         if(res.data.code == 200){
                             that.show_periods = true;
@@ -554,7 +553,7 @@ export default {
                     goods_id: that.$route.query.goods_id
                 })
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             that.showNoData = false;
@@ -605,7 +604,6 @@ export default {
                                     } else {
                                         that.$router.go(-1);
                                     }
-                                    console.log(e);
                                 },
                                 "div"
                             );
@@ -684,7 +682,7 @@ export default {
             request.price = that.totalPrice;
             request.remaining_sum = that.remaining_sum;
             request.goods_id = that.$route.query.goods_id;
-            console.log(request);
+            // console.log(request);
             var request = JSON.stringify(request)
             that.$router.push({name:'Pay',query:{request}})
             sessionStorage.order_info = request;

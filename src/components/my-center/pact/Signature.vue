@@ -53,8 +53,8 @@ export default {
     methods:{
         getData(){
             var that = this;
-            that.$axios.post(process.env.API_HOST+"buyer_sign_contract").then((res)=>{
-                console.log(res);
+            that.$axios.post(process.env.API_HOST+"sign_contract").then((res)=>{
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.num = res.data.data.length;
@@ -90,7 +90,6 @@ export default {
             var that = this;
             //合同签署页面
             YHT.signContract(function successFun(url) {
-                    // console.log(url);
                     window.open(url);
                 },
                 function failFun(data) {

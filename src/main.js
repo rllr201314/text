@@ -59,23 +59,9 @@ axios.interceptors.response.use(
     return response;
   },
   error => {
-    console.log(error);
-    if(error.response.status == 500){
-      router.go(-1);
-      store.commit('del_token');
-    }
-    // if (error.response) {
-    //   switch (error.response.status) {
-    //     case 401:
-          // store.commit('del_token');
-          // router.replace({
-          //   name: 'AccountLogin',
-          //   query: {
-          //     redirect: router.currentRoute.fullPath
-          //   } //登录成功后跳入浏览的当前页面
-          // })
-    //   }
-    // }
+    // console.log(error);
+    store.commit('del_token');
+    router.replace({name:'HomePage'})
     return Promise.reject(error.response)
   });
 

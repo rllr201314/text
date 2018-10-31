@@ -87,7 +87,6 @@ export default {
             }
         },
         receiptDetail(data){
-            console.log(data);
             var info = JSON.stringify(data);
             this.$router.push({name:'ReceiptsInfo',query:{info:info}})
         },
@@ -109,7 +108,6 @@ export default {
                     },
                     isShowUpLoading: true,
                     callback: () => {
-                        console.log('----')
                         that.num++;
                         if(that.num <= that.pages){
                             that.getData(that.showBox, "push");
@@ -137,7 +135,7 @@ export default {
                 flag:flag,
                 page:page,
             }).then((res)=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         var data = res.data.data.data;

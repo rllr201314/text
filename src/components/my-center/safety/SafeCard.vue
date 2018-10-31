@@ -72,7 +72,6 @@ export default {
     },
     methods: {
         addImg(event) {
-            console.log(event);
             var that = this;
             var arr = [];
             let imgArr = event.target.files[0];
@@ -111,15 +110,10 @@ export default {
             that.$axios
                 .post(process.env.API_HOST+"authentic_four",request)
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
-                        if (res.data.code == 200) {
-                            that.showLoading = false;
-                            mui.alert(res.data.msg,'提示','确认',function(){
-                                // 跳页面
-                                // that.$router.push({name:'SafeSuccess'});
-                                that.face();//人脸识别
-                            },'div');
+                        if (res.data.code == 200 && res.data.data.notify_id) {
+                            that.face(res.data.data.notify_id);//人脸识别
                         } else {
                             that.showLoading = false;
                             mui.alert(res.data.msg,'提示','确认','','div');
@@ -149,17 +143,22 @@ export default {
                 console.log(err);
             })
         },
-        face(){
+        face(id){
             var that = this;
             var backURL='http://www.kangehao.com:8010/safe-success';//识别完成返回地址,请以“http”或者“https”协议开始
+            var notifyId = id;
             YHTVF.queryVF(
                 function successFun(url){
-                    window.open(url);
+                    mui.alert('信息提交成功','提示','确认',function(){
+                        that.showLoading = false;
+                        window.open(url);
+                    },'div')
                 },
                 function failFun(data){
                     console.log(data);
                 },
-                backURL
+                backURL,
+                notifyId
             );
         }
     },

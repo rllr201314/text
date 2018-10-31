@@ -142,7 +142,7 @@ import Loading from "@/components/multi/Loading";
                 request.account_id = that.withdrawInfo.account_id;
                 that.showLoading = true;
                 that.$axios.post(process.env.API_HOST+"do_withdraw",request).then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){
                             // that.getData();
@@ -160,7 +160,7 @@ import Loading from "@/components/multi/Loading";
             getData(){
                 var that = this;
                 that.$axios.post(process.env.API_HOST+"withdraw_config").then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){
                             that.withdrawInfo = res.data.data

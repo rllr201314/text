@@ -1,43 +1,78 @@
 <template>
     <!-- 安全认证之手机 -->
     <div class="safe-authentic-wrap">
-        <Header v-bind:showTitle="comData.showTitle"></Header>
+        <Header v-bind:showTitle="showTitle"></Header>
         <div class="safe-authentic-tit">
-            <img class="safe-status" src="../../../../static/img/my-center/safe/four.png" alt="">
+            <img v-if="dent_type == 1"  class="safe-status" src="../../../../static/img/my-center/safe/four.png" alt="">
+            <img v-else  class="safe-status" src="../../../../static/img/my-center/safe/two.png" alt="">
         </div>
         <div class="safe-authentic-content">
             <div class="safe-cell success-content">
-                <img src="../../../../static/img/my-center/safe/success.png" alt="">
-                <div>恭喜您认证已通过</div>
-                <div class="success" @click="goMycenter">完成</div>
+                <img v-if="dent_type == 1" src="../../../../static/img/my-center/safe/success.png" alt="">
+                <img v-else src="../../../../static/img/warn/warn_ico.png" alt="">
+                <div v-text="hint"></div>
+                <div class="success" @click="goMycenter" v-text="btnText"></div>
             </div>
         </div>
+        <Loading  v-if="showLoading"></Loading>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import Loading from "@/components/multi/Loading";
 export default {
     name: "SafeSuccess",
     components: {
-        Header
+        Header,
+        Loading
     },
     data() {
         return {
-            comData: {
-                showTitle: {
-                    showBack: false,
-                    showLogo: 2, //显示头部title文字
-                    showShare: 3, //1搜索2分享3菜单
-                    showBg: true, //是否显示背景
-                    title: "安全认证"
-                }
-            }
-        };
+            showTitle: {
+                showBack: false,
+                showLogo: 2, //显示头部title文字
+                showShare: 3, //1搜索2分享3菜单
+                showBg: true, //是否显示背景
+                title: "安全认证"
+            },
+            hint:'',
+            dent_type:null,
+            btnText:null,
+            showLoading:true,
+        }
     },
     methods:{
         goMycenter(){
-            this.$router.push({name:'MyCenter'})
+            if(this.type == 1){
+                this.$router.push({name:'MyCenter'})
+            }else{
+                this.$router.push({name:'SafePhone'});
+            }
+        },
+        getData(){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+"is_identify").then(res=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.showLoading = false;
+                        that.dent_type = res.data.data.is_identify;
+                        if(that.dent_type == 1){
+                            that.hint = "恭喜您认证已通过";
+                            console.log(that.hint)
+                            that.btnText = "完成";
+                        }else{
+                            that.hint = "您的实名认证信息和人脸识别信息不符请重新认证";
+                            that.btnText = "重新认证";
+                            console.log(that.hint)
+                        }
+                    }
+                }
+            })
         }
+    },
+    mounted(){
+        this.getData();
     }
 };
 </script>

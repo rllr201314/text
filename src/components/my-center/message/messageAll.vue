@@ -64,7 +64,7 @@ export default {
                     rows:15,
                 })
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var data = res.data.data.data;
@@ -130,7 +130,7 @@ export default {
         that.$axios
           .post(process.env.API_HOST + "msg_read", {})
           .then(res => {
-            console.log(res);
+            // console.log(res);
             if (res.status == 200) {
               if (res.data.code == 200) {
                 mui.toast(res.data.msg, {duration: "short", type: "div"});

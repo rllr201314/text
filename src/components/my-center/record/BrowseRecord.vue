@@ -96,7 +96,7 @@ export default {
                 that.$axios
                     .post(process.env.API_HOST+"clear_history")
                     .then(res => {
-                        console.log(res);
+                        // console.log(res);
                         if (res.status == 200) {
                             this.getData();
                             mui.toast(res.data.msg, {
@@ -112,7 +112,7 @@ export default {
                 that.$axios
                     .post(process.env.API_HOST+"clear_all_history")
                     .then(res => {
-                        console.log(res);
+                        // console.log(res);
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 that.showNoData = true;
@@ -126,7 +126,6 @@ export default {
         },
         // 跳转详情
         godetail(status,id){
-            console.log(status)
             if(status == 3){
                 this.$router.push({name: "Details",query: {goods_id:id}});
             }else if(status == 4){
@@ -144,7 +143,7 @@ export default {
                     page: that.now_page
                 })
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             if (flag) {
@@ -195,7 +194,6 @@ export default {
                         this.now_page++;
                         if (this.now_page <= this.pages) {
                             this.getData("push");
-                            console.log("aaa");
                         } else {
                             this.miniRefresh.endUpLoading(true);
                         }

@@ -104,9 +104,7 @@ export default {
                         mobile: mobile,
                         password: password
                     })
-                    .then(function(response) {
-                        console.log(response);
-                        var res = response;
+                    .then(function(res) {
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 if (res.data.data.token) {

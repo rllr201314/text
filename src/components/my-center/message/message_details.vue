@@ -49,7 +49,7 @@ export default {
             that.$axios.post(process.env.API_HOST+"msg_content",{
                 msg_id:msg_id
             }).then((res)=>{
-                console.log(res);
+                // console.log(res);
             }).catch((err)=>{
                 console.log(err);
             })

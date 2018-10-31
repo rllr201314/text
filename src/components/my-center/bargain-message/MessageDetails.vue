@@ -106,7 +106,7 @@ export default {
                 discuss_id:id,
                 is_agree:opt,
             }).then((res)=>{
-                console.log(res)
+                // console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
                         mui.toast(res.data.msg,{ duration:'short', type:'div' });
@@ -124,7 +124,7 @@ export default {
                 sort_price:that.sort_price,
                 sort_time:that.sort_time
             }).then(function(res){
-                console.log(res)
+                // console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
                         if(res.data.data != ''){

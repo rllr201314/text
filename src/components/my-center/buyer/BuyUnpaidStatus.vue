@@ -114,7 +114,6 @@ export default {
             this.showUnpaidShare = false; //隐藏遮罩
         },
         cancalOrder(opt) {
-            console.log(opt);
             this.showUnpaidBox = true;
             this.showUnpaidShare = true;
         },
@@ -136,7 +135,7 @@ export default {
             that.$axios
                 .post(process.env.API_HOST+"buyer_trade")
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             if(res.data.data == ''){

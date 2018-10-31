@@ -57,7 +57,7 @@ import NoData from "@/components/multi/NoData";
             getData(){
                 var that = this;
                 that.$axios.post(process.env.API_HOST+'withdraw_info').then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){
                             if(res.data.data != ''){

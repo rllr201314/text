@@ -134,7 +134,7 @@
         },
         methods:{
             addImg(event){
-                console.log(event)
+                // console.log(event)
                 var that = this;
                 var imgSrcArr =  that.upimgAll.imgSrc;
                 var len = imgSrcArr.length;
@@ -198,14 +198,14 @@
                         break;
                     }
                 }
-                console.log(that.arbitrate_type)
+                // console.log(that.arbitrate_type)
             },
             getData(){
                 var that = this;
                 that.$axios.post(process.env.API_HOST+"arbitrate_info",{
                     order_id:that.$route.query.order,
                 }).then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){
                             that.arbitrate_info = res.data.data.arbitrate_info;
@@ -255,7 +255,7 @@
                 }
                 request.order_id = that.order_info.order_id;
                 that.$axios.post(process.env.API_HOST+"do_arbitrate",request).then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){
                             mui.alert(res.data.msg,'提示','确认',function(){

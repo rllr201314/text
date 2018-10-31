@@ -73,7 +73,6 @@ export default {
         getProtocol(){
             var that = this;
             that.$axios.post(process.env.API_HOST+'protocol_reg').then((res)=>{
-                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.protocalText = res.data.data;
@@ -109,9 +108,7 @@ export default {
                         .post(process.env.API_HOST+"verify_code", {
                             mobile: phone
                         })
-                        .then(function(response) {
-                            console.log(response.data);
-                            var res = response;
+                        .then(function(res) {
                             if (res.status == 200) {
                                 if (res.data.code == 200) {
                                     that.hintCode = 60;
@@ -144,7 +141,6 @@ export default {
                 var password = that.password;
                 var phoneReg = /^1[3-9][0-9]{9}$/g;
                 var passReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
-                console.log(mobile);
                 if (mobile == "") {
                     mui.alert("手机号码不能为空", "提示", "确定", "", "div");
                 } else if (!mobile.match(phoneReg)) {
@@ -188,9 +184,7 @@ export default {
                             verify_code: verify_code,
                             password: password
                         })
-                        .then(function(response) {
-                            console.log(response);
-                            var res = response;
+                        .then(function(res) {
                             if (res.status == 200) {
                                 if (res.data.code == 200) {
                                     mui.alert(
@@ -220,14 +214,6 @@ export default {
             }
         }
     },
-    mounted() {
-        // var route = this.$route;
-        // var opt = route.params;
-        // var that = this;
-        // console.log(that);
-        // console.log(opt);
-        // console.log(route);
-    }
 };
 </script>
 <style scoped>

@@ -407,7 +407,7 @@ export default {
                         goods_id: that.goods_id
                     })
                     .then(function(res) {
-                        console.log(res);
+                        // console.log(res);
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 if (that.detailData.is_collect == 1) {
@@ -435,7 +435,7 @@ export default {
         bargainFn() {
             var that = this;
             var token = that.$store.state.token;
-            console.log(token);
+            // console.log(token);
             if (token) {
                 this.showShade = true;
                 // var mo = function(e) {
@@ -517,7 +517,7 @@ export default {
                     goods_id: that.goods_id
                 })
                 .then(function(res) {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         that.showLoading = false;
                         if (res.data.code == 200) {

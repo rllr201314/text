@@ -56,7 +56,6 @@ export default {
                         mobile: that.$store.state.mobile
                     })
                     .then(function(res) {
-                        console.log(res.data);
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 that.hintCode = 60;

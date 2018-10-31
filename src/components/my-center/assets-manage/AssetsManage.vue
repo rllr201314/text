@@ -103,7 +103,7 @@
             getData(){
                 var that = this;
                 that.$axios.post(process.env.API_HOST+"income_info").then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){
                             that.assetsData = res.data.data;
@@ -128,6 +128,7 @@
                             that.$router.push({name:'WithdrawDeposit',query:{type:that.assetsData.is_bank}})
                         }else{
                             mui.toast("请先设置提现账户", {duration: "short",type: "div"});
+                            that.$router.push({name:'UserAuthentication',query:{type:that.assetsData.is_identify}})
                         }
                     }else{
                         that.$router.push({name:'UserAuthentication',query:{type:that.assetsData.is_identify}})

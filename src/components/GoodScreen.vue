@@ -1182,7 +1182,7 @@ export default {
 
 <style scoped>
 .good-screen-wrap {
-    max-width: 12rem;
+    /* max-width: 12rem; */
     margin: 0 auto;
 }
 
@@ -1195,7 +1195,7 @@ export default {
     left: 0;
     right: 0;
     z-index: 66;
-    max-width: 12rem;
+    max-width:640px;
     margin: 0 auto;
 }
 .screen-title-top,
@@ -1252,7 +1252,7 @@ export default {
     background: rgba(0, 0, 0, 0.5);
     z-index: 4;
     margin:0 auto;
-    max-width:12rem;
+    max-width:640px;
 }
 
 /* 筛选弹出框 -- 公共样式 */
@@ -1265,7 +1265,7 @@ export default {
     top: 1.65rem;
     right: 0;
     z-index: 6;
-    max-width: 12rem;
+    max-width:640px;
     margin:0 auto;
 }
 /* =========================== */

@@ -169,7 +169,8 @@ export default {
 
 <style scoped>
 .top-header{
-    max-width:12rem;
+    /* max-width:12rem; */
+    max-width: 640px;
     margin:0 auto;
     height:.88rem;
     position: fixed;

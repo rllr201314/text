@@ -171,14 +171,14 @@ export default {
                     imgsrc: "./static/img/order/visa.png"
                 },
                 {
-                    key: 1,
-                    issele: false,
-                    imgsrc: "./static/img/order/wxpay.png"
-                },
-                {
                     key: 2,
                     issele: false,
                     imgsrc: "./static/img/order/zfbpay.png"
+                },
+                {
+                    key: 1,
+                    issele: false,
+                    imgsrc: "./static/img/order/wxpay.png"
                 }
             ],
             isbalace:false,
@@ -364,7 +364,7 @@ export default {
         subData(url,request){
             var that = this;
             that.$axios.post(process.env.API_HOST+url,request).then((res)=>{
-                console.log(res);
+                // console.log(res);
                 that.showLoading = false;
                 if(res.status == 200){
                     if(res.data.code == 200){
@@ -380,7 +380,7 @@ export default {
                                     break;
                                 }
                             }
-                            console.log(type_id);
+                            // console.log(type_id);
                             if(type_id == 3){
                                 // 跳转页面 第三方接口
                                 $('#pay_card').html(res.data.data.pay_url);//银联
@@ -444,7 +444,7 @@ export default {
             that.$axios.post(process.env.API_HOST+"payment_info",{
                 order_id:order_id
             }).then((res)=>{
-                console.log(res)
+                // console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.remaining_sum = Number(res.data.data.remain_amount);
@@ -476,7 +476,7 @@ export default {
             that.$axios.post(process.env.API_HOST+'',{
                 order_id:order_id
             }).then((res)=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
 

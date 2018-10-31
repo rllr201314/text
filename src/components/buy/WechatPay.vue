@@ -8,7 +8,8 @@
             <div class="con">
                 <vue-qr :text="url" :size="210"></vue-qr>
                 <div class="hint">
-                    手机用户可长按二维码或保存图片，通过微信识别二维码
+                    <div>暂时只支持手机手机扫码</div>
+                    <div>不支持长按识别</div>
                 </div>
             </div>
             <div class="fot">
@@ -70,13 +71,13 @@ export default {
     background:#22AB39;
 }
 .hint{
-    width:6rem;
     font-size:.38rem;
     line-height:.6rem;
     /* font-weight:bold; */
     margin:0 auto;
     color:#ffffff;
     padding-top:.57rem;
+    text-align:center;
 }
 .fot{
     background:#ffffff;

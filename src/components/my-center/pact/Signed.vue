@@ -52,12 +52,12 @@ export default {
     methods:{
         getData(){
             var that = this;
-            that.$axios.post(process.env.API_HOST+"buyer_end_contract").then((res)=>{
-                console.log(res);
+            that.$axios.post(process.env.API_HOST+"end_contract").then((res)=>{
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
+                        that.num = res.data.data.length;
                         if(res.data.data != ''){
-                            that.num = res.data.data.length;
                             that.signatureData = res.data.data;
                             YHT.init(that.signatureData[0].app_id,that.getInit);
                         }else{
@@ -91,7 +91,6 @@ export default {
             var that = this;
             //合同签署页面
             YHT.queryContract(function successFun(url) {
-                    console.log(url);
                     window.open(url);
                 },
                 function failFun(data) {

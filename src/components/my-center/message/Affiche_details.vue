@@ -49,7 +49,7 @@ export default {
             that.$axios.post(process.env.API_HOST+"article_info",{
                 article_id:article_id
             }).then((res)=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.info = res.data.data

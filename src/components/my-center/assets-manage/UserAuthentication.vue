@@ -110,7 +110,7 @@ export default {
             protocalText:'',
             showLoading:false,
             pageType: null, //控制页面是添加银行卡还是选择银行卡----
-            protocol: false,
+            protocol: true,
             name: "",
             accountType: [],
             seleType: "支付宝",
@@ -150,7 +150,7 @@ export default {
             that.$axios
                 .post(process.env.API_HOST+"account_config")
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             that.name = res.data.data.username;
@@ -190,7 +190,7 @@ export default {
         getProtocol() {
              var that = this;
             that.$axios.post(process.env.API_HOST+'protocol_reg').then((res)=>{
-                console.log(res);
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.protocalText = res.data.data;
@@ -232,7 +232,7 @@ export default {
                 request.withdraw_method = that.seleVal;//提现方式
 
                 that.$axios.post(process.env.API_HOST+"add_account",request).then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     that.showLoading = false;
                     if(res.status == 200){
                         if(res.data.code == 200){
