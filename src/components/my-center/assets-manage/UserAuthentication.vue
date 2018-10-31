@@ -54,7 +54,7 @@
         <div class="protocol" v-if="pageType==2">
             <img :src="protocol?'../../../../static/img/goodscreen/okcheck.png':'../../../../static/img/goodscreen/nocheck.png'" alt=""  @click="isAgree">
             <div>
-                我已阅读并同意<span class="red-color" @click="getProtocol">《看个号手机网游平台协议》</span>
+                我已阅读并同意<span class="red-color" @click="getProtocol">《账户安全协议》</span>
             </div>
         </div>
         <div class="pop-view-pro" v-show="showPro">
