@@ -115,13 +115,14 @@
         <Loading v-if="showLoading"></Loading>
         <div id="pay_card"></div>
         <!-- <PaySuccess v-if="showPaySuccess"></PaySuccess> -->
-      <img :hidden="is_line" @click="$common.linkServer()" class="link-server" src="../../../static/img/link_server.png" />
+        <LinkServer></LinkServer>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
 import Loading from "@/components/multi/Loading";
 // import PaySuccess from "@/components/multi/PaySuccess";
+import LinkServer from "@/components/common/LinkServer";
 export default {
     name: "Pay",
     data() {
@@ -199,6 +200,7 @@ export default {
     components: {
         Header,
         Loading,
+        LinkServer,
         // PaySuccess
     },
     methods: {
@@ -827,13 +829,5 @@ export default {
     bottom:0;
     right:0;
 }
-
-  .link-server{
-    position: fixed;
-    width: 0.9rem;
-    height: 0.9rem;
-    top: 5rem;
-    right: 0.1rem;
-  }
 </style>
 

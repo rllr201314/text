@@ -24,16 +24,17 @@
         </div>
       </div>
     </div>
-    <img :hidden="is_line" @click="$common.linkServer()" class="link-server" src="../../../static/img/link_server.png" />
+    <LinkServer></LinkServer>
   </div>
 </template>
 
 <script>
   import Header from "@/components/home-page/Header";
+  import LinkServer from "@/components/common/LinkServer";
 
   export default {
     name: "GoldGoods",
-    components: {Header},
+    components: {Header, LinkServer},
     data() {
       return {
         showTitle: {
@@ -136,13 +137,5 @@
     text-align: left;
     font-size: 12px;
     padding-top: 10px;
-  }
-
-  .link-server {
-    position: fixed;
-    width: 0.9rem;
-    height: 0.9rem;
-    top: 4.5rem;
-    right: 0.1rem;
   }
 </style>
