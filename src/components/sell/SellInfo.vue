@@ -413,8 +413,8 @@ export default {
                         mui.toast("请选择我们支持的图片格式！", { duration: "short", type: "div" });
                         return false;
                     }
-                    if (size > 2097152) {
-                        mui.toast("请选择2M以内的图片！", { duration: "short", type: "div" });
+                    if (size > 10485760) {
+                        mui.toast("请选择10M以内的图片！", { duration: "short", type: "div" });
                         return false;
                     }
                     var reader = new FileReader();

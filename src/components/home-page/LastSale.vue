@@ -36,9 +36,7 @@
                                 <span class="goods-title" v-text="item.goods_title"></span>
                                  <div class="lase-price">
                                     <span>获得保险赔偿</span>
-                                    <span  class="red-color">
-                                        ￥2000
-                                    </span>
+                                    <span  class="red-color">￥<span v-text="item.order_amount"></span></span>
                                 </div>
                             </li>
                         </ul>

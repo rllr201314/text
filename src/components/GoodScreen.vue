@@ -25,7 +25,7 @@
         </div>
         <div class="list-box-wrap" v-show="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
-                <div class="minirefresh-scroll list">
+                <div class="minirefresh-scroll list" >
                     <ul>
                         <div class="goods-strip" v-for="(item,index) in goodsInfo" @click="goDetail(item.goods_id)">
                             <div class="goods-strip-title">
@@ -175,7 +175,7 @@
             <div class="screen-type-strip">
                 <div class="screen-strip-left">等级</div>
                 <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.levelType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                    <div class="screen-strip-box-level" v-for="item in screen_info.levelType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
                     @click="seleScreen('levelType',item.value)"></div>
                 </div>
             </div>
@@ -617,7 +617,6 @@ export default {
                 for (var i in phoneAll) {
                     if (value == phoneAll[i].value) {
                         phoneAll[i].ischeck = true;
-
                         text.tit_top_text = phoneAll[i].alias;
                         continue;
                     }
@@ -915,6 +914,8 @@ export default {
             that_r.is_stage = that.is_stage;
             that_r.is_safe = that.is_safe;
             that_r.role_level = that.role_level;
+            that_r.page = 1;
+            document.getElementById('minirefresh').scrollTop = 0;
             that.getGoodsInfo(that.request);
             that.hiddenScreenFun(); //隐藏筛选
             
@@ -1123,18 +1124,18 @@ export default {
                             }
                             that.account_info = deal_type;
                             var client_idAll = res.data.data.client_id;
+                            client_idAll.unshift({name: "all", alias: "全部", value: -1, status: 1})
                             for (var i in client_idAll) {
                                 if (client_idAll[i].alias == "苹果") {
                                     client_idAll[i].ischeck = true;
                                     that.getOperation(client_idAll[i].value); //调用获取平台接口
-                                    that.request.client_id =
-                                        client_idAll[i].value;
+                                    that.request.client_id = client_idAll[i].value;
                                     continue;
                                 }
                                 client_idAll[i].ischeck = false;
                             }
                             that.phone_info = client_idAll;
-                            var account_bind = res.data.data.account_bind;
+                            var account_bind = res.data.data.account_bind_all;
                             for (var i in account_bind) {
                                 account_bind[i].ischeck = false;
                             }
@@ -1430,6 +1431,7 @@ export default {
     height: 0.6rem;
     font-size: 0.24rem;
     margin: 0;
+    padding: 0 .3rem;
 }
 .search-area-ico {
     width: 0.19rem;
@@ -1567,6 +1569,17 @@ input[type="number"] {
     font-size: 0.24rem;
     padding: 0 0.15rem;
     margin-right: 0.35rem;
+    -webkit-border-radius: 0.06rem;
+    -moz-border-radius: 0.06rem;
+    border-radius: 0.06rem;
+    color: #666666;
+}
+.screen-strip-box-level{
+    display: inline-block;
+    line-height: 0.6rem;
+    font-size: 0.24rem;
+    padding: 0 0.08rem;
+    margin-right: 0.25rem;
     -webkit-border-radius: 0.06rem;
     -moz-border-radius: 0.06rem;
     border-radius: 0.06rem;

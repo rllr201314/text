@@ -1,11 +1,9 @@
 *{
     padding:0;
     margin:0;
+    -webkit-user-select:text;
 }
 body{
-    /* max-width:12rem  !important;; */
-    /* margin:0 auto; */
-    /* background:#FFFFFF !important; */
     height:100vh;
     background:#f6f6f6;
     line-height: .4rem; 

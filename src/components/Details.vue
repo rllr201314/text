@@ -536,11 +536,11 @@ export default {
                                     } else if (
                                         data.goods_info.account_bind[i] == 2
                                     ) {
-                                        that.accountBind.phoneBind = false;
+                                        that.accountBind.emailBind = false;
                                     } else if (
                                         data.goods_info.account_bind[i] == 3
                                     ) {
-                                        that.accountBind.emailBind = false;
+                                        that.accountBind.phoneBind = false;
                                     } else {
                                         that.accountBind.userBind = true;
                                         that.accountBind.phoneBind = true;
@@ -568,11 +568,6 @@ export default {
             that.$route.query.goods_id != "" &&
             that.$route.query.goods_id != undefined
         ) {
-            
-            // var url = window.location.href;
-            // var id = String(url).split('goods_id=')[1];
-            // that.goods_id = id;
-            // console.log(id);
             that.goods_id = that.$route.query.goods_id;
             that.getData();
             that.nativeShare = new NativeShare();
@@ -1143,6 +1138,7 @@ input[type="number"] {
     display:flex;
     align-items: top;
     margin-bottom:.1rem;
+    user-select:text;
 }
 .text-left{
     color: #666666;

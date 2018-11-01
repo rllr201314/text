@@ -7,55 +7,133 @@
             <div :class="seleTit == 1?'red-border':''" @click="seleTitFn(1)">审核中</div>
             <div :class="seleTit == 2?'red-border':''" @click="seleTitFn(2)">已下架</div>
         </div>
+        <div class="category-wrap">
+            <div class="search-wrap">
+                <div class="sele-type" @click="showPopver('category')">
+                    <span v-text="category_text"></span>
+                    <img src="../../../static/img/goodscreen/downsolid.png" alt="">
+                </div>
 
-        <div class="search-wrap">
-            <div class="sele-type" @click="showPopver('category')">
-                <span v-text="category_text"></span>
-                <img src="../../../static/img/goodscreen/downsolid.png" alt="">
+                <div>
+                    <input type="text" placeholder="请输入商品名称" v-model="goods_name">
+                </div>
+                <div class="search" @click="getData(seleTit,'refresh','search')">搜索</div>
             </div>
-            
-            <div>
-                <input type="text" placeholder="请输入商品名称" v-model="goods_name">
+            <div id="category" class="mui-popover">
+                <ul class="mui-table-view">
+                    <li class="mui-table-view-cell" v-for="item in category_type" v-text="item.game_name" @click="showText('category',item.category_id)"></li>
+                </ul>
             </div>
-            <div class="search" @click="getData(seleTit,'refresh','search')">搜索</div>
         </div>
-        <div id="category" class="mui-popover">
-            <ul class="mui-table-view">
-                <li class="mui-table-view-cell" v-for="item in category_type" v-text="item.game_name" @click="showText('category',item.category_id)"></li>
-            </ul>
-        </div>
-        <div class="list-box-wrap" v-if="!showNoData">
+        <div class="list-box-wrap" v-show="!showNoData">
             <!-- 已上架 -->
-            <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 3">
+            <div id="minirefresh" class="minirefresh-wrap list-wrap">
                 <div class="minirefresh-scroll list">
                     <ul>
-                        <div class="arbitration-cell" v-for="item in putawayData" @click="goDetail(item.goods_id)">
-                            <div class="arbitration-box">
-                                <div class="gameLog">
-                                    <img :src="item.game_logo" alt="">
-                                </div>
-                                <div class="orderInfo">
-                                    <div class="goods-strip-title">
-                                        <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                                        <div class="goods-type" v-else>代练号</div>
-                                        <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                        <div class="account-ios" v-else-if="item.client_id == 2">苹果</div>
-                                        <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                        <div class="area" v-text="item.platform_name"></div>
+                        <!-- 已上架 -->
+                        <div v-if="seleTit == 3">
+                            <div class="arbitration-cell" v-for="item in putawayData" @click="goDetail(item.goods_id)">
+                                <div class="arbitration-box">
+                                    <div class="gameLog">
+                                        <img :src="item.game_logo" alt="">
                                     </div>
-                                    <div class="order-des" v-text="item.goods_title"></div>
-                                    <div class="history-time" v-text="item.sort_time"></div>
-                                    <div class="price-status">
-                                        <span class="good-price">￥
-                                            <span v-text="item.goods_price"></span>
-                                        </span>
-                                        <span class="order-status green-bg">上架中</span>
+                                    <div class="orderInfo">
+                                        <div class="goods-strip-title">
+                                            <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                                            <div class="goods-type" v-else>代练号</div>
+                                            <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                            <div class="account-ios" v-else-if="item.client_id == 2">苹果</div>
+                                            <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                            <div class="area" v-text="item.platform_name"></div>
+                                        </div>
+                                        <div class="order-des" v-text="item.goods_title"></div>
+                                        <div class="history-time" v-text="item.sort_time"></div>
+                                        <div class="price-status">
+                                            <span class="good-price">￥
+                                                <span v-text="item.goods_price"></span>
+                                            </span>
+                                            <span class="order-status green-bg">上架中</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="order-operate">
+                                    <div class="right-operate">
+                                        <span class="pay" @click.stop="downGoods(item.goods_id)">下架</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="order-operate">
-                                <div class="right-operate">
-                                    <span class="pay" @click.stop="downGoods(item.goods_id)">下架</span>
+                        </div>
+                        <!-- 已下架 -->
+                        <div v-if="seleTit == 2">
+                            <div class="arbitration-cell" v-for="item in removeData">
+                                <div class="arbitration-box">
+                                    <div class="gameLog">
+                                        <img :src="item.game_logo" alt="">
+                                    </div>
+                                    <div class="orderInfo">
+                                        <div class="goods-strip-title">
+                                            <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                                            <div class="goods-type" v-else>代练号</div>
+                                            <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                            <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                            <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                            <div class="area" v-text="item.platform_name"></div>
+                                        </div>
+                                        <div class="order-des" v-text="item.goods_title"></div>
+                                        <div class="history-time" v-text="item.sort_time"></div>
+                                        <div class="price-status">
+                                            <span class="good-price">￥
+                                                <span v-text="item.goods_price"></span>
+                                            </span>
+                                            <span class="order-status gray-bg">已下架</span>
+                                        </div>
+                                        <div class="arbitration" v-if="item.goods_status == 2 &&　item.reject_reason　!= ''">
+                                            <span class="gray">原因</span>
+                                            <span v-text="item.reject_reason"></span>
+                                        </div>
+                                        <div class="arbitration" v-if="item.goods_status == 4 &&　item.down_reason != ''">
+                                            <span class="gray">原因</span>
+                                            <span v-text="item.reject_reason"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="order-operate">
+                                    <div class="right-operate">
+                                        <span class="pay" @click="getGoods(item.goods_id)">编辑</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 审核中 -->
+                        <div v-if="seleTit == 1">
+                            <div class="arbitration-cell" v-for="item in auditData">
+                                <div class="arbitration-box">
+                                    <div class="gameLog">
+                                        <img :src="item.game_logo" alt="">
+                                    </div>
+                                    <div class="orderInfo">
+                                        <div class="goods-strip-title">
+                                            <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
+                                            <div class="goods-type" v-else>代练号</div>
+                                            <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                            <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                            <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                            <div class="area" v-text="item.platform_name"></div>
+                                        </div>
+                                        <div class="order-des" v-text="item.goods_title"></div>
+                                        <div class="history-time" v-text="item.sort_time"></div>
+                                        <div class="price-status">
+                                            <span class="good-price">￥
+                                                <span v-text="item.goods_price"></span>
+                                            </span>
+                                            <span class="order-status red-bg">审核中</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="order-operate">
+                                    <div class="right-operate">
+                                        <span class="pay" @click="downGoods(item.goods_id)">取消上架</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -63,7 +141,7 @@
                 </div>
             </div>
             <!-- 审核中 -->
-            <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 1">
+            <!-- <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 1">
                 <div class="minirefresh-scroll list">
                     <ul>
                         <div class="arbitration-cell" v-for="item in auditData">
@@ -98,9 +176,9 @@
                         </div>
                     </ul>
                 </div>
-            </div>
+            </div> -->
             <!-- 已下架 -->
-            <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 2">
+            <!-- <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 2">
                 <div class="minirefresh-scroll list">
                     <ul>
                         <div class="arbitration-cell" v-for="item in removeData">
@@ -143,7 +221,7 @@
                         </div>
                     </ul>
                 </div>
-            </div>
+            </div> -->
         </div>
         <NoData class="nodata" v-if="showNoData"></NoData>
     </div>
@@ -207,7 +285,7 @@ export default {
                                 game_name: "全部"
                             });
                             that.category_type = category;
-                            console.log(that.category_type);
+                            // console.log(that.category_type);
                         }
                     }
                 })
@@ -230,28 +308,23 @@ export default {
         seleTitFn(opt) {
             var that = this;
             that.seleTit = opt;
+            that.num_page = 1;
+            that.category_id = "";
+            that.goods_name = "";
+            that.category_text = "游戏类型";
             if (opt == 3) {
-                if (that.putawayData == "") {
-                    that.num_page = 1;
-                    that.getData(that.seleTit, "refresh"); //上架
-                }
+                that.getData(that.seleTit, "refresh"); //上架
             } else if (opt == 1) {
-                if (that.auditData == "") {
-                    that.num_page = 1;
-                    that.getData(that.seleTit, "refresh"); //审核中
-                }
+                that.getData(that.seleTit, "refresh"); //审核中
             } else if (opt == 2) {
-                if (that.removeData == "") {
-                    that.num_page = 1;
-                    that.getData(that.seleTit, "refresh"); //已下架
-                }
+                that.getData(that.seleTit, "refresh"); //已下架
             }
         },
         getData(opt, flag,search) {
-            // console.log(opt+'--'+flag);
             var that = this;
             var request = {};
             request.goods_status = opt;
+
             if(search == 'search'){
                 that.num_page = 1;
                 request.category_id = that.c_id;
@@ -261,7 +334,7 @@ export default {
             that.$axios
                 .post(process.env.API_HOST+"goods_information",request)
                 .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             // 默认进来显示已上架商品
@@ -269,11 +342,12 @@ export default {
                             if (flag == "refresh") {
                                 if(data == ""){
                                     that.showNoData = true;
-                                    // that.miniRefresh.endDownLoading();
+                                    that.miniRefresh.endDownLoading();
                                     that.putawayData = '';
                                     that.removeData = '';
                                     that.auditData = '';
                                 }else{
+                                    document.getElementById('minirefresh').scrollTop = 0;
                                     that.showNoData = false;
                                     that.miniRefresh.endDownLoading();
                                     if (opt == 3) {
@@ -312,6 +386,7 @@ export default {
                 .catch(err => {
                     console.log(err);
                 });
+
         },
         // 下架
         downGoods(goods_id) {
@@ -327,7 +402,7 @@ export default {
                                 goods_id: goods_id
                             })
                             .then(res => {
-                                console.log(res);
+                                // console.log(res);
                                 if (res.status == 200) {
                                     if (res.data.code == 200) {
                                         mui.alert(
@@ -428,7 +503,6 @@ export default {
                     isShowUpLoading: true,
                     callback: () => {
                         that.num_page++;
-                        console.log(that.num_page+'--'+that.pages);
                         if(that.num_page <= that.pages){
                             that.getData(that.seleTit, "push");
                         }else{
@@ -696,7 +770,11 @@ export default {
     justify-content:space-around;
     align-items: center;
 }
+.category-wrap{
+    position:relative;
+}
 #category {
+    position: absolute;
     top: 2.5rem;
     left: .35rem;
     width: 2.3rem;

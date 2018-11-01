@@ -49,27 +49,13 @@
       this.getData();
     },
     methods:{
-      // getData() {
-      //   var that = this;
-      //   that.$axios.post(process.env.API_HOST+"gold_list")
-      //     .then(res => {
-      //       // console.log(res);
-      //       if (res.data.status == 200) {
-      //         // if (res.data.code == 200) {
-      //           that.golds = res.data.data;
-      //         // }
-      //       }
-      //     })
-      //     .catch(err => {
-      //       console.log(err);
-      //     })
-      // },
       getData(){
         var that = this;
-        that.$axios.post(process.env.API_HOST+"gold_list").then((res)=>{
-          console.log(res);
-          if(res.data.status == 200){
-            that.golds = res.data.data;
+        that.$axios.post(process.env.API_HOST+"gold_info").then((res)=>{
+          if(res.status == 200){
+            if(res.data.code == 200){
+              that.golds = res.data.data;
+            }
           }
         })
       }
