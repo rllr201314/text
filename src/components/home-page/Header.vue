@@ -21,7 +21,10 @@
             
             <img v-if="showTitle.showShare === 1" class="head_right_search" src="../../../static/img/searchLogo.png" alt="" @click="cliSearch">
             <img v-else-if="showTitle.showShare === 2" class="head_right_share" src="../../../static/img/share_ico.png" alt="">
-            <img v-else-if="showTitle.showShare === 3" :style="iconstyle" class="head_right_share" src="../../../static/img/menu_ico.png" alt="" @click="cliMenu">
+            <div v-else-if="showTitle.showShare === 3" class="menu-wrap">
+                <img :style="iconstyle" src="../../../static/img/menu_ico.png" alt="" @click="cliMenu">
+                <span v-show="(confirm_trade == 1 || is_msg == 1 )&& !showMenu" class="red-circle"></span>
+            </div>
             <img v-else-if="showTitle.showShare === 4" class="head_right_add" src="../../../static/img/header/hAdd_ico.png" alt="" @click="addCard">
             <transition name="fade">
                 <div class="showMenu" v-show="showMenu" transiton="fade">
@@ -98,6 +101,7 @@ export default {
                 this.iconrotate=0;
             }else {
                 this.iconrotate=90;
+
             }
         },
         // + 添加提现账号
@@ -385,5 +389,23 @@ export default {
     border-radius: 100%;
     background:#F31000;
     display: inline-block;
+}
+.menu-wrap{
+    
+    width: 0.35rem;
+    height: 0.28rem;
+    position: absolute;
+    top: 0.3rem;
+    right: 0.25rem;
+    font-size:0;
+}
+.menu-wrap img{
+    width: 0.35rem;
+    height: 0.28rem;
+}
+.menu-wrap .red-circle{
+    position:absolute;
+    top:0;
+    right:-1px;
 }
 </style>

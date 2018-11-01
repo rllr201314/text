@@ -48,7 +48,7 @@
                     <div class="sell-strip">
                         <div class="sell-strip-title">
                             <span>上传图片</span>
-                            <span class="red-color">（单张图片不能超过2M,最多可上传9张图片）</span>
+                            <span class="red-color">（单张图片不能超过10M,最多可上传9张图片）</span>
                         </div>
                         <div class="upimg-content">
                             <div class="img-cell" v-for="(item,index) in sellData.upimgAll.imgSrc">
