@@ -24,6 +24,7 @@
         </div>
       </div>
     </div>
+    <img :hidden="is_line" @click="$common.linkServer()" class="link-server" src="../../../static/img/link_server.png" />
   </div>
 </template>
 
@@ -149,5 +150,13 @@
     text-align: left;
     font-size: 12px;
     padding-top: 10px;
+  }
+
+  .link-server {
+    position: fixed;
+    width: 0.9rem;
+    height: 0.9rem;
+    top: 4.5rem;
+    right: 0.1rem;
   }
 </style>
