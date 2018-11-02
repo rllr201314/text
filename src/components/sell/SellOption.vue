@@ -406,7 +406,7 @@ export default {
                 mui.alert('请选择区服','提示','确认','','div');
                 return false;
             }else{
-                console.log(upData);
+                // console.log(upData);
                 that.$router.push({name:'SellInfo',
                     query:{
                         flag:1,

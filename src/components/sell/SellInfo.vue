@@ -279,7 +279,7 @@
                 </li>
             </ul>
         </div>
-        <Loading v-if="showLoading"></Loading>
+        <Loading v-show="showLoading"></Loading>
     </div>
 </template>
 <script>
@@ -310,6 +310,7 @@ export default {
                 sex: "未选择",
                 accountType: "未选择"
             },
+            forceCompact:false,//不强制
             safeOrCompact: {
                 //-------------------------------------------------------------------**********************************************
                 showSafe: false, //显示保险
@@ -438,7 +439,8 @@ export default {
         },
         // 账号绑定
         seleSafe(flag) {
-            var safeArr = this.sellData.seleSafeData.safe;
+            var that = this;
+            var safeArr = that.sellData.seleSafeData.safe;
             if (flag == "4") {
                 for (var i in safeArr) {
                     if (flag == safeArr[i].value) {
@@ -456,6 +458,8 @@ export default {
                         safeArr[i].ischeck = false;
                     }
                 }
+
+                
             }
         },
         // 选择是否议价
@@ -633,186 +637,208 @@ export default {
         // 发布商品
         addGoods() {
             var that = this;
-            var that_req = that.requestData;                              
-            if (that_req.goods_title == "") {
-                mui.alert("请输入商品标题", "提示", "确认", "", "div");
-                return false;
-            }
-            if (that_req.role_level == "") {
-                mui.alert("请输入游戏等级", "提示", "确认", "", "div");
-                return false;
-            } else {
-                if (that_req.role_level > 999) {
-                    mui.alert("请输入正确的游戏等级","提示","确认", "","div");
+            if(!that.showLoading){
+                that.showLoading = true;
+                var that_req = that.requestData;
+                if (that_req.goods_title == "") {
+                    mui.alert("请输入商品标题", "提示", "确认", "", "div");
+                    that.showLoading = false;
                     return false;
                 }
-            }
-            if (that_req.faction_id == "") {
-                mui.alert("请选择职业", "提示", "确认", "", "div");
-                return false;
-            }
-            if (that_req.person_sex == "") {
-                mui.alert("请选择角色性别", "提示", "确认", "", "div");
-                return false;
-            }
-            if (that_req.goods_description == "") {
-                mui.alert("请输入商品描述", "提示", "确认", "", "div");
-                return false;
-            } else if (that_req.goods_description.length > 120) {
-                mui.alert("商品描述最多可以输入120字", "提示","确认","","div");
-                return false;
-            }
-
-            var tagAll = that.sellData.showTag;
-            // if (tagAll.length == 0) {
-            //     mui.alert("请选择商品标签", "提示", "确认", "", "div");
-            //     return false;
-            // } else
-            if(tagAll.length > 0) {
-                var str = "";
-                for (var i in tagAll) {
-                    str += "," + tagAll[i].tag_id;
-                }
-                that_req.tag = str.substring(1);
-            }
-            // var upImg = that.sellData.upimgAll.imgSrc;
-            // if (upImg.length == 0) {
-            //     mui.alert("请选择商品图片", "提示", "确认", "", "div");
-            //     return false;
-            // } else {
-            //     for(var i in upImg){
-            //         that_req.images.push(upImg[i].img_url);
-            //     }
-            // }
-            that_req.images = that.sellData.upimgAll.imgSrc;
-
-            // 账号类型
-            if (that_req.account_type == "") {
-                mui.alert("请选择账号类型", "提示", "确认", "", "div");
-                return false;
-            }
-            // 账号绑定
-            var safe = this.sellData.seleSafeData.safe;
-            var safe_flag = false;
-            var safe_str = "";
-            for (var i in safe) {
-                if (safe[i].ischeck == true) {
-                    safe_flag = true;
-                    safe_str += "," + safe[i].value;
-                }
-            }
-            if (safe_flag) {
-                that_req.account_bind = safe_str.substring(1);
-            } else {
-                mui.alert("请选择账号绑定", "提示", "确认", "", "div");
-                return false;
-            }
-            // 议价还是一口价 -- 价格
-            if (that_req.sell_type == 1) {
-                if (that_req.goods_price == "") {
-                    mui.alert("请输入商品价格", "提示", "确认", "", "div");
+                if (that_req.role_level == "") {
+                    mui.alert("请输入游戏等级", "提示", "确认", "", "div");
+                    that.showLoading = false;
                     return false;
-                }
-            } else if (that_req.sell_type == 2) {
-                if (that_req.goods_price == "") {
-                    mui.alert("请输入可议价最高价格","确认","","div");
-                    return false;
-                } else if (that_req.min_price == "") {
-                    mui.alert("请输入可议价最低价格","提示","确认","","div");
-                    return false;
-                }
-            }
-            // 合同还是保险
-            var compact = that.safeOrCompact.showCompact;
-            var noCompact = that.safeOrCompact.showNoCompact;
-            var safe = that.safeOrCompact.showSafe;
-            var noSafe = that.safeOrCompact.showNoSafe;
-            if (compact) {
-                // console.log('合同');
-                that_req.is_compact = 1;
-                if (noCompact) {
-                    // console.log('可选合同');
-                    var isSell = that.sellData.optSafe;
-                    if (!isSell) {
-                        // console.log('不买合同');
-                        that_req.is_compact = 2;
-                    }
-                }
-                that_req.is_safe = 2;
-            } else if (safe) {
-                // console.log('保险');
-                that_req.is_safe = 1;
-                if (noSafe) {
-                    // console.log('可选保险');
-                    var isSell = that.sellData.optSafe;
-                    if (!isSell) {
-                        // console.log('不买保险');
-                        that_req.is_safe = 2;
-                    }
-                }
-                that_req.is_compact = 2;
-            }
-            // 账号
-            if (that_req.account == "") {
-                mui.alert("未输入账号", "提示", "确认", "", "div");
-                return false;
-            }
-            // 密码
-            if (that_req.password == "") {
-                mui.alert("未输入密码", "提示", "确认", "", "div");
-                return false;
-            }
-            // 手机
-            if (that_req.mobile == "") {
-                mui.alert("请输入手机号", "提示", "确认", "", "div");
-                return false;
-            } else {
-                var phoneReg = /^1[3-9][0-9]{9}$/g;
-                if (!that_req.mobile.match(phoneReg)) {
-                    mui.alert("您输入的手机号不正确","提示","确定","","div");
-                    return false;
-                }
-            }
-            // 微信
-            if (that_req.wx == "") {
-                mui.alert("请输入微信账号", "提示", "确认", "", "div");
-                return false;
-            }else{
-                var reg = /[\u4e00-\u9fa5]/g;
-                if(that_req.wx.match(reg)){
-                    mui.alert("请输入正确微信账号", "提示", "确认", "", "div");
-                    return false;
-                }
-            }
-            // console.log(that_req);
-            // let config = {
-            //     headers: { "Content-Type": "multipart/form-data" }
-            // };
-            // let param = new FormData();
-            // console.log(that_req.images);
-            // for(var i in that_req){
-            //     if(i == 'images'){
-            //         for(var x in that_req.images){
-            //             // console.log("img")
-            //              param.append('images[]',that_req.images[x])
-            //         }
-            //     }else{
-            //         param.append(i,that_req[i])
-            //     }
-            // }
-            var url = null;
-            if(that.editOrpublish == 1){
-                url = 'add_goods';
-            }else if(that.editOrpublish == 2){
-                url = 'edit_goods';
-                // that_req.goods_id = that.goods_id;
-            }
-            that.showLoading = true;
-            that.$axios.post(process.env.API_HOST+url,that_req)
-                .then(function(res) {
-                    // console.log(res);
-                    if (res.status == 200) {
+                } else {
+                    if (that_req.role_level > 999) {
+                        mui.alert("请输入正确的游戏等级","提示","确认", "","div");
                         that.showLoading = false;
+                        return false;
+                    }
+                }
+                if (that_req.faction_id == "") {
+                    mui.alert("请选择职业", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                }
+                if (that_req.person_sex == "") {
+                    mui.alert("请选择角色性别", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                }
+                if (that_req.goods_description == "") {
+                    mui.alert("请输入商品描述", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                } else if (that_req.goods_description.length > 200) {
+                    mui.alert("商品描述最多可以输入200字", "提示","确认","","div");
+                    that.showLoading = false;
+                    return false;
+                }
+
+                var tagAll = that.sellData.showTag;
+                if(tagAll.length > 0) {
+                    var str = "";
+                    for (var i in tagAll) {
+                        str += "," + tagAll[i].tag_id;
+                    }
+                    that_req.tag = str.substring(1);
+                }
+                var upImg = that.sellData.upimgAll.imgSrc;
+                if (upImg.length == 0) {
+                    mui.alert("请选择商品图片", "提示", "确认", "", "div");
+                    return false;
+                } else {
+                    that_req.images = upImg;
+                }
+
+                // 账号类型
+                if (that_req.account_type == "") {
+                    mui.alert("请选择账号类型", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                }
+                // 账号绑定
+                var safe = this.sellData.seleSafeData.safe;
+                var safe_flag = false;
+                var safe_str = "";
+                var sense = [];
+                for (var i in safe) {
+                    if (safe[i].ischeck == true) {
+                        sense.push(safe[i].value);
+                        safe_flag = true;
+                        safe_str += "," + safe[i].value;
+                    }
+                }
+                if (safe_flag) {
+                    that_req.account_bind = safe_str.substring(1);
+                } else {
+                    mui.alert("请选择账号绑定", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                }
+                // 议价还是一口价 -- 价格
+                if (that_req.sell_type == 1) {
+                    if (that_req.goods_price == "") {
+                        mui.alert("请输入商品价格", "提示", "确认", "", "div");
+                        that.showLoading = false;
+                        return false;
+                    }
+                } else if (that_req.sell_type == 2) {
+                    if (that_req.goods_price == "") {
+                        mui.alert("请输入可议价最高价格","确认","","div");
+                        that.showLoading = false;
+                        return false;
+                    } else if (that_req.min_price == "") {
+                        mui.alert("请输入可议价最低价格","提示","确认","","div");
+                        that.showLoading = false;
+                        return false;
+                    }
+                }
+                var forceBind = false;
+                if(that.forceCompact){
+                    // 网易手机账号
+                    if(that_req.account_type == 1){
+                        for(var i in sense){
+                            if(sense[i] == 1 || sense[i] == 2){
+                                forceBind = true;
+                                break;
+                            }
+                        }
+                    }else if(that_req.account_type == 2){
+                        for(var i in sense){
+                            if(sense[i] == 1){
+                                forceBind = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                // 合同还是保险
+                var compact = that.safeOrCompact.showCompact;
+                var noCompact = that.safeOrCompact.showNoCompact;
+                var safe = that.safeOrCompact.showSafe;
+                var noSafe = that.safeOrCompact.showNoSafe;
+                if (compact) {
+                    // console.log('合同');
+                    that_req.is_compact = 1;
+                    if (noCompact) {
+                        // console.log('可选合同');
+                        var isSell = that.sellData.optSafe;
+                        if (!isSell) {
+                            // console.log('不买合同');
+                            that_req.is_compact = 2;
+                        }
+                    }
+                    that_req.is_safe = 2;
+                } else if (safe) {
+                    // console.log('保险');
+                    that_req.is_safe = 1;
+                    if (noSafe) {
+                        // console.log('可选保险');
+                        var isSell = that.sellData.optSafe;
+                        if (!isSell) {
+                            // console.log('不买保险');
+                            that_req.is_safe = 2;
+                        }
+                    }
+                    that_req.is_compact = 2;
+                }
+                if(forceBind && that_req.is_compact == 2){
+                    mui.alert("有绑账号请选择购买合同", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                }
+
+                // 账号
+                if (that_req.account == "") {
+                    mui.alert("请输入账号", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                }
+                // 密码
+                if (that_req.password == "") {
+                    mui.alert("请输入密码", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                }
+                // 手机
+                if (that_req.mobile == "") {
+                    mui.alert("请输入手机号", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                } else {
+                    var phoneReg = /^1[3-9][0-9]{9}$/g;
+                    if (!that_req.mobile.match(phoneReg)) {
+                        mui.alert("您输入的手机号不正确","提示","确定","","div");
+                        that.showLoading = false;
+                        return false;
+                    }
+                }
+                // 微信
+                if (that_req.wx == "") {
+                    mui.alert("请输入微信账号", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                }else{
+                    var reg = /[\u4e00-\u9fa5]/g;
+                    if(that_req.wx.match(reg)){
+                        mui.alert("请输入正确微信账号", "提示", "确认", "", "div");
+                        that.showLoading = false;
+                        return false;
+                    }
+                }
+
+                var url = null;
+                if(that.editOrpublish == 1){
+                    url = 'add_goods';
+                }else if(that.editOrpublish == 2){
+                    url = 'edit_goods';
+                }
+                that.$axios.post(process.env.API_HOST+url,that_req).then(function(res) {
+                    // console.log(res);
+                    that.showLoading = false;
+                    if (res.status == 200) {
                         if(res.data.code == 200){
                             mui.alert(res.data.msg,'提示','确认',function(){
                                 that.$router.push({name:'MyCenter'});
@@ -825,6 +851,8 @@ export default {
                 .catch(function(err) {
                     console.log(err);
                 });
+            }
+            
         },
         // 判断合同还是保险
         judgeInfo(chargeInfo) {
@@ -833,12 +861,18 @@ export default {
 
             var force_compact = chargeInfo.force_compact;
             var force_safe = chargeInfo.force_safe;
-            var is_bind = chargeInfo.is_bind;
+            var bind = chargeInfo.is_bind;
             var is_compact = chargeInfo.is_compact;
             var is_safe = chargeInfo.is_safe;
             var max_compact = chargeInfo.max_compact;
             var max_safe = chargeInfo.max_safe;
             var safe_rate = chargeInfo.safe_rate;
+            if(bind == '1'){
+                that.forceCompact = true;
+            }else{
+                that.forceCompact = false;
+            }
+
             // 是否显示合同
             if (force_compact == 1) {
                 that.safeOrCompact.showCompact = true;

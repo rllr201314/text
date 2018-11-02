@@ -345,7 +345,6 @@ export default {
                 request.is_remaining_sum = 2;
                 that.subData(url,request);
             }
-            that.showLoading = true;
         },
         // 提交安全交易密码
         subPass(){
@@ -470,6 +469,7 @@ export default {
                 that.$router.push({name: "BuyUnpaidStatus" });//未支付
             }else{
                 // 调支付
+                that.showLoading = true;
                 that.getData();
             }
         },
