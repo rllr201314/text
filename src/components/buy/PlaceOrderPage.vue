@@ -340,14 +340,15 @@ export default {
             if (flag == "nostage") {
                 that.operaStage.stage = false;
                 that.operaStage.noStage = true;
-                if(that.showSafe || that.showCompact && that.operaSafe.safe){
-                    if(that.goodsInfo.discuss_price != 0){
+                // 不分期
+                if((that.showSafe || that.showCompact) && that.operaSafe.safe){
+                    if(that.goodsInfo.is_discuss == 1){
                         that.totalPrice = Number(that.goodsInfo.discuss_price) + Number(that.goodsInfo.other_fee);
                     }else{
                         that.totalPrice = Number(that.goodsInfo.goods_price) + Number(that.goodsInfo.other_fee);
                     }
                 }else{
-                    if(that.goodsInfo.discuss_price != 0){
+                    if(that.goodsInfo.is_discuss == 1){
                         that.totalPrice = Number(that.goodsInfo.discuss_price);
                     }else{
                         that.totalPrice = Number(that.goodsInfo.goods_price);
@@ -377,11 +378,6 @@ export default {
         showOpera(opt) {
             if (opt == "downPay") {
                 this.showDownPayBox = true;
-                // var mo = function(e) {
-                //     e.preventDefault();
-                // };
-                // document.body.style.overflow = "hidden";
-                // document.addEventListener("touchmove", mo, false); //禁止页面滑动
             } else if (opt == "stage") {
                 this.showStageBox = true;
             }
@@ -390,13 +386,13 @@ export default {
         sumFn(){
             var that = this;
             if(that.down_price == 1){
-                if(that.showSafe || that.showCompact && that.operaSafe.safe){
+                if((that.showSafe || that.showCompact) && that.operaSafe.safe){
                     that.totalPrice = Number(that.stage.first_deposit_price) + Number(that.goodsInfo.other_fee);
                 }else{
                     that.totalPrice = Number(that.stage.first_deposit_price);
                 }
             }else if(that.down_price == 2){
-                if(that.showSafe || that.showCompact && that.operaSafe.safe){
+                if((that.showSafe || that.showCompact) && that.operaSafe.safe){
                     that.totalPrice = Number(that.stage.second_deposit_price) + Number(that.goodsInfo.other_fee);
                 }else{
                     that.totalPrice = Number(that.stage.second_deposit_price);
@@ -518,8 +514,14 @@ export default {
                 that.stageInfo = null;
                 that.show_periods = false;
             }else{
+                var goods_price = '';
+                if(that.goodsInfo.is_discuss == 1){
+                    goods_price = that.goodsInfo.discuss_price;
+                }else{
+                    goods_price = that.goodsInfo.goods_price;
+                }
                 that.$axios.post(process.env.API_HOST+"self_stage",{
-                    price:Number(that.goodsInfo.goods_price),
+                    price:goods_price,
                     down_payment:that.custom_price
                 }).then((res)=>{
                     // console.log(res)
@@ -562,21 +564,21 @@ export default {
                             that.remaining_sum = res.data.data.remaining_sum;
                             // 可以选择分期的话默认 首付30% 分一期 判断可购合同还是保险
                             that.stageInfo = that.stage.first_one_interest;
-                            if(that.goodsInfo.discuss_price != 0){
+                            if(that.goodsInfo.is_discuss == 1){//是否议价
                                 that.totalPrice = that.goodsInfo.discuss_price;
                             }else{
                                 that.totalPrice = that.goodsInfo.goods_price;
                             }
                             if(that.goodsInfo.is_safe == 2 && that.goodsInfo.is_compact == 2 && that.goodsInfo.other_is_safe == 1){
                                 that.showSafe = true;
-                                if(that.goodsInfo.discuss_price != 0){
+                                if(that.goodsInfo.is_discuss == 1){//是否议价
                                     that.totalPrice = Number(that.goodsInfo.discuss_price) + Number(that.goodsInfo.other_fee);
                                 }else{
                                     that.totalPrice = Number(that.goodsInfo.goods_price) + Number(that.goodsInfo.other_fee);
                                 }
                             }else if(that.goodsInfo.is_safe == 2 && that.goodsInfo.is_compact == 2 && that.goodsInfo.other_is_compact == 1){
                                 that.showCompact = true;
-                                if(that.goodsInfo.discuss_price != 0){
+                                if(that.goodsInfo.is_discuss == 1){//是否议价
                                     that.totalPrice = Number(that.goodsInfo.discuss_price) + Number(that.goodsInfo.other_fee);
                                 }else{
                                     that.totalPrice = Number(that.goodsInfo.goods_price) + Number(that.goodsInfo.other_fee);
