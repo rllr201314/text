@@ -8,22 +8,22 @@
           <div class="item-width-left">
             服务器
           </div>
-          <div class="item-width-center">
+          <div class="item-width-right">
             金币数
           </div>
           <div class="item-width-right">
             绑定状态
           </div>
-          <div class="item-width-right">
+          <div class="item-width-center">
             价格
           </div>
         </div>
         <div>
           <div class="layout-title" v-for="gold in golds">
             <div class="item-width-value-left" v-text="gold.server"></div>
-            <div class="item-width-value-center">￥<span v-text="gold.gold_num"></span></div>
+            <div class="item-width-value-right">￥<span v-text="gold.gold_num"></span></div>
             <div class="item-width-value-right" v-text="gold.bind"></div>
-            <div class="item-width-value-right" v-text="gold.price"></div>
+            <div class="item-width-value-center" v-text="gold.price"></div>
           </div>
         </div>
       </div>
@@ -109,8 +109,8 @@
   }
 
   .item-width-center {
-    width: 50%;
-    text-align: left;
+    width: 30%;
+    text-align: center;
     color: #3E96B5;
     font-size: 15px;
   }
@@ -131,7 +131,7 @@
 
   .item-width-value-center {
     width: 30%;
-    text-align: left;
+    text-align: center;
     font-size: 12px;
     padding-top: 10px;
   }
