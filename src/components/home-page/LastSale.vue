@@ -72,7 +72,6 @@ export default {
                 openWatch: true, //开启data实时监听
                 singleHeight: 0, //单条数据高度有值hoverStop关闭
                 waitTime: 1000 //单步停止等待时间
-
             }
         },
         safeOption:function(){
@@ -161,7 +160,6 @@ export default {
     .red-color{
         color:#FC604E;
     }
-
     .info-bottom img{
         width:.26rem;
         height:.29rem;

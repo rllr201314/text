@@ -11,7 +11,9 @@ import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
 var options={
   fullscreenEl:false, //关闭全屏按钮
-  // maxSpreadZoom:2,
+  pinchToClose:false,//捏以关闭
+  maxSpreadZoom:0.5,
+  // closeOnVerticalDrag:false,//垂直拖动关闭
 }
 Vue.use(preview,options);
 Vue.use(Vuex)

@@ -21,9 +21,9 @@
         <div>
           <div class="layout-title" v-for="gold in golds">
             <div class="item-width-value-left" v-text="gold.server"></div>
-            <div class="item-width-value-right">￥<span v-text="gold.gold_num"></span></div>
+            <div class="item-width-value-right" v-text="gold.gold_num"></div>
             <div class="item-width-value-right" v-text="gold.bind"></div>
-            <div class="item-width-value-center" v-text="gold.price"></div>
+            <div class="item-width-value-center">￥<span v-text="gold.price"></span></div>
           </div>
         </div>
       </div>

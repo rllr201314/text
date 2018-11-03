@@ -369,6 +369,12 @@ export default new Router({
       name: 'AliPay',
       component: (resolve) => require(['@/components/buy/AliPay'], resolve),
     },
+    // 抽奖
+    {
+      path: '/dial',
+      name: 'Dial',
+      component: (resolve) => require(['@/components/action/Dial'], resolve),
+    },
     {
       path: '*',
       component: (resolve) => require(['@/components/multi/NoData'], resolve)

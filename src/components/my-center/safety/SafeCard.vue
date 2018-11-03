@@ -145,7 +145,7 @@ export default {
         },
         face(id){
             var that = this;
-            var backURL='http://www.kangehao.com:8010/safe-success';//识别完成返回地址,请以“http”或者“https”协议开始
+            var backURL='https://www.kangehao.com/safe-success';//识别完成返回地址,请以“http”或者“https”协议开始
             var notifyId = id;
             YHTVF.queryVF(
                 function successFun(url){
