@@ -9,17 +9,21 @@
             服务器
           </div>
           <div class="item-width-center">
-            价格
+            金币数
           </div>
           <div class="item-width-right">
             绑定状态
+          </div>
+          <div class="item-width-right">
+            价格
           </div>
         </div>
         <div>
           <div class="layout-title" v-for="gold in golds">
             <div class="item-width-value-left" v-text="gold.server"></div>
-            <div class="item-width-value-center" v-text="gold.price"></div>
+            <div class="item-width-value-center">￥<span v-text="gold.gold_num"></span></div>
             <div class="item-width-value-right" v-text="gold.bind"></div>
+            <div class="item-width-value-right" v-text="gold.price"></div>
           </div>
         </div>
       </div>
@@ -49,12 +53,12 @@
     mounted() {
       this.getData();
     },
-    methods:{
-      getData(){
+    methods: {
+      getData() {
         var that = this;
-        that.$axios.post(process.env.API_HOST+"gold_info").then((res)=>{
-          if(res.status == 200){
-            if(res.data.code == 200){
+        that.$axios.post(process.env.API_HOST + "gold_info").then((res) => {
+          if (res.status == 200) {
+            if (res.data.code == 200) {
               that.golds = res.data.data;
             }
           }
@@ -126,7 +130,7 @@
   }
 
   .item-width-value-center {
-    width: 50%;
+    width: 30%;
     text-align: left;
     font-size: 12px;
     padding-top: 10px;
