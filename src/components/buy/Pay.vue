@@ -14,10 +14,13 @@
                         <div class="tit-strip" @click="seleline('on')" :class="is_line?'red-top':''">线上支付</div>
                         <div class="tit-strip" @click="seleline('no')" :class="!is_line?'red-top':''">线下支付</div>
                     </div>
-                    <div class="opt-cell showPay" v-show="is_line">
-                        <div class="pay-strip" v-for="item in online" @click="selePayFun(item.key)" :class="item.issele?'red-border':'black-border'">
-                            <img :src="item.imgsrc" alt="">
+                    <div class="opt-cell" v-show="is_line">
+                        <div class="showPay">
+                            <div class="pay-strip" v-for="item in online" @click="selePayFun(item.key)" :class="item.issele?'red-border':'black-border'">
+                                <img :src="item.imgsrc" alt="">
+                            </div>
                         </div>
+                        <div class="online-hint" v-if="false">由<span v-text="charge.name"></span>加收<span class="red-color" v-text="charge.price"></span>手续费</div>
                     </div>
                     <div class="opt-cell remind" v-show="!is_line && off_line">
                         <img src="../../../static/img/order/wallet.png" alt="">
@@ -115,7 +118,7 @@
         <Loading v-if="showLoading"></Loading>
         <div id="pay_card"></div>
         <!-- <PaySuccess v-if="showPaySuccess"></PaySuccess> -->
-        <LinkServer></LinkServer>
+        <LinkServer v-bind:is_line="is_line"></LinkServer>
     </div>
 </template>
 <script>
@@ -145,6 +148,10 @@ export default {
                     }
                 }
             },
+            charge:{
+                name:'银联',
+                price:''
+            },//线上支付手续费
             password:'',//安全交易密码
             show_pop:false,
             hint:'（请在下单后45分钟之内完成支付）',
@@ -169,17 +176,20 @@ export default {
                 {
                     key: 3,
                     issele: true,
-                    imgsrc: "./static/img/order/visa.png"
+                    imgsrc: "./static/img/order/visa-1.png",
+                    name:'银联'
                 },
                 {
                     key: 2,
                     issele: false,
-                    imgsrc: "./static/img/order/zfbpay.png"
+                    imgsrc: "./static/img/order/zfbpay.png",
+                    name:'支付宝'
                 },
                 {
                     key: 1,
                     issele: false,
-                    imgsrc: "./static/img/order/wxpay.png"
+                    imgsrc: "./static/img/order/wxpay.png",
+                    name:'微信'
                 }
             ],
             isbalace:false,
@@ -260,6 +270,7 @@ export default {
                 if (opt == payAll[i].key) {
                     payAll[i].issele = true;
                     that.payment_num = opt;
+                    that.charge.name = payAll[i].name;
                     continue;
                 }
                 payAll[i].issele = false;
@@ -687,7 +698,7 @@ export default {
     border-bottom: 1px solid #ffffff;
 }
 .opt-cell {
-    padding: 0.4rem 0;
+    padding: 0.4rem 0 0.2rem;
     border: 1px solid #e5e5e5;
 }
 .opt-cell-order {
@@ -777,6 +788,11 @@ export default {
 }
 .black-border {
     border: 1px dashed #dcdcdc;
+}
+.online-hint{
+    font-size:.24rem;
+    color:#999999;
+    margin:.28rem 0 0 .4rem;
 }
 
 

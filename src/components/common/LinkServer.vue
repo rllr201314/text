@@ -4,7 +4,8 @@
 
 <script>
   export default {
-    name: "LinkServer"
+    name: "LinkServer",
+    props:['is_line'],
   }
 </script>
 

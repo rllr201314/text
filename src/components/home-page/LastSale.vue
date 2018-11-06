@@ -8,18 +8,16 @@
                     <span class="last-text">近期成交</span>
                     <span>累计安全交易<span v-text="flow.count_info"></span>笔</span>
                 </div>
-                <div class="info-bottom">
-                    <vueSeamlessScroll :data="flag?flow.order_info:list" class="seamless-warp" :class-option="defaultOption">
-                        <ul  class="stript-info">
-                            <li v-for="(item,index) in flow.order_info" :key="index" class="stript">
-                                <span>【<span v-text="item.game_name"></span>】</span>
-                                <span><span class="goods-title" v-text="item.goods_title"></span>交易成功</span>
-                                <div class="lase-price">
-                                    <span class="red-color">￥<span v-text="Number(item.order_amount)"></span></span>
-                                </div>
-                            </li>
-                        </ul>
-                    </vueSeamlessScroll>
+                <div class="info-bottom top-list">
+                    <ul>
+                        <li v-for="(item,index) in flow.order_info" :key="index" class="stript">
+                            <span>【<span v-text="item.game_name"></span>】</span>
+                            <span><span class="goods-title" v-text="item.goods_title"></span>交易成功</span>
+                            <div class="lase-price">
+                                <span class="red-color">￥<span v-text="Number(item.order_amount)"></span></span>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -29,18 +27,16 @@
                 <div>
                     <span class="last-text">保险理赔</span>
                 </div>
-                <div class="info-bottom">
-                    <vueSeamlessScroll :data="flag?flow.safe_info:list" class="seamless-warp" :class-option="safeOption">
-                        <ul  class="stript-info">
-                            <li v-for="(item,index) in flow.safe_info" :key="index" class="stript">
-                                <span class="goods-title" v-text="item.goods_title"></span>
-                                 <div class="lase-price">
-                                    <span>获得保险赔偿</span>
-                                    <span  class="red-color">￥<span v-text="item.order_amount"></span></span>
-                                </div>
-                            </li>
-                        </ul>
-                    </vueSeamlessScroll>
+                <div class="info-bottom bottom-list">
+                    <ul>
+                        <li v-for="(item,index) in flow.safe_info" :key="index" class="stript">
+                            <span class="goods-title" v-text="item.goods_title"></span>
+                             <div class="lase-price">
+                                <span>获得保险赔偿</span>
+                                <span  class="red-color">￥<span v-text="item.order_amount"></span></span>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -48,7 +44,6 @@
 </template>
 
 <script>
-import vueSeamlessScroll from 'vue-seamless-scroll'
 export default {
     name: "LastSale",
     props:['flow'],
@@ -58,34 +53,15 @@ export default {
             list:[]
         }
     },
-    components:{
-        vueSeamlessScroll
-    },
-    computed:{
-        defaultOption:function(){
-            return {
-                step:0.2, //步长 越大滚动速度越快
-                limitMoveNum:3, //启动无缝滚动最小数据量 this.dataList.length
-                
-                hoverStop: false, //是否启用鼠标hover控制
-                direction: 1, //1 往上 0 往下
-                openWatch: true, //开启data实时监听
-                singleHeight: 0, //单条数据高度有值hoverStop关闭
-                waitTime: 1000 //单步停止等待时间
-            }
-        },
-        safeOption:function(){
-            return {
-                step:0.1, //步长 越大滚动速度越快
-                limitMoveNum:3, //启动无缝滚动最小数据量 this.dataList.length
-
-                hoverStop: false, //是否启用鼠标hover控制
-                direction: 1, //1 往上 0 往下
-                openWatch: true, //开启data实时监听
-                singleHeight: 0, //单条数据高度有值hoverStop关闭
-                waitTime: 1000 //单步停止等待时间
-
-            }
+    methods:{
+        timer(opj) {
+            $(opj).find('ul').animate({
+                marginTop: "-.4rem"
+            }, 500, function () {
+                $(this).css({
+                    marginTop: "0rem"
+                }).find("li:first").appendTo(this);
+            })
         }
     },
     mounted(){
@@ -94,12 +70,19 @@ export default {
             if(that.flow.order_info){
                 clearInterval(time);
                 that.flag = true;
+                // that.timer('.top-list');
+                var time3 = setInterval(function(){
+                    that.timer(".top-list");
+                }, 3000)
             }
         },500);
         var time1 =setInterval(function(){
             if(that.flow.safe_info){
                 clearInterval(time1);
                 that.flag = true;
+                 var time4 = setInterval(function(){
+                    that.timer(".bottom-list");
+                }, 3000)
             }
         },500)
     }
@@ -138,17 +121,6 @@ export default {
         display: inline-block;
         vertical-align: middle;
     }
-    .seamless-warp{
-        height:.4rem;
-        overflow: hidden;
-    }
-    .stript-info{
-        list-style: none;
-        width:6rem;
-    }
-    .stript{
-        position: relative;;
-    }
     .lase-price{
         font-size: .24rem;
         margin-top:0.4rem;
@@ -174,5 +146,27 @@ export default {
         overflow: hidden;
         white-space:nowrap;/*不显示的地方用省略号...代替*/
         text-overflow:ellipsis;/* 支持 IE */
+    }
+
+    .top-list,.bottom-list{
+        width:6rem;
+        height:.4rem;
+        overflow: hidden;
+    }
+    .stript{
+        position: relative;;
+    }
+    .top-list ul{
+        padding: 0;
+        list-style: none;
+    }
+
+    .top-list li{
+        height: .4rem;
+        line-height:.4rem;
+    }
+    .bottom-list ul{
+        padding: 0;
+        list-style: none;
     }
 </style>
