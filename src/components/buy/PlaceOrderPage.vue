@@ -128,7 +128,8 @@
                             </div>
                             <div class="gray-color">
                                 <div v-for="item in stageInfo">
-                                    第{{item.cur_number}}期 ￥{{item.every_month_money}} (本金{{item.stage_money}},利息{{item.money}}*{{item.percent_rate}}={{item.charge}})
+                                    <span class="periodsNum">第{{item.cur_number}}期 ￥{{item.every_month_money}} </span>
+                                    <span>(本金{{item.stage_money}},利息{{item.money}}*{{item.percent_rate}}={{item.charge}})</span>
                                 </div>
                             </div>
                             <span class="red-color hint">（分期支付不足全额50%，不开放安全锁）</span>
@@ -855,6 +856,11 @@ export default {
     color: #999999;
     font-size: 0.24rem;
 }
+.periodsNum{
+    min-width:.8rem;
+    color:#333333;
+    display: inline-block;
+}
 /* 选项 */
 .sele-opera {
     width: 5rem;
@@ -878,8 +884,7 @@ export default {
 .downPay-left {
     margin-top: 0.1rem;
 }
-.downPay-left,
-downPay-right {
+.downPay-left,.downPay-right {
     vertical-align: top;
 }
 .downPay-right input {

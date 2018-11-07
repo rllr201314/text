@@ -552,7 +552,7 @@ export default {
                                 // that.$previewRefresh(); 
                             }
                         } else {
-                            that.$router.go(-1);
+                            that.$router.push({path:'/'});
                             mui.toast(res.data.msg,{ duration:'short', type:'div' });
                         }
                     }

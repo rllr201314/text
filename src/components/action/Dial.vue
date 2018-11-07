@@ -55,18 +55,22 @@
                 <div class="gobtn"  @click="continueFn">继续抽奖</div>
             </div>
         </div>
-        <div class="share" v-show="showPop || showMy"></div>
+        <div class="share" v-show="showPop || showMy" @click="closePop"></div>
         <div class="my-view" v-show="showMy">
             <div class="close" @click="closePop('my')"></div>
             <div class="my-tit">我的奖品</div>
             <div class="chit-wrap">
-                <div class="chit-box" v-for="item in mylist">
+                <div class="chit-box" v-show="showList" v-for="item in mylist">
                     <div class="left-chit" v-text="item.title"></div>
                     <div class="right-chit">
                         <div v-text="item.comment"></div>
                         <div v-text="item.remark"></div>
                         <div class="time" v-text="item.time"></div>
                     </div>
+                </div>
+                <div class="no-award" v-show="!showList">
+                    <img src="../../../static/img/action/no-award.png" alt="">
+                    <div>暂时没有奖品哦~</div>
                 </div>
             </div>
         </div>
@@ -98,6 +102,7 @@ export default {
             isclick:true,//是否可以点击
 
             mylist:[],
+            showList:true,
 
             // 文字轮播
             items:[{text:'1',con:'aaaaa'},{text:'2'},{text:'3'},{text:'4'},{text:'5'}],
@@ -108,7 +113,6 @@ export default {
             var that = this;
             if(that.$store.state.token == ''){
                 mui.confirm('请先登录','提示',['取消','确认'],function(e){
-                    console.log(e)
                     if(e.index == 1){
                         that.$router.push({name:'AccountLogin'})
                     }
@@ -129,7 +133,7 @@ export default {
 			$('.dial').rotate({
 				angle: 0,
 				duration: 9000,
-				animateTo: spend + 1440, //angle是图片上各奖项对应的角度，1440是让指针固定旋转4圈
+				animateTo: spend + 3600, //angle是图片上各奖项对应的角度，1440是让指针固定旋转4圈
 				callback: function () {
                     that.showPop = true;
                     document.body.style.overflow = "hidden"; //关闭滚动条
@@ -144,6 +148,9 @@ export default {
                 this.showPop = false;
             }else if(flag == 'my'){
                 this.showMy = false;
+            }else{
+                this.showPop = false;
+                this.showMy = false;
             }
             document.body.style.overflow = ""; //出现滚动条 
         },
@@ -151,11 +158,13 @@ export default {
         affirmFn(){
             var that = this;
             that.closePop('rotate');
+            that.getRank();
         },
         // 继续抽奖
         continueFn(){
             var that = this;
             that.closePop('rotate');
+            that.getRank();
         },
         // 文字轮播
         canrouselFn(){
@@ -183,7 +192,6 @@ export default {
                 that.getMyRank();
             }else{
                 mui.confirm('请先登录','提示',['取消','确认'],function(e){
-                    console.log(e)
                     if(e.index == 1){
                         that.$router.push({name:'AccountLogin'})
                     }
@@ -194,7 +202,6 @@ export default {
         getNum(){
             var that = this;
             that.$axios.post(process.env.API_HOST+"turn_num").then((res)=>{
-                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.num = res.data.data.count;
@@ -210,10 +217,8 @@ export default {
         getData(){
             var that = this;
             that.$axios.post(process.env.API_HOST+"turn_plate").then((res)=>{
-                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
-                        // that.num = res.data.data.count;
                         var data = res.data.data;
                         that.content = data.title;
                         that.des = data.remark;
@@ -230,10 +235,12 @@ export default {
         getRank(){
             var that = this;
             that.$axios.post(process.env.API_HOST+"turn_rank").then((res)=>{
-                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.items = res.data.data;
+                        if(that.items.length > 5){
+                            that.canrouselFn();
+                        }
                     }else{
                         mui.toast(res.data.msg,{ duration:'short', type:'div' });
                     }
@@ -246,10 +253,14 @@ export default {
         getMyRank(){
            var that = this;
             that.$axios.post(process.env.API_HOST+"my_rank").then((res)=>{
-                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.mylist = res.data.data;
+                        if(that.mylist == ""){
+                            that.showList = false;
+                        }else{
+                            that.showList = true;
+                        }
                     }else{
                         mui.toast(res.data.msg,{ duration:'short', type:'div' });
                     }
@@ -261,7 +272,6 @@ export default {
     },
     mounted(){
         var that = this;
-        that.canrouselFn();
         that.getRank();
         if(that.$store.state.token != ''){
             that.getNum();
@@ -279,7 +289,7 @@ export default {
     min-height: 27rem;
     background: url("../../../static/img/action/dial-bg.png") no-repeat;
     background-size: 100% 100%;
-    padding-top: 2.6rem;
+    padding: 2.6rem 0 .4rem;
 }
 .dial-cell {
     background: url("../../../static/img/action/dial-box.png");
@@ -394,7 +404,7 @@ export default {
 .close{
     width:.2rem;
     height:.2rem;
-    background: url('../../../static/img/empty_ico.png');
+    background: url('../../../static/img/action/close.png');
     background-size:.2rem;
 
     position:absolute;
@@ -446,6 +456,7 @@ export default {
     top:30%;
     left:calc(50% - 2.9rem);
     z-index:15;
+    border-radius: .1rem;
 }
 .my-view .close{
     top:.15rem;
@@ -461,6 +472,9 @@ export default {
     max-height:6rem;
     overflow-y:scroll;
     margin:.4rem 0;
+}
+.chit-wrap::-webkit-scrollbar {
+    display: none;
 }
 .chit-box{
     width:5.24rem;
@@ -500,7 +514,17 @@ export default {
     top:1.08rem;
     right: .22rem;
 }
-.gray-color{
+/* .gray-color{
 
+} */
+.no-award{
+    text-align:center;
+    color:#FFFFFF;
+    font-size:.24rem;
+}
+.no-award img{
+    width:1.73rem;
+    height:1.37rem;
+    margin-bottom:.3rem;
 }
 </style>

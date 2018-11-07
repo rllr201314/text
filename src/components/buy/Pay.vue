@@ -20,7 +20,9 @@
                                 <img :src="item.imgsrc" alt="">
                             </div>
                         </div>
-                        <div class="online-hint" v-if="false">由<span v-text="charge.name"></span>加收<span class="red-color" v-text="charge.price"></span>手续费</div>
+                        <div class="online-hint">
+                            由<span v-text="charge.name"></span>加收<span class="red-color" v-text="charge.price"></span><span class="red-color">元</span>手续费
+                        </div>
                     </div>
                     <div class="opt-cell remind" v-show="!is_line && off_line">
                         <img src="../../../static/img/order/wallet.png" alt="">
@@ -95,8 +97,8 @@
                             </div>
                         </div>
                         <div class="deduction" v-if="deposit || isbalace">
-                            <div class="deduction-strip" v-if="deposit">押金抵扣 -￥<span v-text="deposit_sum"></span></div>
-                            <div class="deduction-strip" v-if="isbalace">余额抵扣 -￥<span v-text="remaining_sum"></span></div>
+                            <div class="deduction-strip" v-if="deposit">押金抵扣 -￥<span v-text="deposit_price"></span></div>
+                            <div class="deduction-strip" v-if="isbalace">余额抵扣 -￥<span v-text="remaining_price"></span></div>
                         </div>
                         <div class="pay-price red-color">
                             ￥<span v-text="price"></span>
@@ -149,9 +151,10 @@ export default {
                 }
             },
             charge:{
-                name:'银联',
-                price:''
+                name:'',
+                price:0,
             },//线上支付手续费
+            fee_info:'',//手续费信息
             password:'',//安全交易密码
             show_pop:false,
             hint:'（请在下单后45分钟之内完成支付）',
@@ -160,6 +163,8 @@ export default {
             old_price:0,//价格
             deposit_sum:0,//押金
             remaining_sum:0,//余额
+            deposit_price:0,//扣除押金
+            remaining_price:0,//扣除余额
             showBtn:true,
             stage_info:null,
             order_id:null,
@@ -217,6 +222,7 @@ export default {
         Balace(flag){
             // debugger;
             var that = this;
+            // debugger;
             if(that.selePrice){//判断可不可以选余额或者押金支付，确认支付后不可再点击
                 if(flag == 'true'){
                     that.deposit = !that.deposit;
@@ -226,10 +232,11 @@ export default {
                     }else{
                         // that.price = Number(that.old_price) - Number(that.deposit_sum);
                         if(Number(that.deposit_sum) > Number(that.price)){
-                            that.deposit_sum = that.price;
+                            that.deposit_price = that.price;
                             that.price = 0;
                         }else{
                             that.price = Number(that.old_price) - Number(that.deposit_sum);
+                            that.deposit_price = Number(that.deposit_sum);
                         }
                     }
                 }else if(flag == 'false'){
@@ -239,10 +246,28 @@ export default {
                         that.price = Number(that.old_price);
                     }else{
                         if(Number(that.remaining_sum) > Number(that.price)){
-                            that.remaining_sum = that.price;
+                            that.remaining_price = that.price;
                             that.price = 0;
                         }else{
                             that.price = Number(that.old_price) - Number(that.remaining_sum);
+                            that.remaining_price = Number(that.remaining_sum);
+                        }
+                    }
+                    if(that.is_line){
+                        var data = that.online;
+                        for(var i in data){
+                            if(data[i].issele == true){
+                                if(data[i].name == "银联"){
+                                    that.charge.price = that.fee_info.chinapay_remaining_charge;
+                                    break;
+                                }else if(data[i].name == "支付宝"){
+                                    that.charge.price = that.fee_info.alli_remaining_charge;
+                                    break;
+                                }else if(data[i].name == "微信"){
+                                    that.charge.price = that.fee_info.wx_remaining_charge;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -250,13 +275,42 @@ export default {
         },
         seleline(flag) {
             var that = this;
+            // 选择线上线下后默认未选余额押金抵扣
+            that.isbalace=false;
+            that.deposit=false;
             if (flag == "on") {
                 that.is_line = true;
                 that.ok_text = "前往支付";
+                var data = that.online;
+                for(var i in data){
+                    if(data[i].issele == true){
+                        if(data[i].name == "银联"){
+                            that.price = that.fee_info.chinapay_amount;
+                            that.old_price = that.fee_info.chinapay_amount;
+                            that.charge.name = data[i].name;
+                            that.charge.price = that.fee_info.chinapay_charge;
+                            break;
+                        }else if(data[i].name == "支付宝"){
+                            that.price = that.fee_info.alli_amount;
+                            that.old_price = that.fee_info.alli_amount;
+                            that.charge.name = data[i].name;
+                            that.charge.price = that.fee_info.alli_charge;
+                            break;
+                        }else if(data[i].name == "微信"){
+                            that.price = that.fee_info.wx_amount;
+                            that.old_price = that.fee_info.wx_amount;
+                            that.charge.name = data[i].name;
+                            that.charge.price = that.fee_info.wx_charge;
+                            break;
+                        }
+                    }
+                }
             } else {
                 that.is_line = false;
                 if(that.off_line){
                     that.ok_text = "前往支付";
+                    that.price = that.fee_info.offline_amount;
+                    that.old_price = that.fee_info.offline_amount;
                 }else{
                     that.ok_text = "查看订单";
                 }
@@ -265,7 +319,10 @@ export default {
         // 选择线上支付 方式
         selePayFun(opt) {
             var that = this;
-            var payAll = this.online;
+            // 选择线上支付后默认未选余额押金抵扣
+            that.isbalace=false;
+            that.deposit=false;
+            var payAll = that.online;
             for (var i in payAll) {
                 if (opt == payAll[i].key) {
                     payAll[i].issele = true;
@@ -274,6 +331,29 @@ export default {
                     continue;
                 }
                 payAll[i].issele = false;
+            }
+            for(var i in payAll){
+                if(payAll[i].issele == true){
+                    if(payAll[i].name == "银联"){
+                        that.price = that.fee_info.chinapay_amount;
+                        that.old_price = that.fee_info.chinapay_amount;
+                        that.charge.name = payAll[i].name;
+                        that.charge.price = that.fee_info.chinapay_charge;
+                        break;
+                    }else if(payAll[i].name == "支付宝"){
+                        that.price = that.fee_info.alli_amount;
+                        that.old_price = that.fee_info.alli_amount;
+                        that.charge.name = payAll[i].name;
+                        that.charge.price = that.fee_info.alli_charge;
+                        break;
+                    }else if(payAll[i].name == "微信"){
+                        that.price = that.fee_info.wx_amount;
+                        that.old_price = that.fee_info.wx_amount;
+                        that.charge.name = payAll[i].name;
+                        that.charge.price = that.fee_info.wx_charge;
+                        break;
+                    }
+                }
             }
         },
         // 复制
@@ -347,7 +427,7 @@ export default {
                 }
             }
             // 判断有没有用余额支付
-            if(that.isbalace &&　Number(that.remaining_sum) > 0){
+            if(that.isbalace &&　Number(that.remaining_price) > 0){
                 request.is_remaining_sum = 1;
                 that.show_pop = true;
                 that.link = url;
@@ -450,24 +530,38 @@ export default {
                 console.log(err);
             })
         },
-        // 订单过来调取余额和需要支付的价格 和订单时间
+        // 订单过来调取余额和需要支付的价格 和订单时间 第三方手续费
         initTime(order_id){
             var that = this;
             that.$axios.post(process.env.API_HOST+"payment_info",{
                 order_id:order_id
             }).then((res)=>{
-                // console.log(res)
+                console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
+                        that.fee_info = res.data.data;
+                        var data = that.online;
+                        for(var i in data){
+                            if(data[i].issele == true){
+                                if(data[i].name == "银联"){
+                                    that.price = that.fee_info.chinapay_amount;
+                                    that.old_price = that.fee_info.chinapay_amount;
+                                    that.charge.name = data[i].name;
+                                    that.charge.price = that.fee_info.chinapay_charge;
+                                }
+                            }
+                        }
                         that.remaining_sum = Number(res.data.data.remain_amount);
-                        that.price = res.data.data.order_amount;
-                        that.old_price = res.data.data.order_amount;
                         that.hint = '（'+res.data.msg+'）';
                         if(res.data.data.is_remaining == 2){
                             that.selePrice = true;
                         }else if(res.data.data.is_remaining == 1){
                             that.selePrice = false;
                         }
+                    }else{
+                        mui.alert(res.data.msg,'提示','确认',function(){
+                            that.$router.go(-1);
+                        },'div')
                     }
                 }
             }).catch((err)=>{
@@ -484,15 +578,71 @@ export default {
                 that.getData();
             }
         },
-        getBanlan(order_id){
+        // 分期手续费
+        getStageFee(request){
             var that = this;
-            that.$axios.post(process.env.API_HOST+'',{
-                order_id:order_id
+            that.$axios.post(process.env.API_HOST+'stage_fee',{
+                order_id:request.order,
+                stage_method:request.way
+            }).then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.fee_info = res.data.data;
+                        var data = that.online;
+                        for(var i in data){
+                            if(data[i].issele == true){
+                                if(data[i].name == "银联"){
+                                    that.price = that.fee_info.chinapay_amount;
+                                    that.old_price = that.fee_info.chinapay_amount;
+                                    that.charge.name = data[i].name;
+                                    that.charge.price = that.fee_info.chinapay_charge;
+                                }
+                            }
+                        }
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
+        },
+        // 获取线上支付手续费
+        getFee(request){
+            var that = this;
+            // console.log(request);
+            var down_payment,stage_number,stage_method;
+            if(request.down_payment){//首付金额
+                down_payment = request.down_payment;
+            }
+            if(request.stage_num){//分期期数
+                stage_number = request.stage_num;
+            }
+            if(request.down_price){//下单方式
+                stage_method = request.down_price;
+            }
+            that.$axios.post(process.env.API_HOST+'fee_info',{
+                goods_id:request.goods_id,
+                is_compact:request.compact,
+                is_safe:request.safe,
+                stage_method:stage_method,
+                stage_number:stage_number,
+                down_payment:down_payment
             }).then((res)=>{
                 // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
-
+                        that.fee_info = res.data.data;
+                        var data = that.online;
+                        for(var i in data){
+                            if(data[i].issele == true){
+                                if(data[i].name == "银联"){
+                                    that.price = that.fee_info.chinapay_amount;
+                                    that.old_price = that.fee_info.chinapay_amount;
+                                    that.charge.name = data[i].name;
+                                    that.charge.price = that.fee_info.chinapay_charge;
+                                }
+                            }
+                        }
                     }
                 }
             }).catch((err)=>{
@@ -506,7 +656,7 @@ export default {
         }else if(to.path == '/installment'){
             this.$router.go(-1);
         }else{
-            next();
+            next(); 
         }
     },
     mounted() {
@@ -517,8 +667,9 @@ export default {
             if (request == b) {
                 if (that.isobjStr(request)) {
                     that.goods_info = JSON.parse(request);
-                    that.price = that.goods_info.price;
-                    that.old_price = that.price;
+                    // that.price = that.goods_info.price;
+                    // that.old_price = that.price;
+                    that.getFee(that.goods_info);
                     that.remaining_sum = Number(that.goods_info.remaining_sum);
                 } else {
                     that.$router.go(-1);
@@ -531,9 +682,7 @@ export default {
             var unpaid_o = sessionStorage.getItem('unpaid_o');
             if(order_id == unpaid_o){
                 if(that.isobjStr(order_id)){
-                    var order = JSON.parse(order_id);
-                    that.order_id = order.order_id;
-                    that.price = order.price;
+                    that.order_id = JSON.parse(order_id).order_id;
                     that.initTime(that.order_id);
                 }else{
                     that.$router.go(-1);
@@ -547,9 +696,12 @@ export default {
             if(s_stages == stages){
                 if(that.isobjStr(stages)){
                     that.stage_info = JSON.parse(stages);
-                    that.price = that.stage_info.price;
-                    that.old_price = that.stage_info.price;
+                    // that.price = that.stage_info.price;
+                    // that.old_price = that.stage_info.price;
+                    console.log(that.stage_info);
+                    that.getStageFee(that.stage_info);
                     that.remaining_sum = Number(that.stage_info.remaining_sum);
+
                 }else{
                     that.$router.go(-1);
                 }
