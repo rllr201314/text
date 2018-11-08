@@ -1095,6 +1095,7 @@ export default {
                         that_req.mobile = data.mobile;
                         that_req.wx = data.wx;
                         that_req.video_url = data.video_url;
+                        that_req.account = data.account;
                         that.oldData = data;//编辑商品旧数据
                         
                         that.getConfig(that_req,2);//请求选择参数

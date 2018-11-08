@@ -119,9 +119,10 @@ export default {
                 },'div')
                 return false
             }
-
+            // debugger
             if(that.num <= 0 || !that.isclick){
                 mui.alert('暂无抽奖机会','提示','确认','','div');
+                that.getNum();
                 return false;
             }
             that.isclick = false;
@@ -222,9 +223,10 @@ export default {
                         var data = res.data.data;
                         that.content = data.title;
                         that.des = data.remark;
-                        that.rotateFunc(0, data.angle);
+                        that.rotateFunc(0,Number(data.angle));
                     }else{
-                        mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        that.isclick = true;
+                        mui.alert(res.data.msg,'提示','确认','','div');
                     }
                 }
             }).catch((err)=>{

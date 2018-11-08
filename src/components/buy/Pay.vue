@@ -21,7 +21,8 @@
                             </div>
                         </div>
                         <div class="online-hint">
-                            由<span v-text="charge.name"></span>加收<span class="red-color" v-text="charge.price"></span><span class="red-color">元</span>手续费
+                            因<span v-text="charge.name"></span>支付渠道规定收取<span v-text="charge.rate"></span>%手续费，故加收<span class="red-color" v-text="charge.price"></span><span class="red-color">元</span>
+                            <!-- 由<span v-text="charge.name"></span>加收<span class="red-color" v-text="charge.price"></span><span class="red-color">元</span>手续费 -->
                         </div>
                     </div>
                     <div class="opt-cell remind" v-show="!is_line && off_line">
@@ -153,6 +154,7 @@ export default {
             charge:{
                 name:'',
                 price:0,
+                rate:'',
             },//线上支付手续费
             fee_info:'',//手续费信息
             password:'',//安全交易密码
@@ -259,12 +261,15 @@ export default {
                             if(data[i].issele == true){
                                 if(data[i].name == "银联"){
                                     that.charge.price = that.fee_info.chinapay_remaining_charge;
+                                    that.charge.rate = '0.6';
                                     break;
                                 }else if(data[i].name == "支付宝"){
                                     that.charge.price = that.fee_info.alli_remaining_charge;
+                                    that.charge.rate = '1';
                                     break;
                                 }else if(data[i].name == "微信"){
                                     that.charge.price = that.fee_info.wx_remaining_charge;
+                                    that.charge.rate = '1';
                                     break;
                                 }
                             }
@@ -289,18 +294,21 @@ export default {
                             that.old_price = that.fee_info.chinapay_amount;
                             that.charge.name = data[i].name;
                             that.charge.price = that.fee_info.chinapay_charge;
+                            that.charge.rate = '0.6';
                             break;
                         }else if(data[i].name == "支付宝"){
                             that.price = that.fee_info.alli_amount;
                             that.old_price = that.fee_info.alli_amount;
                             that.charge.name = data[i].name;
                             that.charge.price = that.fee_info.alli_charge;
+                            that.charge.rate = '1';
                             break;
                         }else if(data[i].name == "微信"){
                             that.price = that.fee_info.wx_amount;
                             that.old_price = that.fee_info.wx_amount;
                             that.charge.name = data[i].name;
                             that.charge.price = that.fee_info.wx_charge;
+                            that.charge.rate = '1';
                             break;
                         }
                     }
@@ -339,18 +347,21 @@ export default {
                         that.old_price = that.fee_info.chinapay_amount;
                         that.charge.name = payAll[i].name;
                         that.charge.price = that.fee_info.chinapay_charge;
+                        that.charge.rate = '0.6';
                         break;
                     }else if(payAll[i].name == "支付宝"){
                         that.price = that.fee_info.alli_amount;
                         that.old_price = that.fee_info.alli_amount;
                         that.charge.name = payAll[i].name;
                         that.charge.price = that.fee_info.alli_charge;
+                        that.charge.rate = '1';
                         break;
                     }else if(payAll[i].name == "微信"){
                         that.price = that.fee_info.wx_amount;
                         that.old_price = that.fee_info.wx_amount;
                         that.charge.name = payAll[i].name;
                         that.charge.price = that.fee_info.wx_charge;
+                        that.charge.rate = '1';
                         break;
                     }
                 }
@@ -548,6 +559,8 @@ export default {
                                     that.old_price = that.fee_info.chinapay_amount;
                                     that.charge.name = data[i].name;
                                     that.charge.price = that.fee_info.chinapay_charge;
+                                    that.charge.rate = '0.6';
+                                    break;
                                 }
                             }
                         }
@@ -597,6 +610,8 @@ export default {
                                     that.old_price = that.fee_info.chinapay_amount;
                                     that.charge.name = data[i].name;
                                     that.charge.price = that.fee_info.chinapay_charge;
+                                    that.charge.rate = '0.6';
+                                    break;
                                 }
                             }
                         }
@@ -640,6 +655,8 @@ export default {
                                     that.old_price = that.fee_info.chinapay_amount;
                                     that.charge.name = data[i].name;
                                     that.charge.price = that.fee_info.chinapay_charge;
+                                    that.charge.rate = '0.6';
+                                    break;
                                 }
                             }
                         }
