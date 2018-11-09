@@ -25,6 +25,7 @@
                            <div class="goods-strip" v-for="(item,index) in val.data">
                                <img v-if="item.order_state >= 2 &&　item.is_self == 1" class="deal-status" src="../../../../static/img/my-center/clinch.png" alt="">
                                <img  v-if="item.order_state >= 2 &&　item.is_self == 2" class="deal-status" src="../../../../static/img/my-center/sale.png" alt="">
+                               <img  v-if="item.is_agree == 3" class="deal-status" src="../../../../static/img/my-center/void.png" alt="">
                                <div class="goods-top">
                                    <div class="goods-strip-title">
                                        <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
@@ -49,7 +50,7 @@
                                        <span v-if="item.is_agree == 1 && item.order_state == ''" class="p-bBtn" @click="goPayFn(item.order_state,item.goods_id,item.discuss_msg)">前往支付</span>
                                        <span v-else-if="item.is_agree == 1 && item.order_state == 1 && item.is_self == 1" class="p-bBtn" @click="goPayFn(item.order_state,item.order_id,item.discuss_msg)">前往支付</span>
 
-                                       <span v-if="item.is_agree == 2 || item.is_agree == 3 && item.order_state == ''" class="p-bBtn" @click="bargainFn(item.goods_id)">发起议价</span>
+                                       <span v-if="(item.is_agree == 2 || item.is_agree == 3) && item.order_state == '' && item.goods_status == 3" class="p-bBtn" @click="bargainFn(item.goods_id)">发起议价</span>
                                    </div>
                                </div>
                                <div class="goods-bot">
@@ -68,6 +69,7 @@
                                            <div class="strip-con gray-bg" v-if="discuss.is_agree == -1">待回复</div>
                                            <div class="strip-con green-bg" v-if="discuss.is_agree == 1">同意交易</div>
                                            <div class="strip-con red-bg" v-if="discuss.is_agree == 2">拒绝</div>
+                                           <div class="strip-con gray-bg" v-if="discuss.is_agree == 3">已下架</div>
                                            <div class="time" v-text="discuss.create_time"></div>
                                        </div>
                                    </div>
@@ -221,7 +223,6 @@ export default {
                         is_agree: agree
                     })
                     .then(function(res) {
-                        // console.log(res);
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 var data = res.data.data.data;
@@ -245,22 +246,6 @@ export default {
                                     }
                                 }   
                                
-                            } else if (res.data.code == 401) {
-                                mui.confirm("请先登陆","提示",["取消", "确认"],function(e) {
-                                        if (e.index == 1) {
-                                            that.$router.push({
-                                                name: "AccountLogin",
-                                                params: {
-                                                    redirect:
-                                                        that.$router
-                                                            .currentRoute.name
-                                                }
-                                            });
-                                        } else {
-                                            that.$router.go(-1);
-                                        }
-                                    }, "div"
-                                );
                             }
                         }
                     })

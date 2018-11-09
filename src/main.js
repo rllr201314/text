@@ -50,19 +50,16 @@ axios.interceptors.response.use(
       switch (response.data.code) {
         case 401:
           store.commit('del_token');
-          router.push({
-            name: 'AccountLogin',
-            query: {
-              redirect: router.currentRoute.fullPath
-            } //登录成功后跳入浏览的当前页面
-          })
+          mui.alert(response.data.msg,'提示','确认',function(){
+            router.push({name: "AccountLogin",});
+        },'div');
       }
     }
     return response;
   },
   error => {
     // console.log(error);
-    store.commit('del_token');
+    // store.commit('del_token');
     router.replace({name:'HomePage'})
     return Promise.reject(error.response)
   });

@@ -50,7 +50,9 @@ export default {
     data(){
         return {
             flag:false,
-            list:[]
+            list:[],
+            makeTime:null,
+            safeTime:null,
         }
     },
     methods:{
@@ -71,7 +73,7 @@ export default {
                 clearInterval(time);
                 that.flag = true;
                 // that.timer('.top-list');
-                var time3 = setInterval(function(){
+                that.makeTime = setInterval(function(){
                     that.timer(".top-list");
                 }, 3000)
             }
@@ -80,11 +82,15 @@ export default {
             if(that.flow.safe_info){
                 clearInterval(time1);
                 that.flag = true;
-                 var time4 = setInterval(function(){
+                that.safeTime = setInterval(function(){
                     that.timer(".bottom-list");
                 }, 3000)
             }
         },500)
+    },
+    beforeDestroy(){
+        clearInterval(this.makeTime);
+        clearInterval(this.safeTime);
     }
 }
 </script>

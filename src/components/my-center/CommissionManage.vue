@@ -106,7 +106,6 @@ export default {
     },
     methods: {
         copyFn() {
-            console.log("1");
             let that = this;
             let clipboard = new ClipboardJS("#copy");
             clipboard.on("success", function(e) {

@@ -134,7 +134,6 @@
         },
         methods:{
             addImg(event){
-                // console.log(event)
                 var that = this;
                 var imgSrcArr =  that.upimgAll.imgSrc;
                 var len = imgSrcArr.length;

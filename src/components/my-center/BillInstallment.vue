@@ -106,7 +106,6 @@
             getData(){
                 var that = this;
                 that.$axios.post(process.env.API_HOST+"stage_info").then((res)=>{
-                    console.log(res);
                     if(res.status == 200){
                         if(res.data.code == 200){
                             that.amount_info = res.data.data.amount_info;

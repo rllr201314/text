@@ -528,14 +528,15 @@ export default {
                         mui.alert(res.data.msg,'提示','确认',function(){
                                 that.$router.push({name:'Safety_Center',query:{type:1}});//type:1，已实名认证
                             },'div');
-                    }else if(res.data.code == 401){
-                         mui.alert(res.data.msg,'提示','确认',function(){
-                                that.$router.push({name: "AccountLogin",});
-                            },'div');
-                    }else{
-                        // mui.toast(res.data.msg,{ duration:'short', type:'div' });
-                        mui.alert(res.data.msg,'提示','确认','','div');
                     }
+                    // else if(res.data.code == 401){
+                    //     mui.alert(res.data.msg,'提示','确认',function(){
+                    //             that.$router.push({name: "AccountLogin",});
+                    //         },'div');
+                    // }else{
+                    //     // mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                    //     mui.alert(res.data.msg,'提示','确认','','div');
+                    // }
                 }
             }).catch((err)=>{
                 console.log(err);
@@ -547,7 +548,6 @@ export default {
             that.$axios.post(process.env.API_HOST+"payment_info",{
                 order_id:order_id
             }).then((res)=>{
-                console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.fee_info = res.data.data;
@@ -598,7 +598,6 @@ export default {
                 order_id:request.order,
                 stage_method:request.way
             }).then((res)=>{
-                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.fee_info = res.data.data;
@@ -684,8 +683,6 @@ export default {
             if (request == b) {
                 if (that.isobjStr(request)) {
                     that.goods_info = JSON.parse(request);
-                    // that.price = that.goods_info.price;
-                    // that.old_price = that.price;
                     that.getFee(that.goods_info);
                     that.remaining_sum = Number(that.goods_info.remaining_sum);
                 } else {
@@ -713,9 +710,6 @@ export default {
             if(s_stages == stages){
                 if(that.isobjStr(stages)){
                     that.stage_info = JSON.parse(stages);
-                    // that.price = that.stage_info.price;
-                    // that.old_price = that.stage_info.price;
-                    console.log(that.stage_info);
                     that.getStageFee(that.stage_info);
                     that.remaining_sum = Number(that.stage_info.remaining_sum);
 

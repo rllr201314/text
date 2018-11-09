@@ -96,7 +96,6 @@ export default {
                 that.$axios
                     .post(process.env.API_HOST+"clear_history")
                     .then(res => {
-                        // console.log(res);
                         if (res.status == 200) {
                             this.getData();
                             mui.toast(res.data.msg, {
@@ -112,7 +111,6 @@ export default {
                 that.$axios
                     .post(process.env.API_HOST+"clear_all_history")
                     .then(res => {
-                        // console.log(res);
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 that.showNoData = true;
@@ -143,7 +141,6 @@ export default {
                     page: that.now_page
                 })
                 .then(res => {
-                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             if (flag) {

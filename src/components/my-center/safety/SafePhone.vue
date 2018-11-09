@@ -71,9 +71,7 @@ export default {
                                 mui.toast(res.data.msg,{ duration:'short', type:'div' });
                             } else{
                                 mui.toast(res.data.msg,{ duration:'short', type:'div' });
-                                if(res.data.code == 401){
-                                    that.$router.push({name:'AccountLogin'})
-                                }
+                                
                             }
                         }
                     })

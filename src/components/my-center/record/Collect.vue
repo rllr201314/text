@@ -75,7 +75,6 @@ export default {
         getData(){
             var that = this;
             that.$axios.post(process.env.API_HOST+"collection").then((res) => {
-                // console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
                         if(res.data.data.data != ""){
@@ -92,7 +91,6 @@ export default {
         delData(){
             var that = this;
             that.$axios.post(process.env.API_HOST+"clear_collection").then((res) => {
-                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.reload();

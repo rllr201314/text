@@ -500,7 +500,6 @@ export default {
             var that = this;
             var tagContent = that.sellData.tagContent;
             var seleTag = that.sellData.seleTag;
-            // console.log(seleTag)
             for (var i in tagContent) {
                 if (tagContent[i].tag_id == tag_id) {
                     if (tagContent[i].ischeck) {
@@ -609,7 +608,6 @@ export default {
                     tag_type_id: tag_type_id
                 })
                 .then(function(res) {
-                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var tagAll = res.data.data;
@@ -760,7 +758,7 @@ export default {
                 var safe = that.safeOrCompact.showSafe;
                 var noSafe = that.safeOrCompact.showNoSafe;
                 if (compact) {
-                    // console.log('合同');
+                    // console.log('合同')
                     that_req.is_compact = 1;
                     if (noCompact) {
                         // console.log('可选合同');
@@ -932,22 +930,23 @@ export default {
                             }
                             that.sellData.tagType = tagType;
                             that.getTagCon(tagType[0].tag_type_id);
-                        }else if(res.data.code == 401){
-                            // 登录状态过期
-                            mui.confirm("请先登陆","提示",["取消", "确认"],
-                                    function(e) {
-                                        if (e.index == 1) {
-                                            that.$router.push({
-                                                name: "AccountLogin",
-                                                params: {
-                                                    redirect:that.$router.currentRoute.name
-                                                }
-                                            });
-                                        } else {
-                                            that.$router.go(-1);
-                                        }
-                                    },"div");
                         }
+                        // else if(res.data.code == 401){
+                        //     // 登录状态过期
+                        //     mui.confirm("请先登陆","提示",["取消", "确认"],
+                        //             function(e) {
+                        //                 if (e.index == 1) {
+                        //                     that.$router.push({
+                        //                         name: "AccountLogin",
+                        //                         params: {
+                        //                             redirect:that.$router.currentRoute.name
+                        //                         }
+                        //                     });
+                        //                 } else {
+                        //                     that.$router.go(-1);
+                        //                 }
+                        //             },"div");
+                        // }
                     }
                 })
                 .catch(function(err) {
@@ -1045,22 +1044,23 @@ export default {
                                 that.sellData.accountType = data.account_type; //账号类型
                                 that.judgeInfo(data.chargeInfo);//判断合同还是保险
                             }
-                        }else if(res.data.code == 401){
-                            // 登录状态过期
-                            mui.confirm("请先登陆","提示",["取消", "确认"],
-                                    function(e) {
-                                        if (e.index == 1) {
-                                            that.$router.push({
-                                                name: "AccountLogin",
-                                                params: {
-                                                    redirect:that.$router.currentRoute.name
-                                                }
-                                            });
-                                        } else {
-                                            that.$router.go(-1);
-                                        }
-                                    },"div");
                         }
+                        // else if(res.data.code == 401){
+                        //     // 登录状态过期
+                        //     mui.confirm("请先登陆","提示",["取消", "确认"],
+                        //             function(e) {
+                        //                 if (e.index == 1) {
+                        //                     that.$router.push({
+                        //                         name: "AccountLogin",
+                        //                         params: {
+                        //                             redirect:that.$router.currentRoute.name
+                        //                         }
+                        //                     });
+                        //                 } else {
+                        //                     that.$router.go(-1);
+                        //                 }
+                        //             },"div");
+                        // }
                     }
                 })
                 .catch(function(err) {
@@ -1100,26 +1100,27 @@ export default {
                         
                         that.getConfig(that_req,2);//请求选择参数
                         that.getTagType();//请求标签大类
-                    }else if(res.data.code == 401){
-                        // 登录状态过期
-                        mui.confirm("请先登陆","提示",["取消", "确认"],
-                                function(e) {
-                                    if (e.index == 1) {
-                                        that.$router.push({
-                                            name: "AccountLogin",
-                                            params: {
-                                                redirect:that.$router.currentRoute.name
-                                            }
-                                        });
-                                    } else {
-                                        that.$router.go(-1);
-                                    }
-                                },"div");
-                    }else{
-                        mui.alert(res.data.msg,'提示','确认',() =>{
-                            that.$router.go(-1);
-                        },'div')
                     }
+                    // else if(res.data.code == 401){
+                    //     // 登录状态过期
+                    //     mui.confirm("请先登陆","提示",["取消", "确认"],
+                    //             function(e) {
+                    //                 if (e.index == 1) {
+                    //                     that.$router.push({
+                    //                         name: "AccountLogin",
+                    //                         params: {
+                    //                             redirect:that.$router.currentRoute.name
+                    //                         }
+                    //                     });
+                    //                 } else {
+                    //                     that.$router.go(-1);
+                    //                 }
+                    //             },"div");
+                    // }else{
+                    //     mui.alert(res.data.msg,'提示','确认',() =>{
+                    //         that.$router.go(-1);
+                    //     },'div')
+                    // }
                 }
             }).catch((err) => {
                 console.log(err)

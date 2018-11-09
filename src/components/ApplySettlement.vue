@@ -113,7 +113,6 @@ export default {
             var that = this;
             var imgSrcArr = that.upImgAll.imgSrc;
             var imgLen = imgSrcArr.length;
-            console.log(imgLen);
             if (imgLen >= 5) {
                mui.toast("图片选择到达上限", { duration: "short", type: "div" });
             } else if (imgLen < 5) {
@@ -130,7 +129,6 @@ export default {
                     imgArr = event.target.files;
                 }
                 for (var i = 0; i < imgArr.length; i++) {
-                    console.log('-------');
                     let type = imgArr[i].type; //文件的类型，判断是否是图片
                     let size = imgArr[i].size; //文件的大小，判断图片的大小
                     if (that.upImgAll.imgData.accept.indexOf(type) == -1) {
@@ -162,7 +160,6 @@ export default {
         getconfig(){
             var that = this;
             that.$axios.post(process.env.API_HOST+'assurance_type').then((res)=>{
-                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.sele_type = res.data.data;
@@ -191,7 +188,6 @@ export default {
                 reason:that.des,
                 images:that.upImgAll.imgSrc
             }).then((res)=>{
-                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         mui.alert(res.data.msg,'提示','确认',function(){

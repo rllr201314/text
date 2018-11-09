@@ -59,7 +59,7 @@
                                 </div>
                                 <div class="hint">
                                     <div class="bargain" v-if="item.order_state < 2 || item.order_state == ''">
-                                        <span>收到的议价：</span>
+                                        <span>未处理的议价：</span>
                                         <span v-text="item.msg_count"></span>
                                     </div>
                                     <div class="sale" v-if="item.order_state >= 2">已卖出</div>
@@ -195,27 +195,6 @@ export default {
                                     that.showNoData = true;
                                 }
                             }
-                        } else if (res.data.code == 401) {
-                            mui.confirm(
-                                "请先登陆",
-                                "提示",
-                                ["取消", "确认"],
-                                function(e) {
-                                    if (e.index == 1) {
-                                        that.$router.push({
-                                            name: "AccountLogin",
-                                            params: {
-                                                redirect:
-                                                    that.$router.currentRoute
-                                                        .name
-                                            }
-                                        });
-                                    } else {
-                                        that.$router.go(-1);
-                                    }
-                                },
-                                "div"
-                            );
                         }
                     }
                 })

@@ -105,7 +105,7 @@ export default {
             showList:true,
 
             // 文字轮播
-            items:[{text:'1',con:'aaaaa'},{text:'2'},{text:'3'},{text:'4'},{text:'5'}],
+            items:[],
         };
     },
     methods: {
@@ -120,13 +120,14 @@ export default {
                 return false
             }
             // debugger
-            if(that.num <= 0 || !that.isclick){
-                mui.alert('暂无抽奖机会','提示','确认','','div');
-                that.getNum();
-                return false;
+            if(that.isclick){
+                if(that.num <= 0){
+                    mui.alert('暂无抽奖机会','提示','确认','','div');
+                    return false;
+                }
+                that.isclick = false;
+                that.getData();
             }
-            that.isclick = false;
-            that.getData();
         },
         rotateFunc(awards,spend){
             var that = this;

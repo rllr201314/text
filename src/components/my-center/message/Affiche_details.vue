@@ -6,7 +6,7 @@
                 <div v-text="info.title"></div>
                 <div v-text="info.create_time"></div>
             </div>
-            <div class="con-des" v-html="info.content"></div>
+            <div class="con-des" v-html="info.content" :class="info.content?'con-detail':''"></div>
         </div>
     </div>
 </template>
@@ -52,7 +52,7 @@ export default {
                 // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
-                        that.info = res.data.data
+                        that.info = res.data.data;
                     }
                 }
             }).catch((err)=>{
@@ -63,16 +63,7 @@ export default {
     mounted(){
         var that = this;
         var sign = that.$route.query.sign;
-        // if(sessionStorage.getItem('sign') == sign && sign){
-        //     if(that.isobjStr(sign)){
-        //         that.info = JSON.parse(sign);
-        //         that.showTitle.title = "系统消息";
-        //         that.getData_message(that.info.msg_id)
-        //     }else{
-        //         that.$router.go(-1);
-        //     }
-        // }else
-         if(that.$route.query.article){
+        if(that.$route.query.article){
             that.showTitle.title = that.$route.query.type;
             that.getData(that.$route.query.article)
         }else{
@@ -109,9 +100,12 @@ export default {
 }
 .con-des{
     min-height:4rem;
-    text-indent:.2rem;
     padding:.28rem 0;
     font-size:.26rem;
     color:#666666;
+}
+.con-detail>img{
+    width:100%;
+    height:100%;
 }
 </style>

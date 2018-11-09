@@ -405,45 +405,10 @@ export default {
                                 // console.log(res);
                                 if (res.status == 200) {
                                     if (res.data.code == 200) {
-                                        mui.alert(
-                                            res.data.msg,
-                                            "提示",
-                                            "确定",
+                                        mui.alert(res.data.msg,"提示","确定",
                                             function() {
                                                 that.reload();
-                                            },
-                                            "div"
-                                        );
-                                    } else if (res.data.code == 401) {
-                                        mui.confirm(
-                                            "请先登陆",
-                                            "提示",
-                                            ["取消", "确认"],
-                                            function(e) {
-                                                if (e.index == 1) {
-                                                    that.$router.push({
-                                                        name: "AccountLogin",
-                                                        params: {
-                                                            redirect:
-                                                                that.$router
-                                                                    .currentRoute
-                                                                    .name
-                                                        }
-                                                    });
-                                                } else {
-                                                    that.$router.go(-1);
-                                                }
-                                            },
-                                            "div"
-                                        );
-                                    } else {
-                                        mui.alert(
-                                            res.data.msg,
-                                            "提示",
-                                            "确定",
-                                            "",
-                                            "div"
-                                        );
+                                            },"div");
                                     }
                                 }
                             })

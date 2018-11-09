@@ -79,7 +79,6 @@ export default {
                         page: that.now_page
                     })
                     .then(res => {
-                        console.log(res);
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 if (res.data.data.data == "") {
@@ -102,7 +101,6 @@ export default {
                 that.$axios
                     .post(process.env.API_HOST+"seller_trade_fail")
                     .then(res => {
-                        console.log(res);
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 if (res.data.data.data == "") {

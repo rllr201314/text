@@ -33,8 +33,9 @@
                     <div class="green-bg" @click="Agree('ok',item.discuss_id)">同意</div>
                     <div class="red-bg" @click="Agree('no',item.discuss_id)">拒绝</div>
                 </div>
-                <div class="btn green-color" v-if="item.is_agree == 1">已同意</div>
-                <div class="btn gray-bg" v-if="item.is_agree == 2">已拒绝</div>
+                <div class="btn green-color" v-else-if="item.is_agree == 1">已同意</div>
+                <div class="btn gray-bg" v-else-if="item.is_agree == 2">已拒绝</div>
+                <div class="btn gray-bg" v-else-if="item.is_agree == 3">已下架</div>
             </div>
         </div>
         <NoData v-if="showNoData"></NoData>
@@ -111,6 +112,8 @@ export default {
                     if(res.data.code == 200){
                         mui.toast(res.data.msg,{ duration:'short', type:'div' });
                         that.getData();
+                    }else{
+                        mui.toast(res.data.msg,{ duration:'short', type:'div' });
                     }
                 }
             }).catch((err)=>{
@@ -134,23 +137,24 @@ export default {
                             that.messageData = '';
                             that.showNoData = true;
                         }
-                    }else if(res.data.code == 401){
-                        mui.confirm("请先登陆","提示",["取消", "确认"],
-                                    function(e) {
-                                        if (e.index == 1) {
-                                            that.$router.push({
-                                                name: "AccountLogin",
-                                                params: {
-                                                    redirect:that.$router.currentRoute.name
-                                                }
-                                            });
-                                        } else {
-                                            that.$router.go(-1);
-                                        }
-                                    },
-                                    "div"
-                                );
                     }
+                    // else if(res.data.code == 401){
+                    //     mui.confirm("请先登陆","提示",["取消", "确认"],
+                    //                 function(e) {
+                    //                     if (e.index == 1) {
+                    //                         that.$router.push({
+                    //                             name: "AccountLogin",
+                    //                             params: {
+                    //                                 redirect:that.$router.currentRoute.name
+                    //                             }
+                    //                         });
+                    //                     } else {
+                    //                         that.$router.go(-1);
+                    //                     }
+                    //                 },
+                    //                 "div"
+                    //             );
+                    // }
                 }
             }).catch(function(err){
                 console.log(err)

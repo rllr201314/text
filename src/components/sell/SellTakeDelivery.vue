@@ -161,12 +161,10 @@ export default {
             let clipboard = new ClipboardJS("#copy");
             clipboard.on("success", function(e) {
                 clipboard.destroy();
-                console.log("成功");
                 mui.toast("复制成功", { duration: "short", type: "div" });
             });
             clipboard.on("error", function(e) {
                 clipboard.destory();
-                console.log("失败");
                 mui.toast("请重新点击复制", { duration: "short", type: "div" });
             });
         },
@@ -211,7 +209,6 @@ export default {
             that.$axios.post(process.env.API_HOST+"seller_trade_status",{
                 order_id:that.$route.query.order,
             }).then((res)=>{
-                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.goodsInfo = res.data.data;

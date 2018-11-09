@@ -91,7 +91,6 @@ export default {
             that.$axios.post(process.env.API_HOST+"assurance",{
                 order_id:that.$route.query.order
             }).then((res)=>{
-                console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.orderInfo = res.data.data;

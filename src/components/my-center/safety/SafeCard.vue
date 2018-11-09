@@ -110,16 +110,11 @@ export default {
             that.$axios
                 .post(process.env.API_HOST+"authentic_four",request)
                 .then(res => {
-                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200 && res.data.data.notify_id) {
                             that.face(res.data.data.notify_id);//人脸识别
                         } else {
                             that.showLoading = false;
-                            mui.alert(res.data.msg,'提示','确认','','div');
-                            if (res.data.code == 401) {
-                                that.$router.push({ name: "AccountLogin" });
-                            }
                         }
                     }
                 })

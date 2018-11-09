@@ -80,7 +80,6 @@
                 that.$axios.post(process.env.API_HOST+"order_stage",{
                     order_id:that.order_info.order_id
                 }).then((res)=>{
-                    console.log(res)
                     if(res.status == 200){
                         if(res.data.code == 200){
                             that.allData = res.data.data;

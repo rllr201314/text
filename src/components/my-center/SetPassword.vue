@@ -161,7 +161,6 @@ export default {
                         password: password
                     })
                     .then(function(res) {
-                        console.log(res);
                         if (res.status == 200) {
                             if (res.data.code == 200) {
                                 mui.alert(

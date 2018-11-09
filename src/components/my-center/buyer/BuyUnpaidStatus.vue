@@ -170,26 +170,27 @@ export default {
                                 }   
                             }
 
-                        }else if(res.data.code == 401){
-                             mui.confirm(
-                                res.data.msg,
-                                "提示",
-                                ["取消", "确认"],
-                                (e) => {
-                                    if (e.index == 1) {
-                                        that.$router.push({
-                                            name: "AccountLogin",
-                                            params: {
-                                                redirect: "Details"
-                                            }
-                                        });
-                                    } else {
-                                        that.$router.go(-2);
-                                    }
-                                },
-                                "div"
-                            );
                         }
+                        // else if(res.data.code == 401){
+                        //      mui.confirm(
+                        //         res.data.msg,
+                        //         "提示",
+                        //         ["取消", "确认"],
+                        //         (e) => {
+                        //             if (e.index == 1) {
+                        //                 that.$router.push({
+                        //                     name: "AccountLogin",
+                        //                     params: {
+                        //                         redirect: "Details"
+                        //                     }
+                        //                 });
+                        //             } else {
+                        //                 that.$router.go(-2);
+                        //             }
+                        //         },
+                        //         "div"
+                        //     );
+                        // }
                     }
                 })
                 .catch(err => {

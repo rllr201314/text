@@ -108,7 +108,6 @@ export default {
         // 搜索
         searchFn() {
             var that = this;
-            console.log(that.search_val)
             that.getData();
         },
         // 选择游戏对应的字母
