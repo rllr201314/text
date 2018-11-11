@@ -28,6 +28,7 @@
                 <div class="con rule">
                     <div>【活动时间】</div>
                     <div>2018年11月11日  00:00~23:59</div>
+                    <br>
                     <div>【活动说明】</div>
                     <div>1、本次活动中奖率100%；</div>
                     <div>2、活动期间，凡在看个号平台下单购号，支付成功的用户均可获得一次幸运抽奖的机会；</div>
@@ -36,12 +37,13 @@
                     <div>5、抽奖总次数没有限制；</div>
                     <div>6、此活动奖品不能与其他活动奖项叠加使用；</div>
                     <div>7、本活动最终解释权归看个号平台所有。</div>
+                    <br>
                     <div>【奖品说明】</div>
-                    <div>特等奖：万能“减免”卡</div>
+                    <div>特等奖：万能“减免”卡（限1人）</div>
                     <div class="gray-color">(可用于所有购买账号的手续费减免返现、分期免息、分期免手续费，也可用于抵消当前订单的手续费，仅限买家使用)</div>
-                    <div>一等奖：红包200元</div>
-                    <div>二等奖：红包100元</div>
-                    <div>三等奖：红包50元</div>
+                    <div>一等奖：红包200元（限3人）</div>
+                    <div>二等奖：红包100元（限4人）</div>
+                    <div>三等奖：红包50元（不限人数）</div>
                 </div>
             </div>
         </div>
@@ -290,7 +292,7 @@ export default {
 .dial-content {
     width: 100%;
     min-height: 27rem;
-    background: url("../../../static/img/action/dial-bg.png") no-repeat;
+    background: url("../../../static/img/action/dial-bg.jpg") no-repeat;
     background-size: 100% 100%;
     padding: 2.6rem 0 .4rem;
 }
@@ -396,7 +398,7 @@ export default {
     height:5.75rem;
     text-align:center;
     color:#FFFFFF;
-    background: url('../../../static/img/action/pop-bg.png');
+    background: url('../../../static/img/action/pop-bg.jpg');
     background-size:5.81rem 5.75rem;
     padding-top:1.04rem;
     position: fixed;
@@ -453,7 +455,7 @@ export default {
 
 .my-view{
     width:5.8rem;
-    background: url('../../../static/img/action/my-bg.png') no-repeat;
+    background: url('../../../static/img/action/my-bg.jpg') no-repeat;
     background-size:5.81rem 7.88rem;
     position:fixed;
     top:30%;

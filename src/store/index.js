@@ -11,24 +11,24 @@ export default new Vuex.Store({
   mutations: {
     set_token(state, token) {
       state.token = token
-      sessionStorage.token = token
+      localStorage.token = token
     },
     del_token(state) {
       state.token = ''
-      sessionStorage.removeItem('token')
+      localStorage.removeItem('token')
 
     },
     set_mobile(state, mobile) {
       state.mobile = mobile
-      sessionStorage.mobile = mobile;
+      localStorage.mobile = mobile;
     },
     del_mobile(state) {
       state.mobile = ''
-      sessionStorage.removeItem('mobile');
+      localStorage.removeItem('mobile');
     },
     changeLogin(state,data){
       state.isLogin = data
-      sessionStorage.i = data
+      localStorage.i = data
     }
   }
 })

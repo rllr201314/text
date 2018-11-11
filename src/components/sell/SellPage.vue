@@ -172,7 +172,7 @@ export default {
             that.user_type = that.$route.path;
             that.$axios
                 .post(process.env.API_HOST+"category",{
-                    game_name:that.search_val
+                    game_name:that.search_val,
                 })
                 .then(function(res) {
                     if (res.status == 200) {
@@ -187,10 +187,7 @@ export default {
                 });
         }
     },
-    beforeRouteLeave(to, from, next) {
-        if (to.path == "/good-list") {
-            to.meta.keepAlive = false;
-        }
+    beforeRouteLeave(to, from, next){
         if(to.path == '/buy'){
             this.showTitle.title="我要买"
             this.user_type = to.path;

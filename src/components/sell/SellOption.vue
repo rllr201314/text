@@ -42,6 +42,7 @@
                 <!-- 商品类型 -->
                 <li class="option-black" v-for="item in optionData.merchand" @click="seleMerchand(item.value)" v-text="item.name"></li>
             </ul>
+            <div class="pop-view-con"></div>
             <div class="pop-view-bot" @click="hiddenFn">取消</div>
         </div>
         <!-- 弹出框 -->
@@ -58,6 +59,7 @@
             <ul>
                 <li class="option-black" v-for="item in optionData.mobile" @click="seleMobile(item.operation_id)" v-text="item.platform_name"></li>
             </ul>
+            <div class="pop-view-con"></div>
             <div class="pop-view-bot" @click="hiddenFn">取消</div>
         </div>
         <!-- 弹出框 -->
@@ -763,6 +765,10 @@ input{
 }
 .pop-view-tit,.pop-view-bot{
     line-height: .9rem;
+}
+.pop-view-con{
+    height:.2rem;
+    background:rgba(0,0,0,0.3);
 }
 .type-mu ul{
     border-top:1px solid #e5e5e5;

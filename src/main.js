@@ -65,10 +65,10 @@ axios.interceptors.response.use(
   });
 
   // 刷新路由让页面回到顶部
-router.afterEach((to, from, next) => {
-  window.scrollTo(0, 0);
-  document.documentElement.scrollTop = document.body.scrollTop = 0;
-})
+// router.afterEach((to, from, next) => {
+//   window.scrollTo(0, 0);
+//   document.documentElement.scrollTop = document.body.scrollTop = 0;
+// })
 
 
 Vue.prototype.$axios = axios;

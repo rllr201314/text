@@ -227,21 +227,26 @@
         <div class="shade" v-show="showTagAll"></div>
         <!-- 弹出框 -->
         <!-- 职业 -->
-        <div id="sheet-faction" class="mui-popover mui-popover-bottom mui-popover-action">
-            <!-- 可选择菜单 -->
+        <!-- <div id="sheet-faction" class="mui-popover mui-popover-bottom mui-popover-action">
             <ul class="pop-view">
                 <li class="pop-view-tit option-gray">
                     <div>请选择职业</div>
                 </li>
-                <!-- 商品类型 -->
                 <li class="option-black" v-for="item in sellData.faction" @click="seleType(item.faction_id,'faction')" v-text="item.faction_name"></li>
             </ul>
-            <!-- 取消菜单 -->
             <ul class="pop-view">
                 <li class="mui-table-view-cell option-black">
                     <a href="#sheet-faction">取消</a>
                 </li>
             </ul>
+        </div> -->
+        <div v-show="showMenu_type" class="type-mu">
+            <div class="pop-view-tit option-gray">请选择职业</div>
+            <ul>
+                <li class="option-black" v-for="item in sellData.faction" @click="seleFaction(item.faction_id)" v-text="item.faction_name"></li>
+            </ul>
+            <div class="pop-view-con"></div>
+            <div class="pop-view-bot" @click="hiddenFn">取消</div>
         </div>
         <!-- 弹出框 -->
         <!-- 角色性别 -->
@@ -279,6 +284,7 @@
                 </li>
             </ul>
         </div>
+        <div class="share" v-show="showMenu_type" @click="hiddenFn"></div>
         <Loading v-show="showLoading"></Loading>
     </div>
 </template>
@@ -302,6 +308,7 @@ export default {
                     title: "我要卖"
                 }
             },
+            showMenu_type:false,
             showLoading:false,
             editOrpublish:null,
             showTagAll: false,
@@ -564,14 +571,22 @@ export default {
         },
         // 显示那个弹出框
         showPop(flag) {
-            mui("#sheet-" + flag).popover("toggle");
+            if(flag == 'faction'){
+                this.showMenu_type = true;
+            }else{
+                mui("#sheet-" + flag).popover("toggle");
+            }
         },
-        // 选择职业 -- 角色类别 -- 账号类型
-        seleType(opt, flag) {
-            var that = this;
-            mui("#sheet-" + flag).popover("toggle");
+        hiddenFn(){
+            this.showMenu_type = false;
+        },
+        // 选择职业 
+        seleFaction(opt){
             // 职业
-            if (flag == "faction") {
+            var that =this;
+            that.showMenu_type = false;
+
+            // if (flag == "faction") {
                 var faction = that.sellData.faction;
                 for (var i in faction) {
                     if (opt == faction[i].faction_id) {
@@ -579,7 +594,13 @@ export default {
                         that.seleData.faction = faction[i].faction_name;
                     }
                 }
-            } else if (flag == "sex") {
+            // }
+        },
+        //角色类别 -- 账号类型
+        seleType(opt, flag) {
+            var that = this;
+            mui("#sheet-" + flag).popover("toggle");
+            if (flag == "sex") {
                 //角色性别
                 var sex = that.sellData.sex;
                 for (var i in sex) {
@@ -683,13 +704,15 @@ export default {
                     that_req.tag = str.substring(1);
                 }
                 var upImg = that.sellData.upimgAll.imgSrc;
-                if (upImg.length == 0) {
-                    mui.alert("请选择商品图片", "提示", "确认", "", "div");
-                    return false;
-                } else {
+                // if (upImg.length == 0) {
+                //     mui.alert("请选择商品图片", "提示", "确认", "", "div");
+                //     return false;
+                // } else {
+                //     that_req.images = upImg;
+                // }
+                if(upImg.length < 0){
                     that_req.images = upImg;
                 }
-
                 // 账号类型
                 if (that_req.account_type == "") {
                     mui.alert("请选择账号类型", "提示", "确认", "", "div");
@@ -931,22 +954,6 @@ export default {
                             that.sellData.tagType = tagType;
                             that.getTagCon(tagType[0].tag_type_id);
                         }
-                        // else if(res.data.code == 401){
-                        //     // 登录状态过期
-                        //     mui.confirm("请先登陆","提示",["取消", "确认"],
-                        //             function(e) {
-                        //                 if (e.index == 1) {
-                        //                     that.$router.push({
-                        //                         name: "AccountLogin",
-                        //                         params: {
-                        //                             redirect:that.$router.currentRoute.name
-                        //                         }
-                        //                     });
-                        //                 } else {
-                        //                     that.$router.go(-1);
-                        //                 }
-                        //             },"div");
-                        // }
                     }
                 })
                 .catch(function(err) {
@@ -1045,22 +1052,6 @@ export default {
                                 that.judgeInfo(data.chargeInfo);//判断合同还是保险
                             }
                         }
-                        // else if(res.data.code == 401){
-                        //     // 登录状态过期
-                        //     mui.confirm("请先登陆","提示",["取消", "确认"],
-                        //             function(e) {
-                        //                 if (e.index == 1) {
-                        //                     that.$router.push({
-                        //                         name: "AccountLogin",
-                        //                         params: {
-                        //                             redirect:that.$router.currentRoute.name
-                        //                         }
-                        //                     });
-                        //                 } else {
-                        //                     that.$router.go(-1);
-                        //                 }
-                        //             },"div");
-                        // }
                     }
                 })
                 .catch(function(err) {
@@ -1101,26 +1092,6 @@ export default {
                         that.getConfig(that_req,2);//请求选择参数
                         that.getTagType();//请求标签大类
                     }
-                    // else if(res.data.code == 401){
-                    //     // 登录状态过期
-                    //     mui.confirm("请先登陆","提示",["取消", "确认"],
-                    //             function(e) {
-                    //                 if (e.index == 1) {
-                    //                     that.$router.push({
-                    //                         name: "AccountLogin",
-                    //                         params: {
-                    //                             redirect:that.$router.currentRoute.name
-                    //                         }
-                    //                     });
-                    //                 } else {
-                    //                     that.$router.go(-1);
-                    //                 }
-                    //             },"div");
-                    // }else{
-                    //     mui.alert(res.data.msg,'提示','确认',() =>{
-                    //         that.$router.go(-1);
-                    //     },'div')
-                    // }
                 }
             }).catch((err) => {
                 console.log(err)
@@ -1494,6 +1465,8 @@ input[type="number"] {
     left: 0;
     right: 0;
     z-index: 9;
+    max-width:640px;
+    margin:0 auto;
 }
 
 .shade {
@@ -1728,4 +1701,53 @@ input[type="number"] {
     border-radius: 0.3rem;
     background: #c6c6c6;
 }
+
+.type-mu{
+    min-height:2rem;
+    color: #333333;
+    font-size: 0.28rem;
+    background:#FFFFFF;
+    text-align:center;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:50;
+    max-width: 640px;
+    margin:0 auto;
+}
+.pop-view-tit,.pop-view-bot{
+    line-height: .9rem;
+}
+.pop-view-con{
+    height:.2rem;
+    background:rgba(0,0,0,0.3);
+}
+.type-mu ul{
+    border-top:1px solid #e5e5e5;
+    border-bottom:1px solid #e5e5e5;
+    max-height:4rem;
+    overflow-y:scroll;
+}
+/* 弹出框 */
+.option-gray {
+    color: #666666;
+    font-size: 0.28rem;
+}
+.option-black {
+    font-weight: 100;
+    line-height:.9rem;
+    border-bottom:1px solid #e5e5e5;
+}
+/* 遮罩 */
+.share{
+    background:rgba(0, 0, 0, .3);
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:40;
+}
+
 </style>

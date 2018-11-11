@@ -501,16 +501,15 @@ export default {
         },
         // 点击推荐
         goDetail(goods_id) {
-            this.$router.replace({
+            this.$router.push({
                 name: "Details",
-                query: { goods_id: goods_id }
+                query: {goods_id: goods_id}
             });
-            this.reload();
-            this.getData();
         },
         // 获取数据
         getData() {
             var that = this;
+            that.goods_id = that.$route.query.goods_id;
             that.showLoading = true;
             that.$axios
                 .post(process.env.API_HOST+"goods_detail", {
@@ -528,7 +527,13 @@ export default {
                                 that.showNoData = false;
                                 that.detailData = data.goods_info;
                                 that.recommendData = data.recommendInfo;
-                                that.componentsData.imgList = that.detailData.goods_images;
+                                if(that.detailData.goods_images != ""){
+                                    that.componentsData.imgList = that.detailData.goods_images;
+                                }else{
+                                    var img = [];
+                                    img.push({img_url:'./static/img/goods-details/detail_img.png'})
+                                    that.componentsData.imgList = img;
+                                }
                                 var bind = data.account_bind;
                                 for (var i in data.goods_info.account_bind) {
                                     if (data.goods_info.account_bind[i] == 1) {
@@ -547,9 +552,6 @@ export default {
                                         that.accountBind.emailBind = true;
                                     }
                                 }
-                                
-                                // that.swiper();
-                                // that.$previewRefresh(); 
                             }
                         } else {
                             that.$router.push({path:'/'});
@@ -562,13 +564,15 @@ export default {
                 });
         },
     },
+    watch:{
+        '$route':'getData'
+    },
     mounted() {
         var that = this;
         if (
             that.$route.query.goods_id != "" &&
             that.$route.query.goods_id != undefined
         ) {
-            that.goods_id = that.$route.query.goods_id;
             that.getData();
             that.nativeShare = new NativeShare();
             that.url = window.location.href;

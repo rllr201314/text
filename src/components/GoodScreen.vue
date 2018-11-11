@@ -1,15 +1,15 @@
 <template>
     <!-- 商品列表 商品筛选  -->
     <div class="good-screen-wrap">
-        <Header v-bind:showTitle="showTitle" v-if="true"></Header>
+        <Header v-bind:showTitle="showTitle"></Header>
         <div class="titInp">
             <img class="search-ico" src="../../static/img/search_ico.png" alt="">
             <form action="javascript:return true;">
-                <input class="search-title" type="search" placeholder="请输入搜索内容" v-model="request.content" @keyup.13="show()" ref="input1" @blur="out()">
+                <input class="search-title" type="search" placeholder="请输入搜索内容" v-model.trim="request.content" @keyup.13="show()" ref="input1" @blur="out()">
             </form>
             <img class="empty-ico" src="../../static/img/empty_ico.png" alt="" @click="emptyFun()">
         </div>
-        <div class="screen-title" v-if="true">
+        <div class="screen-title">
             <div class="screen-title-top">
                 <div class="title-top-cell" v-for="(item,index) in screenTop" @click="topScreen(item.flag,index)">
                     <span class="title-top-title" v-text="item.tit_top_text"></span>
@@ -247,6 +247,28 @@ export default {
                 is_video: "",
                 content:'',
             },
+            data:{
+                page: 1,
+                rows: 10,
+                category_id: "",
+                deal_type: "",
+                client_id: "",
+                operation_id: "",
+                area_id: "",
+                server_id: "",
+                is_stage: "",
+                is_safe: "",
+                is_compact: "",
+                sell_type: "",
+                is_bind: "",
+                role_level: "",
+                begin_price: "",
+                end_price: "",
+                sort_price: "",
+                sort_collection: "",
+                is_video: "",
+                content:'',
+            },
             list: [],
             miniRefresh: null,
             showNoData: false,
@@ -275,7 +297,7 @@ export default {
                 },
                 {
                     flag: "phone",
-                    tit_top_text: "苹果",
+                    tit_top_text: "",
                     tit_top_src: "./static/img/goodscreen/downempty.png",
                     ischeck: false
                 },
@@ -440,7 +462,7 @@ export default {
             this.getGoodsInfo(this.request);
         },
         // 隐藏键盘
-        show(){
+        show(e){
             this.$refs.input1.blur();
             this.getGoodsInfo(this.request);
         },
@@ -606,11 +628,14 @@ export default {
             }
             that.hiddenScreenFun(); //隐藏筛选
             that.request.deal_type = value;
+            that.request.page = 1;
+            $('#minirefresh').scrollTop(0);
             that.getGoodsInfo(that.request);
         },
         // 选择手机系统
         selePhone(value) {
             var that = this;
+            // debugger;
             if (that.lastClient_id != value) {
                 var phoneAll = that.phone_info;
                 var text = that.screenTop[1];
@@ -629,6 +654,8 @@ export default {
                 that.request.area_id = "";
                 that.request.server_id = "";
                 that.request.client_id = value;
+                that.request.page = 1;
+                $('#minirefresh').scrollTop(0);
                 that.getGoodsInfo(that.request);
             }
             that.hiddenScreenFun(); //隐藏筛选
@@ -649,11 +676,15 @@ export default {
             }
             that.request.operation_id = operation_id;
             that.getServer(operation_id);
+            that.request.page = 1;
+            $('#minirefresh').scrollTop(0);
             that.getGoodsInfo(that.request);
         },
         // 选择服务器
         seleServer(opt, flag) {
             var that = this;
+            that.request.page = 1;
+            $('#minirefresh').scrollTop(0);
             if (flag == "area") {
                 var areaAll = that.server_info;
                 for (var i in areaAll) {
@@ -685,6 +716,8 @@ export default {
         },
         delOpe(ind) {
             var that = this;
+            that.request.page = 1;
+            $('#minirefresh').scrollTop(0);
             if (ind == "0") {
                 that.seleOpe = [];
                 that.showOperation = true;
@@ -915,7 +948,7 @@ export default {
             that_r.is_safe = that.is_safe;
             that_r.role_level = that.role_level;
             that_r.page = 1;
-            document.getElementById('minirefresh').scrollTop = 0;
+            $('#minirefresh').scrollTop(0);
             that.getGoodsInfo(that.request);
             that.hiddenScreenFun(); //隐藏筛选
             
@@ -974,6 +1007,8 @@ export default {
                 schoolTypeAll[i].ischeck = false;
             }
             // console.log(that.request);
+            that.request.page = 1;
+            $('#minirefresh').scrollTop(0);
             that.getGoodsInfo(that.request);
             that.hiddenScreenFun(); //隐藏筛选
         },
@@ -1124,9 +1159,11 @@ export default {
                             }
                             that.account_info = deal_type;
                             var client_idAll = res.data.data.client_id;
-                            client_idAll.unshift({name: "all", alias: "全部", value: -1, status: 1})
+                            client_idAll.unshift({name: "all", alias: "全部", value: -1, status: 1});
                             for (var i in client_idAll) {
                                 if (client_idAll[i].alias == "苹果") {
+                                    that.screenTop[1].tit_top_text = client_idAll[i].alias;
+                                    that.lastClient_id="";//上一次保存的手机系统选项
                                     client_idAll[i].ischeck = true;
                                     that.getOperation(client_idAll[i].value); //调用获取平台接口
                                     that.request.client_id = client_idAll[i].value;
@@ -1151,6 +1188,8 @@ export default {
                             }
                             that.screen_info.levelType = role_level;
                             // 调用商品列表接口
+                            that.request.page = 1;
+                            $('#minirefresh').scrollTop(0);
                             that.getGoodsInfo(that.request);
                         }
                     }
@@ -1200,14 +1239,34 @@ export default {
         myScroll,
         NoData
     },
-    // 修改列表页的meta值，false时再次进入页面会重新请求数据。
-    beforeRouteLeave(to, from, next) {
-        if (to.path == "/details") {
-            from.meta.keepAlive = true;
-        } else {
-            from.meta.keepAlive = false;
+    beforeRouteLeave(to,from,next){
+        from.meta.scroll_top = $('#minirefresh').scrollTop();
+        next();
+    },
+    beforeRouteEnter(to,from,next){
+        if(from.path == '/details'){
+            to.meta.isBack=true;
         }
         next();
+    },
+    activated(){
+        var that = this;
+        if(!that.$route.meta.isBack){
+            that.request = JSON.parse(JSON.stringify(that.data));
+            var opt = sessionStorage.getItem("opt");
+            if(that.$route.query.opt){
+                if (opt == that.$route.query.opt) {
+                    that.request.category_id = opt;
+                    that.getGonfig(opt);
+                } else {
+                    that.$router.go(-1);
+                }
+            }
+
+        }else{
+            $('#minirefresh').scrollTop(that.$route.meta.scroll_top);
+        }
+        that.$route.meta.isBack = false;
     },
     mounted() {
         var that = this;

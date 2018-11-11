@@ -3,12 +3,12 @@ import Router from 'vue-router'
 import store from '@/store/index'
 
 
-if (sessionStorage.getItem('token')) {
-  store.commit('set_token', sessionStorage.getItem('token'))
+if (localStorage.getItem('token')) {
+  store.commit('set_token', localStorage.getItem('token'))
 }
 
-if (sessionStorage.getItem('mobile')) {
-  store.commit('set_mobile', sessionStorage.getItem('mobile'))
+if (localStorage.getItem('mobile')) {
+  store.commit('set_mobile', localStorage.getItem('mobile'))
 }
 // if (sessionStorage.getItem('i')) {
 //   store.commit('changeLogin', sessionStorage.getItem('i'))
@@ -34,8 +34,9 @@ export default new Router({
       path: '/good-list', //商品列表
       name: 'GoodScreen',
       component: (resolve) => require(['@/components/GoodScreen'], resolve),
-      meta: {
-        keepAlive: true // 需要被缓存
+      meta:{
+        keepAlive:true,
+        isBack:false,
       }
     },
     {
@@ -90,10 +91,7 @@ export default new Router({
     {
       path: '/my-center',
       name: 'MyCenter',
-      component: (resolve) => require(['@/components/my-center/MyCenter'], resolve),
-      meta: {
-        auth: true
-      } // 设置当前路由需要校验 
+      component: (resolve) => require(['@/components/my-center/MyCenter'], resolve), 
     }, {
       path: '/my-goods', //我的商品
       name: 'MyGoods',
@@ -254,11 +252,11 @@ export default new Router({
       path: '/active-area', //活动页
       name: 'ActiveArea',
       component: (resolve) => require(['@/components/action/ActiveArea'], resolve),
-    },{
+    }, {
       path: '/special-area', //专区页
       name: 'SpecialArea',
       component: (resolve) => require(['@/components/action/SpecialArea'], resolve),
-    },{
+    }, {
       path: '/gold-goods', //金币号专区
       name: 'GoldGoods',
       component: (resolve) => require(['@/components/action/GoldGoods'], resolve),
@@ -380,11 +378,13 @@ export default new Router({
       component: (resolve) => require(['@/components/multi/NoData'], resolve)
     },
   ],
-  scrollBehavior(to, from, savedPosition) {
-    return {
-      x: 0,
-      y: 0
+  scrollBehavior(to,from,savedPosition){
+    if(to.path == '/details'){
+      return {
+        x:0,
+        y:0
+      }
     }
-  },
-  
+  }
+
 })

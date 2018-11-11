@@ -22,38 +22,40 @@
         },
         methods:{
             jump(url){
-                // this.$router.push({path:url})
+                console.log(url);
                 window.location.href = url;
+            },
+            mySwipter(){
+                new Swiper ('#indexSwiper', {
+                    loop:true,
+                    autoplay : 3000,
+                    initialSlide :1,//第一个显示的图片默认为0
+                    observer:true,//修改swiper自己或子元素时，自动初始化swiper
+                    observeParents:true,//修改swiper的父元素时，自动初始化swiper
+                    autoplayDisableOnInteraction:false,//用户操作完是否自动切换
+
+                    effect : 'coverflow',//切换方式
+
+                    slidesPerView: 'auto',//自适应放几个
+                    loopedSlides:4,//设置sildesPerView 就要设置 loopedSlides 为slids的个数
+
+                    centeredSlides: true,
+                    preventClicksPropagation:true,
+                    coverflow: {
+                        rotate: 40,
+                        stretch: 0,
+                        depth: 100,
+                        modifier: 1,
+                        slideShadows : false,
+                    }
+                });
             }
         },
         mounted(){
             var that = this;
-            that.mySwiper = new Swiper ('#indexSwiper', {
-                loop:true,
-                autoplay : 3000,
-                initialSlide :1,//第一个显示的图片默认为0
-                observer:true,//修改swiper自己或子元素时，自动初始化swiper
-                observeParents:true,//修改swiper的父元素时，自动初始化swiper
-                autoplayDisableOnInteraction:false,//用户操作完是否自动切换
-
-                effect : 'coverflow',//切换方式
-
-                slidesPerView: 'auto',//自适应放几个
-                loopedSlides:4,//设置sildesPerView 就要设置 loopedSlides 为slids的个数
-                
-                centeredSlides: true,
-                coverflow: {
-                    rotate: 40,
-                    stretch: 0,
-                    depth: 100,
-                    modifier: 1,
-                    slideShadows : false,
-                }
-            });
             var time = setInterval(function(){
                 if(that.swiperSrc != ''){
-                    that.mySwiper.startAutoplay()//重新开始轮播
-                    that.mySwiper.reLoop()//重新计算slides个数
+                    that.mySwipter();
                     clearInterval(time);
                 }
             },500)
