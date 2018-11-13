@@ -315,10 +315,10 @@ export default {
                 }
             } else {
                 that.is_line = false;
+                that.price = that.fee_info.offline_amount;
+                that.old_price = that.fee_info.offline_amount;
                 if(that.off_line){
                     that.ok_text = "前往支付";
-                    that.price = that.fee_info.offline_amount;
-                    that.old_price = that.fee_info.offline_amount;
                 }else{
                     that.ok_text = "查看订单";
                 }

@@ -710,7 +710,7 @@ export default {
                 // } else {
                 //     that_req.images = upImg;
                 // }
-                if(upImg.length < 0){
+                if(upImg.length > 0){
                     that_req.images = upImg;
                 }
                 // 账号类型
