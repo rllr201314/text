@@ -714,6 +714,7 @@ export default {
             }
             that.hiddenScreenFun(); //隐藏筛选
         },
+        // 删除选择的区服
         delOpe(ind) {
             var that = this;
             that.request.page = 1;
@@ -1139,7 +1140,7 @@ export default {
                     console.log(err);
                 });
         },
-        getGonfig(category_id) {
+        getConfig(category_id) {
             var that = this;
             that.$axios
                 .post(process.env.API_HOST+"search_config", {
@@ -1257,7 +1258,7 @@ export default {
             if(that.$route.query.opt){
                 if (opt == that.$route.query.opt) {
                     that.request.category_id = opt;
-                    that.getGonfig(opt);
+                    that.getConfig(opt);
                 } else {
                     that.$router.go(-1);
                 }
@@ -1274,7 +1275,7 @@ export default {
         if(that.$route.query.opt){
             if (opt == that.$route.query.opt) {
                 that.request.category_id = opt;
-                that.getGonfig(opt);
+                that.getConfig(opt);
             } else {
                 that.$router.go(-1);
             }

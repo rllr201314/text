@@ -26,11 +26,10 @@ axios.interceptors.request.use(config => {
   if(config.method  === 'post'){
     if(!config.data){
       config.data = {};
-      if (store.state.token) {
-        config.data.Authorization = store.state.token;
-      }
-    }else if(store.state.token) {
+    }
+    if(store.state.token) {
       config.data.Authorization = store.state.token;
+      store.commit('set_time');
     }
     config.data = qs.stringify(config.data);
   }

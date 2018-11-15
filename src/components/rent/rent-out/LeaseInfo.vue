@@ -5,7 +5,7 @@
         <div class="sellInfo-content">
             <div class="sellInfo-cell">
                 <div class="sell-cell-top">
-                    <img src="../../../static/img/goodscreen/vertical.png" alt="">
+                    <img src="../../../../static/img/goodscreen/vertical.png" alt="">
                     <span>商品资料</span>
                 </div>
                 <div class="sell-cell-content">
@@ -21,14 +21,14 @@
                         <span class="sell-lefttext">职业</span>
                         <div class="right-opt">
                             <span v-text="seleData.faction"></span>
-                            <img src="../../../static/img/order/next.png" alt="">
+                            <img src="../../../../static/img/order/next.png" alt="">
                         </div>
                     </div>
                     <div class="sell-strip" @click="showPop('sex')">
                         <span class="sell-lefttext">角色性别</span>
                         <div class="right-opt">
                             <span v-text="seleData.sex"></span>
-                            <img src="../../../static/img/order/next.png" alt="">
+                            <img src="../../../../static/img/order/next.png" alt="">
                         </div>
                     </div>
                     <div class="sell-strip">
@@ -54,11 +54,11 @@
                             <div class="img-cell" v-for="(item,index) in sellData.upimgAll.imgSrc">
                                 <img :src="item" alt="">
                                 <div class="delImg" @click="delImg(index)">
-                                    <img src="../../../static/img/order/delete_img.png" alt="">
+                                    <img src="../../../../static/img/order/delete_img.png" alt="">
                                 </div>
                             </div>
                             <div class="upimg-cell">
-                                <img src="../../../static/img/order/add_img.png" alt="">
+                                <img src="../../../../static/img/order/add_img.png" alt="">
                                 <input type="file" id="upImg" accept="image/*" multiple  @change="addImg">
                             </div>
                         </div>
@@ -72,7 +72,7 @@
             <!-- 账号信息 -->
             <div class="sellInfo-cell">
                 <div class="sell-cell-top">
-                    <img src="../../../static/img/goodscreen/vertical.png" alt="">
+                    <img src="../../../../static/img/goodscreen/vertical.png" alt="">
                     <span>账号信息</span>
                 </div>
                 <div class="sell-cell-content">
@@ -80,7 +80,7 @@
                         <span class="sell-lefttext">账号类型</span>
                         <div class="right-opt">
                             <span v-text="seleData.accountType"></span>
-                            <img src="../../../static/img/order/next.png" alt="">
+                            <img src="../../../../static/img/order/next.png" alt="">
                         </div>
                     </div>
                     <div class="sell-strip account-bind">
@@ -98,7 +98,7 @@
             <!-- 价格设定 -->
             <div class="sellInfo-cell">
                 <div class="sell-cell-top">
-                    <img src="../../../static/img/goodscreen/vertical.png" alt="">
+                    <img src="../../../../static/img/goodscreen/vertical.png" alt="">
                     <span>价格设定</span>
                 </div>
                 <div class="sell-cell-content">
@@ -123,17 +123,16 @@
                         <span class="sell-lefttext">商品售价</span>
                         <input type="number" placeholder="填写商品价格" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
                     </div>
-                    <!-- /////88888888888888888888888888888888888888888888888888888888888888888888888888888888888888 -->
                     <div class="sell-strip" v-if="safeOrCompact.showSafe">
                         <div>
                             <div class="sell-left">保险服务</div>
                             <div class="strip-radio-right">
                                 <div class="opera" @click="seleOpera('safe')">
-                                    <img :src="sellData.optSafe?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">
+                                    <img :src="sellData.optSafe?'../../../../static/img/order/okcheck.png':'../../../../static/img/order/nocheck.png'" alt="">
                                     <span>是</span>
                                 </div>
                                 <div class="opera" @click="seleOpera('nosafe')" v-if="safeOrCompact.showNoSafe">
-                                    <img :src="sellData.optSafe?'../../../static/img/order/nocheck.png':'../../../static/img/order/okcheck.png'" alt="">
+                                    <img :src="sellData.optSafe?'../../../../static/img/order/nocheck.png':'../../../../static/img/order/okcheck.png'" alt="">
                                     <span>否</span>
                                 </div>
                             </div>
@@ -151,11 +150,93 @@
                             <div class="sell-left">合同服务</div>
                             <div class="strip-radio-right">
                                 <div class="opera" @click="seleOpera('safe')">
-                                    <img :src="sellData.optSafe?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">
+                                    <img :src="sellData.optSafe?'../../../../static/img/order/okcheck.png':'../../../../static/img/order/nocheck.png'" alt="">
                                     <span>是</span>
                                 </div>
                                 <div class="opera" @click="seleOpera('nosafe')" v-if="safeOrCompact.showNoCompact">
-                                    <img :src="sellData.optSafe?'../../../static/img/order/nocheck.png':'../../../static/img/order/okcheck.png'" alt="">
+                                    <img :src="sellData.optSafe?'../../../../static/img/order/nocheck.png':'../../../../static/img/order/okcheck.png'" alt="">
+                                    <span>否</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="safe-hint">
+                            <div class="sell-left">(合同费用为总价的{{safeOrCompact.parcent}}%)</div>
+                            <div class="strip-radio-right">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <!-- 出租设定 -->
+            <div class="sellInfo-cell">
+                <div class="sell-cell-top">
+                    <img src="../../../../static/img/goodscreen/vertical.png" alt="">
+                    <span>出租设定</span>
+                </div>
+                <div class="sell-cell-content">
+                    <!-- <div class="sell-strip">
+                        <span class="sell-lefttext">是否可议价</span>
+                        <div class="strip-radio-right">
+                            <div class="opera" v-for="item in sellData.sellType.sell" @click="seleSell(item.value)">
+                                <img :src="item.ischeck?sellData.sellType.imgSrc.Ok:sellData.sellType.imgSrc.No" alt="">
+                                <span v-text="item.name"></span>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="sell-strip">
+                        <span class="sell-lefttext">出租价格</span>
+                        <input type="number" placeholder="填写商品出租价格" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
+                    </div>
+                    <div class="sell-strip" @click="showPop('rentType')">
+                        <span class="sell-lefttext">出租方式</span>
+                        <div class="right-opt">
+                            <span v-text="seleData.rentType"></span>
+                            <img src="../../../../static/img/order/next.png" alt="">
+                        </div>
+                    </div>
+                    
+
+
+                    <div class="sell-strip" v-show="requestData.sell_type == 2">
+                        <span class="sell-lefttext">商品最低价</span>
+                        <input type="number" placeholder="填写可以接受最低的议价价格" v-model="requestData.min_price" oninput="if(value.length>7)value=value.slice(0,7)">
+                    </div>
+                    <div class="sell-strip" v-show="requestData.sell_type == 1">
+                        <span class="sell-lefttext">商品售价</span>
+                        <input type="number" placeholder="填写商品价格" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
+                    </div>
+                    <div class="sell-strip" v-if="safeOrCompact.showSafe">
+                        <div>
+                            <div class="sell-left">保险服务</div>
+                            <div class="strip-radio-right">
+                                <div class="opera" @click="seleOpera('safe')">
+                                    <img :src="sellData.optSafe?'../../../../static/img/order/okcheck.png':'../../../../static/img/order/nocheck.png'" alt="">
+                                    <span>是</span>
+                                </div>
+                                <div class="opera" @click="seleOpera('nosafe')" v-if="safeOrCompact.showNoSafe">
+                                    <img :src="sellData.optSafe?'../../../../static/img/order/nocheck.png':'../../../../static/img/order/okcheck.png'" alt="">
+                                    <span>否</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="safe-hint">
+                            <div class="sell-left">(保险费用为总价的{{safeOrCompact.parcent}}%)</div>
+                            <div class="strip-radio-right">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
+                            <div class="strip-radio-right">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sell-strip" v-if="safeOrCompact.showCompact">
+                        <div>
+                            <div class="sell-left">合同服务</div>
+                            <div class="strip-radio-right">
+                                <div class="opera" @click="seleOpera('safe')">
+                                    <img :src="sellData.optSafe?'../../../../static/img/order/okcheck.png':'../../../../static/img/order/nocheck.png'" alt="">
+                                    <span>是</span>
+                                </div>
+                                <div class="opera" @click="seleOpera('nosafe')" v-if="safeOrCompact.showNoCompact">
+                                    <img :src="sellData.optSafe?'../../../../static/img/order/nocheck.png':'../../../../static/img/order/okcheck.png'" alt="">
                                     <span>否</span>
                                 </div>
                             </div>
@@ -170,7 +251,7 @@
             <!-- 账号信息 -->
             <div class="sellInfo-cell">
                 <div class="sell-cell-top">
-                    <img src="../../../static/img/goodscreen/vertical.png" alt="">
+                    <img src="../../../../static/img/goodscreen/vertical.png" alt="">
                     <span>帐号安全验证</span>
                 </div>
                 <div class="sell-cell-content">
@@ -212,7 +293,7 @@
                 <div class="server-area-box">
                     <div class="area-type-search">
                         <input type="text" placeholder="搜索">
-                        <img class="search-area-ico" src="../../../static/img/search_ico.png" alt="">
+                        <img class="search-area-ico" src="../../../../static/img/search_ico.png" alt="">
                     </div>
                     <div class="area-type-content">
                         <div class="area-type-strip" v-for="item in sellData.tagContent" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.tag_content" @click="seleTagCon(item.tag_id)"></div>
@@ -284,6 +365,23 @@
                 </li>
             </ul>
         </div>
+        <!-- 出租方式 -->
+        <div id="sheet-rentType" class="mui-popover mui-popover-bottom mui-popover-action">
+            <!-- 可选择菜单 -->
+            <ul class="pop-view">
+                <li class="pop-view-tit option-gray">
+                    <div>请选择出租方式</div>
+                </li>
+                <!-- 商品类型 -->
+                <li class="option-black" v-for="item in sellData.accountType" @click="seleType(item.value,'rentType')" v-text="item.name"></li>
+            </ul>
+            <!-- 取消菜单 -->
+            <ul class="pop-view">
+                <li class="mui-table-view-cell option-black">
+                    <a href="#sheet-accountType">取消</a>
+                </li>
+            </ul>
+        </div>
         <div class="share" v-show="showMenu_type" @click="hiddenFn"></div>
         <Loading v-show="showLoading"></Loading>
     </div>
@@ -315,7 +413,8 @@ export default {
             seleData: {
                 faction: "未选择",
                 sex: "未选择",
-                accountType: "未选择"
+                accountType: "未选择",
+                rentType:'未选择'
             },
             forceCompact:false,//不强制
             safeOrCompact: {
@@ -390,7 +489,8 @@ export default {
                 wx: "",
                 images: [],
                 goods_id:null,
-            }
+            },
+
         };
     },
     methods: {
@@ -616,6 +716,15 @@ export default {
                     if (opt == accountType[i].value) {
                         that.requestData.account_type = accountType[i].value;
                         that.seleData.accountType = accountType[i].name;
+                    }
+                }
+            } else if (flag == "rentType") {
+                //账号类型
+                var accountType = that.sellData.accountType;
+                for (var i in accountType) {
+                    if (opt == accountType[i].value) {
+                        // that.requestData.account_type = accountType[i].value;
+                        that.seleData.rentType = accountType[i].name;
                     }
                 }
             }
@@ -1514,7 +1623,7 @@ input[type="number"] {
     color: #fe7649;
     border: 1px solid #ff855d;
     background-color: #ffdbcf;
-    background-image: url(../../../static/img/goodscreen/false_tag.png);
+    background-image: url(../../../../static/img/goodscreen/false_tag.png);
     background-repeat: no-repeat;
     background-size: 0.3rem 0.25rem;
     background-position: right bottom;
@@ -1553,7 +1662,7 @@ input[type="number"] {
 
 .red-border {
     color: #fe7649;
-    background-image: url(../../../static/img/goodscreen/vertical.png);
+    background-image: url(../../../../static/img/goodscreen/vertical.png);
     background-repeat: no-repeat;
     background-size: 0.16rem 0.4rem;
     background-position: 0 70%;
@@ -1611,7 +1720,7 @@ input[type="number"] {
     color: #fe7649;
     border: 1px solid #ff855d;
     background-color: #ffdbcf;
-    background-image: url(../../../static/img/goodscreen/false_tag.png);
+    background-image: url(../../../../static/img/goodscreen/false_tag.png);
     background-repeat: no-repeat;
     background-size: 0.3rem 0.25rem;
     background-position: right bottom;

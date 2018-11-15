@@ -6,7 +6,7 @@
             <div class="search">
                 <img class="search-ico" src="../../../static/img/search_ico.png" alt="">
                 <form action="javascript:return true;">
-                <input class="search-input" type="search" placeholder="请输入游戏名称" v-model="search_val" @input="searchFn">
+                    <input class="search-input" type="search" placeholder="请输入游戏名称" v-model="search_val" @input="searchFn">
                 </form>
                 <img class="empty-ico" src="../../../static/img/empty_ico.png" alt="" @click="emptyFun()">
             </div>
@@ -30,20 +30,28 @@
                         </div>
                         <div class="list-right">
                             <div class="list-info-title" v-text="item.game_name"></div>
-                            <div class="list-info-left">代练</div>
-                            <div class="list-info-right">成品号</div>
+                            <div class="list-ico vs">代练</div>
+                            <div class="list-ico product">成品号</div>
+                            <div class="list-ico rent" v-if="trade_type == 1">成品号</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- <Protocal v-bind:ProtocalData="ProtocalData"></Protocal> -->
+        <Protocal v-bind:proData="proData" v-on:isPro="isPro"></Protocal>
     </div>
 </template>
 
 <script>
 import Header from "@/components/home-page/Header";
+import Protocal from "@/components/multi/Protocal"; //传参传不过去
 export default {
     name: "SellPage",
+    components: {
+        Header,
+        Protocal
+    },
     data() {
         return {
             showTitle: {
@@ -53,9 +61,16 @@ export default {
                 showBg: true, //是否显示背景
                 title: ""
             },
+            proData: {
+                isShow: false,
+                con: "",
+                btn: "确认",
+                val: ""
+            },
             search_val: "",
             user_type: "", //用户类型
             historyNameList: [],
+            trade_type: "", //交易类型
             gameClassfiy: [
                 { name: "热", sele: true },
                 { name: "A", sele: false },
@@ -89,9 +104,7 @@ export default {
             gameClassAll: []
         };
     },
-    components: {
-        Header
-    },
+
     methods: {
         //一键清空
         emptyFun() {
@@ -113,7 +126,7 @@ export default {
         // 选择游戏对应的字母
         seleGameClass(opt) {
             var that = this;
-            that.search_val = '';
+            that.search_val = "";
             var gameClassfiy = that.gameClassfiy;
             for (var i in gameClassfiy) {
                 if (opt == gameClassfiy[i].name) {
@@ -139,11 +152,11 @@ export default {
         goSellOption(opt) {
             var that = this;
             var token = that.$store.state.token;
-            if (that.user_type == '/buy') {
+            if (that.user_type == "/buy") {
                 //买
-                that.$router.push({ name: "GoodScreen",query:{opt}});
+                that.$router.push({ name: "GoodScreen", query: { opt } });
                 sessionStorage.opt = opt;
-            } else if (that.user_type == '/sell') {
+            } else if (that.user_type == "/sell") {
                 //卖
                 if (token == undefined || token == "") {
                     mui.confirm(
@@ -153,10 +166,7 @@ export default {
                         function(e) {
                             if (e.index == 1) {
                                 that.$router.push({
-                                    name: "AccountLogin",
-                                    params: {
-                                        redirect: that.$router.currentRoute.name
-                                    }
+                                    name: "AccountLogin"
                                 });
                             }
                         },
@@ -165,14 +175,47 @@ export default {
                 } else {
                     that.$router.push({ name: "SellOption", query: { opt } });
                 }
+            } else if (that.user_type == "/rent") {
+            } else if (that.user_type == "/rent-out") {
+                //出租
+                if (token == undefined || token == "") {
+                    mui.confirm(
+                        "请先登陆",
+                        "提示",
+                        ["取消", "确认"],
+                        function(e) {
+                            if (e.index == 1) {
+                                that.$router.push({
+                                    name: "AccountLogin"
+                                });
+                            }
+                        },
+                        "div"
+                    );
+                } else {
+                    that.$axios
+                        .post(process.env.API_HOST + "protocol_safe")
+                        .then(res => {
+                            if (res.status == 200) {
+                                if (res.data.code == 200) {
+                                    that.proData.isShow = true;
+                                    that.proData.con = res.data.data;
+                                    that.proData.val = opt;
+                                }
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                }
             }
         },
-        getData(){
+        getData() {
             var that = this;
             that.user_type = that.$route.path;
             that.$axios
-                .post(process.env.API_HOST+"category",{
-                    game_name:that.search_val,
+                .post(process.env.API_HOST + "category", {
+                    game_name: that.search_val
                 })
                 .then(function(res) {
                     if (res.status == 200) {
@@ -185,11 +228,20 @@ export default {
                 .catch(function(err) {
                     console.log(err);
                 });
+        },
+        // 获取是否同意协议
+        isPro(data) {
+            if (data) {
+                this.$router.push({
+                    name: "LeaseOption",
+                    query: { opt: data }
+                });
+            }
         }
     },
-    beforeRouteLeave(to, from, next){
-        if(to.path == '/buy'){
-            this.showTitle.title="我要买"
+    beforeRouteLeave(to, from, next) {
+        if (to.path == "/buy") {
+            this.showTitle.title = "我要买";
             this.user_type = to.path;
         }
         next();
@@ -197,13 +249,18 @@ export default {
     mounted() {
         var that = this;
         var user_type = that.$route.path;
-        if(user_type == '/buy'){
-            that.showTitle.title = '我要买';
-        }else if(user_type == '/sell'){
+        if (user_type == "/buy") {
+            that.showTitle.title = "我要买";
+        } else if (user_type == "/sell") {
             that.showTitle.title = "我要卖";
+        } else if (user_type == "/rent") {
+            that.showTitle.title = "我要租号";
+            that.trade_type = 1;
+        } else if (user_type == "/rent-out") {
+            that.showTitle.title = "出租账号";
+            that.trade_type = 1;
         }
         that.getData();
-        
     }
 };
 </script>
@@ -235,7 +292,7 @@ export default {
     color: #999999;
     padding: 0 0.6rem;
     margin: 0;
-    background:#ffffff;
+    background: #ffffff;
 }
 .search-ico {
     width: 0.32rem;
@@ -344,26 +401,31 @@ export default {
     color: #333333;
     font-size: 0.26rem;
 }
-.list-info-left,
-.list-info-right {
+.list-ico {
     display: inline-block;
     font-size: 0.24rem;
     color: #ffffff;
     text-align: center;
     line-height: 0.36rem;
     padding: 0 0.11rem;
-}
-.list-info-left {
     margin-right: 0.1rem;
+}
+.vs {
     background: -webkit-linear-gradient(#fd915f, #ff7064);
     background: -o-linear-gradient(#fd915f, #ff7064);
     background: -moz-linear-gradient(#fd915f, #ff7064);
     background: linear-gradient(to right, #fd915f, #ff7064);
 }
-.list-info-right {
+.product {
     background: -webkit-linear-gradient(#feab49, #ffcc4b);
     background: -o-linear-gradient(#feab49, #ffcc4b);
     background: -moz-linear-gradient(#feab49, #ffcc4b);
     background: linear-gradient(to right, #feab49, #ffcc4b);
+}
+.rent {
+    background: -webkit-linear-gradient(#ff9090, #ff687a);
+    background: -o-linear-gradient(#ff9090, #ff687a);
+    background: -moz-linear-gradient(#ff9090, #ff687a);
+    background: linear-gradient(to right, #ff9090, #ff687a);
 }
 </style>

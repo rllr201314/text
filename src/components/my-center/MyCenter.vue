@@ -527,6 +527,7 @@ export default {
                         that.$router.push({name:'HomePage'});
                         that.$store.commit('del_token');
                         that.$store.commit('del_mobile');
+                        that.$store.commit('del_time');
                     }
                     mui.toast(res.data.msg, {duration: "short",type: "div"});
                 }

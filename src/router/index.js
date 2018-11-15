@@ -373,6 +373,34 @@ export default new Router({
       name: 'Dial',
       component: (resolve) => require(['@/components/action/Dial'], resolve),
     },
+    {//选择租号类型
+      path:'/rent',
+      name:'RentPage',
+      component: (resolve) => require(['@/components/sell/SellPage'], resolve),
+    },
+    {//选择出租类型
+      path:'/rent-out',
+      name:'RentOutPage',
+      component: (resolve) => require(['@/components/sell/SellPage'], resolve),
+    },
+    // 租号列表
+    {
+      path:'/rent-list',
+      name:'RentSearch',
+      component: (resolve) => require(['@/components/rent/RentSearch'],resolve)
+    },
+    // 出租发布一
+    {
+      path:'/lease-option',
+      name:'LeaseOption',
+      component: (resolve) => require(['@/components/rent/rent-out/LeaseOption'],resolve)
+    },
+    // 出租发布二
+    {
+      path:'/lease-info',
+      name:'LeaseInfo',
+      component: (resolve) => require(['@/components/rent/rent-out/LeaseInfo'],resolve)
+    },
     {
       path: '*',
       component: (resolve) => require(['@/components/multi/NoData'], resolve)

@@ -158,18 +158,27 @@ export default {
         },
         getMsg(){
             var that = this;
-            if(that.$store.state.token){
-                that.$axios.post(process.env.API_HOST+'tip_msg').then((res)=>{
-                    if(res.status == 200){
-                        if(res.data.code == 200){
-                            that.is_msg = res.data.data.is_msg;
-                            that.confirm_trade = res.data.data.confirm_trade;
-                            that.my_msg = res.data.data.my_msg;
-                        }
+            // debugger;
+            var time = new Date().getTime();
+            if(that.$store.state.time){
+                if(time - Number(that.$store.state.time) > (1000*60*15)){
+                    that.$store.commit('del_token');
+                }else{
+                    if(that.$store.state.token){
+                        that.$axios.post(process.env.API_HOST+'tip_msg').then((res)=>{
+                            if(res.status == 200){
+                                if(res.data.code == 200){
+                                    that.is_msg = res.data.data.is_msg;
+                                    that.confirm_trade = res.data.data.confirm_trade;
+                                    that.my_msg = res.data.data.my_msg;
+                                }
+                            }
+                        }).catch((err)=>{
+                            console.log(err);
+                        })
                     }
-                }).catch((err)=>{
-                    console.log(err);
-                })
+                }
+                
             }
         }
     }

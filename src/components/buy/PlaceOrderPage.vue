@@ -189,7 +189,7 @@
 
         <div class="nextBtn" @click="goPayFn">下一步</div>
         <!-- 遮罩 -->
-        <div class="orderShare" v-show="showOrderShare"></div>
+        <div class="orderShade" v-show="showOrderShade"></div>
         <!-- 分期首付选项栏 -->
         <div class="stageBox" v-show="showDownPayBox">
             <div class="stageBox-cell" v-for="item in downPayOpera" @click="seleDownPay(item.key)">
@@ -285,7 +285,7 @@ export default {
             showDownPayBox: false, //首付选项显示
             showStageBox: false, //分期选项显示
             showInpDownPay: false, //自定义分期显示
-            showOrderShare: false, //遮罩
+            showOrderShade: false, //遮罩
             totalPrice:null,
             // 是否分期
             operaStage: {
@@ -309,7 +309,7 @@ export default {
                     if(res.data.code == 200){
                         that.protocalText = res.data.data;
                         that.showPro = true;
-                        that.showOrderShare = true;
+                        that.showOrderShade = true;
                     }
                 }
             })
@@ -317,7 +317,7 @@ export default {
         hiddenPro(flag){
             var that = this;
             that.showPro = false;
-            that.showOrderShare = false;
+            that.showOrderShade = false;
             if(flag == 'true'){
                 that.protocol = true;
             }
@@ -382,7 +382,7 @@ export default {
             } else if (opt == "stage") {
                 this.showStageBox = true;
             }
-            this.showOrderShare = true;
+            this.showOrderShade = true;
         },
         sumFn(){
             var that = this;
@@ -450,7 +450,7 @@ export default {
                 that.showInpDownPay = true; //自定义分期输入框
             }
             that.showDownPayBox = false; //隐藏分期首付选项
-            that.showOrderShare = false; //隐藏遮罩
+            that.showOrderShade = false; //隐藏遮罩
 
             // // 滚动条可移动
             // var mo = function(e) {
@@ -499,7 +499,7 @@ export default {
                 stageOpera[i].issele = false;
             }
             that.showStageBox = false; //隐藏分期首付选项
-            that.showOrderShare = false; //隐藏遮罩
+            that.showOrderShade = false; //隐藏遮罩
         },
         // 自定义
         customFn(){
@@ -970,7 +970,7 @@ export default {
     height: 0.22rem;
     margin-left: 0.16rem;
 }
-.orderShare {
+.orderShade {
     position: fixed;
     left: 0;
     top: 0;
