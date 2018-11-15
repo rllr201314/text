@@ -2,6 +2,11 @@
     <!-- 电子合同 -->
     <div class="pact-wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
+        <div class="hint" v-if="is_identify==2">
+            <img src="../../../../static/img/my-center/amend.png" alt="">
+            <span>签署电子合同需要实名认证，请前往认证</span>
+            <span class="btn" @click="goAuthentication">前往认证</span>
+        </div>
         <div class="pact-content">
             <div class="pact-cell">
                 <div class="pact-strip" @click="goSign('ture')">
@@ -76,6 +81,9 @@ export default {
             }).catch((err)=>{
                 console.log(err)
             })
+        },
+        goAuthentication(){
+            this.$router.push({path:'/safe-phone'})
         }
     },
     mounted(){
@@ -120,5 +128,31 @@ export default {
 }
 .gray-color{
     color:#999999;
+}
+.hint{
+    background:#f8cfcd;
+    color:#666666;
+    font-size:.26rem;
+    line-height: .8rem;
+    padding:0 .35rem 0 .4rem;
+}
+.hint img{
+    width:.24rem;
+    height:.23rem;
+    vertical-align: middle;
+}
+.hint span{
+    vertical-align: middle;
+}
+.btn{
+    font-size:.22rem;
+    float:right;
+    background:#fce7e6;
+    /* height:.44rem; */
+    line-height: .24rem;
+    padding:.1rem;
+    border:1px solid #999999;
+    border-radius:.04rem;
+    margin-top:.19rem;
 }
 </style>
