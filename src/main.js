@@ -29,7 +29,6 @@ axios.interceptors.request.use(config => {
     }
     if(store.state.token) {
       config.data.Authorization = store.state.token;
-      store.commit('set_time');
     }
     config.data = qs.stringify(config.data);
   }
@@ -49,9 +48,14 @@ axios.interceptors.response.use(
       switch (response.data.code) {
         case 401:
           store.commit('del_token');
-          mui.alert(response.data.msg,'提示','确认',function(){
-            router.push({name: "AccountLogin",});
-        },'div');
+          if(router.currentRoute.fullPath == '/index'){
+            mui.toast(response.data.msg, {duration: "short", type: "div"});
+          }else{
+            mui.alert(response.data.msg,'提示','确认',function(){
+              router.push({name: "AccountLogin",});
+            },'div');
+          }
+          
       }
     }
     return response;

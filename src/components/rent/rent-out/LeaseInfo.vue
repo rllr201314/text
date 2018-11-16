@@ -173,20 +173,6 @@
                     <span>出租设定</span>
                 </div>
                 <div class="sell-cell-content">
-                    <!-- <div class="sell-strip">
-                        <span class="sell-lefttext">是否可议价</span>
-                        <div class="strip-radio-right">
-                            <div class="opera" v-for="item in sellData.sellType.sell" @click="seleSell(item.value)">
-                                <img :src="item.ischeck?sellData.sellType.imgSrc.Ok:sellData.sellType.imgSrc.No" alt="">
-                                <span v-text="item.name"></span>
-                            </div>
-                        </div>
-                    </div> -->
-
-                    <div class="sell-strip">
-                        <span class="sell-lefttext">出租价格</span>
-                        <input type="number" placeholder="填写商品出租价格" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
-                    </div>
                     <div class="sell-strip" @click="showPop('rentType')">
                         <span class="sell-lefttext">出租方式</span>
                         <div class="right-opt">
@@ -194,58 +180,24 @@
                             <img src="../../../../static/img/order/next.png" alt="">
                         </div>
                     </div>
-                    
-
-
-                    <div class="sell-strip" v-show="requestData.sell_type == 2">
-                        <span class="sell-lefttext">商品最低价</span>
-                        <input type="number" placeholder="填写可以接受最低的议价价格" v-model="requestData.min_price" oninput="if(value.length>7)value=value.slice(0,7)">
+                    <div class="sell-strip" v-show="requestData.sell_type == 1">
+                        <span class="sell-lefttext">最短租期</span>
+                        <input class="rent-input" type="number" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
+                        <span class="black-color">天</span><span class="red-color">(建议最短周期7天)</span>
                     </div>
                     <div class="sell-strip" v-show="requestData.sell_type == 1">
-                        <span class="sell-lefttext">商品售价</span>
-                        <input type="number" placeholder="填写商品价格" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
+                        <span class="sell-lefttext">租金</span>
+                        <input class="rent-input" type="number" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
+                        <span class="black-color">元/天</span>
                     </div>
-                    <div class="sell-strip" v-if="safeOrCompact.showSafe">
-                        <div>
-                            <div class="sell-left">保险服务</div>
-                            <div class="strip-radio-right">
-                                <div class="opera" @click="seleOpera('safe')">
-                                    <img :src="sellData.optSafe?'../../../../static/img/order/okcheck.png':'../../../../static/img/order/nocheck.png'" alt="">
-                                    <span>是</span>
-                                </div>
-                                <div class="opera" @click="seleOpera('nosafe')" v-if="safeOrCompact.showNoSafe">
-                                    <img :src="sellData.optSafe?'../../../../static/img/order/nocheck.png':'../../../../static/img/order/okcheck.png'" alt="">
-                                    <span>否</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="safe-hint">
-                            <div class="sell-left">(保险费用为总价的{{safeOrCompact.parcent}}%)</div>
-                            <div class="strip-radio-right">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
-                            <div class="strip-radio-right">
+                    <div class="sell-strip" v-show="requestData.sell_type == 1">
+                        <span class="sell-lefttext">押金</span>
+                        <input class="rent-input" type="number" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
+                        <span class="black-color">元</span>
+                    </div>
 
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sell-strip" v-if="safeOrCompact.showCompact">
-                        <div>
-                            <div class="sell-left">合同服务</div>
-                            <div class="strip-radio-right">
-                                <div class="opera" @click="seleOpera('safe')">
-                                    <img :src="sellData.optSafe?'../../../../static/img/order/okcheck.png':'../../../../static/img/order/nocheck.png'" alt="">
-                                    <span>是</span>
-                                </div>
-                                <div class="opera" @click="seleOpera('nosafe')" v-if="safeOrCompact.showNoCompact">
-                                    <img :src="sellData.optSafe?'../../../../static/img/order/nocheck.png':'../../../../static/img/order/okcheck.png'" alt="">
-                                    <span>否</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="safe-hint">
-                            <div class="sell-left">(合同费用为总价的{{safeOrCompact.parcent}}%)</div>
-                            <div class="strip-radio-right">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
-                        </div>
-                    </div>
+
+                    
                 </div>
             </div>
             <!-- 账号信息 -->
@@ -306,21 +258,6 @@
             </div>
         </div>
         <div class="shade" v-show="showTagAll"></div>
-        <!-- 弹出框 -->
-        <!-- 职业 -->
-        <!-- <div id="sheet-faction" class="mui-popover mui-popover-bottom mui-popover-action">
-            <ul class="pop-view">
-                <li class="pop-view-tit option-gray">
-                    <div>请选择职业</div>
-                </li>
-                <li class="option-black" v-for="item in sellData.faction" @click="seleType(item.faction_id,'faction')" v-text="item.faction_name"></li>
-            </ul>
-            <ul class="pop-view">
-                <li class="mui-table-view-cell option-black">
-                    <a href="#sheet-faction">取消</a>
-                </li>
-            </ul>
-        </div> -->
         <div v-show="showMenu_type" class="type-mu">
             <div class="pop-view-tit option-gray">请选择职业</div>
             <ul>
@@ -465,6 +402,7 @@ export default {
             category_id:'',
             upData: {},
             requestData: {
+                rent_id:"",
                 deal_type: "",
                 category_id: "",
                 operation_id: "",
@@ -482,6 +420,7 @@ export default {
                 is_compact: "",
                 sell_type: "",
                 goods_price: "",
+
                 min_price: "",
                 account: "",
                 password: "",
@@ -1205,7 +1144,21 @@ export default {
             }).catch((err) => {
                 console.log(err)
             })
-        }
+        },
+        // 判断是不是JSON字符串
+        isobjStr(str) {
+            if (typeof str == "string") {
+                try {
+                    if (typeof JSON.parse(str) == "object") {
+                        return true;
+                    }
+                } catch (e) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        },
     },
     mounted() {
         var that = this;
@@ -1242,16 +1195,22 @@ export default {
             that.$router.go(-1); 
         } else {
             if(opt.flag == 1){
-                that.category_id = opt.category_id;
-                that.requestData.category_id = opt.category_id;
-                that.requestData.deal_type = opt.deal_type;
-                that.requestData.operation_id = opt.operation_id;
-                that.requestData.area_id = opt.area_id;
-                that.requestData.server_id = opt.server_id;
-                that.getTagType();//获取标签大类
-                that.comData.showTitle.title = "我要卖";
-                that.getConfig(opt,opt.flag);//请求选择参数
-                that.editOrpublish = 1;
+                if(that.isobjStr(opt.upData)){
+                    var data = JSON.parse(opt.upData);
+                    that.category_id = data.category_id;
+                    that.requestData.category_id = data.category_id;
+                    that.requestData.rent_id = data.rent_id;//--------------------------------
+                    that.requestData.deal_type = data.deal_type;
+                    that.requestData.operation_id = data.operation_id;
+                    that.requestData.area_id = data.area_id;
+                    that.requestData.server_id = data.server_id;
+                    that.getConfig(data,opt.flag);//请求选择参数
+                    that.getTagType();//获取标签大类
+                    that.comData.showTitle.title = "我要卖";
+                    that.editOrpublish = 1;
+                }else{
+                    that.$router.go(-1); 
+                }
             }else if(opt.flag == 2){
                 that.showLoading = true;
                 that.getRedact(opt.g);
@@ -1860,5 +1819,11 @@ input[type="number"] {
 }
 .safe-hint{
     line-height:.2rem;
+}
+.rent-input{
+    width:.8rem;
+    border:1px solid #D2D2D2;
+    margin-right:.2rem;
+    text-align:right;
 }
 </style>

@@ -373,21 +373,10 @@ export default new Router({
       name: 'Dial',
       component: (resolve) => require(['@/components/action/Dial'], resolve),
     },
-    {//选择租号类型
-      path:'/rent',
-      name:'RentPage',
-      component: (resolve) => require(['@/components/sell/SellPage'], resolve),
-    },
     {//选择出租类型
       path:'/rent-out',
       name:'RentOutPage',
       component: (resolve) => require(['@/components/sell/SellPage'], resolve),
-    },
-    // 租号列表
-    {
-      path:'/rent-list',
-      name:'RentSearch',
-      component: (resolve) => require(['@/components/rent/RentSearch'],resolve)
     },
     // 出租发布一
     {
@@ -400,6 +389,35 @@ export default new Router({
       path:'/lease-info',
       name:'LeaseInfo',
       component: (resolve) => require(['@/components/rent/rent-out/LeaseInfo'],resolve)
+    },
+    {//选择租号类型
+      path:'/rent',
+      name:'RentPage',
+      component: (resolve) => require(['@/components/sell/SellPage'], resolve),
+    },
+    // 租号列表
+    {
+      path:'/rent-list',
+      name:'RentSearch',
+      component: (resolve) => require(['@/components/rent/RentSearch'],resolve)
+    },
+    // 租号详情
+    {
+      path:'/rent-details',
+      name:'RentDetails',
+      component: (resolve) => require(['@/components/rent/RentDetails'],resolve)
+    },
+    // 租号下单
+    {
+      path:'/rent-orders',
+      name:'RentPlaceOrder',
+      component: (resolve) => require(['@/components/rent/RentPlaceOrder'],resolve)
+    },
+    // 租号状态
+    {
+      path:'/rent-state',
+      name:'RentState',
+      component: (resolve) => require(['@/components/rent/RentState'],resolve)
     },
     {
       path: '*',

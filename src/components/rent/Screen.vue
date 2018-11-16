@@ -154,7 +154,6 @@ export default {
     name: "Screen",
     data() {
         return {
-            list: null,
 
             // 提交的数据
            
@@ -348,9 +347,7 @@ export default {
     },
 
     methods: {
-        getlist() {
-            this.list++;
-        },
+        // 确认筛选
         okScreen() {
             var that = this;
             var that_r = that.request;
@@ -379,23 +376,29 @@ export default {
             that_r.role_level = that.role_level;
             that_r.page = 1;
             $('#minirefresh').scrollTop(0);
-            // that.getGoodsInfo(that.request);
+            that.$emit('getData',that_r);
             that.hiddenScreenFun(); //隐藏筛选
-            
         },
         cancleScreen() {
             var that = this;
-            that.request.is_stage = null;
-            that.request.is_safe = null;
-            that.request.is_compact = null;
-            that.request.sell_type = null
-            that.request.is_bind = null
-            that.request.role_level = null
-            that.request.begin_price = null
-            that.request.end_price = null;
-            that.request.sort_price = null
-            that.request.sort_collection = null
-            that.request.is_video = null
+            var that_r = that.request;
+            that_r.is_stage = null;
+            that_r.is_safe = null;
+            that_r.is_compact = null;
+            that_r.sell_type = null;
+            that_r.is_bind = null;
+            that_r.role_level = null;
+            that_r.begin_price = null;
+            that_r.end_price = null;
+            that_r.sort_price = null;
+            that_r.sort_collection = null;
+            that_r.is_video = null;
+            
+            var sortArr = that.sortPrice.ischeck;
+            sortArr.moreSort = false;
+            sortArr.upSort  = false;
+            sortArr.downSort = false;
+
             
             var accountBindAll = that.screen_info.accountBind;
             for (var i in accountBindAll) {
@@ -437,10 +440,9 @@ export default {
             for (var i in schoolTypeAll) {
                 schoolTypeAll[i].ischeck = false;
             }
-            // console.log(that.request);
-            that.request.page = 1;
+            that_r.page = 1;
             $('#minirefresh').scrollTop(0);
-            // that.getGoodsInfo(that.request);
+            that.$emit('getData',that_r);
             that.hiddenScreenFun(); //隐藏筛选
         },
          // 上一栏选项
@@ -535,8 +537,8 @@ export default {
             that.request.deal_type = value;
             that.request.page = 1;
 
-            that.$store.commit('addPage','refresh');
-            that.$store.commit('changeRequest',{name:'deal_type',value:value})
+            // that.$store.commit('addPage','refresh');
+            // that.$store.commit('changeRequest',{name:'deal_type',value:value})
             that.$emit('getData',that.request);
         },
         // 选择手机系统
@@ -557,20 +559,17 @@ export default {
                 that.lastClient_id = value;
                 that.getOperation(value);
 
-                // that.request.operation_id = "";
-                // that.request.area_id = "";
-                // that.request.server_id = "";
-                // that.request.client_id = value;
-                // that.request.page = 1;
-                // $('#minirefresh').scrollTop(0);
-                // that.getGoodsInfo(that.request);
-
-                
-                that.$store.commit('addPage','refresh');
-                that.$store.commit('changeRequest',{name:'operation_id',value:''});
-                that.$store.commit('changeRequest',{name:'area_id',value:''});
-                that.$store.commit('changeRequest',{name:'server_id',value:''});
-                that.$store.commit('changeRequest',{name:'client_id',value});
+                that.request.operation_id = "";
+                that.request.area_id = "";
+                that.request.server_id = "";
+                that.request.client_id = value;
+                that.request.page = 1;
+                $('#minirefresh').scrollTop(0);
+                // that.$store.commit('addPage','refresh');
+                // that.$store.commit('changeRequest',{name:'operation_id',value:''});
+                // that.$store.commit('changeRequest',{name:'area_id',value:''});
+                // that.$store.commit('changeRequest',{name:'server_id',value:''});
+                // that.$store.commit('changeRequest',{name:'client_id',value});
                 that.$emit('getData',that.request);
             }
             that.hiddenScreenFun(); //隐藏筛选
@@ -591,22 +590,22 @@ export default {
             }
             that.getServer(operation_id);
 
-            // that.request.operation_id = operation_id;
-            // that.request.page = 1;
+            that.request.operation_id = operation_id;
+            that.request.page = 1;
             // $('#minirefresh').scrollTop(0);
             // that.getGoodsInfo(that.request);
 
             
-            that.$store.commit('addPage','refresh');
-            that.$store.commit('changeRequest',{name:'operation_id',value:operation_id});
+            // that.$store.commit('addPage','refresh');
+            // that.$store.commit('changeRequest',{name:'operation_id',value:operation_id});
             that.$emit('getData',that.request);
         },
         // 选择服务器
         seleServer(opt, flag) {
             var that = this;
-            // that.request.page = 1;
+            that.request.page = 1;
             // $('#minirefresh').scrollTop(0);
-            that.$store.commit('addPage','refresh');
+            // that.$store.commit('addPage','refresh');
 
             if (flag == "area") {
                 var areaAll = that.server_info;
@@ -618,9 +617,8 @@ export default {
                     }
                     areaAll[i].ischeck = false;
                 }
-                // that.request.area_id = opt;
-                // that.getGoodsInfo(that.request);
-                that.$store.commit('changeRequest',{name:'area_id',value:opt});
+                that.request.area_id = opt;
+                // that.$store.commit('changeRequest',{name:'area_id',value:opt});
                 that.$emit('getData',that.request);
 
             } else if (flag == "server") {
@@ -634,16 +632,59 @@ export default {
                     }
                     areaAll[i].ischeck = false;
                 }
-                // that.request.area_id = that.seleAreaText.id;
-                // that.request.server_id = opt;
-                // that.getGoodsInfo(that.request);
+                that.request.area_id = that.seleAreaText.id;
+                that.request.server_id = opt;
                 
-                that.$store.commit('changeRequest',{name:'area_id',value:that.seleAreaText.id});
-                that.$store.commit('changeRequest',{name:'server_id',value:opt});
+                // that.$store.commit('changeRequest',{name:'area_id',value:that.seleAreaText.id});
+                // that.$store.commit('changeRequest',{name:'server_id',value:opt});
                 that.$emit('getData',that.request);
             }
             that.hiddenScreenFun(); //隐藏筛选
         }, 
+        // 删除选择的区服
+        delOpe(ind) {
+            var that = this;
+            that.request.page = 1;
+            $('#minirefresh').scrollTop(0);
+            if (ind == "0") {
+                that.seleOpe = [];
+                that.showOperation = true;
+                that.request.operation_id = "";
+                that.request.area_id = "";
+                that.request.server_id = "";
+                // that.getGoodsInfo(that.request);
+                that.$emit('getData',that.request);
+            }
+            if (ind == "1") {
+                if (that.showArea) {
+                    that.seleOpe.splice(1, 2);
+                    for (var i in that.server_info) {
+                        that.server_info[i].ischeck = false;
+                    }
+                    that.request.area_id = "";
+                    that.request.server_id = "";
+                    // that.getGoodsInfo(that.request);
+                    that.$emit('getData',that.request);
+                } else {
+                    that.seleOpe.splice(1, 1);
+                    for (var i in that.server_info) {
+                        that.server_info[i].ischeck = false;
+                    }
+                    that.request.area_id = "";
+                    // that.getGoodsInfo(that.request);
+                    that.$emit('getData',that.request);
+                }
+            } else if (ind == "2") {
+                that.seleOpe.splice(2, 1);
+                for (var i in that.server_info) {
+                    that.server_info[i].ischeck = false;
+                }
+                that.request.server_id = "";
+                // that.getGoodsInfo(that.request);
+                that.$emit('getData',that.request);
+            }
+            // console.log(that.seleOpe);
+        },
         // 获取区服
         getServer(operation_id) {
             var that = this;
@@ -683,6 +724,174 @@ export default {
                     console.log(err);
                 });
         },
+        // 筛选--排序
+        seleSort(flag) {
+            var that = this;
+            var sortArr = that.sortPrice.ischeck;
+            if (flag == "down") {
+                sortArr.moreSort = false;
+                sortArr.upSort  = false;
+                sortArr.downSort = !sortArr.downSort;
+                if(sortArr.downSort){
+                    that.sort_collection = "";
+                    that.sort_price = "1";
+                }else{
+                    that.sort_collection = "";
+                    that.sort_price = "";
+                }
+            } else if (flag == "up") {
+                sortArr.downSort = false;
+                sortArr.moreSort  = false;
+                sortArr.upSort = !sortArr.upSort;
+                if(sortArr.upSort){
+                    that.sort_collection = "";
+                    that.sort_price = "2";
+                }else{
+                    that.sort_collection = "";
+                    that.sort_price = "";
+                }
+            } else if (flag == "more") {
+                sortArr.downSort = false;
+                sortArr.upSort  = false;
+                sortArr.moreSort = !sortArr.moreSort;
+                if(sortArr.moreSort){
+                    that.sort_price = "";
+                    that.sort_collection = "1";
+                }else{
+                    that.sort_collection = "";
+                    that.sort_price = "";
+                }
+            }
+        },
+        // 筛选--类型
+        seleScreen(flag, seleTag) {
+            var that = this;
+            // 账号绑定
+            if (flag == "accountBind") {
+                var accountBindAll = this.screen_info.accountBind;
+                if (seleTag == "4") {
+                    for (var i in accountBindAll) {
+                        if (seleTag == accountBindAll[i].value) {
+                            accountBindAll[i].ischeck = !accountBindAll[i].ischeck;
+                            continue;
+                        }
+                        accountBindAll[i].ischeck = false;
+                    }
+                } else {
+                    for (var i in accountBindAll) {
+                        if (seleTag == accountBindAll[i].value) {
+                            accountBindAll[i].ischeck = !accountBindAll[i].ischeck;
+                        }
+                        if (accountBindAll[i].value == "4") {
+                            accountBindAll[i].ischeck = false;
+                        }
+                    }
+                }
+            } else if (flag == "videoStatus") {//视频绑定
+                var videoStatusAll = this.screen_info.videoStatus;
+                for (var i in videoStatusAll) {
+                    if (seleTag == videoStatusAll[i].value) {
+                        videoStatusAll[i].ischeck = !videoStatusAll[i].ischeck;
+                        if(videoStatusAll[i].ischeck){
+                            that.is_video = seleTag;
+                        }else{
+                            that.is_video = "";
+                        }
+                        continue;
+                    }
+                    videoStatusAll[i].ischeck = false;
+                }
+            } else if (flag == "sellType") {//售价类型
+                var sellTypeAll = this.screen_info.sellType;
+                for (var i in sellTypeAll) {
+                    if (seleTag == sellTypeAll[i].value) {
+                        sellTypeAll[i].ischeck = !sellTypeAll[i].ischeck;
+                        if(sellTypeAll[i].ischeck){
+                            that.sell_type = seleTag;
+                        }else{
+                            that.sell_type = "";
+                        }
+                        continue;
+                    }
+                    sellTypeAll[i].ischeck = false;
+                }
+            } else if (flag == "isStages") {//是否分期
+                var isStagesAll = this.screen_info.isStages;
+                for (var i in isStagesAll) {
+                    if (seleTag == isStagesAll[i].value) {
+                        isStagesAll[i].ischeck = !isStagesAll[i].ischeck;
+                        if(isStagesAll[i].ischeck){
+                            that.is_stage = seleTag;
+                        }else{
+                            that.is_stage = "";
+                        }
+                        continue;
+                    }
+                    isStagesAll[i].ischeck = false;
+                }
+            } else if (flag == "isInsurance") {//保险情况
+                var isInsuranceAll = this.screen_info.isInsurance;
+                for (var i in isInsuranceAll) {
+                    if (seleTag == isInsuranceAll[i].value) {
+                        isInsuranceAll[i].ischeck = !isInsuranceAll[i].ischeck;
+                        if(isInsuranceAll[i].ischeck){
+                            that.is_safe = seleTag;
+                        }else{
+                            that.is_safe = "";
+                        }
+                        continue;
+                    }
+                    isInsuranceAll[i].ischeck = false;
+                }
+            } else if (flag == "levelType") {//等级
+                var levelTypeAll = this.screen_info.levelType;
+                for (var i in levelTypeAll) {
+                    if (seleTag == levelTypeAll[i].value) {
+                        levelTypeAll[i].ischeck = !levelTypeAll[i].ischeck;
+                        if(levelTypeAll[i].ischeck){
+                            that.role_level = seleTag;
+                        }else{
+                            that.role_level = "";
+                        }
+                        continue;
+                    }
+                    levelTypeAll[i].ischeck = false;
+                }
+            } else if (flag == "pokemon") {
+                // console.log(seleTag);
+                var pokemonTypeAll = this.screen_info.pokemonType;
+                for (var i in pokemonTypeAll) {
+                    if (seleTag == pokemonTypeAll[i].name) {
+                        pokemonTypeAll[i].ischeck = true;
+                        this.hiddenScreenFun(); //隐藏筛选
+                        continue;
+                    }
+                    pokemonTypeAll[i].ischeck = false;
+                }
+            } else if (flag == "profession") {
+                var professionTypeAll = this.screen_info.professionType;
+                for (var i in professionTypeAll) {
+                    if (seleTag == professionTypeAll[i].name) {
+                        professionTypeAll[i].ischeck = true;
+
+                        this.hiddenScreenFun(); //隐藏筛选
+                        continue;
+                    }
+                    professionTypeAll[i].ischeck = false;
+                }
+            } else if (flag == "school") {
+                var schoolTypeAll = this.screen_info.schoolType;
+                for (var i in schoolTypeAll) {
+                    if (seleTag == schoolTypeAll[i].name) {
+                        schoolTypeAll[i].ischeck = true;
+
+                        this.hiddenScreenFun(); //隐藏筛选
+                        continue;
+                    }
+                    schoolTypeAll[i].ischeck = false;
+                }
+            }
+        },
 
         // 配置
         getConfig(category_id) {
@@ -701,9 +910,7 @@ export default {
                                 if (deal_type[i].name == "成品号") {
                                     deal_type[i].ischeck = true;
                                     that.request.deal_type = deal_type[i].value;
-                                    that.$store.commit('changeRequest',{name:'deal_type',value:deal_type[i].value});
-                                    console.log('-----------');
-                                    console.log(that.$store.state.list_request);
+                                    // that.$store.commit('changeRequest',{name:'deal_type',value:deal_type[i].value});
                                 }
                             }
                             that.account_info = deal_type;
@@ -715,8 +922,8 @@ export default {
                                     that.lastClient_id="";//上一次保存的手机系统选项
                                     client_idAll[i].ischeck = true;
                                     that.getOperation(client_idAll[i].value); //调用获取平台接口
-                                    // that.request.client_id = client_idAll[i].value;
-                                    that.$store.commit('changeRequest',{name:'client_id',value:client_idAll[i].value});
+                                    that.request.client_id = client_idAll[i].value;
+                                    // that.$store.commit('changeRequest',{name:'client_id',value:client_idAll[i].value});
                                     continue;
                                 }
                                 client_idAll[i].ischeck = false;
@@ -777,10 +984,20 @@ export default {
     mounted() {
 
         var that = this;
-        that.$store.commit('changeRequest',{name:'category_id',value:1});
-        that.request = that.$store.state.list_request;
-        console.log(that.request);
-        this.getConfig(that.request.category_id);
+        // that.$store.commit('changeRequest',{name:'category_id',value:1});
+
+        var opt = sessionStorage.getItem("opt");
+        if(that.$route.query.opt){
+            that.request = JSON.parse(JSON.stringify(that.$store.state.list_request));
+            if (opt == that.$route.query.opt) {
+                that.request.category_id = opt;
+                that.getConfig(opt);
+            } else {
+                that.$router.go(-1);
+            }
+        }else{
+            that.$router.go(-1);
+        }
     }
 };
 </script>

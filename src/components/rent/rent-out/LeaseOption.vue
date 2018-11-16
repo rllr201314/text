@@ -162,6 +162,7 @@ export default {
                 server_info: [],
             },
             upData:{
+                rent_id:'',//出租方式
                 category_id: "", //游戏分类id
                 deal_type:'',//商品类型
                 operation_id:'',//系统类型
@@ -258,7 +259,7 @@ export default {
                 that.showMenu_mobile = true;
             }
         },
-        // 选择出租方式
+        // 选择出租方式-------------------------------------------------------------
         seleRentWay(ind){
             var that = this;
             that.showMenu_way = false;
@@ -267,7 +268,7 @@ export default {
             for (var i in merchand) {
                 if (ind == merchand[i].value) {
                     merchand[i].ischeck = true;
-                    that.upData.deal_type = merchand[i].value;
+                    that.upData.rent_id = merchand[i].value;
                     that.sellOptData.rent_way = merchand[i].name;
                     continue;
                 }
@@ -429,6 +430,9 @@ export default {
                 mui.alert('请重新选择游戏','提示','确认',function(){
                     that.$router.go(-1);
                 },'div')
+            }else if(upData.rent_id == ''){
+                mui.alert('请选择出租方式','提示','确认','','div');
+                return false;
             }else if(upData.deal_type == ''){
                 mui.alert('请选择商品类型','提示','确认','','div');
                 return false;
@@ -445,17 +449,8 @@ export default {
                 mui.alert('请选择区服','提示','确认','','div');
                 return false;
             }else{
-                // console.log(upData);
-                that.$router.push({name:'LeaseInfo',
-                    query:{
-                        flag:1,
-                        category_id:upData.category_id,
-                        deal_type:upData.deal_type,
-                        operation_id:upData.operation_id,
-                        area_id:upData.area_id,
-                        server_id:upData.server_id
-                    }
-                });
+                upData = JSON.stringify(upData);
+                that.$router.push({name:'LeaseInfo',query:{flag:1,upData:upData}});
             }
         },
         getConfig(opt){

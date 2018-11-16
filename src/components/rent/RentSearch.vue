@@ -4,38 +4,56 @@
         <div class="titInp">
             <img class="search-ico" src="../../../static/img/search_ico.png" alt="">
             <form action="javascript:return true;">
-                <input class="search-title" type="search" placeholder="请输入搜索内容" v-model.trim="content" @keyup.13="show()" ref="input1" @blur="out()">
+                <input class="search-title" type="search" placeholder="请输入搜索内容" v-model.trim="request.content" @keyup.13="show()" ref="input1" @blur="out()">
             </form>
             <img class="empty-ico" src="../../../static/img/empty_ico.png" alt="" @click="emptyFun()">
         </div>
         <Screen @getData="getData"></Screen>
-        <!-- <List @goodsInfo="goodsInfo" v-show="goodsInfo?true:false"></List> -->
         <div class="goods-wrap" v-show="goodsList != ''?true:false">
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
                 <div class="minirefresh-scroll list">
                     <ul>
                         <div class="goods-strip" v-for="(item,index) in goodsList" @click="goDetail(item.goods_id)">
-                            <div class="goods-strip-title">
-                                <div class="boutique" v-if="item.is_recommend == 1">精</div>
-                                <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
-                                <div class="goods-type" v-else-if="item.deal_type_id == 2">代练号</div>
-                                <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                <div class="account-ios" v-else-if="item.client_id == 2">苹果</div>
-                                <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                <div class="area" v-text="item.area_name"></div>
-                            </div>
-                            <div class="goods-strip-content">
-                                <div class="goods-des" v-text="item.goods_title"></div>
-                                <div class="goods-ico">
-                                    <img v-if="item.is_safe == 1" src="../../../static/img/goodscreen/safe_ico.png" alt="">
-                                    <img v-if="item.is_stage == 1" src="../../../static/img/goodscreen/stages_ico.png" alt="">
-                                    <img v-if="item.is_check == 1" src="../../../static/img/goodscreen/verify.png" alt="">
-                                    <img v-if="item.is_compact == 1" src="../../../static/img/goodscreen/contract_ico.png" alt="">
+                            <div class="goods-strip-top">
+                                <div class="goods-strip-title">
+                                    <div class="boutique" v-if="item.is_recommend == 1">精</div>
+                                    <div class="goods-type" v-if="item.deal_type_id == 1">租号</div>
+                                    <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                    <div class="account-ios" v-else-if="item.client_id == 2">苹果</div>
+                                    <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                    <div class="area" v-text="item.area_name"></div>
+                                </div>
+                                <div class="goods-strip-content">
+                                    <div class="goods-des" v-text="item.goods_title"></div>
+                                    <div class="goods-ico">
+                                        <img v-if="item.is_safe == 1" src="../../../static/img/goodscreen/safe_ico.png" alt="">
+                                        <img v-if="item.is_stage == 1" src="../../../static/img/goodscreen/stages_ico.png" alt="">
+                                        <img v-if="item.is_check == 1" src="../../../static/img/goodscreen/verify.png" alt="">
+                                        <img v-if="item.is_compact == 1" src="../../../static/img/goodscreen/contract_ico.png" alt="">
+                                    </div>
+                                    <div class="original-price"><span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span></div>
+                                </div>
+                                <div class="goods-strip-bottom">
+                                    <div>
+                                        <img src="../../../static/img/rent/rent-ico.png" alt="">
+                                        <span>租金</span>
+                                        <span class="red-color">￥</span><span class="goods_price">6</span>
+                                        <span>/日</span>
+                                    </div>
+                                    <div>
+                                        <img src="../../../static/img/rent/pledge-ico.png" alt="">
+                                        <span>押金</span>
+                                        <span>￥</span><span>500</span>
+                                    </div>
+                                    <div>
+                                        <img src="../../../static/img/rent/pledge-ico.png" alt="">
+                                        <span>最短租期</span>
+                                        <span v-text="item.goods_price"></span><span>天</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="goods-strip-bottom">
-                                <div class="goods-price">￥<span v-text="item.goods_price"></span></div>
-                                <div class="bargain" v-if="item.sell_type == 2">可议价</div>
+                            <div class="hint-bottom">
+                                账号很便宜，约定帮完每日任务和xx活动。
                             </div>
                         </div>
                     </ul>
@@ -47,14 +65,12 @@
 </template>
 <script>
 import Header from "@/components/home-page/Header"; //头部
-// import List from '@/components/rent/List'
 import Screen from "@/components/rent/Screen";
 import NoData from "@/components/multi/NoData";
 export default {
     name: "RentSearch",
     components: {
         Header,
-        // List,
         Screen,
         NoData
     },
@@ -69,56 +85,70 @@ export default {
             },
             content: "",
             goodsInfo: "",
-            goodsList: [] //商品列表
+            goodsList: [], //商品列表
+            request: "",
+            toload: 1
         };
     },
     methods: {
-        getlist() {
-            this.list++;
+        // 去详情
+        goDetail(goods_id) {
+            this.$router.push({
+                name: "RentDetails",
+                query: { goods_id: goods_id }
+            });
         },
         //一键清空
         emptyFun() {
-            // this.request.content = '';
-            // this.getGoodsInfo(this.request);
+            debugger;
+            this.request.content = '';
+            this.getGoodsInfo(this.request);
         },
         // 隐藏键盘
         show(e) {
             this.$refs.input1.blur();
-            // this.getGoodsInfo(this.request);
+            this.getGoodsInfo(this.request);
         },
         out() {
-            // this.getGoodsInfo(this.request);
+            this.getGoodsInfo(this.request);
         },
         getData(data) {
-            this.getGoodsInfo(this.$store.state.list_request,'refresh');
+            this.request = data;
+            if (this.toload > 0) {
+                this.toload--;
+                this.refresh();
+            } else {
+                this.getGoodsInfo(data, "refresh");
+            }
         },
         // 获取商品列表
         getGoodsInfo(request, flag) {
             var that = this;
             that.$axios
-                .post(process.env.API_HOST+"goods_info", request)
+                .post(process.env.API_HOST + "goods_info", request)
                 .then(function(res) {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var data = res.data.data.data;
                             // 上拉加载
-                            if(flag == 'push'){
-                                if(data == ''){
+                            // debugger;
+                            if (flag == "push") {
+                                if (data == "") {
                                     that.miniRefresh.endUpLoading(true);
-                                }else{
+                                } else {
                                     that.miniRefresh.endUpLoading(false);
                                     for (var i in res.data.data.data) {
                                         that.goodsList.push(
                                             res.data.data.data[i]
                                         );
                                     }
-                                } 
-                            }else{
-                                if(data == ""){
+                                }
+                            } else {
+                                if (data == "") {
                                     that.showNoData = true;
                                     that.goodsList = "";
                                     that.miniRefresh.endDownLoading();
-                                }else{
+                                } else {
                                     that.goodsList = res.data.data.data;
                                     that.pages = res.data.data.last_page;
                                     that.showNoData = false;
@@ -141,9 +171,8 @@ export default {
                     isAuto: true,
                     bounceTime: 500,
                     callback: () => {
-                        that.$store.commit('addPage','refresh');
-                        that.getGoodsInfo(that.$store.state.list_request,'refresh');
-                        
+                        that.request.page = 1;
+                        that.getGoodsInfo(that.request, "refresh");
                     }
                 },
                 up: {
@@ -153,11 +182,17 @@ export default {
                     },
                     isShowUpLoading: true,
                     callback: () => {
-                        that.$store.commit('addPage','add');
-                        var page = that.$store.state.list_request.page;
-                        if(page <= that.pages){
-                            that.getGoodsInfo(that.$store.state.list_request,'push');
-                        }else{
+                        // that.$store.commit('addPage','add');
+                        // var page = that.$store.state.list_request.page;
+                        // if(page <= that.pages){
+                        //     that.getGoodsInfo(that.$store.state.list_request,'push');
+                        // }else{
+                        //     that.miniRefresh.endUpLoading(true);
+                        // }
+                        that.request.page++;
+                        if (that.request.page <= that.pages) {
+                            that.getGoodsInfo(that.request, "push");
+                        } else {
                             that.miniRefresh.endUpLoading(true);
                         }
                     }
@@ -166,7 +201,13 @@ export default {
         }
     },
     mounted() {
-        this.refresh();
+        // var that = this;
+        // var time = setInterval(function(){
+        //     if(that.request != ""){
+        //         that.refresh();
+        //         clearInterval(time);
+        //     }
+        // },300)
     }
 };
 </script>
@@ -210,29 +251,21 @@ export default {
     right: 0.25rem;
 }
 
-
-
-
-
-
-
-
-
-
-.goods-wrap{
-    position: relative;;
-    top:0;
-    margin:0 auto;
-    height:100vh;
+.goods-wrap {
+    position: relative;
+    top: 0;
+    margin: 0 auto;
+    height: 100vh;
     z-index: 15;
 }
-
 
 /* 单条商品 */
 .goods-strip {
     background: #ffffff;
-    padding: 0.3rem 0.2rem;
     margin-top: 0.2rem;
+}
+.goods-strip-top{
+    padding: 0.3rem 0.2rem 0;
 }
 /* 头部------ */
 .goods-strip-title {
@@ -254,10 +287,10 @@ export default {
     text-align: center;
     width: 0.93rem;
     height: 0.36rem;
-    background: -webkit-linear-gradient(#feab49, #ffcc4b);
-    background: -o-linear-gradient(#feab49, #ffcc4b);
-    background: -moz-linear-gradient(#feab49, #ffcc4b);
-    background: linear-gradient(to right, #feab49, #ffcc4b);
+    background: -webkit-linear-gradient(#ff9090, #ff687a);
+    background: -o-linear-gradient(#ff9090, #ff687a);
+    background: -moz-linear-gradient(#ff9090, #ff687a);
+    background: linear-gradient(to right, #ff9090, #ff687a);
     display: inline-block;
     margin-right: 0.1rem;
 }
@@ -302,10 +335,30 @@ export default {
     /* width:.7rem; */
     padding: 0 0.1rem;
     height: 0.36rem;
-    background: -webkit-linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
-    background: -o-linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
-    background: -moz-linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
-    background:linear-gradient(-30deg,rgba(139,191,255,1),rgba(109,202,255,1),rgba(98,172,255,1));
+    background: -webkit-linear-gradient(
+        -30deg,
+        rgba(139, 191, 255, 1),
+        rgba(109, 202, 255, 1),
+        rgba(98, 172, 255, 1)
+    );
+    background: -o-linear-gradient(
+        -30deg,
+        rgba(139, 191, 255, 1),
+        rgba(109, 202, 255, 1),
+        rgba(98, 172, 255, 1)
+    );
+    background: -moz-linear-gradient(
+        -30deg,
+        rgba(139, 191, 255, 1),
+        rgba(109, 202, 255, 1),
+        rgba(98, 172, 255, 1)
+    );
+    background: linear-gradient(
+        -30deg,
+        rgba(139, 191, 255, 1),
+        rgba(109, 202, 255, 1),
+        rgba(98, 172, 255, 1)
+    );
     display: inline-block;
     margin-right: 0.1rem;
 }
@@ -316,11 +369,11 @@ export default {
 }
 /* 详情 -- 保障*/
 .goods-strip-content {
-    margin-bottom: 0.15rem;
     position: relative;
 }
 .goods-des {
     width: 5rem;
+    font-weight: 550;
     overflow: hidden; /*超出的部分隐藏起来。*/
     white-space: nowrap; /*不显示的地方用省略号...代替*/
     text-overflow: ellipsis; /* 支持 IE */
@@ -331,24 +384,57 @@ export default {
 }
 .goods-ico {
     position: absolute;
-    top:0;right:0;
+    top: 0;
+    right: 0;
     text-align: right;
-    width:2.2rem;
+    width: 2.2rem;
 }
 .goods-ico img {
     width: 0.36rem;
     height: 0.36rem;
     margin-left: 0.12rem;
 }
-/* 底部 价格 */
-.goods-strip-bottom div {
-    display: inline-block;
+.original-price {
+    color: #666666;
+    font-size: 0.26rem;
+    line-height: 0.5rem;
 }
-.goods-price {
-    font-size: 0.36rem;
-    color: #fa5856;
+.original-text {
+    margin-right: 0.1rem;
+}
+/* 底部 */
+.goods-strip-bottom {
+    line-height: 0.8rem;
+    border-top: 1px solid #dcdcdc;
+    color: #999999;
+    font-size: 0.26rem;
+    display: flex;
+    justify-content: space-between;
+}
+.goods-strip-bottom img {
+    width: 0.3rem;
+    height: 0.3rem;
     vertical-align: middle;
 }
+.goods-strip-bottom span {
+    vertical-align: middle;
+}
+.red-color {
+    color: #fa5856;
+}
+.goods_price {
+    color: #fa5856;
+    font-size: 0.36rem;
+}
+.hint-bottom {
+    line-height: 0.7rem;
+    background: #f6f6f6;
+    font-size: 0.26rem;
+    color: #999999;
+    padding-left:.27rem;
+    border-bottom:1px solid #DCDCDC;
+}
+
 .bargain {
     margin-left: 0.1rem;
     line-height: 0.35rem;
@@ -370,8 +456,11 @@ export default {
 .list {
     background: #f6f6f6;
 }
+.list ul{
+     background:#F6F8FE;
+}
 
-.nodata{
-    padding-top:1.68rem;
+.nodata {
+    padding-top: 1.68rem;
 }
 </style>

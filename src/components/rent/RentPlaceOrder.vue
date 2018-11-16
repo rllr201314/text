@@ -1,0 +1,739 @@
+<template>
+    <!-- 下单 -->
+    <div class="placeOrder-wrap">
+        <!-- 头部 -->
+        <Header v-bind:showTitle="componentsData.showTitle"></Header>
+        <div class="placeOrder-content">
+            <!-- 商品详情 -->
+            <div class="placeOrder-cell">
+                <div class="goods-info-top">
+                    <img src="../../../static/img/goodscreen/vertical.png" alt="">
+                    <span>商品详情</span>
+                </div>
+                <div class="goods-info-content">
+                    <img :src="goodsInfo.game_logo" alt="">
+                    <div class="goods-info">
+                        <div class="goods-info-title" v-text="goodsInfo.goods_title"></div>
+                        <div class="goods-info-box">
+                            <div class="goods-info-left">
+                                <div class="text-left">系统</div>
+                                <div class="text-left">等级</div>
+                                <div class="text-left">门派</div>
+                                <div class="text-left">商品类型</div>
+                                <div class="text-left">账号绑定</div>
+                            </div>
+                            <div class="goods-info-right">
+                                <div class="text-right" v-if="goodsInfo.server_name != null" v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name+'>'+goodsInfo.server_name"></div>
+                                <div class="text-right" v-else v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name"></div>
+                                <div class="text-right">
+                                    <span v-text="goodsInfo.role_level"></span>级</div>
+                                <div class="text-right" v-text="goodsInfo.faction_name"></div>
+                                <div class="text-right" v-if="goodsInfo.deal_type == 1">成品号</div>
+                                <div class="text-right" v-else>代练号</div>
+                                <div class="text-right" v-text="goodsInfo.account_bind"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 联系方式 -->
+            <div class="contact-wrap placeOrder-cell">
+                <div class="goods-info-top">
+                    <img src="../../../static/img/goodscreen/vertical.png" alt="">
+                    <span>联系方式</span>
+                </div>
+                <div class="contact-content">
+                    <div class="contact-cell inpright">
+                        <span class="celltext">微信号</span>
+                        <input type="text" placeholder="请输入您的微信号" v-model="wx">
+                    </div>
+                    <div class="contact-cell inpright">
+                        <span class="celltext">手机号</span>
+                        <input type="number" placeholder="请输入您的手机号" v-model="phone">
+                    </div>
+                    <div class="contact-bottom red-color">请输入您真实的联系方式，以方便客服能在交易过程中的第一时间联系到您。</div>
+                </div>
+            </div>
+            <!-- 订单详情 -->
+            <div class="placeOrder-cell">
+                <div class="goods-info-top">
+                    <img src="../../../static/img/goodscreen/vertical.png" alt="">
+                    <span>订单详情</span>
+                </div>
+                <div class="contact-content">
+                    <div class="contact-cell">
+                        <span class="celltext">押金</span>
+                        <div class="cell-right">
+                            <span class="unit-price price">￥
+                                <span v-text="goodsInfo.goods_price"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="contact-cell" @click="showTerm">
+                        <span class="celltext">租期</span>
+                        <div class="cell-right descount">
+                            <span class="grey-color" v-text="tenancy_term"></span>
+                            <img src="../../../static/img/order/next.png" alt="">
+                        </div>
+                    </div>
+                    <div class="contact-cell">
+                        <span class="celltext">租金<span class="gray-color">(￥10/日)</span></span>
+                        <div class="cell-right">
+                            <span class="unit-price price">￥
+                                <span v-text="goodsInfo.goods_price"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="contact-cell" >
+                        <span class="celltext">优惠券</span>
+                        <div class="cell-right descount">
+                            <span class="gray-color">无可用优惠券</span>
+                            <img src="../../../static/img/order/next.png" alt="">
+                        </div>
+                    </div>
+                    <div class="contact-cell" >
+                        <div class="cell-right">
+                            <div class="total-price price">
+                                实际支付：<span class="red-color" v-text="totalPrice"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="protocol">
+            <img :src="protocol?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="" @click="lookFn">
+            <div>我已阅读<span class="red-color" @click="getProtocol">《看个号平台交易协议》</span>
+            </div>
+        </div>
+        <Protocal v-bind:proData="proData" v-on:isProFn="isProFn"></Protocal>
+        <div class="nextBtn" @click="goPayFn">下一步</div>
+
+        <div class="pop-view" v-show="showTime">
+            <div class="pop-tit">您希望租号的天数</div>
+            <input type="number" placeholder="请输入您希望租号的天数">
+            <div class="btn-wrap">
+                <div class="okbtn">确认</div>
+                <div class="cancel">取消</div>
+            </div>
+        </div>
+
+
+
+        <div v-show="showMenu" class="type-mu">
+            <div class="pop-view-tit option-gray">
+                <div>请选择租期</div>
+            </div>
+            <!-- 手机系统 -->
+            <ul>
+                <li class="option-black" v-for="item in optionData" @click="seleTrem(item.value)" v-text="item.name"></li>
+            </ul>
+            <div class="pop-view-con"></div>
+            <div class="pop-view-bot" @click="hiddenFn">取消</div>
+        </div>
+        <!-- 遮罩 -->
+        <div class="orderShade" v-show="showOrderShade" @click="hiddenFn"></div>
+        <Loading class="black-bg" v-if="showNoData"></Loading>
+    </div>
+</template>
+<script>
+import Header from "@/components/home-page/Header"; //头部
+import Loading from "@/components/multi/Loading";
+import Protocal from "@/components/multi/Protocal";
+
+export default {
+    name: "RentPlaceOrder",
+    components: {
+        Header,
+        Loading,
+        Protocal
+    },
+    data() {
+        return {
+            componentsData: {
+                // Header
+                showTitle: {
+                    showBack: false, //显示后退按钮
+                    showLogo: 2, //不显示头部log
+                    showShare: 3, //1搜索2分享
+                    showBg: true, //是否显示背景
+                    title: "商品下单"
+                }
+            },
+            proData: {
+                isShow: false,
+                con: "",
+                btn: "确认已读",
+                val: ""
+            },
+
+            tenancy_term:'请选择',//租期
+            showMenu:false,//显示租期选项
+            optionData:[{name:'7天',value:1},{name:'8天',value:2}],
+            showPro:false,//是否显示协议
+            protocalText:'',//协议
+            protocol: true, //阅读协议
+            showNoData:true,
+            goodsInfo: {},
+            num: 1,
+            phone:'',
+            wx:'',
+            tremVal:'',//选择租期值
+            tremTime:'',//天数
+            showTime:false,//--------------------------------------------------------------------点击下一步显示 
+           
+            showOrderShade: false, //遮罩
+            totalPrice:null,
+            // 是否分期
+            operaStage: {
+                stage: false,
+                noStage: true
+            },
+            // 是否购买保险
+            operaSafe: {
+                safe: true,
+                noSafe: false
+            }
+        };
+    },
+    methods: {
+        // 隐藏遮罩
+        hiddenFn(){
+            this.showMenu = false;
+            this.showOrderShade = false;
+        },
+        // 显示租期选项
+        showTerm(){
+            this.showOrderShade = true;
+            this.showMenu = true;
+        },
+        // 选择租期
+        seleTrem(val){
+            var that = this;
+            var data = that.optionData;
+            for(var i in data){
+                if(val == data[i].value){
+                    that.tenancy_term = data[i].name;
+                    that.tremVal = val;
+                    break;
+                }
+            }
+            that.hiddenFn();
+        },
+        // 协议
+        getProtocol(){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'protocol_safe').then((res)=>{
+                // console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.proData.isShow = true;
+                        that.proData.con = res.data.data;
+                        that.proData.val = true;
+                    }
+                }
+            })
+        },
+        isProFn(flag){
+            var that = this;
+            if(flag){
+                that.protocol = true;
+            }
+        },
+        // 商品数量
+        addbtn(flag) {
+            var that = this;
+            if (flag == "sub") {
+                that.num--;
+                if (that.num <= 0) {
+                    that.num = 1;
+                }
+            } else if (flag == "add") {
+                that.num++;
+            }
+        },
+        
+        // 阅读协议
+        lookFn(){
+            this.protocol = !this.protocol;
+        },
+        getData() {
+            var that = this;
+            that.$axios
+                .post(process.env.API_HOST+"order_detail", {
+                    goods_id: that.$route.query.goods_id
+                })
+                .then(res => {
+                    // console.log(res);
+                    if (res.status == 200) {
+                        if (res.data.code == 200) {
+                            that.goodsInfo = res.data.data.goods_info;
+                            
+                            that.showNoData = false;
+                        }else if(res.data.code == 400){
+                            that.showNoData = true;
+                            mui.alert(res.data.msg,'提示','确认',function(){
+                                that.$router.go(-1);
+                            },'div')
+                        } 
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        goPayFn(){
+            var that = this;
+            var request = {};
+            // 微信
+            if (that.wx == "") {
+                mui.alert("请输入微信账号", "提示", "确认", "", "div");
+                return false;
+            }else{
+                var reg = /[\u4e00-\u9fa5]/g;
+                if(that.wx.match(reg)){
+                    mui.alert("请输入正确微信账号", "提示", "确认", "", "div");
+                    return false;
+                }
+                 request.wx = that.wx;
+            }
+            // 手机号
+            if (that.phone == "") {
+                mui.alert("请输入手机号", "提示", "确认", "", "div");
+                return false;
+            }else{
+                var reg = /^1[3-9][0-9]{9}$/g;
+                if (!that.phone.match(reg)) {
+                    mui.alert("您输入的手机号不正确","提示","确定","","div");
+                    return false;
+                }
+                 request.phone = that.phone;
+            }
+            if(that.tremVal == ''){
+                mui.alert("请选择租期", "提示", "确认", "", "div");
+                return false;
+            }else{
+                request.trem = that.tremVal;
+            }
+            // 判断是否勾选协议
+            if(!that.protocol){
+                mui.alert("请阅读并同意《看个号平台交易协议》","提示","确定","","div");
+                return false;
+            }
+            
+            // request.price = that.totalPrice;
+            // request.remaining_sum = that.remaining_sum;
+            // request.goods_id = that.$route.query.goods_id;
+            // // console.log(request);
+            // var request = JSON.stringify(request)
+            // that.$router.push({name:'Pay',query:{request}})
+            // sessionStorage.order_info = request;
+        }
+    },
+    mounted() {
+        var that = this;
+        if (that.$route.query.goods_id != "" && that.$route.query.goods_id != undefined) {
+            that.getData();
+        } else {
+            that.$router.go(-1);
+        }
+    }
+};
+</script>
+<style scoped>
+.placeOrder-wrap {
+    max-width: 12rem;
+    margin: 0 auto;
+    padding-top: 0.88rem;
+}
+.placeOrder-content {
+    padding: 0.2rem 0.2rem 0;
+}
+/* 商品信息 */
+.placeOrder-cell {
+    background: #ffffff;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    margin-bottom: 0.2rem;
+}
+.goods-info-top {
+    line-height: 0.7rem;
+    border-bottom: 0.01rem solid #e5e5e5;
+}
+
+.goods-info-top span {
+    display: inline-block;
+    color: #333333;
+    font-size: 0.28rem;
+}
+.goods-info-top img {
+    width: 0.13rem;
+    height: 0.29rem;
+    margin-left: 0.17rem;
+    vertical-align: middle;
+}
+
+.goods-info-content {
+    padding: 0.2rem 0;
+    font-size: 0.26rem;
+    color: #666666;
+}
+.goods-info-content img {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0 0.6rem 0 0.35rem;
+    vertical-align: middle;
+}
+.goods-info {
+    display: inline-block;
+    width: 4.8rem;
+    vertical-align: middle;
+}
+.goods-info-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #333333;
+    margin-bottom: 0.15rem;
+}
+.goods-info-box {
+    display: flex;
+    justify-content: space-between;
+}
+.goods-info-left{
+    width: 40%;
+    overflow: hidden;
+}
+.goods-info-left div {
+    margin-bottom: 0.1rem;
+    white-space: nowrap;
+}
+.goods-info-right div {
+    margin-bottom: 0.1rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #333333;
+}
+.contact-content {
+    padding-left: 0.2rem;
+}
+.contact-cell {
+    line-height: 0.9rem;
+    border-bottom: 0.01rem solid #e5e5e5;
+    padding-right: 0.2rem;
+}
+.contact-cell::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+.inpright input {
+    width: 70%;
+    text-align: right;
+    border: 0;
+    margin: 0;
+    height: 0.9rem;
+    float: right;
+}
+.celltext {
+    color: #666666;
+    font-size: 0.26rem;
+    display: inline-block;
+    min-width: 1.35rem;
+}
+
+.contact-bottom {
+    padding: 0.17rem;
+    font-size: 0.24rem;
+}
+.red-color {
+    color: #ff5e5e !important;
+}
+
+/*  */
+.cell-right {
+    float: right;
+}
+/* 价格 */
+.price {
+    font-size: 0.26rem;
+    color: #333333;
+}
+
+/* 商品数量 */
+.raise-good input {
+    width: 0.8rem;
+    height: 0.42rem;
+    padding: 0 0.05rem;
+    outline: none;
+    border: 0.01rem solid #d2d2d2;
+    vertical-align: middle;
+    margin: 0 0.2rem;
+}
+.raise-good img {
+    width: 0.29rem;
+    height: 0.29rem;
+    vertical-align: middle;
+}
+/*  */
+.order-cell {
+    border-bottom: 0.01rem solid #e5e5e5;
+    padding: 0.2rem 0.2rem 0.2rem 0;
+}
+/* 优惠券 */
+.descount img {
+    width: 0.13rem;
+    height: 0.24rem;
+    vertical-align: middle;
+}
+.grey-color{
+    color: #666666;
+    font-size: 0.24rem;
+}
+.gray-color {
+    color: #999999;
+    font-size: 0.24rem;
+}
+.periodsNum{
+    min-width:.8rem;
+    color:#333333;
+    display: inline-block;
+}
+/* 选项 */
+.sele-opera {
+    width: 5rem;
+    display: inline-block;
+}
+.opera {
+    display: inline-block;
+    margin-right: 0.7rem;
+}
+.opera img {
+    width: 0.22rem;
+    height: 0.22rem;
+    vertical-align: middle;
+}
+.opera span {
+    font-size: 0.26rem;
+    color: #333333;
+    vertical-align: middle;
+}
+/* 首付金额 */
+.downPay-left {
+    margin-top: 0.1rem;
+}
+.downPay-left,.downPay-right {
+    vertical-align: top;
+}
+.downPay-right input {
+    width: 3rem;
+    height: 0.5rem;
+    margin: 0;
+    padding: 0 0.1rem;
+}
+.custom{
+    color: #FFFFFF;
+    font-size: 0.26rem;
+    background:#fc5f4e;
+    display: inline-block;
+    margin-left:.5rem;
+    width:.8rem;
+
+    text-align:center;
+}
+.sele-downPay {
+    line-height: 0.5rem;
+    color: #333333;
+    font-size: 0.24rem;
+    border: 0.01rem solid #d2d2d2;
+    -webkit-border-radius: 0.06rem;
+    -moz-border-radius: 0.06rem;
+    border-radius: 0.06rem;
+    padding: 0 0.15rem;
+    display: inline-block;
+    margin-bottom: 0.2rem;
+}
+.sele-downPay span {
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+.sele-downPay img {
+    width: 0.2rem;
+    height: 0.1rem;
+    vertical-align: middle;
+}
+.sole {
+    color: #333333;
+    font-size: 0.26rem;
+    margin-left: 0.1rem;
+}
+
+/* 协议 */
+.protocol {
+    margin: 0 0 0.2rem;
+    padding: 0 0.2rem;
+}
+.protocol img {
+    width: 0.28rem;
+    height: 0.28rem;
+    vertical-align: middle;
+}
+.protocol div {
+    display: inline-block;
+    font-size: 0.22rem;
+}
+/* 下一步 */
+.nextBtn {
+    color: #ffffff;
+    font-size: 0.28rem;
+    margin: 0 auto 0.3rem;
+    width: 6.5rem;
+    text-align: center;
+    line-height: 0.8rem;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
+    background: -webkit-linear-gradient(#fd915f, #fc534a);
+    background: -o-linear-gradient(#fd915f, #fc534a);
+    background: -moz-linear-gradient(#fd915f, #fc534a);
+    background: linear-gradient(to right, #fd915f, #fc534a);
+}
+
+.hint {
+    font-size: 0.22rem;
+}
+
+.orderShade {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 8;
+}
+
+/* ==========input========= */
+input {
+    font-size: 0.24rem;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+::-webkit-input-placeholder {
+    color: #999999;
+    font-size: 0.24rem;
+}
+:-moz-placeholder {
+    color: #999999;
+    font-size: 0.24rem;
+}
+::-moz-placeholder {
+    color: #999999;
+    font-size: 0.24rem;
+}
+:-ms-input-placeholder {
+    color: #999999;
+    font-size: 0.24rem;
+}
+
+.black-bg{
+    background:rgba(255, 255,255, 1);
+}
+
+
+/* 协议 */
+.pop-view{
+    background:#ffffff;
+    width:5rem;
+    position: fixed;
+    top:30%;
+    left: calc(50% - 2.5rem);
+    z-index:15;
+    border-radius: .1rem;
+    padding:.4rem .2rem;
+}
+.pop-tit{
+    font-size:.28rem;
+    color:#666666;
+    margin-bottom: .2rem;
+}
+.pop-view input{
+    margin-bottom:.4rem;
+}
+.btn-wrap{
+    display: flex;
+    justify-content: space-around;
+    font-size:.26rem;
+}
+.btn-wrap div{
+    width:1.89rem;
+    line-height:.6rem;
+    text-align: center;
+    border-radius: .3rem;
+    color:#ffffff;
+}
+.okbtn{
+    background: -webkit-linear-gradient(#fd915f, #fc534a);
+    background: -o-linear-gradient(#fd915f, #fc534a);
+    background: -moz-linear-gradient(#fd915f, #fc534a);
+    background: linear-gradient(to right, #fd915f, #fc534a);
+}
+.cancel{
+    background:#C6C6C6;
+}
+
+
+
+
+.type-mu{
+    min-height:2rem;
+    color: #333333;
+    font-size: 0.28rem;
+    background:#FFFFFF;
+    text-align:center;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:50;
+    max-width: 640px;
+    margin:0 auto;
+}
+.pop-view-tit,.pop-view-bot{
+    line-height: .9rem;
+}
+.pop-view-con{
+    height:.2rem;
+    background:rgba(0,0,0,0.3);
+}
+.type-mu ul{
+    border-top:1px solid #e5e5e5;
+    border-bottom:1px solid #e5e5e5;
+    max-height:4rem;
+    overflow-y:scroll;
+}
+/* 弹出框 */
+.option-gray {
+    color: #666666;
+    font-size: 0.28rem;
+}
+.option-black {
+    font-weight: 100;
+    line-height:.9rem;
+    border-bottom:1px solid #e5e5e5;
+}
+
+</style>

@@ -38,14 +38,13 @@
                 </div>
             </div>
         </div>
-        <!-- <Protocal v-bind:ProtocalData="ProtocalData"></Protocal> -->
-        <Protocal v-bind:proData="proData" v-on:isPro="isPro"></Protocal>
+        <Protocal v-bind:proData="proData" v-on:isProFn="isProFn"></Protocal>
     </div>
 </template>
 
 <script>
 import Header from "@/components/home-page/Header";
-import Protocal from "@/components/multi/Protocal"; //传参传不过去
+import Protocal from "@/components/multi/Protocal";
 export default {
     name: "SellPage",
     components: {
@@ -176,6 +175,9 @@ export default {
                     that.$router.push({ name: "SellOption", query: { opt } });
                 }
             } else if (that.user_type == "/rent") {
+                //租
+                that.$router.push({ name: "RentSearch", query: { opt } });
+                sessionStorage.opt = opt;
             } else if (that.user_type == "/rent-out") {
                 //出租
                 if (token == undefined || token == "") {
@@ -230,7 +232,7 @@ export default {
                 });
         },
         // 获取是否同意协议
-        isPro(data) {
+        isProFn(data) {
             if (data) {
                 this.$router.push({
                     name: "LeaseOption",

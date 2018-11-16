@@ -269,7 +269,6 @@ export default {
                 is_video: "",
                 content:'',
             },
-            list: [],
             miniRefresh: null,
             showNoData: false,
             pages: "", //总页数
@@ -959,15 +958,21 @@ export default {
             that.request.is_stage = null;
             that.request.is_safe = null;
             that.request.is_compact = null;
-            that.request.sell_type = null
-            that.request.is_bind = null
-            that.request.role_level = null
-            that.request.begin_price = null
+            that.request.sell_type = null;
+            that.request.is_bind = null;
+            that.request.role_level = null;
+            that.request.begin_price = null;
             that.request.end_price = null;
-            that.request.sort_price = null
-            that.request.sort_collection = null
-            that.request.is_video = null
+            that.request.sort_price = null;
+            that.request.sort_collection = null;
+            that.request.is_video = null;
             var accountBindAll = that.screen_info.accountBind;
+            
+            var sortArr = that.sortPrice.ischeck;
+            sortArr.moreSort = false;
+            sortArr.upSort  = false;
+            sortArr.downSort = false;
+
             for (var i in accountBindAll) {
                 accountBindAll[i].ischeck = false;
             }
@@ -1162,7 +1167,7 @@ export default {
                             var client_idAll = res.data.data.client_id;
                             client_idAll.unshift({name: "all", alias: "全部", value: -1, status: 1});
                             for (var i in client_idAll) {
-                                if (client_idAll[i].alias == "苹果") {
+                                if (client_idAll[i].alias == "全部") {
                                     that.screenTop[1].tit_top_text = client_idAll[i].alias;
                                     that.lastClient_id="";//上一次保存的手机系统选项
                                     client_idAll[i].ischeck = true;
@@ -1279,8 +1284,10 @@ export default {
             } else {
                 that.$router.go(-1);
             }
+            that.refresh();
+        }else{
+            that.$router.go(-1);
         }
-        that.refresh();
     }
 };
 </script>
@@ -1866,7 +1873,6 @@ input[type="number"] {
 .nodata{
     padding-top:1.68rem;
 }
-
 
 /*搜索*/
 .titInp {

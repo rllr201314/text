@@ -20,7 +20,7 @@ export default {
             var that = this;
             that.proData.isShow = false;
             if (flag == "true") {
-                that.$emit("isPro", that.proData.val);
+                that.$emit("isProFn", that.proData.val);
             }
         }
     },

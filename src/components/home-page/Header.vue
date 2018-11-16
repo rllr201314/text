@@ -18,7 +18,7 @@
                 <img class="empty-ico" src="../../../static/img/empty_ico.png" alt="" @click="emptyFun()">
             </div>
             <!--右边按钮-->
-            
+
             <img v-if="showTitle.showShare === 1" class="head_right_search" src="../../../static/img/searchLogo.png" alt="" @click="cliSearch">
             <img v-else-if="showTitle.showShare === 2" class="head_right_share" src="../../../static/img/share_ico.png" alt="">
             <div v-else-if="showTitle.showShare === 3" class="menu-wrap">
@@ -63,70 +63,75 @@
 
 <script>
 export default {
-    inject: ["reload"],//刷新页面
+    inject: ["reload"], //刷新页面
     name: "Header",
     data() {
         return {
-            showMenu: false ,//是否显示菜单
-            iconrotate:0,//旋转de
-            confirm_trade:null,
-            is_msg:null,
-            my_msg:null,
+            showMenu: false, //是否显示菜单
+            iconrotate: 0, //旋转de
+            confirm_trade: null,
+            is_msg: null,
+            my_msg: null
         };
     },
     props: ["showTitle"],
     mounted() {
         this.getMsg();
     },
-    computed:{    
-        iconstyle(){//图标动态样式      
-            let arr = new Array(); 
-            arr.push('transition:0.5s;')
-            arr.push('transform:');
-            arr.push('rotate('+this.iconrotate+'deg);');
-            return arr.join("");    
-        },
+    computed: {
+        iconstyle() {
+            //图标动态样式
+            let arr = new Array();
+            arr.push("transition:0.5s;");
+            arr.push("transform:");
+            arr.push("rotate(" + this.iconrotate + "deg);");
+            return arr.join("");
+        }
     },
     methods: {
-        cliSearch(){
+        cliSearch() {
             // 点击搜索
             var that = this;
-            that.$router.push({name:'Buy'});
+            that.$router.push({ name: "Buy" });
             sessionStorage.buyOrsell = 1;
         },
         // 点击菜单
         cliMenu() {
             this.showMenu = !this.showMenu;
-            if (this.iconrotate==90) {
-                this.iconrotate=0;
-            }else {
-                this.iconrotate=90;
-
+            if (this.iconrotate == 90) {
+                this.iconrotate = 0;
+            } else {
+                this.iconrotate = 90;
             }
         },
         // + 添加提现账号
-        addCard(){
-            this.$router.push({name:'UserAuthentication',query:{type:this.showTitle.identify}});
+        addCard() {
+            this.$router.push({
+                name: "UserAuthentication",
+                query: { type: this.showTitle.identify }
+            });
         },
         seleLink(flag) {
             var that = this;
             if (flag == "rollback") {
-                if(window.history.length <= 1){
-                    that.$router.push({path:'/'});
-                }else{
+                if (window.history.length <= 1) {
+                    that.$router.push({ path: "/" });
+                } else {
                     if (that.showTitle.goBack == 1) {
                         that.$router.push({ name: "HomePage" });
                     } else if (that.showTitle.goBack == 2) {
                         that.$router.go(-1);
-                    }else {
+                    } else {
                         that.$router.go(-1);
                     }
                 }
-                
             } else if (flag == "mycenter") {
                 var token = that.$store.state.token;
                 if (token == undefined || token == "") {
-                    that.$router.push({name: "AccountLogin",params: {redirect: "MyCenter"}});
+                    that.$router.push({
+                        name: "AccountLogin",
+                        params: { redirect: "MyCenter" }
+                    });
                 } else {
                     that.$router.push({ name: "MyCenter" });
                 }
@@ -138,47 +143,46 @@ export default {
             if (flag == "home") {
                 that.$router.push({ name: "HomePage" });
             } else if (flag == "sell") {
-                that.$router.push({name: "Sell"});
+                that.$router.push({ name: "Sell" });
                 sessionStorage.buyOrsell = 2;
                 that.reload();
             } else if (flag == "my") {
                 var token = that.$store.state.token;
                 if (token == undefined || token == "") {
-                    that.$router.push({name: "AccountLogin",params: {redirect: "MyCenter"}});
+                    that.$router.push({
+                        name: "AccountLogin",
+                        params: { redirect: "MyCenter" }
+                    });
                 } else {
                     that.$router.push({ name: "MyCenter" });
                 }
-            }else if(flag == 'browse'){
-                that.$router.push({name:'BrowseRecord'})
-            }else if(flag == 'message'){
-                that.$router.push({name:'MessageAll_Server'})
-            }else if(flag == "take"){
-                that.$router.push({name:'BuyWaitReceiveStatus'})
+            } else if (flag == "browse") {
+                that.$router.push({ name: "BrowseRecord" });
+            } else if (flag == "message") {
+                that.$router.push({ name: "MessageAll_Server" });
+            } else if (flag == "take") {
+                that.$router.push({ name: "BuyWaitReceiveStatus" });
             }
         },
-        getMsg(){
+        getMsg() {
             var that = this;
-            // debugger;
-            var time = new Date().getTime();
-            if(that.$store.state.time){
-                if(time - Number(that.$store.state.time) > (1000*60*15)){
-                    that.$store.commit('del_token');
-                }else{
-                    if(that.$store.state.token){
-                        that.$axios.post(process.env.API_HOST+'tip_msg').then((res)=>{
-                            if(res.status == 200){
-                                if(res.data.code == 200){
-                                    that.is_msg = res.data.data.is_msg;
-                                    that.confirm_trade = res.data.data.confirm_trade;
-                                    that.my_msg = res.data.data.my_msg;
-                                }
+
+            if (that.$store.state.token) {
+                that.$axios
+                    .post(process.env.API_HOST + "tip_msg")
+                    .then(res => {
+                        if (res.status == 200) {
+                            if (res.data.code == 200) {
+                                that.is_msg = res.data.data.is_msg;
+                                that.confirm_trade =
+                                    res.data.data.confirm_trade;
+                                that.my_msg = res.data.data.my_msg;
                             }
-                        }).catch((err)=>{
-                            console.log(err);
-                        })
-                    }
-                }
-                
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
             }
         }
     }
@@ -186,16 +190,16 @@ export default {
 </script>
 
 <style scoped>
-.top-header{
+.top-header {
     /* max-width:12rem; */
     max-width: 640px;
-    margin:0 auto;
-    height:.88rem;
+    margin: 0 auto;
+    height: 0.88rem;
     position: fixed;
-    top:0;
-    left:0;
-    right:0;
-    z-index:9999;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
     background: -webkit-linear-gradient(#fd915f, #fc534a);
     background: -o-linear-gradient(#fd915f, #fc534a);
     background: -moz-linear-gradient(#fd915f, #fc534a);
@@ -207,7 +211,6 @@ export default {
     text-align: center;
     position: relative;
     color: #333333;
-
 }
 .rebBg {
     padding: 0.1rem 0;
@@ -275,7 +278,7 @@ export default {
     position: relative;
 }
 .search-title {
-    background:#ffffff;
+    background: #ffffff;
     width: 5.76rem;
     height: 0.66rem;
     font-size: 0.26rem;
@@ -383,43 +386,43 @@ export default {
     background: rgba(0, 0, 0, 0);
     z-index: 8;
 }
-.take,.service{
-    position:relative;
+.take,
+.service {
+    position: relative;
 }
-.service .red-circle{
+.service .red-circle {
     position: absolute;
-    top:.23rem;
-    left:.23rem;
+    top: 0.23rem;
+    left: 0.23rem;
 }
-.take .red-circle{
+.take .red-circle {
     position: absolute;
-    top:.23rem;
-    left:.23rem;
+    top: 0.23rem;
+    left: 0.23rem;
 }
 
-.red-circle{
-    width:.12rem;
-    height:.12rem;
+.red-circle {
+    width: 0.12rem;
+    height: 0.12rem;
     border-radius: 100%;
-    background:#F31000;
+    background: #f31000;
     display: inline-block;
 }
-.menu-wrap{
-    
+.menu-wrap {
     width: 0.35rem;
     height: 0.28rem;
     position: absolute;
     top: 0.3rem;
     right: 0.25rem;
-    font-size:0;
+    font-size: 0;
 }
-.menu-wrap img{
+.menu-wrap img {
     width: 0.35rem;
     height: 0.28rem;
 }
-.menu-wrap .red-circle{
-    position:absolute;
-    top:0;
-    right:-1px;
+.menu-wrap .red-circle {
+    position: absolute;
+    top: 0;
+    right: -1px;
 }
 </style>

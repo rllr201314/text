@@ -225,21 +225,6 @@
             </div>
         </div>
         <div class="shade" v-show="showTagAll"></div>
-        <!-- 弹出框 -->
-        <!-- 职业 -->
-        <!-- <div id="sheet-faction" class="mui-popover mui-popover-bottom mui-popover-action">
-            <ul class="pop-view">
-                <li class="pop-view-tit option-gray">
-                    <div>请选择职业</div>
-                </li>
-                <li class="option-black" v-for="item in sellData.faction" @click="seleType(item.faction_id,'faction')" v-text="item.faction_name"></li>
-            </ul>
-            <ul class="pop-view">
-                <li class="mui-table-view-cell option-black">
-                    <a href="#sheet-faction">取消</a>
-                </li>
-            </ul>
-        </div> -->
         <div v-show="showMenu_type" class="type-mu">
             <div class="pop-view-tit option-gray">请选择职业</div>
             <ul>
@@ -1096,7 +1081,21 @@ export default {
             }).catch((err) => {
                 console.log(err)
             })
-        }
+        },
+        // 判断是不是JSON字符串
+        isobjStr(str) {
+            if (typeof str == "string") {
+                try {
+                    if (typeof JSON.parse(str) == "object") {
+                        return true;
+                    }
+                } catch (e) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        },
     },
     mounted() {
         var that = this;
@@ -1133,16 +1132,21 @@ export default {
             that.$router.go(-1); 
         } else {
             if(opt.flag == 1){
-                that.category_id = opt.category_id;
-                that.requestData.category_id = opt.category_id;
-                that.requestData.deal_type = opt.deal_type;
-                that.requestData.operation_id = opt.operation_id;
-                that.requestData.area_id = opt.area_id;
-                that.requestData.server_id = opt.server_id;
-                that.getTagType();//获取标签大类
-                that.comData.showTitle.title = "我要卖";
-                that.getConfig(opt,opt.flag);//请求选择参数
-                that.editOrpublish = 1;
+                if(that.isobjStr(opt.upData)){
+                    var data = JSON.parse(opt.upData);
+                    that.category_id = data.category_id;
+                    that.requestData.category_id = data.category_id;
+                    that.requestData.deal_type = data.deal_type;
+                    that.requestData.operation_id = data.operation_id;
+                    that.requestData.area_id = data.area_id;
+                    that.requestData.server_id = data.server_id;
+                    that.getConfig(data,opt.flag);//请求选择参数
+                    that.getTagType();//获取标签大类
+                    that.comData.showTitle.title = "我要卖";
+                    that.editOrpublish = 1;
+                }else{
+                    that.$router.go(-1); 
+                }
             }else if(opt.flag == 2){
                 that.showLoading = true;
                 that.getRedact(opt.g);

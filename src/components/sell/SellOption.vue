@@ -408,17 +408,8 @@ export default {
                 mui.alert('请选择区服','提示','确认','','div');
                 return false;
             }else{
-                // console.log(upData);
-                that.$router.push({name:'SellInfo',
-                    query:{
-                        flag:1,
-                        category_id:upData.category_id,
-                        deal_type:upData.deal_type,
-                        operation_id:upData.operation_id,
-                        area_id:upData.area_id,
-                        server_id:upData.server_id
-                    }
-                });
+                upData = JSON.stringify(upData);
+                that.$router.push({name:'SellInfo',query:{flag:1,upData:upData}});
             }
         },
         getConfig(opt){

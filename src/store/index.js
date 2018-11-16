@@ -7,7 +7,7 @@ export default new Vuex.Store({
     token: '',
     mobile: '',
     isLogin: '',
-    time:'',
+    time: '',
     // 提交的数据
     list_request: {
       page: 1,
@@ -36,18 +36,10 @@ export default new Vuex.Store({
     set_token(state, token) {
       state.token = token
       localStorage.token = token;
-      state.time = new Date().getTime();
-      localStorage.time = new Date().getTime();
     },
     del_token(state) {
       state.token = ''
       localStorage.removeItem('token');
-      state.time = '';
-      localStorage.removeItem('time');
-    },
-    set_time(state){
-      state.time = new Date().getTime();
-      localStorage.time = new Date().getTime();
     },
     set_mobile(state, mobile) {
       state.mobile = mobile
@@ -61,19 +53,19 @@ export default new Vuex.Store({
       state.isLogin = data
       localStorage.i = data
     },
-    changeRequest(state,n){
+    changeRequest(state, n) {
       // state.list_request.item =item;
-      for(var i in state.list_request){
-        if(i == n.name){
+      for (var i in state.list_request) {
+        if (i == n.name) {
           state.list_request[i] = n.value
         }
       }
     },
     // 下拉加载 上拉刷新 更改page
-    addPage(state,flag){
-      if(flag == 'add'){
+    addPage(state, flag) {
+      if (flag == 'add') {
         state.list_request.page++;
-      }else if(flag == "refresh"){
+      } else if (flag == "refresh") {
         state.list_request.page = 1;
       }
     },
