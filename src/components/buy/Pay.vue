@@ -168,7 +168,8 @@ export default {
             deposit_price:0,//扣除押金
             remaining_price:0,//扣除余额
             showBtn:true,
-            stage_info:null,
+            stage_info:null,//分期信息
+            rent_info:null,//租号信息
             order_id:null,
             ok_text:'前往支付',
             order_num:null,
@@ -436,11 +437,23 @@ export default {
                 }else{
                     request.payment_method = 4;//选择线下支付
                 }
+            }else if(that.rent_info){//租号下单
+                var data = that.rent_info
+                url = 'rent_order';
+                request.mobile = data.phone;
+                request.wx = data.wx;
+                request.lease_time = data.lease_time;
+                request.goods_id = data.goods_id;
+                if(that.is_line){
+                    request.payment_method = that.payment_num;
+                }else{
+                    request.payment_method = 4;//选择线下支付
+                }
             }
             // 判断有没有用余额支付
             if(that.isbalace &&　Number(that.remaining_price) > 0){
                 request.is_remaining_sum = 1;
-                that.show_pop = true;
+                that.show_pop = true;//显示安全密码弹框
                 that.link = url;
                 that.submitData = request;
             }else{
@@ -467,7 +480,7 @@ export default {
         subData(url,request){
             var that = this;
             that.$axios.post(process.env.API_HOST+url,request).then((res)=>{
-                // console.log(res);
+                console.log(res);
                 that.showLoading = false;
                 if(res.status == 200){
                     if(res.data.code == 200){
@@ -529,14 +542,6 @@ export default {
                                 that.$router.push({name:'Safety_Center',query:{type:1}});//type:1，已实名认证
                             },'div');
                     }
-                    // else if(res.data.code == 401){
-                    //     mui.alert(res.data.msg,'提示','确认',function(){
-                    //             that.$router.push({name: "AccountLogin",});
-                    //         },'div');
-                    // }else{
-                    //     // mui.toast(res.data.msg,{ duration:'short', type:'div' });
-                    //     mui.alert(res.data.msg,'提示','确认','','div');
-                    // }
                 }
             }).catch((err)=>{
                 console.log(err);
@@ -614,6 +619,10 @@ export default {
                                 }
                             }
                         }
+                    }else{
+                        mui.alert(res.data.msg,'提示','确认',function(){
+                            that.$router.go(-1);
+                        },'div')
                     }
                 }
             }).catch((err)=>{
@@ -663,6 +672,36 @@ export default {
                 }
             }).catch((err)=>{
                 console.log(err)
+            })
+        },
+        // 租号下单
+        getRentFee(data){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'rent_fee',{
+                goods_id:data.goods_id,
+                lease_time:data.lease_time
+            }).then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.fee_info = res.data.data;
+                        var data = that.online;
+                        for(var i in data){
+                            if(data[i].issele == true){
+                                if(data[i].name == "银联"){
+                                    that.price = that.fee_info.chinapay_amount;
+                                    that.old_price = that.fee_info.chinapay_amount;
+                                    that.charge.name = data[i].name;
+                                    that.charge.price = that.fee_info.chinapay_charge;
+                                    that.charge.rate = '0.6';
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err);
             })
         }
     },
@@ -719,6 +758,16 @@ export default {
             }else{
                 that.$router.go(-1);
             }
+        }else if(that.$route.query.rent){
+            var lease_time = sessionStorage.getItem('lease_time');
+            var rent = that.$route.query.rent;
+            if(rent == lease_time){
+                if(that.isobjStr(rent)){
+                    that.rent_info = JSON.parse(rent);
+                    that.getRentFee(that.rent_info);
+                }
+            }
+
         }else{
             that.$router.go(-1);
         }

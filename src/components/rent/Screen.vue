@@ -917,7 +917,7 @@ export default {
                             var client_idAll = res.data.data.client_id;
                             client_idAll.unshift({name: "all", alias: "全部", value: -1, status: 1});
                             for (var i in client_idAll) {
-                                if (client_idAll[i].alias == "苹果") {
+                                if (client_idAll[i].alias == "全部") {
                                     that.screenTop[1].tit_top_text = client_idAll[i].alias;
                                     that.lastClient_id="";//上一次保存的手机系统选项
                                     client_idAll[i].ischeck = true;
@@ -991,6 +991,7 @@ export default {
             that.request = JSON.parse(JSON.stringify(that.$store.state.list_request));
             if (opt == that.$route.query.opt) {
                 that.request.category_id = opt;
+                that.request.rent_status = 2;
                 that.getConfig(opt);
             } else {
                 that.$router.go(-1);

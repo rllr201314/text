@@ -109,6 +109,7 @@ export default {
                             if (res.data.code == 200) {
                                 if (res.data.data.token) {
                                     that.$store.commit("set_token",res.data.data.token);
+                                    that.$store.commit('set_hint');
                                 }
                                 if(mobile){
                                     that.$store.commit("set_mobile",mobile);

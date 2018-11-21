@@ -48,21 +48,19 @@ axios.interceptors.response.use(
       switch (response.data.code) {
         case 401:
           store.commit('del_token');
-          if(router.currentRoute.fullPath == '/index'){
+          if(router.currentRoute.fullPath == '/index' && store.state.hint > 0){
             mui.toast(response.data.msg, {duration: "short", type: "div"});
-          }else{
+          }else if(store.state.hint > 0){
+            store.commit('sub_hint')
             mui.alert(response.data.msg,'提示','确认',function(){
               router.push({name: "AccountLogin",});
             },'div');
           }
-          
       }
     }
     return response;
   },
   error => {
-    // console.log(error);
-    // store.commit('del_token');
     router.replace({name:'HomePage'})
     return Promise.reject(error.response)
   });

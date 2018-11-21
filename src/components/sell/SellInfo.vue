@@ -140,7 +140,7 @@
                         </div>
                         <div class="safe-hint">
                             <div class="sell-left">(保险费用为总价的{{safeOrCompact.parcent}}%)</div>
-                            <div class="strip-radio-right">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
+                            <div class="strip-radio-right" v-if="Number(safeOrCompact.maxPrice) > 0">保险费封顶￥{{safeOrCompact.maxPrice}}</div>
                             <div class="strip-radio-right">
 
                             </div>
@@ -162,7 +162,7 @@
                         </div>
                         <div class="safe-hint">
                             <div class="sell-left">(合同费用为总价的{{safeOrCompact.parcent}}%)</div>
-                            <div class="strip-radio-right">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
+                            <div class="strip-radio-right" v-if="Number(safeOrCompact.maxPrice) > 0">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
                         </div>
                     </div>
                 </div>
@@ -1732,6 +1732,7 @@ input[type="number"] {
     border-bottom:1px solid #e5e5e5;
     max-height:4rem;
     overflow-y:scroll;
+    list-style: none;
 }
 /* 弹出框 */
 .option-gray {

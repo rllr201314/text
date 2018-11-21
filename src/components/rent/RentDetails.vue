@@ -6,7 +6,8 @@
         <div class="goods-details-title">
             <div class="goods-datails-title-top">
                 <div class="title-boutique" v-if="detailData.is_recommend == 1">精</div>
-                <div class="title-goods-type" v-if="detailData.deal_type == 1">租号</div>
+                <div class="title-ico deal-ico" v-if="detailData.rent_method == 1 ||detailData.rent_method == 3 ">成品号</div>
+                <div class="title-ico rent-ico" v-if="detailData.rent_method == 2 ||detailData.rent_method == 3">租号</div>
                 <div class="title-view-history">
                     <img src="../../../static/img/goods-details/view_count_ico.png" alt="">
                     <span>浏览次数</span>
@@ -14,23 +15,23 @@
                 </div>
             </div>
             <div class="goods-datails-title-des" v-text="detailData.goods_title"></div>
-            <div class="original-price"><span class="original-text">原价</span><span>￥</span><span v-text="detailData.goods_price"></span></div>
+            <div class="original-price" v-if="detailData.goods_price != 0"><span class="original-text">原价</span><span>￥</span><span v-text="detailData.goods_price"></span></div>
             <div class="goods-strip-bottom">
                 <div>
                     <img src="../../../static/img/rent/rent-ico.png" alt="">
                     <span>租金</span>
-                    <span class="red-color">￥</span><span class="goods_price">6</span>
+                    <span class="red-color">￥</span><span class="goods_price" v-text="detailData.day_rent"></span>
                     <span>/日</span>
                 </div>
                 <div>
                     <img src="../../../static/img/rent/pledge-ico.png" alt="">
                     <span>押金</span>
-                    <span>￥</span><span>500</span>
+                    <span>￥</span><span v-text="detailData.cash"></span>
                 </div>
                 <div>
                     <img src="../../../static/img/rent/pledge-ico.png" alt="">
                     <span>最短租期</span>
-                    <span v-text="detailData.goods_price"></span><span>天</span>
+                    <span v-text="detailData.least_lease"></span><span>天</span>
                 </div>
             </div>
             <div class="upTime">
@@ -182,7 +183,8 @@
             <div class="goods-strip" v-for="item in recommendData" @click="goDetail(item.goods_id)">
                 <div class="goods-strip-top">
                     <div class="goods-strip-title">
-                        <div class="goods-type" v-if="item.deal_type == 1">租号</div>
+                        <div class="title-ico deal-ico" v-if="item.rent_method == 1 || item.rent_method == 3">成品号</div>
+                        <div class="title-ico rent-ico" v-if="item.rent_method == 2 || item.rent_method == 3">租号</div>
                         <div class="account-type" v-if="item.client_id == 1">安卓</div>
                         <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
                         <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
@@ -190,27 +192,34 @@
                         <div class="area" v-else v-text="item.area_name"></div>
                     </div>
                     <div class="goods-des" v-text="item.goods_title"></div>
-                    <div class="original-price"><span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span></div>
-                    <div class="goods-strip-bottom">
-                        <div>
-                            <img src="../../../static/img/rent/rent-ico.png" alt="">
-                            <span>租金</span>
-                            <span class="red-color">￥</span><span class="goods_price">6</span>
-                            <span>/日</span>
+                    <div class="goods-price" v-if="item.rent_method == 1">￥
+                        <span v-text="item.goods_price"></span>
+                    </div>
+                    <div v-if="item.rent_method == 2 || item.rent_method == 3">
+                        <div class="original-price">
+                            <span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span>
                         </div>
-                        <div>
-                            <img src="../../../static/img/rent/pledge-ico.png" alt="">
-                            <span>押金</span>
-                            <span>￥</span><span>500</span>
-                        </div>
-                        <div>
-                            <img src="../../../static/img/rent/pledge-ico.png" alt="">
-                            <span>最短租期</span>
-                            <span v-text="item.goods_price"></span><span>天</span>
+                        <div class="goods-strip-bottom">
+                            <div>
+                                <img src="../../../static/img/rent/rent-ico.png" alt="">
+                                <span>租金</span>
+                                <span class="red-color">￥</span><span class="goods_price" v-text="item.day_rent"></span>
+                                <span>/日</span>
+                            </div>
+                            <div>
+                                <img src="../../../static/img/rent/pledge-ico.png" alt="">
+                                <span>押金</span>
+                                <span>￥</span><span v-text="item.cash"></span>
+                            </div>
+                            <div>
+                                <img src="../../../static/img/rent/pledge-ico.png" alt="">
+                                <span>最短租期</span>
+                                <span v-text="item.least_lease"></span><span>天</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="hint-bottom">
+                <div class="hint-bottom" v-if="item.rent_method == 2 || item.rent_method == 3">
                     账号很便宜，约定帮完每日任务和xx活动。
                 </div>
             </div>
@@ -226,8 +235,9 @@
                 <img :src="detailData.is_collect == 1?'./static/img/goods-details/ok_collect_ico.png':'./static/img/goods-details/no_collect_ico.png'" alt="">
                 <div>收藏</div>
             </div>
-            <div class="rent-btn goods-details-bottom-right" @click="rentFn">立即租号</div>
-            <div class="buy goods-details-bottom-right" @click="buyFn">立即购买</div>
+            <div class="goods-details-bottom-right" v-if="detailData.rent_method == 1 || detailData.rent_method == 2"></div>
+            <div class="rent-btn goods-details-bottom-right" @click="rentFn" v-if="detailData.rent_method == 2 || detailData.rent_method == 3">立即租号</div>
+            <div class="buy goods-details-bottom-right" @click="buyFn" v-if="detailData.rent_method == 1 || detailData.rent_method == 3">立即购买</div>
         </div>
         <!-- 议价弹框 -->
         <div class="hoodle" v-show="showShade">
@@ -494,7 +504,7 @@ export default {
                     .catch(function(err) {});
             }
         },
-        // 显示议价框
+        // 租号
         rentFn() {
             var that = this;
             if (that.$store.state.token) {
@@ -680,15 +690,23 @@ export default {
     display: inline-block;
     margin-right: 0.1rem;
 }
-.title-goods-type {
+.title-ico{
     text-align: center;
     width: 0.93rem;
     height: 0.36rem;
+    display: inline-block;
+}
+.deal-ico{
+    background: -webkit-linear-gradient(#feab49, #ffcc4b);
+    background: -o-linear-gradient(#feab49, #ffcc4b);
+    background: -moz-linear-gradient(#feab49, #ffcc4b);
+    background: linear-gradient(to right, #feab49, #ffcc4b);
+}
+.rent-ico {
     background: -webkit-linear-gradient(#ff9090, #ff687a);
     background: -o-linear-gradient(#ff9090, #ff687a);
     background: -moz-linear-gradient(#ff9090, #ff687a);
     background: linear-gradient(to right, #ff9090, #ff687a);
-    display: inline-block;
 }
 .title-view-history {
     color: #999999;
@@ -1071,7 +1089,7 @@ export default {
 /* 单条商品 */
 .goods-strip {
     background: #ffffff;
-    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
 }
 .goods-strip-top{
     padding: 0.3rem 0.2rem 0;
@@ -1092,7 +1110,7 @@ export default {
     display: inline-block;
     margin-right: 0.1rem;
 }
-.goods-type {
+/* .goods-type {
     text-align: center;
     width: 0.93rem;
     height: 0.36rem;
@@ -1102,7 +1120,7 @@ export default {
     background: linear-gradient(to right, #feab49, #ffcc4b);
     display: inline-block;
     margin-right: 0.1rem;
-}
+} */
 .account-type {
     text-align: center;
     /* width:.7rem; */

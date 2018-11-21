@@ -32,7 +32,7 @@
                             <div class="list-info-title" v-text="item.game_name"></div>
                             <div class="list-ico vs">代练</div>
                             <div class="list-ico product">成品号</div>
-                            <div class="list-ico rent" v-if="trade_type == 1">成品号</div>
+                            <div class="list-ico rent" v-if="trade_type == 1">租号</div>
                         </div>
                     </div>
                 </div>

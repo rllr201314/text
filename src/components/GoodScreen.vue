@@ -30,8 +30,8 @@
                         <div class="goods-strip" v-for="(item,index) in goodsInfo" @click="goDetail(item.goods_id)">
                             <div class="goods-strip-title">
                                 <div class="boutique" v-if="item.is_recommend == 1">精</div>
-                                <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
-                                <div class="goods-type" v-else-if="item.deal_type_id == 2">代练号</div>
+                                <div class="title-ico deal-ico" v-if="item.rent_method == 1 || item.rent_method == 3">成品号</div>
+                                <div class="title-ico rent-ico" v-if="item.rent_method == 2 || item.rent_method == 3">出租</div>
                                 <div class="account-type" v-if="item.client_id == 1">安卓</div>
                                 <div class="account-ios" v-else-if="item.client_id == 2">苹果</div>
                                 <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
@@ -246,6 +246,7 @@ export default {
                 sort_collection: "",
                 is_video: "",
                 content:'',
+                rent_status:1,//1成品号 2 出租号 3 租售号
             },
             data:{
                 page: 1,
@@ -268,6 +269,7 @@ export default {
                 sort_collection: "",
                 is_video: "",
                 content:'',
+                rent_status:1,
             },
             miniRefresh: null,
             showNoData: false,
@@ -1745,16 +1747,24 @@ input[type="number"] {
     display: inline-block;
     margin-right: 0.1rem;
 }
-.goods-type {
+.title-ico{
     text-align: center;
     width: 0.93rem;
     height: 0.36rem;
+    display: inline-block;
+    margin-right: 0.1rem;
+}
+.deal-ico {
     background: -webkit-linear-gradient(#feab49, #ffcc4b);
     background: -o-linear-gradient(#feab49, #ffcc4b);
     background: -moz-linear-gradient(#feab49, #ffcc4b);
     background: linear-gradient(to right, #feab49, #ffcc4b);
-    display: inline-block;
-    margin-right: 0.1rem;
+}
+.rent-ico{
+    background: -webkit-linear-gradient(#ff9090, #ff687a);
+    background: -o-linear-gradient(#ff9090, #ff687a);
+    background: -moz-linear-gradient(#ff9090, #ff687a);
+    background: linear-gradient(to right, #ff9090, #ff687a);
 }
 .account-type {
     text-align: center;

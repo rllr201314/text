@@ -45,7 +45,7 @@
             </div>
             <ul>
                 <!-- 商品类型 -->
-                <li class="option-black" v-for="item in optionData.merchand" @click="seleRentWay(item.value)" v-text="item.name"></li>
+                <li class="option-black" v-for="item in optionData.rent_method" @click="seleRentWay(item.value)" v-text="item.name"></li>
             </ul>
             <div class="pop-view-con"></div>
             <div class="pop-view-bot" @click="hiddenFn">取消</div>
@@ -152,6 +152,7 @@ export default {
             },
             oldData:{},
             optionData: {
+                rent_method:[],
                 merchand: [],
                 mobile: [],
                 // 平台
@@ -247,7 +248,7 @@ export default {
             }else if (flag == "server") {
                 if (that.sellOptData.mobile == "未选择") {
                     //还未请求平台数据
-                    mui.alert("请先选择手机系统", "提示", "确认", "", "");
+                    mui.alert("请先选择操作系统", "提示", "确认", "", "");
                     return false;
                 } else if(that.sellOptData.server == '未选择' && that.showOpteration){
                     //请求完 默认选择第一个
@@ -263,7 +264,7 @@ export default {
         seleRentWay(ind){
             var that = this;
             that.showMenu_way = false;
-            var merchand = that.optionData.merchand;
+            var merchand = that.optionData.rent_method;
             // console.log(merchand);
             for (var i in merchand) {
                 if (ind == merchand[i].value) {
@@ -437,7 +438,7 @@ export default {
                 mui.alert('请选择商品类型','提示','确认','','div');
                 return false;
             }else if(upData.operation_id == ''){
-                mui.alert('请选择手机系统','提示','确认','','div');
+                mui.alert('请选择操作系统','提示','确认','','div');
                 return false;
             }else if(upData.area_id == '' && that.showOpteration){
                 mui.alert('请选择大区','提示','确认','','div');
@@ -489,6 +490,7 @@ export default {
                         if (res.data.code == 200) {
                             that.optionData.merchand = res.data.data.deal_type;
                             that.optionData.mobile = res.data.data.platform;
+                            that.optionData.rent_method = res.data.data.rent_method;
                             that.oldData = JSON.parse(JSON.stringify(that.optionData));
                         }
                         // else if(res.data.code == 401){
@@ -807,6 +809,7 @@ input{
     border-top:1px solid #e5e5e5;
     border-bottom:1px solid #e5e5e5;
     max-height:4rem;
+    list-style: none;
     overflow-y:scroll;
 }
 /* 弹出框 */

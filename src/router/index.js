@@ -5,6 +5,7 @@ import store from '@/store/index'
 
 if (localStorage.getItem('token')) {
   store.commit('set_token', localStorage.getItem('token'))
+  store.commit('set_hint');
 }
 
 if (localStorage.getItem('mobile')) {

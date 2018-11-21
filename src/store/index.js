@@ -8,6 +8,7 @@ export default new Vuex.Store({
     mobile: '',
     isLogin: '',
     time: '',
+    hint:1,
     // 提交的数据
     list_request: {
       page: 1,
@@ -52,6 +53,12 @@ export default new Vuex.Store({
     changeLogin(state, data) {
       state.isLogin = data
       localStorage.i = data
+    },
+    set_hint(state){
+      state.hint = 1;
+    },
+    sub_hint(state){
+      state.hint = 0;
     },
     changeRequest(state, n) {
       // state.list_request.item =item;

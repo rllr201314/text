@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="opt-cell">
-                <span class="left-text">手机系统</span>
+                <span class="left-text">操作系统</span>
                 <div class="right-opt" @click="showPop('mobile')">
                     <span v-text="sellOptData.mobile"></span>
                     <img src="../../../static/img/order/next.png" alt="">
@@ -225,7 +225,7 @@ export default {
             if (flag == "server") {
                 if (that.sellOptData.mobile == "未选择") {
                     //还未请求平台数据
-                    mui.alert("请先选择手机系统", "提示", "确认", "", "");
+                    mui.alert("请先选择操作系统", "提示", "确认", "", "");
                     return false;
                 } else if(that.sellOptData.server == '未选择' && that.showOpteration){
                     //请求完 默认选择第一个
@@ -396,7 +396,7 @@ export default {
                 mui.alert('请选择商品类型','提示','确认','','div');
                 return false;
             }else if(upData.operation_id == ''){
-                mui.alert('请选择手机系统','提示','确认','','div');
+                mui.alert('请选择操作系统','提示','确认','','div');
                 return false;
             }else if(upData.area_id == '' && that.showOpteration){
                 mui.alert('请选择大区','提示','确认','','div');
@@ -765,6 +765,7 @@ input{
     border-top:1px solid #e5e5e5;
     border-bottom:1px solid #e5e5e5;
     max-height:4rem;
+    list-style: none;
     overflow-y:scroll;
 }
 /* 弹出框 */

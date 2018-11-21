@@ -65,7 +65,7 @@
                         <span class="celltext">押金</span>
                         <div class="cell-right">
                             <span class="unit-price price">￥
-                                <span v-text="goodsInfo.goods_price"></span>
+                                <span v-text="goodsInfo.cash"></span>
                             </span>
                         </div>
                     </div>
@@ -77,10 +77,10 @@
                         </div>
                     </div>
                     <div class="contact-cell">
-                        <span class="celltext">租金<span class="gray-color">(￥10/日)</span></span>
+                        <span class="celltext">租金<span class="gray-color">(￥<span v-text="goodsInfo.day_rent"></span>/日)</span></span>
                         <div class="cell-right">
                             <span class="unit-price price">￥
-                                <span v-text="goodsInfo.goods_price"></span>
+                                <span v-text="tremPirce"></span>
                             </span>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                             <img src="../../../static/img/order/next.png" alt="">
                         </div>
                     </div>
-                    <div class="contact-cell" >
+                    <div class="contact-cell" v-show="totalPrice != null">
                         <div class="cell-right">
                             <div class="total-price price">
                                 实际支付：<span class="red-color" v-text="totalPrice"></span>
@@ -111,26 +111,25 @@
 
         <div class="pop-view" v-show="showTime">
             <div class="pop-tit">您希望租号的天数</div>
-            <input type="number" placeholder="请输入您希望租号的天数">
+            <input type="number" placeholder="请输入您希望租号的天数" ref="inp_time" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')">
             <div class="btn-wrap">
-                <div class="okbtn">确认</div>
-                <div class="cancel">取消</div>
+                <div class="okbtn" @click="affirmFn">确认</div>
+                <div class="cancel" @click="cancelFn">取消</div>
             </div>
         </div>
 
 
 
-        <div v-show="showMenu" class="type-mu">
+        <!-- <div v-show="showMenu" class="type-mu">
             <div class="pop-view-tit option-gray">
                 <div>请选择租期</div>
             </div>
-            <!-- 手机系统 -->
             <ul>
                 <li class="option-black" v-for="item in optionData" @click="seleTrem(item.value)" v-text="item.name"></li>
             </ul>
             <div class="pop-view-con"></div>
             <div class="pop-view-bot" @click="hiddenFn">取消</div>
-        </div>
+        </div> -->
         <!-- 遮罩 -->
         <div class="orderShade" v-show="showOrderShade" @click="hiddenFn"></div>
         <Loading class="black-bg" v-if="showNoData"></Loading>
@@ -168,8 +167,8 @@ export default {
             },
 
             tenancy_term:'请选择',//租期
-            showMenu:false,//显示租期选项
-            optionData:[{name:'7天',value:1},{name:'8天',value:2}],
+            // showMenu:false,//显示租期选项
+            // optionData:[{name:'7天',value:1},{name:'8天',value:2}],
             showPro:false,//是否显示协议
             protocalText:'',//协议
             protocol: true, //阅读协议
@@ -179,7 +178,7 @@ export default {
             phone:'',
             wx:'',
             tremVal:'',//选择租期值
-            tremTime:'',//天数
+            tremPirce:0,//租期*日租金=租金
             showTime:false,//--------------------------------------------------------------------点击下一步显示 
            
             showOrderShade: false, //遮罩
@@ -199,27 +198,27 @@ export default {
     methods: {
         // 隐藏遮罩
         hiddenFn(){
-            this.showMenu = false;
+            this.showTime = false;
             this.showOrderShade = false;
         },
         // 显示租期选项
         showTerm(){
             this.showOrderShade = true;
-            this.showMenu = true;
+            this.showTime = true;
         },
         // 选择租期
-        seleTrem(val){
-            var that = this;
-            var data = that.optionData;
-            for(var i in data){
-                if(val == data[i].value){
-                    that.tenancy_term = data[i].name;
-                    that.tremVal = val;
-                    break;
-                }
-            }
-            that.hiddenFn();
-        },
+        // seleTrem(val){
+        //     var that = this;
+        //     var data = that.optionData;
+        //     for(var i in data){
+        //         if(val == data[i].value){
+        //             that.tenancy_term = data[i].name;
+        //             that.tremVal = val;
+        //             break;
+        //         }
+        //     }
+        //     that.hiddenFn();
+        // },
         // 协议
         getProtocol(){
             var that = this;
@@ -252,7 +251,29 @@ export default {
                 that.num++;
             }
         },
-        
+        // 确认
+        affirmFn(){
+            var that = this;
+            var val = that.$refs.inp_time.value;
+            var data = that.goodsInfo;
+            if(Number(val) >= Number(data.least_lease)){
+                that.tremPirce = Number(data.day_rent) * val;
+                that.tenancy_term = val + '天';
+                that.tremVal = val;
+                that.$refs.inp_time.value = '';
+                that.totalPrice = that.tremPirce + Number(data.cash);
+                that.hiddenFn();
+            }else{
+                mui.alert('租期不得小于最短租期','提示','确认','','div');
+            }
+            
+        },
+        // 取消
+        cancelFn(){
+            var that = this;
+            that.$refs.inp_time.value = '';
+            that.hiddenFn();
+        },
         // 阅读协议
         lookFn(){
             this.protocol = !this.protocol;
@@ -260,14 +281,14 @@ export default {
         getData() {
             var that = this;
             that.$axios
-                .post(process.env.API_HOST+"order_detail", {
+                .post(process.env.API_HOST+"rent_info", {
                     goods_id: that.$route.query.goods_id
                 })
                 .then(res => {
-                    // console.log(res);
+                    console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
-                            that.goodsInfo = res.data.data.goods_info;
+                            that.goodsInfo = res.data.data;
                             
                             that.showNoData = false;
                         }else if(res.data.code == 400){
@@ -307,27 +328,24 @@ export default {
                     mui.alert("您输入的手机号不正确","提示","确定","","div");
                     return false;
                 }
-                 request.phone = that.phone;
+                request.phone = that.phone;
             }
             if(that.tremVal == ''){
                 mui.alert("请选择租期", "提示", "确认", "", "div");
                 return false;
             }else{
-                request.trem = that.tremVal;
+                request.lease_time = that.tremVal;
             }
             // 判断是否勾选协议
             if(!that.protocol){
                 mui.alert("请阅读并同意《看个号平台交易协议》","提示","确定","","div");
                 return false;
             }
+            request.goods_id = that.$route.query.goods_id;
+            request = JSON.stringify(request)
+            that.$router.push({name:'Pay',query:{rent:request}})
+            sessionStorage.lease_time = request;
             
-            // request.price = that.totalPrice;
-            // request.remaining_sum = that.remaining_sum;
-            // request.goods_id = that.$route.query.goods_id;
-            // // console.log(request);
-            // var request = JSON.stringify(request)
-            // that.$router.push({name:'Pay',query:{request}})
-            // sessionStorage.order_info = request;
         }
     },
     mounted() {

@@ -96,7 +96,7 @@
             </div>
 
             <!-- 价格设定 -->
-            <div class="sellInfo-cell">
+            <div class="sellInfo-cell" v-if="showSell">
                 <div class="sell-cell-top">
                     <img src="../../../../static/img/goodscreen/vertical.png" alt="">
                     <span>价格设定</span>
@@ -139,7 +139,7 @@
                         </div>
                         <div class="safe-hint">
                             <div class="sell-left">(保险费用为总价的{{safeOrCompact.parcent}}%)</div>
-                            <div class="strip-radio-right">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
+                            <div class="strip-radio-right" v-if="Number(safeOrCompact.maxPrice) > 0">保险费封顶￥{{safeOrCompact.maxPrice}}</div>
                             <div class="strip-radio-right">
 
                             </div>
@@ -161,7 +161,7 @@
                         </div>
                         <div class="safe-hint">
                             <div class="sell-left">(合同费用为总价的{{safeOrCompact.parcent}}%)</div>
-                            <div class="strip-radio-right">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
+                            <div class="strip-radio-right" v-if="Number(safeOrCompact.maxPrice) > 0">合同费封顶￥{{safeOrCompact.maxPrice}}</div>
                         </div>
                     </div>
                 </div>
@@ -180,24 +180,21 @@
                             <img src="../../../../static/img/order/next.png" alt="">
                         </div>
                     </div>
-                    <div class="sell-strip" v-show="requestData.sell_type == 1">
+                    <div class="sell-strip">
                         <span class="sell-lefttext">最短租期</span>
-                        <input class="rent-input" type="number" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
+                        <input class="rent-input" type="number" v-model="requestData.least_lease" oninput="if(value.length>7)value=value.slice(0,7)">
                         <span class="black-color">天</span><span class="red-color">(建议最短周期7天)</span>
                     </div>
-                    <div class="sell-strip" v-show="requestData.sell_type == 1">
+                    <div class="sell-strip">
                         <span class="sell-lefttext">租金</span>
-                        <input class="rent-input" type="number" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
+                        <input class="rent-input" type="number" v-model="requestData.day_rent" oninput="if(value.length>7)value=value.slice(0,7)">
                         <span class="black-color">元/天</span>
                     </div>
-                    <div class="sell-strip" v-show="requestData.sell_type == 1">
+                    <div class="sell-strip">
                         <span class="sell-lefttext">押金</span>
-                        <input class="rent-input" type="number" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
+                        <input class="rent-input" type="number" v-model="requestData.cash" oninput="if(value.length>7)value=value.slice(0,7)">
                         <span class="black-color">元</span>
                     </div>
-
-
-                    
                 </div>
             </div>
             <!-- 账号信息 -->
@@ -310,7 +307,7 @@
                     <div>请选择出租方式</div>
                 </li>
                 <!-- 商品类型 -->
-                <li class="option-black" v-for="item in sellData.accountType" @click="seleType(item.value,'rentType')" v-text="item.name"></li>
+                <li class="option-black" v-for="item in sellData.rentWay" @click="seleType(item.value,'rentType')" v-text="item.name"></li>
             </ul>
             <!-- 取消菜单 -->
             <ul class="pop-view">
@@ -343,6 +340,7 @@ export default {
                     title: "我要卖"
                 }
             },
+            showSell:false,//是否是租售
             showMenu_type:false,
             showLoading:false,
             editOrpublish:null,
@@ -391,6 +389,7 @@ export default {
                 accountType: [], //账号类型
                 faction: [], //职业
                 sex: [], //性别
+                rentWay:[],
                 sellType: {
                     imgSrc: {
                         Ok: "./static/img/order/okcheck.png",
@@ -420,6 +419,11 @@ export default {
                 is_compact: "",
                 sell_type: "",
                 goods_price: "",
+                least_lease:'',//租期
+                day_rent:'',//租金
+                cash:'',//押金
+                rent_type:'',//出租方式
+
 
                 min_price: "",
                 account: "",
@@ -504,8 +508,6 @@ export default {
                         safeArr[i].ischeck = false;
                     }
                 }
-
-                
             }
         },
         // 选择是否议价
@@ -659,11 +661,11 @@ export default {
                 }
             } else if (flag == "rentType") {
                 //账号类型
-                var accountType = that.sellData.accountType;
-                for (var i in accountType) {
-                    if (opt == accountType[i].value) {
-                        // that.requestData.account_type = accountType[i].value;
-                        that.seleData.rentType = accountType[i].name;
+                var rentWay = that.sellData.rentWay;
+                for (var i in rentWay) {
+                    if (opt == rentWay[i].value) {
+                        that.requestData.rent_type = rentWay[i].value;
+                        that.seleData.rentType = rentWay[i].name;
                     }
                 }
             }
@@ -752,12 +754,6 @@ export default {
                     that_req.tag = str.substring(1);
                 }
                 var upImg = that.sellData.upimgAll.imgSrc;
-                // if (upImg.length == 0) {
-                //     mui.alert("请选择商品图片", "提示", "确认", "", "div");
-                //     return false;
-                // } else {
-                //     that_req.images = upImg;
-                // }
                 if(upImg.length > 0){
                     that_req.images = upImg;
                 }
@@ -786,22 +782,25 @@ export default {
                     that.showLoading = false;
                     return false;
                 }
-                // 议价还是一口价 -- 价格
-                if (that_req.sell_type == 1) {
-                    if (that_req.goods_price == "") {
-                        mui.alert("请输入商品价格", "提示", "确认", "", "div");
-                        that.showLoading = false;
-                        return false;
-                    }
-                } else if (that_req.sell_type == 2) {
-                    if (that_req.goods_price == "") {
-                        mui.alert("请输入可议价最高价格","确认","","div");
-                        that.showLoading = false;
-                        return false;
-                    } else if (that_req.min_price == "") {
-                        mui.alert("请输入可议价最低价格","提示","确认","","div");
-                        that.showLoading = false;
-                        return false;
+                // 判断是否显示价格
+                if(that.showSell){
+                    // 议价还是一口价 -- 价格
+                    if (that_req.sell_type == 1) {
+                        if (that_req.goods_price == "") {
+                            mui.alert("请输入商品价格", "提示", "确认", "", "div");
+                            that.showLoading = false;
+                            return false;
+                        }
+                    } else if (that_req.sell_type == 2) {//--------------------------------------------------------------------------------------
+                        if (that_req.goods_price == "") {
+                            mui.alert("请输入可议价最高价格","确认","","div");
+                            that.showLoading = false;
+                            return false;
+                        } else if (that_req.min_price == "") {
+                            mui.alert("请输入可议价最低价格","提示","确认","","div");
+                            that.showLoading = false;
+                            return false;
+                        }
                     }
                 }
                 var forceBind = false;
@@ -853,8 +852,34 @@ export default {
                     }
                     that_req.is_compact = 2;
                 }
-                if(forceBind && that_req.is_compact == 2){
-                    mui.alert("有绑账号请选择购买合同", "提示", "确认", "", "div");
+                // 租售类型的话再判断是否强制选择合同
+                if(that.showSell){
+                    if(forceBind && that_req.is_compact == 2){
+                        mui.alert("有绑账号请选择购买合同", "提示", "确认", "", "div");
+                        that.showLoading = false;
+                        return false;
+                    }
+                }
+                // 判断有没有选择出租方式
+                if(that_req.rent_type == ""){
+                    mui.alert("请选择出租方式", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                }
+                // 出租最短租期
+                if(that_req.least_lease == ""){
+                    mui.alert("请输入最短租期", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                }
+
+                if(that_req.day_rent == ""){
+                    mui.alert("请输入日租金", "提示", "确认", "", "div");
+                    that.showLoading = false;
+                    return false;
+                }
+                if(that_req.cash == ""){
+                    mui.alert("请输入押金", "提示", "确认", "", "div");
                     that.showLoading = false;
                     return false;
                 }
@@ -1042,6 +1067,7 @@ export default {
                                 that.sellData.sex = data.person_sex; //角色性别
                                 that.sellData.faction = data.faction; //职业
                                 that.sellData.accountType = data.account_type; //账号类型
+                                that.sellData.rentWay = data.rent_type;//出租方式
                                 that.judgeInfo(data.chargeInfo);
                             }else if(flag == 2){//编辑
                                 var oldData = that.oldData;
@@ -1199,11 +1225,16 @@ export default {
                     var data = JSON.parse(opt.upData);
                     that.category_id = data.category_id;
                     that.requestData.category_id = data.category_id;
-                    that.requestData.rent_id = data.rent_id;//--------------------------------
                     that.requestData.deal_type = data.deal_type;
                     that.requestData.operation_id = data.operation_id;
                     that.requestData.area_id = data.area_id;
                     that.requestData.server_id = data.server_id;
+                    that.requestData.rent_method = data.rent_id;
+                    if(data.rent_id == 3){
+                        that.showSell = true;
+                    }else{
+                        that.showSell = false;
+                    }
                     that.getConfig(data,opt.flag);//请求选择参数
                     that.getTagType();//获取标签大类
                     that.comData.showTitle.title = "我要卖";
@@ -1796,6 +1827,7 @@ input[type="number"] {
     border-bottom:1px solid #e5e5e5;
     max-height:4rem;
     overflow-y:scroll;
+    list-style: none;
 }
 /* 弹出框 */
 .option-gray {
