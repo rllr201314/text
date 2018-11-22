@@ -7,6 +7,29 @@
         <div>增值电信业务经营许可证：浙B2-20180197</div>
         <div>杭州古都科技有限公司灵石县分公司@2018-2028</div>
         <div>kangehao.com版权所有</div>
+        <div class="footer-link">
+          <a href="http://www.epicc.com.cn/?cmpid=2seb2pzBT00002">
+            <img src="../../../static/img/footer/ic_link_picc.png"/>
+          </a>
+          <a href="https://www.yunhetong.com/">
+            <img src="../../../static/img/footer/ic_link_yht.png"/>
+          </a>
+          <a id="_pingansec_bottomimagesmall_shiming"
+             href="http://si.trustutn.org/info?sn=592181121037343847839&certType=1">
+            <img src="http://v.trustutn.org/images/cert/bottom_small_img.png"/>
+          </a>
+        </div>
+        <div class="footer-link">
+          <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=14072902000115">
+            <img src="../../../static/img/footer/ic_link_wjb.png"/>
+          </a>
+          <a href="http://webscan.360.cn/index/checkwebsite?url=www.kangehao.com">
+            <img src="../../../static/img/footer/ic_link_360.png"/>
+          </a>
+          <a href="http://www.zjwhsc.com/zjwh/QR_Place_Info.aspx?Place_Guid=be5fce830e1b4e7e9e77253f9ac545af">
+            <img src="../../../static/img/footer/ic_link_www.png"/>
+          </a>
+        </div>
     </div>
 </template>
 
@@ -36,5 +59,17 @@
     }
     .footer span{
         vertical-align: middle;
+    }
+
+    .footer-link{
+      width: 100%;
+    }
+    .footer-link a{
+      width: 30%;
+    }
+
+    .footer-link img{
+      width: 20%;
+      height: 0.5rem;
     }
 </style>
