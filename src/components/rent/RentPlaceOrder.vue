@@ -6,6 +6,7 @@
         <div class="placeOrder-content">
             <!-- 商品详情 -->
             <div class="placeOrder-cell">
+                <img class="badge" src="../../../static/img/badge/rent-badge.png" alt="">
                 <div class="goods-info-top">
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
                     <span>商品详情</span>
@@ -166,7 +167,7 @@ export default {
                 val: ""
             },
 
-            tenancy_term:'请选择',//租期
+            tenancy_term:'',//租期
             // showMenu:false,//显示租期选项
             // optionData:[{name:'7天',value:1},{name:'8天',value:2}],
             showPro:false,//是否显示协议
@@ -289,8 +290,11 @@ export default {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             that.goodsInfo = res.data.data;
-                            
+                            that.tenancy_term = res.data.data.least_lease + '天';
+                            that.tremVal = res.data.data.least_lease;
+                            that.tremPirce = Number(res.data.data.day_rent) * Number(res.data.data.least_lease);
                             that.showNoData = false;
+                            that.totalPrice = Number(that.tremPirce) + Number(res.data.data.cash);
                         }else if(res.data.code == 400){
                             that.showNoData = true;
                             mui.alert(res.data.msg,'提示','确认',function(){
@@ -377,6 +381,14 @@ export default {
     -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     margin-bottom: 0.2rem;
+    position: relative;
+}
+.badge{
+    width:1.03rem;
+    height:1rem;
+    position: absolute;
+    top:0;
+    right: 0;
 }
 .goods-info-top {
     line-height: 0.7rem;

@@ -1061,7 +1061,7 @@ export default {
     background: linear-gradient(to right, #ffcc4b, #feab49);
 }
 .rent-btn {
-    background:#FF9536;
+    background:#65BAFF;
 }
 .buy {
     background: #ff5e5e;

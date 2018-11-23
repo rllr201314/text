@@ -202,15 +202,6 @@ export default {
             ],
             isbalace:false,
             deposit:false,
-            // payData: {
-            //     orderInfo: {
-            //         orderNum: "13823427342389423",
-            //         orderTime: "2018-08-08 9:00",
-            //         orderPrice: "￥2000",
-                    
-            //         lastTime: "22:22"
-            //     }
-            // },
             link:null,
             submitData:null,
         };
@@ -223,17 +214,12 @@ export default {
     },
     methods: {
         Balace(flag){
-            // debugger;
             var that = this;
-            // debugger;
             if(that.selePrice){//判断可不可以选余额或者押金支付，确认支付后不可再点击
-                if(flag == 'true'){
+                if(flag == 'true'){//押金支付
                     that.deposit = !that.deposit;
                     that.isbalace =false;
-                    if(!that.deposit){
-                        that.price = Number(that.old_price);
-                    }else{
-                        // that.price = Number(that.old_price) - Number(that.deposit_sum);
+                    if(that.deposit){//使用
                         if(Number(that.deposit_sum) > Number(that.price)){
                             that.deposit_price = that.price;
                             that.price = 0;
@@ -241,41 +227,69 @@ export default {
                             that.price = Number(that.old_price) - Number(that.deposit_sum);
                             that.deposit_price = Number(that.deposit_sum);
                         }
-                    }
-                }else if(flag == 'false'){
-                    that.isbalace = !that.isbalace; 
-                    that.deposit =false;
-                    if(!that.isbalace){
-                        that.price = Number(that.old_price);
                     }else{
-                        if(Number(that.remaining_sum) > Number(that.price)){
-                            that.remaining_price = that.price;
-                            that.price = 0;
-                        }else{
-                            that.price = Number(that.old_price) - Number(that.remaining_sum);
-                            that.remaining_price = Number(that.remaining_sum);
-                        }
+                        that.price = Number(that.old_price);
                     }
-                    if(that.is_line){
-                        var data = that.online;
-                        for(var i in data){
-                            if(data[i].issele == true){
-                                if(data[i].name == "银联"){
-                                    that.charge.price = that.fee_info.chinapay_remaining_charge;
-                                    that.charge.rate = '0.6';
-                                    break;
-                                }else if(data[i].name == "支付宝"){
-                                    that.charge.price = that.fee_info.alli_remaining_charge;
-                                    that.charge.rate = '1';
-                                    break;
-                                }else if(data[i].name == "微信"){
-                                    that.charge.price = that.fee_info.wx_remaining_charge;
-                                    that.charge.rate = '1';
-                                    break;
+                }else if(flag == 'false'){//余额支付                   
+                    that.isbalace = !that.isbalace; 
+                    that.deposit = false;
+                    if(that.isbalace){//选择余额支付
+                        that.remaining_price = that.fee_info.remaining_deduction;//扣除余额显示
+                        if(that.is_line){//线上支付
+                            var data = that.online;
+                            for(var i in data){
+                                if(data[i].issele == true){
+                                    switch(data[i].name){
+                                        case "银联":
+                                            that.charge.price = that.fee_info.chinapay_remaining_charge;
+                                            that.price = that.fee_info.chinapay_remaining_amount;
+                                            that.charge.rate = '0.6';
+                                            break;
+                                        case "支付宝":
+                                            that.charge.price = that.fee_info.alli_remaining_charge;
+                                            that.price = that.fee_info.alli_remaining_amount;
+                                            that.charge.rate = '1';
+                                            break;
+                                        case "微信":
+                                            that.charge.price = that.fee_info.wx_remaining_charge;
+                                            that.price = that.fee_info.wx_remaining_amount;
+                                            that.charge.rate = '1';
+                                            break;
+                                    }
                                 }
                             }
+                        }else{
+                            that.price = that.fee_info.offline_remaining_amount;
+                        }
+                    }else{//取消余额支付
+                        if(that.is_line){//线上支付
+                            var data = that.online;
+                            for(var i in data){
+                                if(data[i].issele == true){
+                                    switch(data[i].name){
+                                        case "银联":
+                                            that.charge.price = that.fee_info.chinapay_charge;
+                                            that.price = that.fee_info.chinapay_amount;
+                                            that.charge.rate = '0.6';
+                                            break;
+                                        case "支付宝":
+                                            that.charge.price = that.fee_info.alli_charge;
+                                            that.price = that.fee_info.alli_amount;
+                                            that.charge.rate = '1';
+                                            break;
+                                        case "微信":
+                                            that.charge.price = that.fee_info.wx_charge;
+                                            that.price = that.fee_info.wx_amount;
+                                            that.charge.rate = '1';
+                                            break;
+                                        }
+                                }
+                            }
+                        }else{
+                            that.price = that.fee_info.offline_amount;
                         }
                     }
+                    
                 }
             }
         },
@@ -571,11 +585,12 @@ export default {
                         }
                         that.remaining_sum = Number(res.data.data.remain_amount);
                         that.hint = '（'+res.data.msg+'）';
-                        if(res.data.data.is_remaining == 2){
-                            that.selePrice = true;
-                        }else if(res.data.data.is_remaining == 1){
-                            that.selePrice = false;
-                        }
+                        // // 如果is_remaining == 1 证明订单下单之前已经用过余额再次进来不可以使用
+                        // if(res.data.data.is_remaining == 2){
+                        //     that.selePrice = true;
+                        // }else if(res.data.data.is_remaining == 1){
+                        //     that.selePrice = false;
+                        // }
                     }else{
                         mui.alert(res.data.msg,'提示','确认',function(){
                             that.$router.go(-1);
@@ -703,10 +718,47 @@ export default {
             }).catch((err)=>{
                 console.log(err);
             })
+        },
+        // 租号订单未支付
+        getRentPayment(id){
+            var that =this;
+            that.$axios.post(process.env.API_HOST+'rent_payment',{
+                order_id:id
+            }).then((res)=>{
+                if(res.data.code == 200){
+                        that.fee_info = res.data.data;
+                        var data = that.online;
+                        for(var i in data){
+                            if(data[i].issele == true){
+                                if(data[i].name == "银联"){
+                                    that.price = that.fee_info.chinapay_amount;
+                                    that.old_price = that.fee_info.chinapay_amount;
+                                    that.charge.name = data[i].name;
+                                    that.charge.price = that.fee_info.chinapay_charge;
+                                    that.charge.rate = '0.6';
+                                    break;
+                                }
+                            }
+                        }
+                        that.remaining_sum = Number(res.data.data.remain_amount);
+                        that.hint = '（'+res.data.msg+'）';
+                        // if(res.data.data.is_remaining == 2){
+                        //     that.selePrice = true;
+                        // }else if(res.data.data.is_remaining == 1){
+                        //     that.selePrice = false;
+                        // }
+                    }else{
+                        mui.alert(res.data.msg,'提示','确认',function(){
+                            that.$router.go(-1);
+                        },'div')
+                    }
+            }).catch((err)=>{
+                console.log(err);
+            })
         }
     },
     beforeRouteLeave(to, from, next) {
-        if(to.path == '/place-order'){
+        if(to.path == '/place-order' || to.path == '/rent-orders'){
             this.$router.go(-3);//跳转到选择游戏类型
         }else if(to.path == '/installment'){
             this.$router.go(-1);
@@ -758,7 +810,7 @@ export default {
             }else{
                 that.$router.go(-1);
             }
-        }else if(that.$route.query.rent){
+        }else if(that.$route.query.rent){//租号
             var lease_time = sessionStorage.getItem('lease_time');
             var rent = that.$route.query.rent;
             if(rent == lease_time){
@@ -766,6 +818,13 @@ export default {
                     that.rent_info = JSON.parse(rent);
                     that.getRentFee(that.rent_info);
                 }
+            }
+
+        }else if(that.$route.query.rent_unpaid_o){
+            var order_id = that.$route.query.rent_unpaid_o;
+            var rent_unpaid_o = sessionStorage.getItem('rent_unpaid_o');
+            if(order_id == rent_unpaid_o){
+                that.getRentPayment(rent_unpaid_o);
             }
 
         }else{

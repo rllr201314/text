@@ -35,7 +35,7 @@
                 </div>
                 <div class="btn green-color" v-else-if="item.is_agree == 1">已同意</div>
                 <div class="btn gray-bg" v-else-if="item.is_agree == 2">已拒绝</div>
-                <div class="btn gray-bg" v-else-if="item.is_agree == 3">已下架</div>
+                <div class="btn gray-bg" v-else-if="item.is_agree == 3">已失效</div>
             </div>
         </div>
         <NoData v-if="showNoData"></NoData>

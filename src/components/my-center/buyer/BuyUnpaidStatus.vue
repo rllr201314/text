@@ -4,6 +4,8 @@
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="unpaid-content">
             <div class="unpaid-cell" v-for="item in goodsData">
+                <img class="badge" v-if="item.rent_method == 1" src="../../../../static/img/badge/product.png" alt="">
+                <img class="badge" v-if="item.rent_method == 2" src="../../../../static/img/badge/rent-badge.png" alt="">
                 <div class="gameLog">
                     <img :src="item.game_logo" alt="">
                 </div>
@@ -11,12 +13,13 @@
                     <div class="order-num">
                         <span>订单号</span>
                         <span v-text="item.order_sn"></span>
-                        <span class="history-time" v-text="item.create_time"></span>
                     </div>
                     <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
-                        <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
+                        <span class="good-price" v-if="item.rent_method == 1">￥<span v-text="item.goods_amount"></span></span>
+                        <span class="good-price" v-if="item.rent_method == 2">￥<span v-text="item.order_amount"></span></span>
                         <span class="order-status">待支付</span>
+                        <span class="history-time" v-text="item.create_time"></span>
                     </div>
                     <div class="last-time">
                         倒计时
@@ -33,7 +36,7 @@
                     </div>
                     <div class="right-operate">
                         <span class="cancel" @click="cancalOrder(item.order_id)" v-if="false">取消订单</span>
-                        <span class="pay" @click="goPayFn(item.order_id,item.goods_amount)">前往支付</span>
+                        <span class="pay" @click="goPayFn(item.order_id,item.goods_amount,item.rent_method)">前往支付</span>
                     </div>
                 </div>
             </div>
@@ -117,13 +120,18 @@ export default {
             this.showUnpaidBox = true;
             this.showUnpaidShare = true;
         },
-        goPayFn(order_id,price){
-            var all = {}
-            all.order_id = order_id;
-            all.price = price;
-            var order_info = JSON.stringify(all);
-            sessionStorage.unpaid_o = order_info;
-            this.$router.push({name:'Pay',query:{order_info}})
+        goPayFn(order_id,price,flag){
+            if(flag == 1){
+                var all = {}
+                all.order_id = order_id;
+                all.price = price;
+                var order_info = JSON.stringify(all);
+                sessionStorage.unpaid_o = order_info;
+                this.$router.push({name:'Pay',query:{order_info}})
+            }else if(flag == 2){
+                sessionStorage.rent_unpaid_o = order_id;
+                this.$router.push({name:'Pay',query:{rent_unpaid_o:order_id}});
+            }
         },
         initTime(time){
             var mm = Math.floor((time / 60) % 60);
@@ -224,6 +232,14 @@ export default {
     box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     margin-bottom: 0.2rem;
     padding: 0 0.2rem;
+    position: relative;
+}
+.badge{
+    width:1.03rem;
+    height:1rem;
+    position: absolute;
+    top:0;
+    right:0;
 }
 .gameLog {
     display: inline-block;
@@ -247,14 +263,8 @@ export default {
     color: #666666;
     font-size: 0.26rem;
     margin-bottom: 0.1rem;
-    position: relative;
 }
-.history-time {
-    color: #999999;
-    position: absolute;
-    top: 0;
-    right: 0;
-}
+
 .order-des {
     width: 4rem;
     font-size: 0.26rem;
@@ -266,6 +276,14 @@ export default {
 }
 .price-status {
     margin-bottom: 0.2rem;
+    position: relative;
+}
+.history-time {
+    font-size:.24rem;
+    color: #999999;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 .good-price {
     color: #ff5e5e;

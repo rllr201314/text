@@ -6,6 +6,7 @@
         <div class="placeOrder-content">
             <!-- 商品详情 -->
             <div class="placeOrder-cell">
+                <img class="badge" src="../../../static/img/badge/product.png" alt="">
                 <div class="goods-info-top">
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
                     <span>商品详情</span>
@@ -701,6 +702,14 @@ export default {
     -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     margin-bottom: 0.2rem;
+    position: relative;
+}
+.badge{
+    width:1.03rem;
+    height:1rem;
+    position: absolute;
+    top:0;
+    right: 0;
 }
 .goods-info-top {
     line-height: 0.7rem;

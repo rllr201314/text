@@ -5,7 +5,7 @@
             <img src="../../../static/img/user_cont.png" alt="">
             <div>账号</div>
         </div>
-        <div class="cell user-level" @click="rent">
+        <div class="cell user-level" @click="seleOpt('rent')">
             <img src="../../../static/img/rent.png" alt="">
             <div>租号</div>
         </div>
@@ -56,6 +56,8 @@
                         mui.toast('请先登录',{ duration:'short', type:'div' });
                         that.$router.push({name: 'AccountLogin'});
                     }
+                }else if(flag == 'rent'){
+                    that.$router.push({name:'RentPage'})
                 }
             },
             rent(){
