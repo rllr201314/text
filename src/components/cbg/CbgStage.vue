@@ -2,7 +2,7 @@
     <div class="cbg-wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="nav-tit" :class="nav_bg?'red-bg':'white-bg'">
-            <div class="nav-btn" v-for="item in nav_data" v-text="item.name" @click="seleNav(item.value)" :class="item.isclick?item.role:''" ></div>
+            <div class="nav-btn" v-for="item in nav_data" v-text="item.name" @click="seleNav(item.value)" :class="item.isclick?item.role:''"></div>
         </div>
         <div class="cbg-con">
             <div class="showbox" v-show="nav_data[0].isclick">
@@ -44,8 +44,8 @@
                     </div>
                 </div>
             </div>
-            <div class="showbox stage-info" v-show="nav_data[1].isclick">
-                <div class="stage-cell">
+            <div class="showbox box-con" v-show="nav_data[1].isclick">
+                <div class="con-cell">
                     <div class="top-cell">
                         <div class="strip">
                             <span class="left-text">游戏分类</span>
@@ -76,6 +76,7 @@
                                 <div class="right-box">
                                     <img class="check-img" src="../../../static/img/order/nocheck.png" alt="">
                                     <span class="black-color">日分期</span><span class="red-color">（随借随还、不分期）</span>
+                                    <div class="message">推荐</div>
                                 </div>
                                 <div class="right-box">
                                     <img class="check-img" src="../../../static/img/order/nocheck.png" alt="">
@@ -95,31 +96,97 @@
                             </div>
                         </div>
                     </div>
-                    <div class="apply-btn" >申请办理分期</div>
+                    <div class="apply-btn" @click="applyFn">申请办理分期</div>
                     <div class="flow">
                         <div class="flow-title">分期流程</div>
-                        <div class="left-flow"><img src="../../../static/img/cbg/flow.png" alt=""></div>
-                        <div class="right-flow">
-                            <div class="r-flow-tit">提交账号，申请分期</div>
-                            <div class="r-flow-tit">确认分期信息</div>
-                            <div class="r-flow-tit">支付首付，正式签约</div>
-                            <div class="r-flow-tit">账号采购</div>
-                            <div class="r-flow-tit">确认收货</div>
-                            <div class="r-flow-tit">交易完成</div>
-                            <div class="r-flow-text">将您在网易藏宝阁所选的账号信息提交给平台客服，客服对您提交的账号信息进行审核。</div>
-                            <div class="r-flow-text">客服与您核对交易信息，双方确认后可进行下一步</div>
-                            <div class="r-flow-text">客服将引导您下单，支付首付，即可签署分期协议。</div>
-                            <div class="r-flow-text">签约后，看个号会为您采购您选中的藏宝阁账号。</div>
-                            <div class="r-flow-text">请您确认收货，然后尽情体验吧！</div>
-                            <div class="r-flow-text">完成交易流程，如有任何问题欢迎咨询客服！</div>
+                        <div class="flow-con">
+                            <div class="flow-vertical"></div>
+                            <div class="flow-strip">
+                                <div class="left-flow">1</div>
+                                <div class="right-flow">
+                                    <div class="r-flow-tit">提交账号，申请分期</div>
+                                    <div class="r-flow-text">将您在网易藏宝阁所选的账号信息提交给平台客服，客服对您提交的账号信息进行审核。</div>
+                                </div>
+                            </div>
+                            <div class="flow-strip">
+                                <div class="left-flow">2</div>
+                                <div class="right-flow">
+                                    <div class="r-flow-tit">确认分期信息</div>
+                                    <div class="r-flow-text">客服与您核对交易信息，双方确认后可进行下一步</div>
+                                </div>
+                            </div>
+                            <div class="flow-strip">
+                                <div class="left-flow">3</div>
+                                <div class="right-flow">
+                                    <div class="r-flow-tit">支付首付，正式签约</div>
+                                    <div class="r-flow-text">客服将引导您下单，支付首付，即可签署分期协议。</div>
+                                </div>
+                            </div>
+                            <div class="flow-strip">
+                                <div class="left-flow">4</div>
+                                <div class="right-flow">
+                                    <div class="r-flow-tit">账号采购</div>
+                                    <div class="r-flow-text">签约后，看个号会为您采购您选中的藏宝阁账号。</div>
+                                </div>
+                            </div>
+                            <div class="flow-strip">
+                                <div class="left-flow">5</div>
+                                <div class="right-flow">
+                                    <div class="r-flow-tit">确认收货</div>
+                                    <div class="r-flow-text">请您确认收货，然后尽情体验吧！</div>
+                                </div>
+                            </div>
+                            <div class="flow-strip">
+                                <div class="left-flow">6</div>
+                                <div class="right-flow">
+                                    <div class="r-flow-tit">交易完成</div>
+                                    <div class="r-flow-text">完成交易流程，如有任何问题欢迎咨询客服！</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="showbox" v-show="nav_data[2].isclick">
-                3333
+            <div class="showbox box-con" v-show="nav_data[2].isclick">
+                <div class="con-cell calputer">
+                    <div class="sele-table">
+                        <span class="tab-btn" v-for="item in stage_tab" v-text="item.name" :class="item.isclick?'orange-bg':'orange-color'"></span>
+                    </div>
+                    <div class="calputer-con">
+                        <div class="calputer-left">
+                            <div class="calputer-str">
+                                <span class="left-text">商品总价</span>
+                                <input type="text"><span class="calputer-text">元</span>
+                            </div>
+                            <div class="calputer-str">
+                                <span class="left-text">首付比例</span>
+                                <input type="text"><span class="calputer-text">%</span>
+                            </div>
+                            <div class="calputer-str">
+                                <span class="left-text">期数</span>
+                                <div class="sele-periods">
+                                    <span v-text="periods_num"></span><img src="../../../static/img/goodscreen/downsolid.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="calputer-right">计算</div>
+                    </div>
+                    <div class="calputer-bot">
+                        12312313
+                    </div>
+                </div>
             </div>
         </div>
+        <!-- 弹出 期数 选择框 -->
+        <div class="pop-view" v-show="true">
+            
+        </div>
+        <!-- 点击申请显示 -->
+        <div class="pop-view pop-apply" v-show="false">
+            分期申请提交成功，我们会尽快为您审核。稍后会有短信提醒，请您注意查收
+            <div class="okbtn">确认</div>
+        </div>
+        <div class="shade" v-show="false"></div>
     </div>
 </template>
 <script>
@@ -139,60 +206,78 @@ export default {
                 title: "藏宝阁分期",
                 goBack: ""
             },
-            nav_bg:true,
+            nav_bg: true,
             nav_data: [
                 {
                     name: "分期说明",
                     value: 1,
                     isclick: true,
-                    role:'black-border',
+                    role: "black-border"
                 },
                 {
                     name: "我要分期",
                     value: 2,
                     isclick: false,
-                    role:'red-border',
+                    role: "red-border"
                 },
                 {
                     name: "分期计算器",
                     value: 3,
                     isclick: false,
-                    role:'red-border',
+                    role: "red-border"
                 }
             ],
-            periods_data:[{
+            periods_data: [
+                {
                     name: "1期",
                     value: 1,
-                    isclick: true,
+                    isclick: true
                 },
                 {
                     name: "2期",
                     value: 2,
-                    isclick: false,
+                    isclick: false
                 },
                 {
                     name: "3期",
                     value: 3,
-                    isclick: false,
-                }],
+                    isclick: false
+                }
+            ],
+            stage_tab: [
+                {
+                    name: "月分期",
+                    value: 1,
+                    isclick: true
+                },
+                {
+                    name: "日分期",
+                    value: 2,
+                    isclick: false
+                }
+            ],
+            periods_num:'不限期'
         };
     },
     methods: {
         seleNav(val) {
             var that = this;
             var data = that.nav_data;
-            if(val == 1){
+            if (val == 1) {
                 this.nav_bg = true;
-            }else{
+            } else {
                 this.nav_bg = false;
             }
-            for (var i in data) {    
+            for (var i in data) {
                 if (data[i].value == val) {
                     data[i].isclick = true;
                     continue;
                 }
                 data[i].isclick = false;
             }
+        },
+        applyFn(){
+
         }
     },
     mounted() {}
@@ -213,7 +298,7 @@ export default {
     line-height: 0.8rem;
 } */
 .nav-tit {
-    font-size:.26rem;
+    font-size: 0.26rem;
     position: relative;
     top: 0.88rem;
     left: 0;
@@ -223,223 +308,407 @@ export default {
     display: flex;
     justify-content: space-around;
     line-height: 0.8rem;
-    z-index:2;
+    z-index: 2;
 }
-.red-bg{
-    background:#ff5e4a;
+.red-bg {
+    background: #ff5e4a;
 }
-.white-bg{
-    background:#ffffff;
+.white-bg {
+    background: #ffffff;
 }
 .nav-btn {
     width: 100%;
     text-align: center;
 }
-.cbg-con{
+.cbg-con {
     /* padding-top:1.68rem; */
-    padding-top:.88rem;
+    padding-top: 0.88rem;
 }
-.explain-tit{
-    width:100%;
-    height:4rem;
+.explain-tit {
+    width: 100%;
+    height: 4rem;
     background: url(../../../static/img/cbg/cbg-banner.png) no-repeat;
-    background-size:100% 100%;
+    background-size: 100% 100%;
     position: relative;
-    top:-.88rem;
+    top: -0.88rem;
     z-index: 1;
 }
-.black-border{
+.black-border {
     font-weight: bold;
-    border-bottom:.04rem solid #333333;
+    border-bottom: 0.04rem solid #333333;
 }
-.red-border{
+.red-border {
     font-weight: bold;
-    color:#FF7E4A;
-    border-bottom:.04rem solid #FF7E4A;
+    color: #ff7e4a;
+    border-bottom: 0.04rem solid #ff7e4a;
 }
-.explain-con{
-    padding:0 .2rem;
-    position:relative;
-    top:-1.65rem;
-    z-index:2;
+.explain-con {
+    padding: 0 0.2rem;
+    position: relative;
+    top: -1.65rem;
+    z-index: 2;
 }
-.explain-cell{
-    background:#FFFFFF;
-    border-radius:.1rem;
-    padding:.3rem 0;
-    box-shadow:3px 6px 9px 0px rgba(214, 214, 214, 0.35);
-    margin-bottom:.2rem;
+.explain-cell {
+    background: #ffffff;
+    border-radius: 0.1rem;
+    padding: 0.3rem 0;
+    box-shadow: 3px 6px 9px 0px rgba(214, 214, 214, 0.35);
+    margin-bottom: 0.2rem;
 }
-.e-cell-tit{
-    text-align:center;
-    color:#FF7E4A;
-    font-size:.32rem;
+.e-cell-tit {
+    text-align: center;
+    color: #ff7e4a;
+    font-size: 0.32rem;
     font-weight: 800;
-    margin-bottom:.2rem;
-    background:url(../../../static/img/cbg/tit-bg.png) no-repeat;
+    margin-bottom: 0.2rem;
+    background: url(../../../static/img/cbg/tit-bg.png) no-repeat;
     background-position: center;
 }
-.big-tit-bg{
-    background-size:3rem .12rem;
+.big-tit-bg {
+    background-size: 3rem 0.12rem;
 }
-.small-tit-bg{
-    background-size:2.05rem .1rem;
+.small-tit-bg {
+    background-size: 2.05rem 0.1rem;
 }
-.e-cell-con{
-    padding:0 .2rem;
+.e-cell-con {
+    padding: 0 0.2rem;
 }
-.e-cell-con-tit{
-    line-height:.7rem;
+.e-cell-con-tit {
+    line-height: 0.7rem;
     font-weight: 500;
 }
-.black-color{
-    color:#333333;
-    font-size:.26rem;
+.black-color {
+    color: #333333;
+    font-size: 0.26rem;
 }
-.grey-color{
-    color:#666666;
-    font-size:.24rem;
-    padding-left:.2rem;
+.grey-color {
+    color: #666666;
+    font-size: 0.24rem;
+    padding-left: 0.2rem;
 }
-.hint-info{
-    padding-bottom:.3rem;
+.hint-info {
+    padding-bottom: 0.3rem;
 }
-.hint-tit{
-    color:#666666;
-    font-size:.24rem;
+.hint-tit {
+    color: #666666;
+    font-size: 0.24rem;
 }
-.hint-tit img{
-    width:.12rem;
-    height:.3rem;
+.hint-tit img {
+    width: 0.12rem;
+    height: 0.3rem;
     vertical-align: middle;
-    margin-right:.1rem;
+    margin-right: 0.1rem;
 }
-.hint-tit span{
+.hint-tit span {
     vertical-align: middle;
 }
-.gray-color{
-    color:#999999;
-    font-size:.24rem;
+.gray-color {
+    color: #999999;
+    font-size: 0.24rem;
 }
 
-.stage-info{
-    padding:.2rem;
+.box-con {
+    padding: 0.2rem;
 }
-.stage-cell{
-    background:#FFFFFF;
-    border-radius:.1rem;
-    box-shadow:3px 6px 9px 0px rgba(214, 214, 214, 0.35);
-    margin-bottom:.2rem;
+.con-cell {
+    background: #ffffff;
+    border-radius: 0.1rem;
+    box-shadow: 3px 6px 9px 0px rgba(214, 214, 214, 0.35);
+    margin-bottom: 0.2rem;
 }
-.top-cell{
-    padding-left:.2rem;
+.top-cell {
+    padding-left: 0.2rem;
 }
-.strip{
-    line-height: .9rem;
-    padding-right:.2rem;
-    border-bottom: 1px solid #E5E5E5;
+.strip {
+    line-height: 0.9rem;
+    padding-right: 0.2rem;
+    border-bottom: 1px solid #e5e5e5;
 }
-.left-text{
+.left-text {
     width: 1.2rem;
-    color:#666666;
-    font-size:.26rem;
+    color: #666666;
+    font-size: 0.26rem;
     display: inline-block;
 }
-.right-strip{
-    float:right;
+.right-strip {
+    float: right;
 }
-.right-strip img{
-    width:.11rem;
-    height:.23rem;
+.right-strip img {
+    width: 0.11rem;
+    height: 0.23rem;
     vertical-align: middle;
 }
-.place-inp{
-    width:5rem;
+.place-inp {
+    width: 5rem;
     margin: 0;
-    padding:0;
-    border:0;
+    padding: 0;
+    border: 0;
 }
-.price-inp{
-    width:1.14rem;
-    height:.42rem;
+.price-inp {
+    width: 1.14rem;
+    height: 0.42rem;
     margin: 0;
-    padding:0;
-    margin-right:.1rem;
+    padding: 0;
+    margin-right: 0.1rem;
 }
-.hint-strip{
-    padding:.15rem 0;
+.hint-strip {
+    padding: 0.25rem 0;
 }
-.right-cell{
+.right-cell {
     display: inline-block;
     vertical-align: top;
 }
-.right-box{
-    margin-bottom:.1rem;
+.right-box {
+    margin-bottom: 0.1rem;
+    position: relative;
 }
-.check-img{
-    width:.22rem;
-    height:.22rem;
+.message {
+    width: 0.53rem;
+    height: 0.36rem;
+    font-size: 0.2rem;
+    color: #ffffff;
+    text-align: center;
+    line-height: 0.3rem;
+    display: inline-block;
+    background: url(../../../static/img/cbg/message.png) no-repeat;
+    background-size: 0.53rem 0.36rem;
+    position: absolute;
+    top: -0.15rem;
+}
+.check-img {
+    width: 0.22rem;
+    height: 0.22rem;
     vertical-align: middle;
 }
-.red-color{
-    font-size:.24rem;
-    color:#FF5E5E;
+.red-color {
+    font-size: 0.24rem;
+    color: #ff5e5e;
 }
-.hint-box{
-    width:5.23rem;
-    background:#F6F6F6;
-    font-size:.24rem;
-    color:#666666;
-    padding: .2rem;
+.hint-box {
+    width: 5.23rem;
+    background: #f6f6f6;
+    font-size: 0.24rem;
+    color: #666666;
+    padding: 0.2rem;
 }
-.hint-box div{
-    line-height:.45rem;
+.hint-box div {
+    line-height: 0.45rem;
 }
-.periods-str{
-    margin:0 .27rem;
+.periods-str {
+    margin: 0 0.27rem;
 }
-.periods-str span{
+.periods-str span {
     vertical-align: middle;
 }
-.apply-btn{
-    width:6.6rem;line-height:.8rem;text-align:center;font-size:.28rem;color:#666666;border-radius:.15rem;border:1px solid #AAAAAA;margin:.2rem auto;
+.apply-btn {
+    width: 6.6rem;
+    line-height: 0.8rem;
+    text-align: center;
+    font-size: 0.28rem;
+    color: #666666;
+    border-radius: 0.15rem;
+    border: 1px solid #aaaaaa;
+    margin: 0.2rem auto;
 }
-
-.flow-title{
-    text-align:center;
-    color:#FE7649;
-    font-size:.26rem;
-    background:url(../../../static/img/board_mark.png) no-repeat;
-    background-size:1.48rem .21rem;
+.flow-title {
+    text-align: center;
+    color: #fe7649;
+    font-size: 0.26rem;
+    background: url(../../../static/img/board_mark.png) no-repeat;
+    background-size: 1.48rem 0.21rem;
     background-position: center;
 }
-.left-flow,.right-flow{
+.flow-con {
+    position: relative;
+}
+.flow-vertical {
+    width: 1px;
+    border-left: 1px dashed #fe7649;
+    position: absolute;
+    top: 0;
+    left: 0.35rem;
+    bottom: 0.5rem;
+    z-index: 1;
+}
+.flow-strip {
+    padding-left: 0.2rem;
+}
+.left-flow,
+.right-flow {
     display: inline-block;
     vertical-align: top;
 }
-.left-flow img{
-    width:.3rem;
-    height:5.64rem;
+.left-flow {
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 100%;
+    text-align: center;
+    font-size: 0.22rem;
+    color: #ffffff;
+    background: #fe7649;
+    line-height: 0.3rem;
+    /* margin:0 .23rem; */
+    background: -webkit-linear-gradient(#fe7649, #ffcd7f);
+    background: -o-linear-gradient(#fe7649, #ffcd7f);
+    background: -moz-linear-gradient(#fe7649, #ffcd7f);
+    background: linear-gradient(to right, #fe7649, #ffcd7f);
+    position: relative;
+    z-index: 2;
 }
-.right-flow{
+.right-flow {
     width: 6rem;
+    font-size: 0.26rem;
+    margin-left: 0.15rem;
+}
+.r-flow-tit {
+    color: #333333;
+    line-height: 0.3rem;
+    margin-bottom: 0.02rem;
+}
+.r-flow-text {
+    color: #999999;
+    line-height: 0.43rem;
+    margin-bottom: 0.05rem;
 }
 
+/* 分期计算器 */
+.calputer {
+    padding: 0.2rem;
+    padding-right:0;
+}
+.sele-table {
+    width: 4rem;
+    height: 0.6rem;
+    font-size: 0;
+    margin: 0 auto;
+    border-radius: 0.3rem;
+    border: 2px solid #ff7e4a;
+    overflow: hidden;
+    display: flex;
+}
+.sele-table span {
+    width: 100%;
+    font-size: 0.26rem;
+    display: inline-block;
+    text-align: center;
+    line-height: 0.6rem;
+}
+.orange-bg {
+    background: #ff7e4a;
+    color: #ffffff;
+}
+.orange-color {
+    color: #ff7e4a;
+}
+.calputer-con{
+    padding:.2rem;
+}
+.calputer-left,.calputer-right{
+    display: inline-block;
+    vertical-align: middle;
+}
+.calputer-right{
+    width:1.12rem;
+    height:.6rem;
+    text-align:center;
+    line-height: .6rem;
+    color:#FE7649;
+    font-size:.22rem;
+    border:1px solid #FE7649;
+    border-radius:.06rem;
+}
+.calputer-left{
+    width:4rem;
+}
+.calputer-str{
+    line-height: .9rem;
+}
+.calputer-str input{
+    width:1.36rem;
+    height:.6rem;
+    margin:0;padding:0;
+}
+.calputer-text{
+    margin-left:.2rem;
+    font-size:.26rem;
+    color:#333333;
+}
+.sele-periods{
+    display: inline-block;
+    font-size:.24rem;
+    color:#333333;
+    width:1.88rem;
+    height:.6rem;
+    text-align:center;
+    border:1px solid #D2D2D2;
+    border-radius: .06rem;
+    line-height: .6rem;
+}
+.sele-periods img{
+    width:.2rem;
+    height: .1rem;
+    margin-left:.3rem;
+    vertical-align: middle;
+}
+
+.calputer-bot{
+    border-top:1px solid #E5E5E5;
+}
+
+.pop-view{
+    width:5rem;
+    position:fixed;
+    top:30%;
+    left:calc(50% - 2.5rem);
+    background:#ffffff;
+    border-radius: .1rem;
+    z-index:6;
+}
+.pop-apply{
+    padding:.5rem .4rem .3rem;
+    font-size:.24rem;
+    color:#666666;
+    text-align:center;
+}
+.okbtn{
+    width:1.89rem;
+    height:.6rem;border-radius: 30px;
+    line-height: .6rem;
+    color:#ffffff;
+    margin:.2rem auto 0;
+    background: -webkit-linear-gradient(#FC534A, #FD915F);
+    background: -o-linear-gradient(#FC534A, #FD915F);
+    background: -moz-linear-gradient(#FC534A, #FD915F);
+    background: linear-gradient(to right, #FC534A, #FD915F);
+}
+.shade{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background:rgba(0,0,0,0.5);
+    z-index:5;
+}
 /* placeholder */
-::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    color:#999999;
-    font-size:.24rem;
+::-webkit-input-placeholder {
+    /* WebKit, Blink, Edge */
+    color: #999999;
+    font-size: 0.24rem;
 }
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-   color:#999999;
-    font-size:.24rem;
+:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #999999;
+    font-size: 0.24rem;
 }
-::-moz-placeholder { /* Mozilla Firefox 19+ */
-   color:#999999;
-    font-size:.24rem;
+::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #999999;
+    font-size: 0.24rem;
 }
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-   color:#999999;
-    font-size:.24rem;
+:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #999999;
+    font-size: 0.24rem;
 }
 </style>

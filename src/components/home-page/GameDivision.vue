@@ -6,7 +6,7 @@
             <img src="../../../static/img/chunk/jbh.png" alt="">
         </div>
       <!--寄租-->
-        <div class="division-cell cell-dh" @click="goArea('0')">
+        <div class="division-cell cell-dh" @click="goRentOut()">
             <img src="../../../static/img/chunk/zh.png" alt="">
         </div>
       <!--藏宝阁-->
@@ -32,6 +32,10 @@
             var that = this;
             that.$router.push({name: 'GoldGoods'});
           },
+          goRentOut(){
+              var that = this;
+              that.$router.push({name:'RentOutPage'})
+          }
         }
     }
 </script>

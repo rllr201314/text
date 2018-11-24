@@ -239,30 +239,30 @@ export default {
                     query: { opt: data }
                 });
             }
+        },
+        judgeFn() {
+            var that = this;
+            var user_type = that.$route.path;
+            if (user_type == "/buy") {
+                that.showTitle.title = "我要买";
+            } else if (user_type == "/sell") {
+                that.showTitle.title = "我要卖";
+            } else if (user_type == "/rent") {
+                that.showTitle.title = "我要租号";
+                that.trade_type = 1;
+            } else if (user_type == "/rent-out") {
+                that.showTitle.title = "出租账号";
+                that.trade_type = 1;
+            }
+            that.getData();
         }
     },
-    beforeRouteLeave(to, from, next) {
-        if (to.path == "/buy") {
-            this.showTitle.title = "我要买";
-            this.user_type = to.path;
-        }
-        next();
+    watch:{
+        '$route':'judgeFn'
     },
     mounted() {
         var that = this;
-        var user_type = that.$route.path;
-        if (user_type == "/buy") {
-            that.showTitle.title = "我要买";
-        } else if (user_type == "/sell") {
-            that.showTitle.title = "我要卖";
-        } else if (user_type == "/rent") {
-            that.showTitle.title = "我要租号";
-            that.trade_type = 1;
-        } else if (user_type == "/rent-out") {
-            that.showTitle.title = "出租账号";
-            that.trade_type = 1;
-        }
-        that.getData();
+        this.judgeFn();
     }
 };
 </script>
