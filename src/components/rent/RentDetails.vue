@@ -904,9 +904,9 @@ export default {
     height: 0.2rem;
     margin-right: 0.1rem;
 }
-.red-color {
+/* .red-color {
     color: #ff7171;
-}
+} */
 .vedio-content {
     height: 3.6rem;
     text-align: center;

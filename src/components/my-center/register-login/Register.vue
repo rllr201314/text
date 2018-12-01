@@ -25,23 +25,20 @@
                     <span class="red-color" @click="getProtocol">《看个号用户基础服务协议》</span>
                 </div>
             </div>
+            <Protocal v-bind:proData="proData" v-on:isProFn="isProFn"></Protocal>
             <div class="nextBtn" @click="loginFn('register')">注册</div>
             <div class="goLogin" @click="loginFn('login')">登录已有帐号</div>
         </div>
-        <div class="pop-view" v-show="showPro">
-            <div class="pop-view-box" v-html="protocalText"></div>
-            <div class="pop-view-btn" @click="hiddenPro('true')">确认已读</div>
-            <img class="hidden-pro" @click="hiddenPro('false')" src="../../../../static/img/empty_ico.png" alt="">
-        </div>
-        <div class="share" v-show="showPro"></div>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import Protocal from "@/components/multi/Protocal";//协议
 export default {
     name: "Register",
     components: {
-        Header
+        Header,
+        Protocal
     },
     data() {
         return {
@@ -54,8 +51,12 @@ export default {
                     title: "注册"
                 }
             },
-            showPro:false,
-            protocalText:'',
+            proData: {
+                isShow: false,
+                con: "",
+                btn: "确认已读",
+                val: ""
+            },
             hintCode: "获取验证码",
             isGetCode: true,
             password: "",
@@ -75,16 +76,17 @@ export default {
             that.$axios.post(process.env.API_HOST+'protocol_reg').then((res)=>{
                 if(res.status == 200){
                     if(res.data.code == 200){
-                        that.protocalText = res.data.data;
-                        that.showPro = true;
+                        that.proData.isShow = true;
+                        that.proData.con = res.data.data;
+                        that.proData.val = true;
+                        
                     }
                 }
             })
         },
-        hiddenPro(flag){
+        isProFn(flag){
             var that = this;
-            that.showPro = false;
-            if(flag == 'true'){
+            if(flag){
                 that.registerData.protocol = true;
             }
         },
@@ -345,57 +347,6 @@ input[type="number"] {
     font-size: 0.26rem;
 }
 
-
-.pop-view{
-    background:#ffffff;
-    position: fixed;
-    top:1.3rem;
-    left:.3rem;
-    right:.3rem;
-    z-index:15;
-    padding-top:.2rem;
-    border-radius: .1rem;
-}
-.pop-view-box{
-    padding:.2rem;
-    max-height:75vh;
-    overflow-y:scroll;
-}
-.pop-view-btn{
-    color: #ffffff;
-    font-size: 0.28rem;
-    margin: 0.3rem auto;
-    width: 6.5rem;
-    text-align: center;
-    line-height: 0.8rem;
-    -webkit-border-radius: 0.1rem;
-    -moz-border-radius: 0.1rem;
-    border-radius: 0.1rem;
-    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
-    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
-    box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
-    background: -webkit-linear-gradient(#fd915f, #fc534a);
-    background: -o-linear-gradient(#fd915f, #fc534a);
-    background: -moz-linear-gradient(#fd915f, #fc534a);
-    background: linear-gradient(to right, #fd915f, #fc534a);
-}
-.hidden-pro{
-    width:.24rem;
-    height:.24rem;
-    background:#e5e5e5;
-    position: absolute;
-    top:.1rem;
-    right:.15rem;
-}
-.share{
-    background:rgba(0, 0, 0, 0.5);
-    z-index:10;
-    position: fixed;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-}
 </style>
 
 

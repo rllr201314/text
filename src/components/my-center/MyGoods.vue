@@ -26,36 +26,60 @@
             </div>
         </div>
         <div class="list-box-wrap" v-show="!showNoData">
-            <!-- 已上架 -->
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
                 <div class="minirefresh-scroll list">
                     <ul>
                         <!-- 已上架 -->
                         <div v-if="seleTit == 3">
                             <div class="arbitration-cell" v-for="item in putawayData" @click="goDetail(item.goods_id)">
-                                <div class="arbitration-box">
-                                    <div class="gameLog">
-                                        <img :src="item.game_logo" alt="">
-                                    </div>
-                                    <div class="orderInfo">
-                                        <div class="goods-strip-title">
-                                            <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                                            <div class="goods-type" v-else>代练号</div>
-                                            <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                            <div class="account-ios" v-else-if="item.client_id == 2">苹果</div>
-                                            <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                            <div class="area" v-text="item.platform_name"></div>
+                                <div class="arbitration-cell-top">
+                                    <div class="arbitration-box">
+                                        <div class="gameLog">
+                                            <img :src="item.game_logo" alt="">
                                         </div>
-                                        <div class="order-des" v-text="item.goods_title"></div>
-                                        <div class="history-time" v-text="item.sort_time"></div>
-                                        <div class="price-status">
-                                            <span class="good-price">￥
-                                                <span v-text="item.goods_price"></span>
-                                            </span>
-                                            <span class="order-status green-bg">上架中</span>
+                                        <div class="orderInfo">
+                                            <div class="goods-strip-title">
+                                                <div class="title-ico deal-ico" v-if="item.rent_method == 1 ||item.rent_method == 3 ">成品号</div>
+                                                <div class="title-ico rent-ico" v-if="item.rent_method == 2 ||item.rent_method == 3">租号</div>
+                                                <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                                <div class="account-ios" v-else-if="item.client_id == 2">苹果</div>
+                                                <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                                <div class="area" v-text="item.platform_name"></div>
+                                            </div>
+                                            <div class="order-des" v-text="item.goods_title"></div>
+                                            <div class="history-time" v-text="item.sort_time"></div>
+                                            <div class="price-status">
+                                                <span class="good-price" v-if="item.rent_method == 1">￥
+                                                    <span v-text="item.goods_price"></span>
+                                                </span>
+                                                <div class="original-price" v-if="item.rent_method == 3">
+                                                    <span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span>
+                                                </div>
+                                                <span class="order-status green-bg">上架中</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="item.rent_method == 2 || item.rent_method == 3">
+                                        <div class="goods-strip-bottom">
+                                            <div>
+                                                <img src="../../../static/img/rent/rent-ico.png" alt="">
+                                                <span>租金</span>
+                                                <span class="red-color">￥</span><span class="goods_price" v-text="item.day_rent"></span>/<span v-text="item.rent_unit"></span>
+                                            </div>
+                                            <div>
+                                                <img src="../../../static/img/rent/pledge-ico.png" alt="">
+                                                <span>押金</span>
+                                                <span>￥</span><span v-text="item.cash"></span>
+                                            </div>
+                                            <div>
+                                                <img src="../../../static/img/rent/pledge-ico.png" alt="">
+                                                <span>最短租期</span>
+                                                <span v-text="item.least_lease"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="hint-bottom" v-if="item.rent_method == 2 || item.rent_method == 3" v-text="item.goods_description"></div>
                                 <div class="order-operate">
                                     <div class="right-operate">
                                         <span class="pay" @click.stop="downGoods(item.goods_id)">下架</span>
@@ -66,37 +90,62 @@
                         <!-- 已下架 -->
                         <div v-if="seleTit == 2">
                             <div class="arbitration-cell" v-for="item in removeData">
-                                <div class="arbitration-box">
-                                    <div class="gameLog">
-                                        <img :src="item.game_logo" alt="">
+                                <div class="arbitration-cell-top">
+                                    <div class="arbitration-box">
+                                        <div class="gameLog">
+                                            <img :src="item.game_logo" alt="">
+                                        </div>
+                                        <div class="orderInfo">
+                                            <div class="goods-strip-title">
+                                                <div class="title-ico deal-ico" v-if="item.rent_method == 1 ||item.rent_method == 3 ">成品号</div>
+                                                <div class="title-ico rent-ico" v-if="item.rent_method == 2 ||item.rent_method == 3">租号</div>
+                                                <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                                <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                                <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                                <div class="area" v-text="item.platform_name"></div>
+                                            </div>
+                                            <div class="order-des" v-text="item.goods_title"></div>
+                                            <div class="history-time" v-text="item.sort_time"></div>
+                                            <div class="price-status">
+                                                <span class="good-price" v-if="item.rent_method == 1">￥
+                                                    <span v-text="item.goods_price"></span>
+                                                </span>
+                                                <div class="original-price" v-if="item.rent_method == 3">
+                                                    <span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span>
+                                                </div>
+                                                <span class="order-status gray-bg">已下架</span>
+                                            </div>
+                                            <div class="arbitration" v-if="item.goods_status == 2 &&　item.reject_reason　!= ''">
+                                                <span class="gray">原因</span>
+                                                <span v-text="item.reject_reason"></span>
+                                            </div>
+                                            <div class="arbitration" v-if="item.goods_status == 4 &&　item.down_reason != ''">
+                                                <span class="gray">原因</span>
+                                                <span v-text="item.reject_reason"></span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="orderInfo">
-                                        <div class="goods-strip-title">
-                                            <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                                            <div class="goods-type" v-else>代练号</div>
-                                            <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                            <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                                            <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                            <div class="area" v-text="item.platform_name"></div>
-                                        </div>
-                                        <div class="order-des" v-text="item.goods_title"></div>
-                                        <div class="history-time" v-text="item.sort_time"></div>
-                                        <div class="price-status">
-                                            <span class="good-price">￥
-                                                <span v-text="item.goods_price"></span>
-                                            </span>
-                                            <span class="order-status gray-bg">已下架</span>
-                                        </div>
-                                        <div class="arbitration" v-if="item.goods_status == 2 &&　item.reject_reason　!= ''">
-                                            <span class="gray">原因</span>
-                                            <span v-text="item.reject_reason"></span>
-                                        </div>
-                                        <div class="arbitration" v-if="item.goods_status == 4 &&　item.down_reason != ''">
-                                            <span class="gray">原因</span>
-                                            <span v-text="item.reject_reason"></span>
+                                    <div v-if="item.rent_method == 2 || item.rent_method == 3">
+                                        <div class="goods-strip-bottom">
+                                            <div>
+                                                <img src="../../../static/img/rent/rent-ico.png" alt="">
+                                                <span>租金</span>
+                                                <span class="red-color">￥</span><span class="goods_price" v-text="item.day_rent"></span>/<span v-text="item.rent_unit"></span>
+                                            </div>
+                                            <div>
+                                                <img src="../../../static/img/rent/pledge-ico.png" alt="">
+                                                <span>押金</span>
+                                                <span>￥</span><span v-text="item.cash"></span>
+                                            </div>
+                                            <div>
+                                                <img src="../../../static/img/rent/pledge-ico.png" alt="">
+                                                <span>最短租期</span>
+                                                <span v-text="item.least_lease"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="hint-bottom" v-if="item.rent_method == 2 || item.rent_method == 3" v-text="item.goods_description"></div>
                                 <div class="order-operate">
                                     <div class="right-operate">
                                         <span class="pay" @click="getGoods(item.goods_id)">编辑</span>
@@ -107,29 +156,54 @@
                         <!-- 审核中 -->
                         <div v-if="seleTit == 1">
                             <div class="arbitration-cell" v-for="item in auditData">
-                                <div class="arbitration-box">
-                                    <div class="gameLog">
-                                        <img :src="item.game_logo" alt="">
-                                    </div>
-                                    <div class="orderInfo">
-                                        <div class="goods-strip-title">
-                                            <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                                            <div class="goods-type" v-else>代练号</div>
-                                            <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                            <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                                            <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                            <div class="area" v-text="item.platform_name"></div>
+                                <div class="arbitration-cell-top">
+                                    <div class="arbitration-box">
+                                        <div class="gameLog">
+                                            <img :src="item.game_logo" alt="">
                                         </div>
-                                        <div class="order-des" v-text="item.goods_title"></div>
-                                        <div class="history-time" v-text="item.sort_time"></div>
-                                        <div class="price-status">
-                                            <span class="good-price">￥
-                                                <span v-text="item.goods_price"></span>
-                                            </span>
-                                            <span class="order-status red-bg">审核中</span>
+                                        <div class="orderInfo">
+                                            <div class="goods-strip-title">
+                                                <div class="title-ico deal-ico" v-if="item.rent_method == 1 ||item.rent_method == 3 ">成品号</div>
+                                                <div class="title-ico rent-ico" v-if="item.rent_method == 2 ||item.rent_method == 3">租号</div>
+                                                <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                                <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                                <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                                <div class="area" v-text="item.platform_name"></div>
+                                            </div>
+                                            <div class="order-des" v-text="item.goods_title"></div>
+                                            <div class="history-time" v-text="item.sort_time"></div>
+                                            <div class="price-status">
+                                                <span class="good-price" v-if="item.rent_method == 1">￥
+                                                    <span v-text="item.goods_price"></span>
+                                                </span>
+                                                <div class="original-price" v-if="item.rent_method == 3">
+                                                    <span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span>
+                                                </div>
+                                                <span class="order-status red-bg">审核中</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="item.rent_method == 2 || item.rent_method == 3">
+                                        <div class="goods-strip-bottom">
+                                            <div>
+                                                <img src="../../../static/img/rent/rent-ico.png" alt="">
+                                                <span>租金</span>
+                                                <span class="red-color">￥</span><span class="goods_price" v-text="item.day_rent"></span>/<span v-text="item.rent_unit"></span>
+                                            </div>
+                                            <div>
+                                                <img src="../../../static/img/rent/pledge-ico.png" alt="">
+                                                <span>押金</span>
+                                                <span>￥</span><span v-text="item.cash"></span>
+                                            </div>
+                                            <div>
+                                                <img src="../../../static/img/rent/pledge-ico.png" alt="">
+                                                <span>最短租期</span>
+                                                <span v-text="item.least_lease"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="hint-bottom" v-if="item.rent_method == 2 || item.rent_method == 3" v-text="item.goods_description"></div>
                                 <div class="order-operate">
                                     <div class="right-operate">
                                         <span class="pay" @click="downGoods(item.goods_id)">取消上架</span>
@@ -140,88 +214,6 @@
                     </ul>
                 </div>
             </div>
-            <!-- 审核中 -->
-            <!-- <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 1">
-                <div class="minirefresh-scroll list">
-                    <ul>
-                        <div class="arbitration-cell" v-for="item in auditData">
-                            <div class="arbitration-box">
-                                <div class="gameLog">
-                                    <img :src="item.game_logo" alt="">
-                                </div>
-                                <div class="orderInfo">
-                                    <div class="goods-strip-title">
-                                        <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                                        <div class="goods-type" v-else>代练号</div>
-                                        <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                        <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                                        <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                        <div class="area" v-text="item.platform_name"></div>
-                                    </div>
-                                    <div class="order-des" v-text="item.goods_title"></div>
-                                    <div class="history-time" v-text="item.sort_time"></div>
-                                    <div class="price-status">
-                                        <span class="good-price">￥
-                                            <span v-text="item.goods_price"></span>
-                                        </span>
-                                        <span class="order-status red-bg">审核中</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="order-operate">
-                                <div class="right-operate">
-                                    <span class="pay" @click="downGoods(item.goods_id)">取消上架</span>
-                                </div>
-                            </div>
-                        </div>
-                    </ul>
-                </div>
-            </div> -->
-            <!-- 已下架 -->
-            <!-- <div id="minirefresh" class="minirefresh-wrap list-wrap" v-if="seleTit == 2">
-                <div class="minirefresh-scroll list">
-                    <ul>
-                        <div class="arbitration-cell" v-for="item in removeData">
-                            <div class="arbitration-box">
-                                <div class="gameLog">
-                                    <img :src="item.game_logo" alt="">
-                                </div>
-                                <div class="orderInfo">
-                                    <div class="goods-strip-title">
-                                        <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                                        <div class="goods-type" v-else>代练号</div>
-                                        <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                        <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                                        <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                                        <div class="area" v-text="item.platform_name"></div>
-                                    </div>
-                                    <div class="order-des" v-text="item.goods_title"></div>
-                                    <div class="history-time" v-text="item.sort_time"></div>
-                                    <div class="price-status">
-                                        <span class="good-price">￥
-                                            <span v-text="item.goods_price"></span>
-                                        </span>
-                                        <span class="order-status gray-bg">已下架</span>
-                                    </div>
-                                    <div class="arbitration" v-if="item.goods_status == 2 &&　item.reject_reason　!= ''">
-                                        <span class="gray">原因</span>
-                                        <span v-text="item.reject_reason"></span>
-                                    </div>
-                                    <div class="arbitration" v-if="item.goods_status == 4 &&　item.down_reason != ''">
-                                        <span class="gray">原因</span>
-                                        <span v-text="item.reject_reason"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="order-operate">
-                                <div class="right-operate">
-                                    <span class="pay" @click="getGoods(item.goods_id)">编辑</span>
-                                </div>
-                            </div>
-                        </div>
-                    </ul>
-                </div>
-            </div> -->
         </div>
         <NoData class="nodata" v-if="showNoData"></NoData>
     </div>
@@ -409,6 +401,8 @@ export default {
                                             function() {
                                                 that.reload();
                                             },"div");
+                                    }else if(res.data.code == 400){
+                                        mui.alert(res.data.msg,"提示","确定",'',"div");
                                     }
                                 }
                             })
@@ -527,7 +521,9 @@ export default {
     -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     margin-top: 0.2rem;
-    padding: 0 0.2rem;
+}
+.arbitration-cell-top{
+    padding-left:0.2rem ;
 }
 .arbitration-box{
     display: flex;
@@ -565,6 +561,15 @@ export default {
     color: #ff5e5e;
     font-size: 0.28rem;
 }
+.original-price {
+    color: #666666;
+    font-size: 0.26rem;
+    line-height: 0.5rem;
+    display: inline-block;
+}
+.original-text {
+    margin-right: 0.1rem;
+}
 .order-status {
     font-size: 0.2rem;
     padding: 1px 3px;
@@ -594,7 +599,7 @@ export default {
     color: #ffffff;
     position: absolute;
     top: 0;
-    right: 0;
+    right: .2rem;
 }
 .cancel,
 .pay {
@@ -641,15 +646,23 @@ export default {
     vertical-align: middle;
 }
 /* 精品 */
-.goods-type {
+.title-ico{
     text-align: center;
     width: 0.93rem;
     height: 0.36rem;
+    display: inline-block;
+}
+.deal-ico{
     background: -webkit-linear-gradient(#feab49, #ffcc4b);
     background: -o-linear-gradient(#feab49, #ffcc4b);
     background: -moz-linear-gradient(#feab49, #ffcc4b);
     background: linear-gradient(to right, #feab49, #ffcc4b);
-    margin-right: 0.1rem;
+}
+.rent-ico {
+    background: -webkit-linear-gradient(#ff9090, #ff687a);
+    background: -o-linear-gradient(#ff9090, #ff687a);
+    background: -moz-linear-gradient(#ff9090, #ff687a);
+    background: linear-gradient(to right, #ff9090, #ff687a);
 }
 .account-type {
     text-align: center;
@@ -790,5 +803,37 @@ input {
     /* border: none; */
     width: 3.5rem;
     height: 0.5rem;
+}
+/* 底部 */
+.goods-strip-bottom {
+    line-height: 0.8rem;
+    border-top: 1px solid #dcdcdc;
+    color: #999999;
+    font-size: 0.26rem;
+    display: flex;
+    justify-content: space-between;
+    padding-right:.2rem;
+}
+.goods-strip-bottom img {
+    width: 0.3rem;
+    height: 0.3rem;
+    vertical-align: middle;
+}
+.goods-strip-bottom span {
+    vertical-align: middle;
+}
+.red-color {
+    color: #fa5856;
+}
+.goods_price {
+    color: #fa5856;
+    font-size: 0.36rem;
+}
+.hint-bottom {
+    line-height: 0.7rem;
+    background: #f6f6f6;
+    font-size: 0.26rem;
+    color: #999999;
+    padding-left: 0.27rem;
 }
 </style>

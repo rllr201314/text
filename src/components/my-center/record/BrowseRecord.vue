@@ -19,10 +19,10 @@
                                         <span v-text="item.time"></span>
                                     </div>
                                     <div class="browse-cell-con" v-for="ind in item.data" @click="godetail(ind.goods_status,ind.goods_id)">
-                                        <div class="browse-cell-con-top">
+                                        <div class="browse-cell-con-top" :class="ind.rent_method == 2 ||　ind.rent_method == 3 ?'hide-border':'show-border'">
                                             <div class="goods-strip-title">
-                                                <div class="goods-type" v-if="ind.deal_type == 1">成品号</div>
-                                                <div class="goods-type" v-else-if="ind.deal_type == 2">代练号</div>
+                                                <div class="title-ico deal-ico" v-if="ind.rent_method == 1 || ind.rent_method == 3">成品号</div>
+                                                <div class="title-ico rent-ico" v-if="ind.rent_method == 2 || ind.rent_method == 3">租号</div>
                                                 <div class="account-type" v-if="ind.client_id == 1">安卓</div>
                                                 <div class="account-type" v-else-if="ind.client_id == 2">苹果</div>
                                                 <div class="account-type" v-else-if="ind.client_id == 3">安卓混服</div>
@@ -31,12 +31,13 @@
                                             <div class="goods-strip-content">
                                                 <div class="goods-des" v-text="ind.goods_title"></div>
                                             </div>
-                                            <div class="goods-strip-bottom">
+                                            <div class="goods-strip-bottom" v-if="ind.goods_price > 0">
                                                 <span class="goods-price">￥
                                                     <span v-text="ind.goods_price"></span>
                                                 </span>
                                             </div>
                                         </div>
+                                            <div class="rent-des" v-if="ind.rent_method == 2 || ind.rent_method == 3" v-text="ind.goods_description"></div>
                                         <div class="browse-cell-con-bot">
                                             <div class="con-bot-box">
                                                 <img class="see" src="../../../../static/img/my-center/record/see.png" alt="">
@@ -278,8 +279,7 @@ export default {
     padding-left: 0.2rem;
 }
 .browse-cell-con-top {
-    padding: 0.2rem 0;
-    border-bottom: 1px solid #e5e5e5;
+    padding: 0.2rem 0 0.1rem;
 }
 /* 头部------ */
 .goods-strip-title {
@@ -292,16 +292,25 @@ export default {
     vertical-align: middle;
 }
 /* 精品 */
-.goods-type {
+/* 精品 */
+.title-ico {
     text-align: center;
     width: 0.93rem;
     height: 0.36rem;
+    display: inline-block;
+    margin-right: 0.1rem;
+}
+.rent-ico{
+    background: -webkit-linear-gradient(#ff9090, #ff687a);
+    background: -o-linear-gradient(#ff9090, #ff687a);
+    background: -moz-linear-gradient(#ff9090, #ff687a);
+    background: linear-gradient(to right, #ff9090, #ff687a);
+}
+.deal-ico{
     background: -webkit-linear-gradient(#feab49, #ffcc4b);
     background: -o-linear-gradient(#feab49, #ffcc4b);
     background: -moz-linear-gradient(#feab49, #ffcc4b);
     background: linear-gradient(to right, #feab49, #ffcc4b);
-    display: inline-block;
-    margin-right: 0.1rem;
 }
 .account-type {
     text-align: center;
@@ -363,7 +372,9 @@ export default {
     color: #fa5856;
     font-size: 0.36rem;
 }
-
+.browse-cell-con-bot{
+    line-height: .6rem;
+}
 .browse-cell-con-bot div {
     display: inline-block;
     margin-right: 0.7rem;
@@ -419,5 +430,20 @@ export default {
 }
 .nodata{
     padding-top:0.88rem;
+}
+
+.rent-des{
+    color:#999999;
+    font-size:.26rem;
+    line-height: .7rem;
+    background:#F6F6F6;
+    padding-left:.27rem;
+}
+.hide-border{
+    border:0;
+}
+.show-border{
+    border-bottom: 1px solid #e5e5e5;
+
 }
 </style>

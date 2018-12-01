@@ -68,26 +68,32 @@
                         </div>
                         <div class="strip">
                             <span class="left-text">商品总价</span>
-                            <input type="number" class="price-inp"><span class="black-color">元</span>
+                            <input type="number" class="price-inp right-inp"><span class="black-color">元</span>
                         </div>
                         <div class="hint-strip">
                             <span class="left-text">选择分期方式</span>
                             <div class="right-cell">
                                 <div class="right-box">
-                                    <img class="check-img" src="../../../static/img/order/nocheck.png" alt="">
-                                    <span class="black-color">日分期</span><span class="red-color">（随借随还、不分期）</span>
+                                    <span @click="seleApplyStageFn('day')">
+                                        <img class="check-img" :src="stage_opt?'./static/img/order/okcheck.png':'./static/img/order/nocheck.png'" alt="">
+                                        <span class="black-color">日分期</span>
+                                    </span>
+                                    <span class="red-color">（随借随还、不分期）</span>
                                     <div class="message">推荐</div>
                                 </div>
                                 <div class="right-box">
-                                    <img class="check-img" src="../../../static/img/order/nocheck.png" alt="">
-                                    <span class="black-color">月分期</span><span class="red-color">（定额还款、定期还完）</span>
+                                    <span @click="seleApplyStageFn('month')">
+                                        <img class="check-img" :src="stage_opt?'./static/img/order/nocheck.png':'./static/img/order/okcheck.png'" alt="">
+                                        <span class="black-color">月分期</span>
+                                    </span>
+                                    <span class="red-color">（定额还款、定期还完）</span>
                                 </div>
                                 <div class="hint-box">
                                     <div>首付30%以上，每月利息5%</div>
                                     <div>每月最低需还：<span class="black-color">本金+利息</span></div>
                                     <div class="periods-box">
                                         期数：
-                                        <span class="periods-str" v-for="item in periods_data">
+                                        <span class="periods-str" v-for="item in periods_data" @click="selePeriodsFn(item.value)">
                                             <img class="check-img" :src="item.isclick?'./static/img/order/okcheck.png':'./static/img/order/nocheck.png'" alt="">
                                             <span v-text="item.name"></span>
                                         </span>
@@ -96,7 +102,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="apply-btn" @click="applyFn">申请办理分期</div>
+                    <div class="apply-btn" @click="showHintFn">申请办理分期</div>
                     <div class="flow">
                         <div class="flow-title">分期流程</div>
                         <div class="flow-con">
@@ -150,22 +156,22 @@
             <div class="showbox box-con" v-show="nav_data[2].isclick">
                 <div class="con-cell calputer">
                     <div class="sele-table">
-                        <span class="tab-btn" v-for="item in stage_tab" v-text="item.name" :class="item.isclick?'orange-bg':'orange-color'"></span>
+                        <span class="tab-btn" v-for="item in stage_tab" v-text="item.name" :class="item.isclick?'orange-bg':'orange-color'" @click="seleCountTag(item.value)"></span>
                     </div>
                     <div class="calputer-con">
                         <div class="calputer-left">
                             <div class="calputer-str">
                                 <span class="left-text">商品总价</span>
-                                <input type="text"><span class="calputer-text">元</span>
+                                <input type="text" class="right-inp"><span class="calputer-text">元</span>
                             </div>
                             <div class="calputer-str">
                                 <span class="left-text">首付比例</span>
-                                <input type="text"><span class="calputer-text">%</span>
+                                <input type="text" class="right-inp"><span class="calputer-text">%</span>
                             </div>
                             <div class="calputer-str">
                                 <span class="left-text">期数</span>
-                                <div class="sele-periods">
-                                    <span v-text="periods_num"></span><img src="../../../static/img/goodscreen/downsolid.png" alt="">
+                                <div class="sele-periods" @click="showCountPeriodsFn">
+                                    <span v-text="count_periods"></span><img src="../../../static/img/goodscreen/downsolid.png" alt="">
                                 </div>
                             </div>
                         </div>
@@ -178,15 +184,18 @@
             </div>
         </div>
         <!-- 弹出 期数 选择框 -->
-        <div class="pop-view" v-show="true">
-            
+        <div class="pop-view" v-show="show_count_per">
+            <div class="pop-periods-str" v-for="item in count_periods_data" @click="seleCountPeriodsFn(item.value)">
+                <img class="check-img" :src="item.isclick?'./static/img/order/okcheck.png':'./static/img/order/nocheck.png'" alt="">
+                <span v-text="item.name"></span>
+            </div>
         </div>
         <!-- 点击申请显示 -->
-        <div class="pop-view pop-apply" v-show="false">
+        <div class="pop-view pop-apply" v-show="apply_hint">
             分期申请提交成功，我们会尽快为您审核。稍后会有短信提醒，请您注意查收
-            <div class="okbtn">确认</div>
+            <div class="okbtn" @click="goApplyFn">确认</div>
         </div>
-        <div class="shade" v-show="false"></div>
+        <div class="shade" v-show="apply_hint || show_count_per"></div>
     </div>
 </template>
 <script>
@@ -256,7 +265,24 @@ export default {
                     isclick: false
                 }
             ],
-            periods_num:'不限期'
+            stage_opt:true,//true 日分期 false 月分期
+            count_periods:'不限期',
+            apply_hint:false,
+            count_periods_data:[{
+                name:'5期',
+                value:1,
+                isclick:false,
+            },{
+                name:'3期',
+                value:2,
+                isclick:false,
+            },{
+                name:'1期',
+                value:3,
+                isclick:false,
+            }],
+            show_count_per:false,
+
         };
     },
     methods: {
@@ -276,9 +302,63 @@ export default {
                 data[i].isclick = false;
             }
         },
-        applyFn(){
-
-        }
+        // 申请分期选择分期方式
+        seleApplyStageFn(opt){
+            var that = this;
+            if(opt == 'day'){
+                that.stage_opt = true;
+            }else{
+                that.stage_opt = false;
+            }
+        },
+        // 选择期数
+        selePeriodsFn(val){
+            var that_d = this.periods_data;
+            for(var i in that_d){
+                if(val == that_d[i].value){
+                    that_d[i].isclick = true;
+                    continue;
+                }
+                that_d[i].isclick = false;
+            }
+        },
+        // 显示申请分期提示
+        showHintFn(){
+            this.apply_hint = true;
+        },
+        // 分期
+        goApplyFn(){
+            this.apply_hint = false;
+        },
+        // 选择日分期还是月分期
+        seleCountTag(val){
+            var that_d = this.stage_tab;
+            for(var i in that_d){
+                if(val == that_d[i].value){
+                    that_d[i].isclick = true;
+                    continue;
+                }
+                that_d[i].isclick = false;
+            }
+        },
+        // 显示计算期数弹框
+        showCountPeriodsFn(){
+            this.show_count_per = true;
+        },
+        // 选择计算期数
+        seleCountPeriodsFn(val){
+            var that = this;
+            var that_d = this.count_periods_data;
+            for(var i in that_d){
+                if(val == that_d[i].value){
+                    that_d[i].isclick = true;
+                    that.count_periods = that_d[i].name;
+                    that.show_count_per = false;
+                    continue;
+                }
+                that_d[i].isclick = false;
+            }
+        },
     },
     mounted() {}
 };
@@ -681,6 +761,9 @@ export default {
     background: -moz-linear-gradient(#FC534A, #FD915F);
     background: linear-gradient(to right, #FC534A, #FD915F);
 }
+.pop-periods-str{
+    padding:.2rem;
+}
 .shade{
     position:fixed;
     top:0;
@@ -689,6 +772,13 @@ export default {
     bottom:0;
     background:rgba(0,0,0,0.5);
     z-index:5;
+}
+
+.right-inp{
+    text-align: right;
+}
+input{
+    font-size:.24rem;
 }
 /* placeholder */
 ::-webkit-input-placeholder {

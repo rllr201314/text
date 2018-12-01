@@ -10,31 +10,57 @@
         </div>
         <div class="bragin-con">
             <div class="goods-strip" v-for="item in goodsInfo" @click="goDetail(item.goods_id)">
-                <div class="goods-strip-title">
-                    <div class="goods-type" v-if="item.deal_type_id == 1">成品号</div>
-                    <div class="goods-type" v-else>代练号</div>
-                    <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                    <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                    <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                    <div class="area" v-text="item.platform_name"></div>
-                </div>
-                <div class="goods-strip-content">
-                    <div class="goods-des" v-text="item.goods_title"></div>
-                    <div class="goods-ico">
-                        <img v-if="item.is_safe == 1" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
-                        <img v-if="item.is_stage == 1" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
-                        <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
-                        <!-- <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">   验证 -->
+                <div class="goods-strip-top">
+                    <div class="goods-strip-title">
+                        <div class="title-ico deal-ico" v-if="item.rent_method == 1 || item.rent_method == 3">成品号</div>
+                        <div class="title-ico rent-ico" v-if="item.rent_method == 2 || item.rent_method == 3">租号</div>
+                        <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                        <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                        <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                        <div class="area" v-text="item.platform_name"></div>
+                        <div class="goods-collect">
+                            <img class="collect" src="../../../../static/img/goods-details/ok_collect_ico.png" alt="">
+                            <span>已收藏</span>
+                        </div>
+                    </div>
+                    <div class="goods-strip-content">
+                        <div class="goods-des" v-text="item.goods_title"></div>
+                        <div class="goods-ico">
+                            <img v-if="item.is_safe == 1" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
+                            <img v-if="item.is_stage == 1" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
+                            <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
+                        </div>
+                    </div>
+                    <div class="goods-strip-bot">
+                        <div v-if="item.rent_method == 1">
+                            <span class="goods-price">￥<span v-text="item.goods_price"></span></span>
+                            <div class="bargain" v-if="item.sell_type == 2">可议价</div>
+                        </div>
+                        <div class="original-price" v-if="item.rent_method == 3">
+                            <span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span>
+                        </div>
+                    </div>
+                    <div v-if="item.rent_method == 2 || item.rent_method == 3">
+                        <div class="goods-strip-bottom">
+                            <div>
+                                <img src="../../../../static/img/rent/rent-ico.png" alt="">
+                                <span>租金</span>
+                                <span class="red-color">￥</span><span class="goods_price" v-text="item.day_rent"></span>/<span v-text="item.rent_unit"></span>
+                            </div>
+                            <div>
+                                <img src="../../../../static/img/rent/pledge-ico.png" alt="">
+                                <span>押金</span>
+                                <span>￥</span><span v-text="item.cash"></span>
+                            </div>
+                            <div>
+                                <img src="../../../../static/img/rent/pledge-ico.png" alt="">
+                                <span>最短租期</span>
+                                <span v-text="item.least_lease"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="goods-strip-bottom">
-                    <span class="goods-price">￥<span v-text="item.goods_price"></span></span>
-                    <div class="bargain" v-if="item.sell_type == 2">可议价</div>
-                    <div class="goods-collect">
-                        <img class="collect" src="../../../../static/img/goods-details/ok_collect_ico.png" alt="">
-                        <span>已收藏</span>
-                    </div>
-                </div>
+                <div class="hint-bottom" v-if="item.rent_method == 2 || item.rent_method == 3" v-text="item.goods_description"></div>
             </div>
         </div>
         <NoData v-if="showNoData"></NoData>
@@ -118,6 +144,7 @@ export default {
     max-width: 12rem;
     margin: 0 auto;
     padding-top:.88rem;
+    background:#f6f8fe;
 }
 .bargain-tit {
     line-height: 0.7rem;
@@ -153,8 +180,10 @@ export default {
 /* 单条商品 */
 .goods-strip {
     background: #ffffff;
-    padding: 0.3rem 0.2rem 0.1rem;
     margin-bottom: 0.2rem;
+}
+.goods-strip-top{
+    padding: 0.3rem 0.2rem 0;
 }
 /* 头部------ */
 .goods-strip-title {
@@ -162,25 +191,34 @@ export default {
     font-size: 0.24rem;
     line-height: 0.36rem;
     margin-bottom: 0.2rem;
+    position:relative;
 }
 .goods-strip-title div{
     display: inline-block;
     vertical-align: middle;
 }
 /* 精品 */
-.goods-type {
+.title-ico {
     text-align: center;
     width: 0.93rem;
     height: 0.36rem;
+    display: inline-block;
+    margin-right: 0.1rem;
+}
+.rent-ico{
+    background: -webkit-linear-gradient(#ff9090, #ff687a);
+    background: -o-linear-gradient(#ff9090, #ff687a);
+    background: -moz-linear-gradient(#ff9090, #ff687a);
+    background: linear-gradient(to right, #ff9090, #ff687a);
+}
+.deal-ico{
     background: -webkit-linear-gradient(#feab49, #ffcc4b);
     background: -o-linear-gradient(#feab49, #ffcc4b);
     background: -moz-linear-gradient(#feab49, #ffcc4b);
     background: linear-gradient(to right, #feab49, #ffcc4b);
-    margin-right: 0.1rem;
 }
 .account-type {
-    text-align: center;
-    width: 0.7rem;
+    padding:0 .1rem;
     height: 0.36rem;
     background: -webkit-linear-gradient(
         120deg,
@@ -241,10 +279,7 @@ export default {
     margin-left: 0.12rem;
 }
 /* 底部 价格 */
-.goods-strip-bottom{
-    position:relative;
-}
-.goods-strip-bottom div {
+.goods-strip-bot div {
     display: inline-block;
 }
 .goods-price {
@@ -278,4 +313,46 @@ export default {
     width: 0.25rem;
     height: 0.23rem;
 }
+
+.original-price {
+    color: #666666;
+    font-size: 0.26rem;
+    line-height: 0.5rem;
+}
+.original-text {
+    margin-right: 0.1rem;
+}
+/* 底部 */
+.goods-strip-bottom {
+    line-height: 0.8rem;
+    border-top: 1px solid #dcdcdc;
+    color: #999999;
+    font-size: 0.26rem;
+    display: flex;
+    justify-content: space-between;
+}
+.goods-strip-bottom img {
+    width: 0.3rem;
+    height: 0.3rem;
+    vertical-align: middle;
+}
+.goods-strip-bottom span {
+    vertical-align: middle;
+}
+.red-color {
+    color: #fa5856;
+}
+.goods_price {
+    color: #fa5856;
+    font-size: 0.36rem;
+}
+.hint-bottom {
+    line-height: 0.7rem;
+    background: #f6f6f6;
+    font-size: 0.26rem;
+    color: #999999;
+    padding-left: 0.27rem;
+    border-bottom:1px solid #DCDCDC;
+}
+
 </style>

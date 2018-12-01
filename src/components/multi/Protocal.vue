@@ -1,7 +1,8 @@
 <template>
     <div class="protocal-wrap" v-show="proData.isShow">
         <div class="pop-view">
-            <div class="pop-view-box" v-html="proData.con"></div>
+            <div class="pop-view-tit" v-html="proData.con.title"></div>
+            <div class="pop-view-box" v-html="proData.con.content"></div>
             <div class="pop-view-btn" @click="hiddenPro('true')" v-text="proData.btn"></div>
             <img class="hidden-pro" @click="hiddenPro('false')" src="../../../static/img/empty_ico.png" alt="">
         </div>
@@ -39,10 +40,18 @@ export default {
     background:#ffffff;
     z-index:15;
 }
+.pop-view-tit{
+    color:#FE7649;
+    font-size:.3rem;
+    text-align:center;
+    line-height:1rem;
+    border-bottom:1px solid #DCDCDC;
+}
 .pop-view-box {
-    padding: 0.2rem;
-    max-height: 75vh;
+    padding: 0.2rem .4rem;
+    max-height: 68vh;
     overflow-y: scroll;
+
 }
 .pop-view-btn {
     color: #ffffff;
@@ -65,7 +74,6 @@ export default {
 .hidden-pro {
     width: 0.24rem;
     height: 0.24rem;
-    background: #e5e5e5;
     position: absolute;
     top: 0.1rem;
     right: 0.15rem;

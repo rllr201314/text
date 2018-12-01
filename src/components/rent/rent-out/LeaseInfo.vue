@@ -183,12 +183,12 @@
                     <div class="sell-strip">
                         <span class="sell-lefttext">最短租期</span>
                         <input class="rent-input" type="number" v-model="requestData.least_lease" oninput="if(value.length>7)value=value.slice(0,7)">
-                        <span class="black-color">天</span><span class="red-color">(建议最短周期7天)</span>
+                        <span class="black-color"><span v-text="seleData.rentType"></span></span><span class="red-color">(建议最短周期7天)</span>
                     </div>
                     <div class="sell-strip">
                         <span class="sell-lefttext">租金</span>
                         <input class="rent-input" type="number" v-model="requestData.day_rent" oninput="if(value.length>7)value=value.slice(0,7)">
-                        <span class="black-color">元/天</span>
+                        <span class="black-color">元/<span v-text="seleData.rentType"></span></span>
                     </div>
                     <div class="sell-strip">
                         <span class="sell-lefttext">押金</span>
@@ -226,8 +226,7 @@
         <div class="nextBtn" @click="addGoods">下一步</div>
         <div class="tag-wrap" v-show="showTagAll">
             <div class="sele-tag-wrap">
-                <div class="sele-tit">已选标签（
-                    <span v-text="sellData.seleTag.length"></span>/5）</div>
+                <div class="sele-tit">已选标签（<span v-text="sellData.seleTag.length"></span>/5）</div>
                 <div class="sele-con">
                     <div class="sele-tag" v-for="item in sellData.seleTag" v-text="item.tag_content" @click="seleTagCon(item.tag_id)"></div>
                 </div>
@@ -337,7 +336,7 @@ export default {
                     showLogo: 2, //显示头部log
                     showShare: 3, //1搜索2分享3菜单
                     showBg: true, //是否显示背景
-                    title: "我要卖"
+                    title: "我要出租"
                 }
             },
             showSell:false,//是否是租售
@@ -402,7 +401,7 @@ export default {
             upData: {},
             requestData: {
                 rent_id:"",
-                deal_type: "",
+                // deal_type: "",
                 category_id: "",
                 operation_id: "",
                 area_id: "",
@@ -1067,7 +1066,14 @@ export default {
                                 that.sellData.sex = data.person_sex; //角色性别
                                 that.sellData.faction = data.faction; //职业
                                 that.sellData.accountType = data.account_type; //账号类型
-                                that.sellData.rentWay = data.rent_type;//出租方式
+                                var rent_type = data.rent_type;//出租方式
+                                for(var i in rent_type){
+                                    if(rent_type[i].name == '天'){
+                                        that.requestData.rent_type = rent_type[i].value;
+                                        that.seleData.rentType = rent_type[i].name;
+                                    }
+                                }
+                                that.sellData.rentWay = rent_type;
                                 that.judgeInfo(data.chargeInfo);
                             }else if(flag == 2){//编辑
                                 var oldData = that.oldData;
@@ -1145,7 +1151,7 @@ export default {
                         var data = res.data.data;
                         that.category_id = data.category_id;
                         var that_req = that.requestData;
-                        that_req.deal_type = data.deal_type; //商品类型
+                        // that_req.deal_type = data.deal_type; //商品类型
                         that_req.category_id = data.category_id;
                         that_req.operation_id = data.operation_id;
                         that_req.area_id = data.area_id;
@@ -1225,7 +1231,7 @@ export default {
                     var data = JSON.parse(opt.upData);
                     that.category_id = data.category_id;
                     that.requestData.category_id = data.category_id;
-                    that.requestData.deal_type = data.deal_type;
+                    // that.requestData.deal_type = data.deal_type;
                     that.requestData.operation_id = data.operation_id;
                     that.requestData.area_id = data.area_id;
                     that.requestData.server_id = data.server_id;
@@ -1237,7 +1243,7 @@ export default {
                     }
                     that.getConfig(data,opt.flag);//请求选择参数
                     that.getTagType();//获取标签大类
-                    that.comData.showTitle.title = "我要卖";
+                    that.comData.showTitle.title = "我要出租";
                     that.editOrpublish = 1;
                 }else{
                     that.$router.go(-1); 

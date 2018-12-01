@@ -38,8 +38,7 @@
                                     <div>
                                         <img src="../../../static/img/rent/rent-ico.png" alt="">
                                         <span>租金</span>
-                                        <span class="red-color">￥</span><span class="goods_price" v-text="item.day_rent"></span>
-                                        <span>/日</span>
+                                        <span class="red-color">￥</span><span class="goods_price" v-text="item.day_rent"></span>/<span v-text="item.rent_unit"></span>
                                     </div>
                                     <div>
                                         <img src="../../../static/img/rent/pledge-ico.png" alt="">
@@ -47,15 +46,13 @@
                                         <span>￥</span><span v-text="item.cash"></span>
                                     </div>
                                     <div>
-                                        <img src="../../../static/img/rent/pledge-ico.png" alt="">
+                                        <img src="../../../static/img/rent/short-ico.png" alt="">
                                         <span>最短租期</span>
-                                        <span v-text="item.least_lease"></span><span>天</span>
+                                        <span v-text="item.least_lease"></span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="hint-bottom">
-                                账号很便宜，约定帮完每日任务和xx活动。
-                            </div>
+                            <div class="hint-bottom" v-text="item.goods_description"></div>
                         </div>
                     </ul>
                 </div>
@@ -463,7 +460,7 @@ export default {
     top: 1.68rem;
 }
 .list {
-    background: #f6f6f6;
+    background: #f6f8fe;
 }
 .list ul{
      background:#F6F8FE;

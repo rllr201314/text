@@ -16,83 +16,52 @@
                     <div class="goods-info">
                         <div class="goods-info-title" v-text="goodsInfo.goods_title"></div>
                         <div class="goods-info-box">
+                            <div>交易链接</div>
+                            <div class="t_link">123123</div>
+                        </div>
+                        <div class="goods-info-box">
                             <div class="goods-info-left">
-                                <div class="text-left">系统</div>
-                                <div class="text-left">等级</div>
-                                <div class="text-left">门派</div>
-                                <div class="text-left">商品类型</div>
-                                <div class="text-left">账号绑定</div>
+                                <div>官方交易价格</div>
+                                <div>分期方式</div>
+                                <div>首付</div>
+                                <div>期数</div>
                             </div>
                             <div class="goods-info-right">
-                                <div class="text-right" v-if="goodsInfo.server_name != null" v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name+'>'+goodsInfo.server_name"></div>
-                                <div class="text-right" v-else v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name"></div>
-                                <div class="text-right">
-                                    <span v-text="goodsInfo.role_level"></span>级</div>
-                                <div class="text-right" v-text="goodsInfo.faction_name"></div>
-                                <div class="text-right" v-if="goodsInfo.deal_type == 1">成品号</div>
-                                <div class="text-right" v-else>代练号</div>
-                                <div class="text-right" v-text="goodsInfo.account_bind"></div>
+                                <div><span v-text="goodsInfo.role_level"></span>级</div>
+                                <div v-text="goodsInfo.faction_name"></div>
+                                <div v-if="goodsInfo.deal_type == 1">成品号</div>
+                                <div v-else>代练号</div>
+                                <div v-text="goodsInfo.account_bind"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- 联系方式 -->
-            <div class="contact-wrap placeOrder-cell">
-                <div class="goods-info-top">
-                    <img src="../../../static/img/goodscreen/vertical.png" alt="">
-                    <span>联系方式</span>
-                </div>
-                <div class="contact-content">
-                    <div class="contact-cell inpright">
-                        <span class="celltext">微信号</span>
-                        <input type="text" placeholder="请输入您的微信号" v-model="wx">
+                <div class="stage-info">
+                    <div class="stage-box">
+                        123
                     </div>
-                    <div class="contact-cell inpright">
-                        <span class="celltext">手机号</span>
-                        <input type="number" placeholder="请输入您的手机号" v-model="phone">
-                    </div>
-                    <div class="contact-bottom red-color">请输入您真实的联系方式，以方便客服能在交易过程中的第一时间联系到您。</div>
                 </div>
             </div>
             <!-- 订单详情 -->
             <div class="placeOrder-cell">
-                <div class="goods-info-top">
-                    <img src="../../../static/img/goodscreen/vertical.png" alt="">
-                    <span>订单详情</span>
-                </div>
                 <div class="contact-content">
                     <div class="contact-cell">
                         <span class="celltext">押金</span>
                         <div class="cell-right">
                             <span class="unit-price price">￥
-                                <span v-text="goodsInfo.cash"></span>
+                                <span v-text="totalPrice"></span>
                             </span>
                         </div>
                     </div>
-                    <div class="contact-cell" @click="showTerm">
-                        <span class="celltext">租期</span>
-                        <div class="cell-right descount">
-                            <span class="grey-color" v-text="tenancy_term"></span>
-                            <img src="../../../static/img/order/next.png" alt="">
-                        </div>
-                    </div>
-                    <div class="contact-cell">
-                        <span class="celltext">租金<span class="gray-color">(￥<span v-text="goodsInfo.day_rent"></span>/日)</span></span>
+                     <div class="contact-cell">
+                        <span class="celltext">押金</span>
                         <div class="cell-right">
                             <span class="unit-price price">￥
-                                <span v-text="tremPirce"></span>
+                                <span v-text="totalPrice"></span>
                             </span>
                         </div>
                     </div>
                     <div class="contact-cell" >
-                        <span class="celltext">优惠券</span>
-                        <div class="cell-right descount">
-                            <span class="gray-color">无可用优惠券</span>
-                            <img src="../../../static/img/order/next.png" alt="">
-                        </div>
-                    </div>
-                    <div class="contact-cell" v-show="totalPrice != null">
                         <div class="cell-right">
                             <div class="total-price price">
                                 实际支付：<span class="red-color" v-text="totalPrice"></span>
@@ -110,27 +79,6 @@
         <Protocal v-bind:proData="proData" v-on:isProFn="isProFn"></Protocal>
         <div class="nextBtn" @click="goPayFn">下一步</div>
 
-        <div class="pop-view" v-show="showTime">
-            <div class="pop-tit">您希望租号的天数</div>
-            <input type="number" placeholder="请输入您希望租号的天数" ref="inp_time" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')">
-            <div class="btn-wrap">
-                <div class="okbtn" @click="affirmFn">确认</div>
-                <div class="cancel" @click="cancelFn">取消</div>
-            </div>
-        </div>
-
-
-
-        <!-- <div v-show="showMenu" class="type-mu">
-            <div class="pop-view-tit option-gray">
-                <div>请选择租期</div>
-            </div>
-            <ul>
-                <li class="option-black" v-for="item in optionData" @click="seleTrem(item.value)" v-text="item.name"></li>
-            </ul>
-            <div class="pop-view-con"></div>
-            <div class="pop-view-bot" @click="hiddenFn">取消</div>
-        </div> -->
         <!-- 遮罩 -->
         <div class="orderShade" v-show="showOrderShade" @click="hiddenFn"></div>
         <Loading class="black-bg" v-if="showNoData"></Loading>
@@ -142,7 +90,7 @@ import Loading from "@/components/multi/Loading";
 import Protocal from "@/components/multi/Protocal";
 
 export default {
-    name: "RentPlaceOrder",
+    name: "CbgPlaceOrder",
     components: {
         Header,
         Loading,
@@ -166,60 +114,21 @@ export default {
                 btn: "确认已读",
                 val: ""
             },
-
-            tenancy_term:'',//租期
-            // showMenu:false,//显示租期选项
-            // optionData:[{name:'7天',value:1},{name:'8天',value:2}],
+            
             showPro:false,//是否显示协议
             protocalText:'',//协议
             protocol: true, //阅读协议
             showNoData:true,
-            goodsInfo: {},
-            num: 1,
-            phone:'',
-            wx:'',
-            tremVal:'',//选择租期值
-            tremPirce:0,//租期*日租金=租金
-            showTime:false,//--------------------------------------------------------------------点击下一步显示 
-           
             showOrderShade: false, //遮罩
             totalPrice:null,
-            // 是否分期
-            operaStage: {
-                stage: false,
-                noStage: true
-            },
-            // 是否购买保险
-            operaSafe: {
-                safe: true,
-                noSafe: false
-            }
+            goodsInfo:{}
         };
     },
     methods: {
         // 隐藏遮罩
         hiddenFn(){
-            this.showTime = false;
             this.showOrderShade = false;
         },
-        // 显示租期选项
-        showTerm(){
-            this.showOrderShade = true;
-            this.showTime = true;
-        },
-        // 选择租期
-        // seleTrem(val){
-        //     var that = this;
-        //     var data = that.optionData;
-        //     for(var i in data){
-        //         if(val == data[i].value){
-        //             that.tenancy_term = data[i].name;
-        //             that.tremVal = val;
-        //             break;
-        //         }
-        //     }
-        //     that.hiddenFn();
-        // },
         // 协议
         getProtocol(){
             var that = this;
@@ -232,6 +141,8 @@ export default {
                         that.proData.val = true;
                     }
                 }
+            }).catch((err)=>{
+                console.log(err)
             })
         },
         isProFn(flag){
@@ -239,41 +150,6 @@ export default {
             if(flag){
                 that.protocol = true;
             }
-        },
-        // 商品数量
-        addbtn(flag) {
-            var that = this;
-            if (flag == "sub") {
-                that.num--;
-                if (that.num <= 0) {
-                    that.num = 1;
-                }
-            } else if (flag == "add") {
-                that.num++;
-            }
-        },
-        // 确认
-        affirmFn(){
-            var that = this;
-            var val = that.$refs.inp_time.value;
-            var data = that.goodsInfo;
-            if(Number(val) >= Number(data.least_lease)){
-                that.tremPirce = Number(data.day_rent) * val;
-                that.tenancy_term = val + '天';
-                that.tremVal = val;
-                that.$refs.inp_time.value = '';
-                that.totalPrice = that.tremPirce + Number(data.cash);
-                that.hiddenFn();
-            }else{
-                mui.alert('租期不得小于最短租期','提示','确认','','div');
-            }
-            
-        },
-        // 取消
-        cancelFn(){
-            var that = this;
-            that.$refs.inp_time.value = '';
-            that.hiddenFn();
         },
         // 阅读协议
         lookFn(){
@@ -354,11 +230,12 @@ export default {
     },
     mounted() {
         var that = this;
-        if (that.$route.query.goods_id != "" && that.$route.query.goods_id != undefined) {
-            that.getData();
-        } else {
-            that.$router.go(-1);
-        }
+        that.showNoData = false;
+        // if (that.$route.query.goods_id != "" && that.$route.query.goods_id != undefined) {
+        //     that.getData();
+        // } else {
+        //     that.$router.go(-1);
+        // }
     }
 };
 </script>
@@ -671,7 +548,7 @@ input[type="number"] {
     font-size: 0.24rem;
 }
 ::-moz-placeholder {
-    color: #999999;
+    color: #999999; 
     font-size: 0.24rem;
 }
 :-ms-input-placeholder {
@@ -682,88 +559,21 @@ input[type="number"] {
 .black-bg{
     background:rgba(255, 255,255, 1);
 }
+.stage-info{
+    padding:0 .2rem .2rem;
+}
 
-
-/* 协议 */
-.pop-view{
-    background:#ffffff;
-    width:5rem;
-    position: fixed;
-    top:30%;
-    left: calc(50% - 2.5rem);
-    z-index:15;
-    border-radius: .1rem;
-    padding:.4rem .2rem;
-}
-.pop-tit{
-    font-size:.28rem;
-    color:#666666;
-    margin-bottom: .2rem;
-}
-.pop-view input{
-    margin-bottom:.4rem;
-}
-.btn-wrap{
-    display: flex;
+.stage-box{
+    background:#F6F6F6;
+    line-height: .5rem;
+    font-size:.24rem;
+    color:#999999;
+    display:flex;
     justify-content: space-around;
-    font-size:.26rem;
 }
-.btn-wrap div{
-    width:1.89rem;
-    line-height:.6rem;
-    text-align: center;
-    border-radius: .3rem;
-    color:#ffffff;
-}
-.okbtn{
-    background: -webkit-linear-gradient(#fd915f, #fc534a);
-    background: -o-linear-gradient(#fd915f, #fc534a);
-    background: -moz-linear-gradient(#fd915f, #fc534a);
-    background: linear-gradient(to right, #fd915f, #fc534a);
-}
-.cancel{
-    background:#C6C6C6;
-}
-
-
-
-
-.type-mu{
-    min-height:2rem;
-    color: #333333;
-    font-size: 0.28rem;
-    background:#FFFFFF;
-    text-align:center;
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    z-index:50;
-    max-width: 640px;
-    margin:0 auto;
-}
-.pop-view-tit,.pop-view-bot{
-    line-height: .9rem;
-}
-.pop-view-con{
-    height:.2rem;
-    background:rgba(0,0,0,0.3);
-}
-.type-mu ul{
-    border-top:1px solid #e5e5e5;
-    border-bottom:1px solid #e5e5e5;
-    max-height:4rem;
-    overflow-y:scroll;
-}
-/* 弹出框 */
-.option-gray {
-    color: #666666;
-    font-size: 0.28rem;
-}
-.option-black {
-    font-weight: 100;
-    line-height:.9rem;
-    border-bottom:1px solid #e5e5e5;
-}
+.t_link{
+    color:#999999;
+    text-decoration: underline;
+} 
 
 </style>

@@ -33,7 +33,6 @@
         <div class="okBtn" @click="goNext">下一步</div>
         <!-- 弹出框 -->
         <!-- 商品类型 -->
-        <!-- <div id="sheet-merchand" class="mui-popover mui-popover-bottom mui-popover-action"> -->
         <div v-show="showMenu_type" class="type-mu">
             <div class="pop-view-tit option-gray">
                 请选择商品类型
@@ -45,7 +44,6 @@
             <div class="pop-view-con"></div>
             <div class="pop-view-bot" @click="hiddenFn">取消</div>
         </div>
-        <!-- 弹出框 -->
         <!-- 手机系统 -->
         <div v-show="showMenu_mobile" class="type-mu" :class="go_up?'go-top':''">
             <div class="pop-view-tit option-gray">
@@ -249,6 +247,7 @@ export default {
                     merchand[i].ischeck = true;
                     that.upData.deal_type = merchand[i].value;
                     that.sellOptData.merchand = merchand[i].name;
+                    that.showMenu_mobile = true;//显示操作系统
                     continue;
                 }
                 merchand[i].ischeck = false;
@@ -265,6 +264,7 @@ export default {
                     mobile[i].ischeck = true;
                     that.upData.operation_id = mobile[i].operation_id;
                     that.sellOptData.mobile = mobile[i].platform_name;
+                    that.showMenu_area = true;//显示操作系统
                     continue;
                 }
                 mobile[i].ischeck = false;

@@ -4,6 +4,8 @@
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="trad-content">
             <div class="trad-cell" v-for="item in goodsData">
+                <img class="badge" v-if="item.rent_method == 1" src="../../../../static/img/badge/product.png" alt="">
+                <img class="badge" v-if="item.rent_method == 2" src="../../../../static/img/badge/rent-badge.png" alt="">
                 <div class="gameLog">
                     <img :src="item.game_logo" alt="">
                 </div>
@@ -11,12 +13,13 @@
                     <div class="order-num">
                         <span>订单号</span>
                         <span v-text="item.order_sn"></span>
-                        <span class="history-time" v-text="item.create_time"></span>
                     </div>
                     <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
-                        <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
+                        <span class="good-price" v-if="item.rent_method == 1">￥<span v-text="item.goods_amount"></span></span>
+                        <span class="good-price" v-if="item.rent_method == 2">￥<span v-text="item.order_amount"></span></span>
                         <span class="order-status">待确认交易</span>
+                        <span class="history-time" v-text="item.create_time"></span>
                     </div>
                 </div>
                 <div class="order-operate">
@@ -26,7 +29,7 @@
                         <span v-text="item.buyer_username"></span>
                     </div>
                     <div class="right-operate">
-                        <span class="pay" @click="goStatus(item.order_id)">查看</span>
+                        <span class="pay" v-if="item.rent_method == 1" @click="goStatus(item.order_id)">查看</span>
                     </div>
                 </div>
             </div>
@@ -112,6 +115,14 @@ export default {
     box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     margin-bottom: 0.2rem;
     padding: 0 0.2rem;
+    position: relative;
+}
+.badge{
+    width:1.03rem;
+    height:1rem;
+    position: absolute;
+    top:0;
+    right:0;
 }
 .gameLog {
     display: inline-block;
@@ -135,7 +146,6 @@ export default {
     color: #666666;
     font-size: 0.26rem;
     margin-bottom: 0.1rem;
-    position: relative;
 }
 .history-time {
     color: #999999;
@@ -151,6 +161,9 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 0.1rem;
+}
+.price-status{
+    position:relative;
 }
 .price-status span {
     vertical-align: middle;

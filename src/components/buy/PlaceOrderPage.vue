@@ -181,12 +181,7 @@
             <div>我已阅读<span class="red-color" @click="getProtocol">《看个号平台交易协议》</span>
             </div>
         </div>
-        <!-- 协议 -->
-        <div class="pop-view" v-show="showPro">
-            <div class="pop-view-box" v-html="protocalText"></div>
-            <div class="pop-view-btn" @click="hiddenPro('true')">确认已读</div>
-            <img class="hidden-pro" @click="hiddenPro('false')" src="../../../static/img/empty_ico.png" alt="">
-        </div>
+        <Protocal v-bind:proData="proData" v-on:isProFn="isProFn"></Protocal>
 
         <div class="nextBtn" @click="goPayFn">下一步</div>
         <!-- 遮罩 -->
@@ -208,12 +203,14 @@
 <script>
 import Header from "@/components/home-page/Header"; //头部
 import Loading from "@/components/multi/Loading";
+import Protocal from "@/components/multi/Protocal";//协议
 
 export default {
     name: "PlaceOrder",
     components: {
         Header,
-        Loading
+        Loading,
+        Protocal
     },
     data() {
         return {
@@ -227,9 +224,12 @@ export default {
                     title: "商品下单"
                 }
             },
-            
-            showPro:false,//是否显示协议
-            protocalText:'',//协议
+            proData: {
+                isShow: false,
+                con: "",
+                btn: "确认已读",
+                val: ""
+            },
             protocol: true, //阅读协议
             showNoData:true,
             remaining_sum:'',
@@ -308,18 +308,18 @@ export default {
                 // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
-                        that.protocalText = res.data.data;
-                        that.showPro = true;
-                        that.showOrderShade = true;
+                        that.proData.isShow = true;
+                        that.proData.con = res.data.data;
+                        that.proData.val = true;
                     }
                 }
+            }).catch((err)=>{
+                console.log(err)
             })
         },
-        hiddenPro(flag){
+        isProFn(flag){
             var that = this;
-            that.showPro = false;
-            that.showOrderShade = false;
-            if(flag == 'true'){
+            if(flag){
                 that.protocol = true;
             }
         },
@@ -1021,47 +1021,4 @@ input[type="number"] {
     background:rgba(255, 255,255, 1);
 }
 
-
-/* 协议 */
-.pop-view{
-    background:#ffffff;
-    position: fixed;
-    top:1.3rem;
-    left:.3rem;
-    right:.3rem;
-    z-index:15;
-    padding-top:.2rem;
-    border-radius: .1rem;
-}
-.pop-view-box{
-    padding:.2rem;
-    max-height:75vh;
-    overflow-y:scroll;
-}
-.pop-view-btn{
-    color: #ffffff;
-    font-size: 0.28rem;
-    margin: 0.3rem auto;
-    width: 6.5rem;
-    text-align: center;
-    line-height: 0.8rem;
-    -webkit-border-radius: 0.1rem;
-    -moz-border-radius: 0.1rem;
-    border-radius: 0.1rem;
-    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
-    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
-    box-shadow: 0.06rem 0.05rem 0.09rem #fd915f;
-    background: -webkit-linear-gradient(#fd915f, #fc534a);
-    background: -o-linear-gradient(#fd915f, #fc534a);
-    background: -moz-linear-gradient(#fd915f, #fc534a);
-    background: linear-gradient(to right, #fd915f, #fc534a);
-}
-.hidden-pro{
-    width:.24rem;
-    height:.24rem;
-    background:#e5e5e5;
-    position: absolute;
-    top:.1rem;
-    right:.15rem;
-}
 </style>

@@ -1878,7 +1878,7 @@ input[type="number"] {
     top: 1.68rem;
 }
 .list {
-    background: #f6f6f6;
+    background: #f6f8fe;
 }
 .nodata{
     padding-top:1.68rem;

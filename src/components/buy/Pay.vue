@@ -170,6 +170,9 @@ export default {
             showBtn:true,
             stage_info:null,//分期信息
             rent_info:null,//租号信息
+            rent_unpaid_o:null,//租号未支付
+            relet_info:null,//租号续租
+            relet_unpaid_o:null,//租号续租未支付
             order_id:null,
             ok_text:'前往支付',
             order_num:null,
@@ -463,6 +466,32 @@ export default {
                 }else{
                     request.payment_method = 4;//选择线下支付
                 }
+            }else if(that.rent_unpaid_o){//租号未支付
+                url = 'rent_trading';
+                request.order_id = that.rent_unpaid_o;
+                if(that.is_line){
+                    request.payment_method = that.payment_num;
+                }else{
+                    request.payment_method = 4;//选择线下支付
+                }
+            }else if(that.relet_info){//续租
+                var data = that.relet_info;
+                url = "relet_order";
+                request.order_id = data.order_id;
+                request.lease_time = data.lease_time;
+                if(that.is_line){
+                    request.payment_method = that.payment_num;
+                }else{
+                    request.payment_method = 4;//选择线下支付
+                }
+            }else if(that.relet_unpaid_o){//续租
+                url = 'relet_trading';
+                request.order_id = that.relet_unpaid_o;
+                if(that.is_line){
+                    request.payment_method = that.payment_num;
+                }else{
+                    request.payment_method = 4;//选择线下支付
+                }
             }
             // 判断有没有用余额支付
             if(that.isbalace &&　Number(that.remaining_price) > 0){
@@ -494,7 +523,6 @@ export default {
         subData(url,request){
             var that = this;
             that.$axios.post(process.env.API_HOST+url,request).then((res)=>{
-                console.log(res);
                 that.showLoading = false;
                 if(res.status == 200){
                     if(res.data.code == 200){
@@ -554,6 +582,10 @@ export default {
                         // 未设置安全交易密码
                         mui.alert(res.data.msg,'提示','确认',function(){
                                 that.$router.push({name:'Safety_Center',query:{type:1}});//type:1，已实名认证
+                            },'div');
+                    }else if(res.data.code == 400){
+                        mui.alert(res.data.msg,'提示','确认',function(){
+                                that.$router.go(-1);
                             },'div');
                     }
                 }
@@ -696,7 +728,6 @@ export default {
                 goods_id:data.goods_id,
                 lease_time:data.lease_time
             }).then((res)=>{
-                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.fee_info = res.data.data;
@@ -713,6 +744,10 @@ export default {
                                 }
                             }
                         }
+                    }else if(res.data.code == 400){
+                            mui.alert(res.data.msg,'提示','确认',function(){
+                                that.$router.go(-1);
+                            },'div')
                     }
                 }
             }).catch((err)=>{
@@ -752,6 +787,39 @@ export default {
                             that.$router.go(-1);
                         },'div')
                     }
+            }).catch((err)=>{
+                console.log(err);
+            })
+        },
+        // 租号续租
+        getReletFee(data){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'relet_fee',{
+                order_id:data.order_id,
+                lease_time:data.lease_time
+            }).then((res)=>{
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.fee_info = res.data.data;
+                        var data = that.online;
+                        for(var i in data){
+                            if(data[i].issele == true){
+                                if(data[i].name == "银联"){
+                                    that.price = that.fee_info.chinapay_amount;
+                                    that.old_price = that.fee_info.chinapay_amount;
+                                    that.charge.name = data[i].name;
+                                    that.charge.price = that.fee_info.chinapay_charge;
+                                    that.charge.rate = '0.6';
+                                    break;
+                                }
+                            }
+                        }
+                    }else if(res.data.code == 400){
+                            mui.alert(res.data.msg,'提示','确认',function(){
+                                that.$router.go(-1);
+                            },'div')
+                    }
+                }
             }).catch((err)=>{
                 console.log(err);
             })
@@ -819,14 +887,29 @@ export default {
                     that.getRentFee(that.rent_info);
                 }
             }
-
-        }else if(that.$route.query.rent_unpaid_o){
+        }else if(that.$route.query.rent_unpaid_o){//未支付租号
             var order_id = that.$route.query.rent_unpaid_o;
             var rent_unpaid_o = sessionStorage.getItem('rent_unpaid_o');
             if(order_id == rent_unpaid_o){
+                that.rent_unpaid_o = rent_unpaid_o;
                 that.getRentPayment(rent_unpaid_o);
             }
-
+        }else if(that.$route.query.relet){//续租
+            var lease_time = sessionStorage.getItem('lease_time');
+            var relet = that.$route.query.relet;
+            if(relet == lease_time){
+                if(that.isobjStr(relet)){
+                    that.relet_info = JSON.parse(relet);
+                    that.getReletFee(that.relet_info);
+                }
+            }
+        }else if(that.$route.query.relet_unpaid_o){//续租未支付
+            var order_id = that.$route.query.relet_unpaid_o;
+            var relet_unpaid_o = sessionStorage.getItem('relet_unpaid_o');
+            if(order_id == relet_unpaid_o){
+                that.relet_unpaid_o = relet_unpaid_o;
+                that.getRentPayment(relet_unpaid_o);
+            }
         }else{
             that.$router.go(-1);
         }

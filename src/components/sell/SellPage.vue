@@ -196,7 +196,7 @@ export default {
                     );
                 } else {
                     that.$axios
-                        .post(process.env.API_HOST + "protocol_safe")
+                        .post(process.env.API_HOST + "contract_rent")
                         .then(res => {
                             if (res.status == 200) {
                                 if (res.data.code == 200) {

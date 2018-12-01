@@ -29,8 +29,7 @@
                                 <div class="text-right">
                                     <span v-text="goodsInfo.role_level"></span>级</div>
                                 <div class="text-right" v-text="goodsInfo.faction_name"></div>
-                                <div class="text-right" v-if="goodsInfo.deal_type == 1">成品号</div>
-                                <div class="text-right" v-else>代练号</div>
+                                <div class="text-right">出租</div>
                                 <div class="text-right" v-text="goodsInfo.account_bind"></div>
                             </div>
                         </div>
@@ -38,7 +37,7 @@
                 </div>
             </div>
             <!-- 联系方式 -->
-            <div class="contact-wrap placeOrder-cell">
+            <div class="contact-wrap placeOrder-cell" v-if="orderType">
                 <div class="goods-info-top">
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
                     <span>联系方式</span>
@@ -62,7 +61,7 @@
                     <span>订单详情</span>
                 </div>
                 <div class="contact-content">
-                    <div class="contact-cell">
+                    <div class="contact-cell" v-if="orderType">
                         <span class="celltext">押金</span>
                         <div class="cell-right">
                             <span class="unit-price price">￥
@@ -73,12 +72,12 @@
                     <div class="contact-cell" @click="showTerm">
                         <span class="celltext">租期</span>
                         <div class="cell-right descount">
-                            <span class="grey-color" v-text="tenancy_term"></span>
+                            <span class="grey-color" v-text="tenancy_term"></span><span class="grey-color" v-text="goodsInfo.rent_unit"></span>
                             <img src="../../../static/img/order/next.png" alt="">
                         </div>
                     </div>
                     <div class="contact-cell">
-                        <span class="celltext">租金<span class="gray-color">(￥<span v-text="goodsInfo.day_rent"></span>/日)</span></span>
+                        <span class="celltext">租金<span class="gray-color">(￥<span v-text="goodsInfo.day_rent"></span>/<span v-text="goodsInfo.rent_unit"></span>)</span></span>
                         <div class="cell-right">
                             <span class="unit-price price">￥
                                 <span v-text="tremPirce"></span>
@@ -95,7 +94,7 @@
                     <div class="contact-cell" v-show="totalPrice != null">
                         <div class="cell-right">
                             <div class="total-price price">
-                                实际支付：<span class="red-color" v-text="totalPrice"></span>
+                                实际支付：<span class="red-color">￥</span><span class="red-color" v-text="totalPrice"></span>
                             </div>
                         </div>
                     </div>
@@ -111,8 +110,8 @@
         <div class="nextBtn" @click="goPayFn">下一步</div>
 
         <div class="pop-view" v-show="showTime">
-            <div class="pop-tit">您希望租号的天数</div>
-            <input type="number" placeholder="请输入您希望租号的天数" ref="inp_time" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')">
+            <div class="pop-tit">您希望租号的时长（<span v-text="goodsInfo.rent_unit"></span>）</div>
+            <input type="number" placeholder="请输入您的租用时长" ref="inp_time" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')">
             <div class="btn-wrap">
                 <div class="okbtn" @click="affirmFn">确认</div>
                 <div class="cancel" @click="cancelFn">取消</div>
@@ -160,6 +159,7 @@ export default {
                     title: "商品下单"
                 }
             },
+            orderType:true,//true 下单 false 续租
             proData: {
                 isShow: false,
                 con: "",
@@ -232,6 +232,8 @@ export default {
                         that.proData.val = true;
                     }
                 }
+            }).catch((err)=>{
+                console.log(err)
             })
         },
         isProFn(flag){
@@ -257,15 +259,25 @@ export default {
             var that = this;
             var val = that.$refs.inp_time.value;
             var data = that.goodsInfo;
-            if(Number(val) >= Number(data.least_lease)){
+            //下单
+            if(that.orderType){
+                if(Number(val) >= Number(data.least_lease)){
+                    that.tremPirce = Number(data.day_rent) * val;
+                    that.tenancy_term = val;
+                    that.tremVal = val;
+                    that.$refs.inp_time.value = '';
+                    that.totalPrice = that.tremPirce + Number(data.cash);
+                    that.hiddenFn();
+                }else{
+                    mui.alert('租期不得小于最短租期','提示','确认','','div');
+                }
+            }else{
                 that.tremPirce = Number(data.day_rent) * val;
-                that.tenancy_term = val + '天';
+                that.tenancy_term = val;
                 that.tremVal = val;
                 that.$refs.inp_time.value = '';
-                that.totalPrice = that.tremPirce + Number(data.cash);
+                that.totalPrice = that.tremPirce;
                 that.hiddenFn();
-            }else{
-                mui.alert('租期不得小于最短租期','提示','确认','','div');
             }
             
         },
@@ -290,7 +302,7 @@ export default {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             that.goodsInfo = res.data.data;
-                            that.tenancy_term = res.data.data.least_lease + '天';
+                            that.tenancy_term = res.data.data.least_lease;
                             that.tremVal = res.data.data.least_lease;
                             that.tremPirce = Number(res.data.data.day_rent) * Number(res.data.data.least_lease);
                             that.showNoData = false;
@@ -307,33 +319,66 @@ export default {
                     console.log(err);
                 });
         },
+        // 续租
+        goRelect(id){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+'relet_info',{
+                order_id:id
+            }).then((res)=>{
+                console.log(res);
+                if (res.status == 200) {
+                    if (res.data.code == 200) {
+                        that.goodsInfo = res.data.data;
+                        that.tenancy_term = res.data.data.least_lease;
+                        that.tremVal = res.data.data.least_lease;
+                        that.tremPirce = Number(res.data.data.day_rent) * Number(res.data.data.least_lease);
+                        that.showNoData = false;
+                        that.totalPrice = Number(that.tremPirce);
+                    }else if(res.data.code == 400){
+                        that.showNoData = true;
+                        mui.alert(res.data.msg,'提示','确认',function(){
+                            that.$router.go(-1);
+                        },'div')
+                    } 
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
+        },
         goPayFn(){
             var that = this;
             var request = {};
-            // 微信
-            if (that.wx == "") {
-                mui.alert("请输入微信账号", "提示", "确认", "", "div");
-                return false;
-            }else{
-                var reg = /[\u4e00-\u9fa5]/g;
-                if(that.wx.match(reg)){
-                    mui.alert("请输入正确微信账号", "提示", "确认", "", "div");
+            // 判断如果是下单的话填写联系方式 续租不用
+            if(that.orderType){
+                 // 微信
+                if (that.wx == "") {
+                    mui.alert("请输入微信账号", "提示", "确认", "", "div");
                     return false;
+                }else{
+                    var reg = /[\u4e00-\u9fa5]/g;
+                    if(that.wx.match(reg)){
+                        mui.alert("请输入正确微信账号", "提示", "确认", "", "div");
+                        return false;
+                    }
+                     request.wx = that.wx;
                 }
-                 request.wx = that.wx;
-            }
-            // 手机号
-            if (that.phone == "") {
-                mui.alert("请输入手机号", "提示", "确认", "", "div");
-                return false;
-            }else{
-                var reg = /^1[3-9][0-9]{9}$/g;
-                if (!that.phone.match(reg)) {
-                    mui.alert("您输入的手机号不正确","提示","确定","","div");
+                // 手机号
+                if (that.phone == "") {
+                    mui.alert("请输入手机号", "提示", "确认", "", "div");
                     return false;
+                }else{
+                    var reg = /^1[3-9][0-9]{9}$/g;
+                    if (!that.phone.match(reg)) {
+                        mui.alert("您输入的手机号不正确","提示","确定","","div");
+                        return false;
+                    }
+                    request.phone = that.phone;
                 }
-                request.phone = that.phone;
+                request.goods_id = that.$route.query.goods_id;//下单的goods_id
+            }else{
+                request.order_id = that.$route.query.order_id;
             }
+
             if(that.tremVal == ''){
                 mui.alert("请选择租期", "提示", "确认", "", "div");
                 return false;
@@ -345,17 +390,23 @@ export default {
                 mui.alert("请阅读并同意《看个号平台交易协议》","提示","确定","","div");
                 return false;
             }
-            request.goods_id = that.$route.query.goods_id;
             request = JSON.stringify(request)
-            that.$router.push({name:'Pay',query:{rent:request}})
+            if(that.orderType){
+                that.$router.push({name:'Pay',query:{rent:request}})
+            }else{
+                that.$router.push({name:'Pay',query:{relet:request}})
+            }
             sessionStorage.lease_time = request;
             
         }
     },
     mounted() {
         var that = this;
-        if (that.$route.query.goods_id != "" && that.$route.query.goods_id != undefined) {
+        if(that.$route.query.goods_id != "" && that.$route.query.goods_id != undefined) {
             that.getData();
+        }else if(that.$route.query.order_id != "" && that.$route.query.order_id != undefined){
+            that.goRelect(that.$route.query.order_id);
+            that.orderType = false;//不显示联系方式和押金
         } else {
             that.$router.go(-1);
         }
@@ -433,6 +484,7 @@ export default {
 .goods-info-box {
     display: flex;
     justify-content: space-between;
+    padding-right:.2rem;
 }
 .goods-info-left{
     width: 40%;

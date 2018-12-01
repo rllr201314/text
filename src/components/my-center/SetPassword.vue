@@ -14,7 +14,7 @@
                 </div>
                 <div class="register-strip">
                     <span class="left-text">证件号</span>
-                    <input type="number" placeholder="请输入您实名认证的证件号" v-model="id_num">
+                    <input type="text" placeholder="请输入您实名认证的证件号" v-model="id_num">
                 </div>
                 <div class="register-strip">
                     <span class="left-text">交易密码</span>
@@ -145,8 +145,11 @@ export default {
             var verify_code = that.verify_code;
             var password = that.password;
             var passReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/;
+            var cardReg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; 
             if(id_num == ""){
                 mui.alert("请输入证件号","提示","确定","","div");
+            }else if(cardReg.test(id_num) === false){
+                mui.alert("您输入的证件号不正确","提示","确定","","div");
             }else if (verify_code == "" || verify_code.length < 6) {
                 mui.alert("您输入的验证码不正确","提示","确定","","div");
             } else if (password == "") {
@@ -245,20 +248,7 @@ export default {
     border-radius: 0.15rem;
     vertical-align: middle;
 }
-/* 协议 */
-.protocol {
-    margin: 0.1rem 0 0.2rem;
-}
-.protocol img {
-    width: 0.28rem;
-    height: 0.28rem;
-    vertical-align: middle;
-}
-.protocol div {
-    display: inline-block;
-    font-size: 0.22rem;
-    vertical-align: middle;
-}
+
 /* 下一步 */
 .nextBtn {
     color: #ffffff;

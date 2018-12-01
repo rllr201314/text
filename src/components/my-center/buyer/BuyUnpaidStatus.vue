@@ -36,7 +36,7 @@
                     </div>
                     <div class="right-operate">
                         <span class="cancel" @click="cancalOrder(item.order_id)" v-if="false">取消订单</span>
-                        <span class="pay" @click="goPayFn(item.order_id,item.goods_amount,item.rent_method)">前往支付</span>
+                        <span class="pay" @click="goPayFn(item.order_id,item.goods_amount,item.rent_method,item.is_relet)">前往支付</span>
                     </div>
                 </div>
             </div>
@@ -120,7 +120,7 @@ export default {
             this.showUnpaidBox = true;
             this.showUnpaidShare = true;
         },
-        goPayFn(order_id,price,flag){
+        goPayFn(order_id,price,flag,status){
             if(flag == 1){
                 var all = {}
                 all.order_id = order_id;
@@ -129,8 +129,13 @@ export default {
                 sessionStorage.unpaid_o = order_info;
                 this.$router.push({name:'Pay',query:{order_info}})
             }else if(flag == 2){
-                sessionStorage.rent_unpaid_o = order_id;
-                this.$router.push({name:'Pay',query:{rent_unpaid_o:order_id}});
+                if(status == 1){//续租未支付
+                    sessionStorage.relet_unpaid_o = order_id;
+                    this.$router.push({name:'Pay',query:{relet_unpaid_o:order_id}});
+                }else if(status == 2){//租号未支付
+                    sessionStorage.rent_unpaid_o = order_id;
+                    this.$router.push({name:'Pay',query:{rent_unpaid_o:order_id}});
+                }
             }
         },
         initTime(time){

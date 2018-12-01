@@ -427,6 +427,16 @@ export default new Router({
       component:(resolve) => require(['@/components/cbg/CbgStage'],resolve)
     },
     {
+      path:'/cbg-order',
+      name:"CbgPlaceOrder",
+      component:(resolve) => require(['@/components/cbg/CbgPlaceOrder'],resolve)
+    },
+    {
+      path:'/cbg-state',
+      name:"CbgState",
+      component:(resolve) => require(['@/components/cbg/CbgState'],resolve)
+    },
+    {
       path: '*',
       component: (resolve) => require(['@/components/multi/NoData'], resolve)
     },

@@ -1,13 +1,11 @@
 <template>
     <div class="goods-details-wrap">
         <Header v-bind:showTitle="componentsData.showTitle"></Header>
-        <Swiper :imgList="componentsData.imgList"></Swiper>
+        <Swiper v-if="false" :imgList="imgList"></Swiper>
         <!-- 商品标题 -->
         <div class="goods-details-title">
             <div class="goods-datails-title-top">
                 <div class="title-boutique" v-if="detailData.is_recommend == 1">精</div>
-                <!-- <div class="title-goods-type" v-if="detailData.deal_type == 1">成品号</div>
-                <div class="title-goods-type" v-else-if="detailData.deal_type == 2">代练号</div> -->
                 <div class="title-ico deal-ico" v-if="detailData.rent_method == 1 ||detailData.rent_method == 3 ">成品号</div>
                 <div class="title-ico rent-ico" v-if="detailData.rent_method == 2 ||detailData.rent_method == 3">租号</div>
                 <div class="title-view-history">
@@ -28,8 +26,7 @@
                     <div>
                         <img src="../../static/img/rent/rent-ico.png" alt="">
                         <span>租金</span>
-                        <span class="red-color">￥</span><span class="goods_price" v-text="detailData.day_rent"></span>
-                        <span>/日</span>
+                        <span class="red-color">￥</span><span class="goods_price" v-text="detailData.day_rent"></span>/<span v-text="detailData.rent_unit"></span>
                     </div>
                     <div>
                         <img src="../../static/img/rent/pledge-ico.png" alt="">
@@ -37,9 +34,9 @@
                         <span>￥</span><span v-text="detailData.cash"></span>
                     </div>
                     <div>
-                        <img src="../../static/img/rent/pledge-ico.png" alt="">
+                        <img src="../../static/img/rent/short-ico.png" alt="">
                         <span>最短租期</span>
-                        <span v-text="detailData.least_lease"></span><span>天</span>
+                        <span v-text="detailData.least_lease"></span>
                     </div>
                 </div>
                 <div class="upTime">
@@ -98,90 +95,95 @@
                 </div>
             </div>
         </div>
-            <!-- 商品描述 -->
-            <div class="goods-details-info">
-                <div class="goods-info-content">
-                    <div class="goods-info-strip">
-                        <div class="text-left">基本信息</div>
-                        <div class="text-right" v-if="detailData.server_name != null" v-text="detailData.platform_name + '>' +　detailData.area_name+'>'+detailData.server_name"></div>
-                        <div class="text-right" v-else v-text="detailData.platform_name + '>' +　detailData.area_name"></div>
+        <!-- 商品描述 -->
+        <div class="goods-details-info">
+            <div class="goods-info-content">
+                <div class="goods-info-strip">
+                    <div class="text-left">基本信息</div>
+                    <div class="text-right" v-if="detailData.server_name != null" v-text="detailData.platform_name + '>' +　detailData.area_name+'>'+detailData.server_name"></div>
+                    <div class="text-right" v-else v-text="detailData.platform_name + '>' +　detailData.area_name"></div>
+                </div>
+                <div class="goods-info-strip">
+                    <div class="text-left">等级</div>
+                    <div class="text-right"><span v-text="detailData.role_level"></span>级</div>
+                </div>
+                <div class="goods-info-strip">
+                    <div class="text-left">门派</div>
+                    <div class="text-right" v-text="detailData.faction_name"></div>
+                </div>
+                <div class="goods-info-strip">
+                    <div class="text-left">商品描述</div>
+                    <div class="text-right" v-text="detailData.goods_description"></div>
+                </div>
+            </div>
+        </div>
+        <div class="goods-details-info">
+            <div class="pictrue-title">详细信息展示</div>
+            <div class="pictrue-con">
+                <img v-for="item in imgList" :src="item.img_url" alt="" preview>
+            </div>
+        </div>
+        <!-- 视频看号 -->
+        <div class="vedio-info">
+            <div class="vedio-title" v-if="detailData.video_url != null">
+                <div class="vedio-title-top">
+                    <span class="vertical"></span>
+                    <span>视频看号</span>
+                </div>
+                <div class="red-color">
+                    为保证您的资产安全受平台保护，请勿联系视频中的个人联系方式
+                </div>
+            </div>
+            <!-- iframe -->
+            <div class="vedio-content" v-if="detailData.video_url != null">视频</div>
+            <div class="vidio-bottom">
+                <div :class="safeOrflow.flow?'red-border':'black-border'" @click="cliflow('flow')">购买流程</div>
+                <div :class="safeOrflow.safe?'red-border':'black-border'" @click="cliflow('safe')">安全服务</div>
+            </div>
+            <div class="showBox">
+                <div class="showBox-left" v-show="safeOrflow.safe">
+                    <div class="detail-user-opera">
+                        <div class="cell user-contact">
+                            <img src="../../static/img/goods-details/contact_ico.png" alt="">
+                            <div>全程客服协助</div>
+                        </div>
+                        <div class="cell user-safety">
+                            <img src="../../static/img/goods-details/safety_ico.png" alt="">
+                            <div>付款安全保障</div>
+                        </div>
+                        <div class="cell user-Authentication">
+                            <img src="../../static/img/goods-details/user_bind_ico.png" alt="">
+                            <div>卖家身份认证</div>
+                        </div>
+                        <div class="cell user-settlement">
+                            <img src="../../static/img/goods-details/settlement_ico.png" alt="">
+                            <div>保险理赔</div>
+                        </div>
                     </div>
-                    <div class="goods-info-strip">
-                        <div class="text-left">等级</div>
-                        <div class="text-right"><span v-text="detailData.role_level"></span>级</div>
+                    <div class="go-verify" @click="goVerify">前往验证客服</div>
+                    <!-- <div class="more-info">查看更多详情</div> -->
+                </div>
+                <div class="showBox-right" v-show="safeOrflow.flow">
+                    <div class="flow-left">
+                        <img src="../../static/img/goods-details/flow.png" alt="">
                     </div>
-                    <div class="goods-info-strip">
-                        <div class="text-left">门派</div>
-                        <div class="text-right" v-text="detailData.faction_name"></div>
-                    </div>
-                    <div class="goods-info-strip">
-                        <div class="text-left">商品描述</div>
-                        <div class="text-right" v-text="detailData.goods_description"></div>
+                    <div class="flow-right">
+                        <div class="flow-title">下单支付</div>
+                        <div class="flow-content">支付成功，进入与 [联系发货客服] 聊天界面</div>
+                        <div class="flow-title">等待发货</div>
+                        <div class="flow-content">客服登录卖家账号，为买家发货。</div>
+                        <div class="flow-content">部分游戏需要买家同时在线才能发货，</div>
+                        <div class="flow-content">请保持在线并及时与发货客服沟通。</div>
+                        <div class="flow-content red-color">重要：道具交易不使用QQ沟通，谨防骗子！</div>
+                        <div class="flow-title">买家收货</div>
+                        <div class="flow-content">在游戏内取货</div>
+                        <div class="flow-title">确认收货</div>
+                        <div class="flow-content">买家确认收货</div>
+                        <div class="flow-title">交易成功</div>
                     </div>
                 </div>
             </div>
-            <!-- 视频看号 -->
-            <div class="vedio-info">
-                <div class="vedio-title" v-if="detailData.video_url != null">
-                    <div class="vedio-title-top">
-                        <span class="vertical"></span>
-                        <span>视频看号</span>
-                    </div>
-                    <div class="red-color">
-                        为保证您的资产安全受平台保护，请勿联系视频中的个人联系方式
-                    </div>
-                </div>
-                <!-- iframe -->
-                <div class="vedio-content" v-if="detailData.video_url != null">视频</div>
-
-                <div class="vidio-bottom">
-                    <div :class="safeOrflow.flow?'red-border':'black-border'" @click="cliflow('flow')">购买流程</div>
-                    <div :class="safeOrflow.safe?'red-border':'black-border'" @click="cliflow('safe')">安全服务</div>
-                </div>
-                <div class="showBox">
-                    <div class="showBox-left" v-show="safeOrflow.safe">
-                        <div class="detail-user-opera">
-                            <div class="cell user-contact">
-                                <img src="../../static/img/goods-details/contact_ico.png" alt="">
-                                <div>全程客服协助</div>
-                            </div>
-                            <div class="cell user-safety">
-                                <img src="../../static/img/goods-details/safety_ico.png" alt="">
-                                <div>付款安全保障</div>
-                            </div>
-                            <div class="cell user-Authentication">
-                                <img src="../../static/img/goods-details/user_bind_ico.png" alt="">
-                                <div>卖家身份认证</div>
-                            </div>
-                            <div class="cell user-settlement">
-                                <img src="../../static/img/goods-details/settlement_ico.png" alt="">
-                                <div>保险理赔</div>
-                            </div>
-                        </div>
-                        <div class="go-verify" @click="goVerify">前往验证客服</div>
-                        <!-- <div class="more-info">查看更多详情</div> -->
-                    </div>
-                    <div class="showBox-right" v-show="safeOrflow.flow">
-                        <div class="flow-left">
-                            <img src="../../static/img/goods-details/flow.png" alt="">
-                        </div>
-                        <div class="flow-right">
-                            <div class="flow-title">下单支付</div>
-                            <div class="flow-content">支付成功，进入与 [联系发货客服] 聊天界面</div>
-                            <div class="flow-title">等待发货</div>
-                            <div class="flow-content">客服登录卖家账号，为买家发货。</div>
-                            <div class="flow-content">部分游戏需要买家同时在线才能发货，</div>
-                            <div class="flow-content">请保持在线并及时与发货客服沟通。</div>
-                            <div class="flow-content red-color">重要：道具交易不使用QQ沟通，谨防骗子！</div>
-                            <div class="flow-title">买家收货</div>
-                            <div class="flow-content">在游戏内取货</div>
-                            <div class="flow-title">确认收货</div>
-                            <div class="flow-content">买家确认收货</div>
-                            <div class="flow-title">交易成功</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        </div>
         <!-- 猜你喜欢 -->
         <div class="guess" v-if="recommendData != ''">
             <img src="../../static/img/goods-details/left_solid.png" alt="">
@@ -214,8 +216,7 @@
                             <div>
                                 <img src="../../static/img/rent/rent-ico.png" alt="">
                                 <span>租金</span>
-                                <span class="red-color">￥</span><span class="goods_price" v-text="item.day_rent"></span>
-                                <span>/日</span>
+                                <span class="red-color">￥</span><span class="goods_price" v-text="item.day_rent"></span>/<span v-text="item.rent_unit"></span>
                             </div>
                             <div>
                                 <img src="../../static/img/rent/pledge-ico.png" alt="">
@@ -223,16 +224,14 @@
                                 <span>￥</span><span v-text="item.cash"></span>
                             </div>
                             <div>
-                                <img src="../../static/img/rent/pledge-ico.png" alt="">
+                                <img src="../../static/img/rent/short-ico.png" alt="">
                                 <span>最短租期</span>
-                                <span v-text="item.least_lease"></span><span>天</span>
+                                <span v-text="item.least_lease"></span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="hint-bottom" v-if="item.rent_method == 2 || item.rent_method == 3">
-                    账号很便宜，约定帮完每日任务和xx活动。
-                </div>
+                <div class="hint-bottom" v-if="item.rent_method == 2 || item.rent_method == 3" v-text="item.goods_description"></div>
             </div>
             <div class="more-info" v-if="false">查看更多</div>
         </div>
@@ -337,7 +336,8 @@ export default {
                 userBind: true,
                 phoneBind: true,
                 emailBind: true
-            }
+            },
+            imgList:[],
         };
     },
     components: {
@@ -597,12 +597,12 @@ export default {
                                 that.detailData = data.goods_info;
                                 that.recommendData = data.recommendInfo;
                                 if(that.detailData.goods_images != ""){
-                                    that.componentsData.imgList = that.detailData.goods_images;
+                                    that.imgList = that.detailData.goods_images;
                                 }else{
-                                    var img = [];
-                                    img.push({img_url:'./static/img/goods-details/detail_img.png'})
-                                    that.componentsData.imgList = img;
+                                    that.imgList = [];
+                                    that.imgList.push({img_url:'./static/img/goods-details/detail_img.png'});
                                 }
+                                that.$previewRefresh();
                                 var bind = data.account_bind;
                                 for (var i in data.goods_info.account_bind) {
                                     if (data.goods_info.account_bind[i] == 1) {
@@ -655,7 +655,8 @@ export default {
 .goods-details-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top: 0.88rem;
+    padding: 0.88rem 0 1rem;
+    
 }
 
 /* 商品标题 */
@@ -1019,13 +1020,18 @@ export default {
 }
 
 .goods-details-bottom {
-    margin-top: 0.2rem;
+    max-width: 640px;
+    margin: 0.2rem auto 0;
     background: #ffffff;
     display: flex;
     justify-content: flex-start;
     -webkit-box-shadow: 0 -2px 8px #d6d6d6;
     -moz-box-shadow: 0 -2px 8px #d6d6d6;
     box-shadow: 0 -2px 8px #d6d6d6;
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
 }
 .goods-details-bottom-left,
 .goods-details-bottom-right {
@@ -1309,7 +1315,31 @@ input[type="number"] {
     padding: 0;
 }
 
+.goods_price {
+    color: #fa5856;
+    font-size: 0.36rem;
+}
 
+
+.pictrue-title{
+    color:#FE7649;
+    font-size:.26rem;
+    font-weight: 600;
+    line-height:.7rem;
+    background:url(../../static/img/board_mark_big.png) no-repeat;
+    background-size:2.2rem .2rem;
+    background-position: center;
+    text-align: center;
+}
+.pictrue-con{
+    font-size:0;
+    line-height:0;
+}
+.pictrue-con img{
+    width:100%;
+    height:auto;
+    margin-bottom:.1rem;
+}
 </style>
 
 

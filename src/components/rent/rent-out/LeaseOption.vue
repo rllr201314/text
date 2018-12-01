@@ -15,13 +15,13 @@
                     <img src="../../../../static/img/order/next.png" alt="">
                 </div>
             </div>
-            <div class="opt-cell">
+            <!-- <div class="opt-cell">
                 <span class="left-text">商品类型</span>
                 <div class="right-opt" @click="showPop('merchand')">
                     <span v-text="sellOptData.merchand"></span>
                     <img src="../../../../static/img/order/next.png" alt="">
                 </div>
-            </div>
+            </div> -->
             <div class="opt-cell">
                 <span class="left-text">客户端</span>
                 <div class="right-opt" @click="showPop('mobile')">
@@ -271,6 +271,7 @@ export default {
                     merchand[i].ischeck = true;
                     that.upData.rent_id = merchand[i].value;
                     that.sellOptData.rent_way = merchand[i].name;
+                    that.showMenu_mobile = true;
                     continue;
                 }
                 merchand[i].ischeck = false;
@@ -303,6 +304,7 @@ export default {
                     mobile[i].ischeck = true;
                     that.upData.operation_id = mobile[i].operation_id;
                     that.sellOptData.mobile = mobile[i].platform_name;
+                    that.showMenu_area = true;
                     continue;
                 }
                 mobile[i].ischeck = false;
@@ -434,10 +436,12 @@ export default {
             }else if(upData.rent_id == ''){
                 mui.alert('请选择出租方式','提示','确认','','div');
                 return false;
-            }else if(upData.deal_type == ''){
-                mui.alert('请选择商品类型','提示','确认','','div');
-                return false;
-            }else if(upData.operation_id == ''){
+            }
+            // else if(upData.deal_type == ''){
+            //     mui.alert('请选择商品类型','提示','确认','','div');
+            //     return false;
+            // }
+            else if(upData.operation_id == ''){
                 mui.alert('请选择操作系统','提示','确认','','div');
                 return false;
             }else if(upData.area_id == '' && that.showOpteration){
@@ -493,25 +497,6 @@ export default {
                             that.optionData.rent_method = res.data.data.rent_method;
                             that.oldData = JSON.parse(JSON.stringify(that.optionData));
                         }
-                        // else if(res.data.code == 401){
-                        //     mui.confirm("请先登陆","提示",["取消", "确认"],
-                        //         function(e) {
-                        //             if (e.index == 1) {
-                        //                 that.$router.push({
-                        //                     name: "AccountLogin",
-                        //                     params: {
-                        //                         redirect:that.$router.currentRoute.name
-                        //                     }
-                        //                 });
-                        //             } else {
-                        //                 that.$router.go(-1);
-                        //             }
-                        //         },"div");
-                        // }else{
-                        //     mui.alert(res.data.msg,'提示','确定',(e) => {
-                        //         that.$router.go(-1);
-                        //     },'div');
-                        // }
                     }
                 })
                 .catch(function(err) {

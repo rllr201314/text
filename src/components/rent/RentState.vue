@@ -5,6 +5,7 @@
         <div class="take-content">
              <!-- 商品详情 -->
             <div class="take-cell">
+                <img class="badge" src="../../../static/img/badge/rent-badge.png" alt="">
                 <div class="goods-info-top">
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
                     <span>订单详情</span>
@@ -39,8 +40,8 @@
                             </div>
                             <div class="goods-info-strip">
                                 <div class="text-left">商品类型</div>
-                                <div class="text-right" v-if="goodsInfo.deal_type == 1">成品号</div>
-                                <div class="text-right" v-else>代练号</div>
+                                <div class="text-right" v-if="goodsInfo.rent_method == 1">成品号</div>
+                                <div class="text-right" v-if="goodsInfo.rent_method == 2">租号</div>
                             </div>
                         </div>
                     </div>
@@ -51,61 +52,61 @@
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">订单号</div>
                     <div class="goodsInfo-right">
-                        <!-- <span v-text="goodsInfo.order_sn"></span> --><span>1231231313</span>
+                        <span v-text="goodsInfo.order_sn"></span>
                         <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="goodsInfo.order_sn" @click="copyFn()" id="copy">
                     </div>
                 </div>
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">租期</div>
-                    <div class="goodsInfo-right">7天</div>
+                    <div class="goodsInfo-right" v-text="goodsInfo.lease_time"></div>
                 </div>
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">押金</div>
-                    <div class="goodsInfo-right">￥2000</div>
+                    <div class="goodsInfo-right">￥<span v-text="goodsInfo.cash"></span></div>
                 </div>
                 <div class="goodsInfo">
-                    <div class="goodsInfo-left">租金<span class="gray-color">(￥10/日)</span></div>
-                    <div class="goodsInfo-right">123</div>
+                    <div class="goodsInfo-left">租金 <span class="gray-color">(￥<span v-text="goodsInfo.day_rent"></span>)</span></div>
+                    <div class="goodsInfo-right">￥<span v-text="goodsInfo.rent_fee"></span></div>
                 </div>
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">实际支付</div>
                     <div class="goodsInfo-right">
-                        <span class="red-color" v-text="goodsInfo.order_amount"></span>
+                        <span class="red-color">￥<span v-text="goodsInfo.order_amount"></span></span>
                         <span class="green-color">已支付</span>
                     </div>
                 </div>
             </div>
             <!-- 状态 -->
             <div class="take-status-img-cell">
-                <img v-for="item in takeData.takeTypeImg" v-show="item.key == -1" :src="item.imgsrc" alt="">
+                <img v-for="item in takeData.takeTypeImg" v-show="item.key == takeType" :src="item.imgsrc" alt="">
             </div>
             <!-- 收货状态 -->
             <div class="take-cell">
                 <div class="take-status-title">
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
                     <span>收货状态</span>
-                    <span class="red-color" v-if="takeType == -1">（如果您已检验账号没有问题，请确认交易）</span>
-                    <span class="gray-border" v-if="goodsInfo.is_end == 1">已收货</span>
+                    <span class="red-color" v-if="takeType == 2">（如果您已检验账号没有问题，请确认租号）</span>
+                    <span class="gray-border" v-if="takeType == 4">已收号</span>
                     <span class="award" @click="goArbitration" v-if=" goodsInfo.is_arbitrate == 1">申请仲裁</span>
                     <span class="award" @click="cancelArb" v-if=" goodsInfo.is_arbitrate == 2">取消仲裁</span>
                 </div>
                 <div class="take-cell-content">
                     <!-- 验货跳过 -->
-                    <div class="cargo" v-if="takeType == -2" @click="verifyFn">申请验号</div>
-                    <div class="cargo" v-if="takeType == -1" @click="agree">确认交易</div>
-                    <div class="intie" v-if="takeType == 1||　takeType == 2">
+                    <div class="cargo" v-if="takeType == 1" @click="verifyFn">申请验号</div>
+                    <div class="cargo" v-if="takeType == 2" @click="agree">确认租号</div>
+                    <div class="intie" v-if="takeType == 3">
                         <img src="../../../static/img/order/speed.png" alt="">
-                        <span>客服正在火速为您办理租赁手续，请您耐心等待</span>
+                        <span>客服正在火速为您办理租赁手续，请您</span><span class="orange-color" @click="goSign">前往签约</span>
                     </div>
-                    <div class="confirm-receipt">
+                    <div class="confirm-receipt" v-if="takeType == 4 || takeType == 5 || takeType == 6 || takeType == 7">
                         <div class="rent-info">
                             <div class="rent-info-left">
-                                <div class="rent-time">租赁起始时间：2018-08-10 9:00</div>
-                                <div class="rent-time">租赁截止时间：2018-08-10 9:00</div>
+                                <div class="rent-time">租赁起始时间：<span v-text="goodsInfo.rent_begin_time"></span></div>
+                                <div class="rent-time">租赁截止时间：<span v-text="goodsInfo.rent_end_time"></span></div>
                             </div>
-                            <div class="rent-info-right" @click="reletFn">续租</div>
+                            <div class="rent-info-right" v-if="takeType == 4 || takeType == 7" @click="reletFn">续租</div>
                         </div>
-                        <div class="account">
+                        <div class="account" v-if="takeType == 4 || takeType == 7">
                             <div class="accountText">
                                 <span>游戏账号:</span>
                                 <input v-model="goodsInfo.account" disabled="disabled">
@@ -116,7 +117,9 @@
                                 <img :src="passType?'../../../static/img/order/noSee.png':'../../../static/img/order/see.png'" alt="" @click="seePasswordFn">
                             </div>
                         </div>
-                        <div class="cargo" v-if="goodsInfo.is_end == 2" @click="endTrade">确认收货</div>
+                        <div class="account text-center" v-if="takeType == 5 || takeType == 6">
+                            租号已完成
+                        </div>
                     </div>
 
                 </div>
@@ -153,39 +156,41 @@ export default {
             proData: {
                 isShow: false,
                 con: "",
-                btn: "确认已读",
+                btn: "同意并前往支付",
                 val: ""
             },
             passType:false,
             goodsInfo:{},
             // 已收货状态 仲裁显示 **
-            takeType: null, //1-申请验货 2-确认交易 3-换绑 4-确认收货 5-申请仲裁 || -1 确认交易 1&&2换绑  3确认收货 5-申请仲裁
+            takeType: 3, //1-申请验货 2-确认交易 3-签约 4-发货
             takeData: {
                 takeTypeImg: [
                     {
-                        key: -2,
+                        key: 1,
                         imgsrc: "./static/img/rent/buy/one.png"
                     },
                     {
-                        key: -1,
+                        key: 2,
                         imgsrc: "./static/img/rent/buy/two.png"
                     },
                     {
-                        key: 1,//1&&2换绑
+                        key: 3,//1&&2换绑
                         imgsrc: "./static/img/rent/buy/three.png"
                     },
                     {
-                        key: 2,//1&&2换绑
-                        imgsrc: "./static/img/rent/buy/three.png"
-                    },
-                    {
-                        key: 3,
+                        key:4,
                         imgsrc: "./static/img/rent/buy/four.png"
                     },
                     {
-                        key: 5,//没改
+                        key:5,
                         imgsrc: "./static/img/rent/buy/four.png"
-                    }
+                    },{
+                        key:6,
+                        imgsrc: "./static/img/rent/buy/four.png"
+                    },{
+                        key:7,
+                        imgsrc: "./static/img/rent/buy/four.png"
+                    },
                 ],
                 gamePrint: 8,
                 account: "",
@@ -197,11 +202,22 @@ export default {
         // 续租
         reletFn(){
             var that = this;
-            that.proData.isShow = true;
-            that.proData.val = true;
+            that.$axios.post(process.env.API_HOST+'contract_relet').then((res)=>{
+                if (res.status == 200) {
+                    if (res.data.code == 200) {
+                        that.proData.isShow = true;
+                        that.proData.con = res.data.data;
+                        that.proData.val = true;
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
         },
         isProFn(data){
             console.log(data);
+            var that = this;
+            that.$router.push({name:'RentPlaceOrder',query:{order_id:that.goodsInfo.order_id}})
             // 跳下单--------------------------------------------
         },
         copyFn() {
@@ -223,7 +239,7 @@ export default {
         // 申请验货
         verifyFn(){
             var that = this;
-            that.$axios.post(process.env.API_HOST+'verify_goods',{
+            that.$axios.post(process.env.API_HOST+'verify_account',{
                 order_id:that.goodsInfo.order_id
             }).then((res)=>{
                 // console.log(res);
@@ -236,34 +252,17 @@ export default {
                 console.log(err);
             });
         },
-        // 确认交易
+        // 确认租号
         agree(){
             var that = this;
-            that.$axios.post(process.env.API_HOST+"agree_trade",{
+            that.$axios.post(process.env.API_HOST+"buyer_confirm_rent",{
                 order_id:that.goodsInfo.order_id
             }).then((res)=>{
-                // console.log(res);
+                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         mui.toast(res.data.msg, { duration: "short", type: "div" });
-                        that.takeType = res.data.data.bind_status;
-                    }
-                }
-            }).catch((err)=>{
-                console.log(err)
-            })
-        },
-        // 确认收货
-        endTrade(){
-            var that = this;
-            that.$axios.post(process.env.API_HOST+"end_trade",{
-                order_id:that.goodsInfo.order_id
-            }).then((res)=>{
-                // console.log(res);
-                if(res.status == 200){
-                    if(res.data.code == 200){
-                        mui.toast(res.data.msg, { duration: "short", type: "div" });
-                        that.getData(that.$route.query.order);
+                        that.takeType = res.data.data.rent_status;
                     }
                 }
             }).catch((err)=>{
@@ -290,14 +289,13 @@ export default {
         },
         getData(order_id,flag){
             var that = this;
-            that.$axios.post(process.env.API_HOST+"buyer_trade_status",{
+            that.$axios.post(process.env.API_HOST+"buyer_rent_status",{
                 order_id:order_id
             }).then((res)=>{
-                // console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.goodsInfo = res.data.data;
-                        that.takeType = that.goodsInfo.bind_status;
+                        that.takeType = that.goodsInfo.rent_status;
                         if(flag){
                           that.$common.linkServer();
                         }
@@ -306,6 +304,10 @@ export default {
             }).catch((err)=>{
                 console.log(err)
             })
+        },
+        // 前往签约
+        goSign(){
+            this.$router.push({name:'Pact'})
         }
     },
     mounted(){
@@ -321,7 +323,7 @@ export default {
     padding-top: 0.88rem;
 }
 .take-content {
-    padding: 0.2rem 0.2rem 0;
+    padding: 0.2rem 0.2rem;
 }
 .take-cell {
     background: #ffffff;
@@ -332,6 +334,14 @@ export default {
     -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     margin-bottom: 0.2rem;
+    position: relative;
+}
+.badge{
+    width:1.03rem;
+    height:1rem;
+    position: absolute;
+    top:0;
+    right: 0;
 }
 .take-cell .goodsInfo:nth-last-child(1) {
     border: none;
@@ -428,6 +438,10 @@ export default {
 .intie span {
     vertical-align: middle;
 }
+.orange-color{
+    color:#fe7649;
+    text-decoration: underline;
+}
 .confirm-title {
     margin-bottom: 0.2rem;
 }
@@ -439,11 +453,11 @@ export default {
 }
 .account {
     background: #f6f6f6;
-    /* -webkit-border-radius: .1rem;
-        -moz-border-radius: .1rem;
-        border-radius: .1rem; */
     padding: 0.2rem 0.15rem;
     margin: 0.2rem 0;
+}
+.text-center{
+    text-align:center;
 }
 .accountText {
     line-height: 0.5rem;
@@ -483,7 +497,9 @@ export default {
 .take-status-title .award {
     float: right;
     font-size: 0.24rem;
-    color: #999999;
+    color: #56c9ff;
+    text-decoration: underline;
+    
 }
 .copy-img {
     width: 0.2rem;

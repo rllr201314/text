@@ -19,7 +19,7 @@
                 </div>
                 <div class="safe-strip">
                     <span class="strip-left">身份证号</span>
-                    <input type="number" placeholder="请填写您的身份证号" v-model="id_num">
+                    <input type="text" placeholder="请填写您的身份证号" v-model="id_num">
                 </div>
                 <div class="safe-strip">
                     <span class="strip-left">银行卡</span>
@@ -101,6 +101,17 @@ export default {
         nextBtn() {
             var that = this;
             that.showLoading = true;
+            if(that.username == ""){
+                mui.alert("请您输入姓名","提示","确认","","div");
+                that.showLoading = false;
+                return false;
+            }
+            var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+            if(reg.test(that.id_num) === false){
+                mui.alert("您输入的证件号不正确","提示","确认","","div");
+                that.showLoading = false;
+                return false;
+            }
             var request = {};
             request.name = that.username;
             request.id_no = that.id_num;
@@ -115,6 +126,7 @@ export default {
                             that.face(res.data.data.notify_id);//人脸识别
                         } else {
                             that.showLoading = false;
+                            mui.alert(res.data.msg, "提示", "确认",null, "div");
                         }
                     }
                 })
