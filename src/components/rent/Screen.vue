@@ -180,7 +180,7 @@ export default {
             screenTop: [
                 {
                     flag: "account",
-                    tit_top_text: "成品号",
+                    tit_top_text: "租号",
                     tit_top_src: "./static/img/goodscreen/downempty.png",
                     ischeck: false
                 },
@@ -901,7 +901,7 @@ export default {
                     category_id: category_id
                 })
                 .then(function(res) {
-                    console.log(res);
+                    // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var deal_type = res.data.data.deal_type;
@@ -909,6 +909,7 @@ export default {
                                 deal_type[i].ischeck = false;
                                 if (deal_type[i].name == "成品号") {
                                     deal_type[i].ischeck = true;
+                                    deal_type[i].name = "租号";
                                     that.request.deal_type = deal_type[i].value;
                                     // that.$store.commit('changeRequest',{name:'deal_type',value:deal_type[i].value});
                                 }

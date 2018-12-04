@@ -245,11 +245,13 @@ export default {
             var user_type = that.$route.path;
             if (user_type == "/buy") {
                 that.showTitle.title = "我要买";
+                localStorage.detail_type = 1;//详情显示购买流程判断
             } else if (user_type == "/sell") {
                 that.showTitle.title = "我要卖";
             } else if (user_type == "/rent") {
                 that.showTitle.title = "我要租号";
                 that.trade_type = 1;
+                localStorage.detail_type = 2;//详情显示购买流程判断
             } else if (user_type == "/rent-out") {
                 that.showTitle.title = "出租账号";
                 that.trade_type = 1;

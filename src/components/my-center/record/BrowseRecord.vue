@@ -438,12 +438,14 @@ export default {
     line-height: .7rem;
     background:#F6F6F6;
     padding-left:.27rem;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
 }
 .hide-border{
     border:0;
 }
 .show-border{
     border-bottom: 1px solid #e5e5e5;
-
 }
 </style>

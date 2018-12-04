@@ -420,22 +420,22 @@ export default new Router({
       name:'RentState',
       component: (resolve) => require(['@/components/rent/RentState'],resolve)
     },
-    //藏宝阁
-    {
-      path:'/cbg-stage',
-      name:"CbgStage",
-      component:(resolve) => require(['@/components/cbg/CbgStage'],resolve)
-    },
-    {
-      path:'/cbg-order',
-      name:"CbgPlaceOrder",
-      component:(resolve) => require(['@/components/cbg/CbgPlaceOrder'],resolve)
-    },
-    {
-      path:'/cbg-state',
-      name:"CbgState",
-      component:(resolve) => require(['@/components/cbg/CbgState'],resolve)
-    },
+    // //藏宝阁
+    // {
+    //   path:'/cbg-stage',
+    //   name:"CbgStage",
+    //   component:(resolve) => require(['@/components/cbg/CbgStage'],resolve)
+    // },
+    // {
+    //   path:'/cbg-order',
+    //   name:"CbgPlaceOrder",
+    //   component:(resolve) => require(['@/components/cbg/CbgPlaceOrder'],resolve)
+    // },
+    // {
+    //   path:'/cbg-state',
+    //   name:"CbgState",
+    //   component:(resolve) => require(['@/components/cbg/CbgState'],resolve)
+    // },
     {
       path: '*',
       component: (resolve) => require(['@/components/multi/NoData'], resolve)

@@ -181,14 +181,19 @@ export default {
 .receiptAll-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top: 0.88rem;
 }
 .seleTitle {
+    max-width:640px;
+    margin:0 auto;
     display: flex;
     text-align: center;
     line-height: 0.8rem;
     font-size: 0.26rem;
-    background: #ffffff;
+    background: #ffffff;position: fixed;
+    left: 0;
+    right: 0;
+    top: .88rem;
+    z-index:10;
 }
 .seleTitle div {
     width: 100%;
@@ -196,10 +201,6 @@ export default {
 .red-title {
     color: #ff7e4a;
     border-bottom: 0.05rem solid #ff7e4a;
-}
-
-.receiptAll-content {
-    padding: 0.2rem;
 }
 
 .receiptAll-strip {
@@ -235,12 +236,20 @@ export default {
     color: #999999;
 }
 
+.receiptAll-content {
+    /* padding: 0.2rem; */
+    max-width:640px;
+    height:100vh;
+    margin:0 auto;
+    position: relative;
+}
+
 .list-wrap {
     padding: 0 0.2rem;
     top: 2rem;
 }
 .list-box{
-    background: #f6f6f6
+    background: #f6f8fe;
 }
 .list {
     background: #ffffff;

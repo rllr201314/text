@@ -8,7 +8,7 @@ body{
     line-height: .4rem; 
 }
 html{
-    background:#f6f8fe;
+    /* background:#f6f8fe; */
 }
 #app{
     max-width: 640px;

@@ -439,6 +439,9 @@ export default {
     color: #999999;
     padding-left:.27rem;
     border-bottom:1px solid #DCDCDC;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
 }
 
 .bargain {

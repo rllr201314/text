@@ -111,7 +111,7 @@
 
         <div class="pop-view" v-show="showTime">
             <div class="pop-tit">您希望租号的时长（<span v-text="goodsInfo.rent_unit"></span>）</div>
-            <input type="number" placeholder="请输入您的租用时长" ref="inp_time" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')">
+            <input type="number" placeholder="请输入您的租用时长" ref="inp_time" oninput="if(value.length>3)value=value.slice(0,3)" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')">
             <div class="btn-wrap">
                 <div class="okbtn" @click="affirmFn">确认</div>
                 <div class="cancel" @click="cancelFn">取消</div>

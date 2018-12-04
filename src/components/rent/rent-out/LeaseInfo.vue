@@ -182,8 +182,8 @@
                     </div>
                     <div class="sell-strip">
                         <span class="sell-lefttext">最短租期</span>
-                        <input class="rent-input" type="number" v-model="requestData.least_lease" oninput="if(value.length>7)value=value.slice(0,7)">
-                        <span class="black-color"><span v-text="seleData.rentType"></span></span><span class="red-color">(建议最短周期7天)</span>
+                        <input class="rent-input" type="number" v-model="requestData.least_lease" oninput="if(value.length>7)value=value.slice(0,7)" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')">
+                        <span class="black-color"><span v-text="seleData.rentType"></span></span><span class="red-color" v-show="seleData.rentType == '天'">(建议最短周期7天)</span>
                     </div>
                     <div class="sell-strip">
                         <span class="sell-lefttext">租金</span>
@@ -418,7 +418,7 @@ export default {
                 is_compact: "",
                 sell_type: "",
                 goods_price: "",
-                least_lease:'',//租期
+                least_lease:7,//租期
                 day_rent:'',//租金
                 cash:'',//押金
                 rent_type:'',//出租方式

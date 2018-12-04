@@ -49,6 +49,7 @@ export default {
 }
 .pop-view-box {
     padding: 0.2rem .4rem;
+    min-height: 50vh;
     max-height: 68vh;
     overflow-y: scroll;
 

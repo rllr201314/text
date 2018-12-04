@@ -164,22 +164,55 @@
                     <!-- <div class="more-info">查看更多详情</div> -->
                 </div>
                 <div class="showBox-right" v-show="safeOrflow.flow">
-                    <div class="flow-left">
-                        <img src="../../static/img/goods-details/flow.png" alt="">
+                    <div v-if="flow_type == 1">
+                        <div class="flow-left">
+                            <img src="../../static/img/goods-details/flow.png" alt="">
+                        </div>
+                        <div class="flow-right">
+                            <div class="flow-title">下单支付</div>
+                            <div class="flow-content">支付成功，进入与 [联系发货客服] 聊天界面</div>
+                            <div class="flow-title">等待发货</div>
+                            <div class="flow-content">客服登录卖家账号，为买家发货。</div>
+                            <div class="flow-content">部分游戏需要买家同时在线才能发货，</div>
+                            <div class="flow-content">请保持在线并及时与发货客服沟通。</div>
+                            <div class="flow-content red-color">重要：道具交易不使用QQ沟通，谨防骗子！</div>
+                            <div class="flow-title">买家收货</div>
+                            <div class="flow-content">在游戏内取货</div>
+                            <div class="flow-title">确认收货</div>
+                            <div class="flow-content">买家确认收货</div>
+                            <div class="flow-title">交易成功</div>
+                        </div>
                     </div>
-                    <div class="flow-right">
-                        <div class="flow-title">下单支付</div>
-                        <div class="flow-content">支付成功，进入与 [联系发货客服] 聊天界面</div>
-                        <div class="flow-title">等待发货</div>
-                        <div class="flow-content">客服登录卖家账号，为买家发货。</div>
-                        <div class="flow-content">部分游戏需要买家同时在线才能发货，</div>
-                        <div class="flow-content">请保持在线并及时与发货客服沟通。</div>
-                        <div class="flow-content red-color">重要：道具交易不使用QQ沟通，谨防骗子！</div>
-                        <div class="flow-title">买家收货</div>
-                        <div class="flow-content">在游戏内取货</div>
-                        <div class="flow-title">确认收货</div>
-                        <div class="flow-content">买家确认收货</div>
-                        <div class="flow-title">交易成功</div>
+                    <div class="flow-con" v-if="flow_type == 2">
+                        <div class="flow-vertical"></div>
+                        <div class="flow-strip">
+                            <div class="left-flow">1</div>
+                            <div class="right-flow">
+                                <div class="r-flow-tit">下单支付</div>
+                                <div class="r-flow-text">选择您要租用的账号，下单支付租金。</div>
+                            </div>
+                        </div>
+                        <div class="flow-strip">
+                            <div class="left-flow">2</div>
+                            <div class="right-flow">
+                                <div class="r-flow-tit">确认验货</div>
+                                <div class="r-flow-text">核验账号信息，确认租号</div>
+                            </div>
+                        </div>
+                        <div class="flow-strip">
+                            <div class="left-flow">3</div>
+                            <div class="right-flow">
+                                <div class="r-flow-tit">正式签约</div>
+                                <div class="r-flow-text">与平台进行正式签约，客服将提供全部账户使用信息</div>
+                            </div>
+                        </div>
+                        <div class="flow-strip">
+                            <div class="left-flow">4</div>
+                            <div class="right-flow">
+                                <div class="r-flow-tit">租号成功</div>
+                                <div class="r-flow-text">客服会将账号发送给您，并开始计时。如有任何问题欢迎咨询客服！</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -338,6 +371,8 @@ export default {
                 emailBind: true
             },
             imgList:[],
+
+            flow_type:null,
         };
     },
     components: {
@@ -645,6 +680,14 @@ export default {
             that.getData();
             that.nativeShare = new NativeShare();
             that.url = window.location.href;
+            var showFlow = localStorage.getItem('detail_type');
+            if(showFlow == 2){
+                // 租号
+                that.flow_type = 2;
+            }else{
+                // 买号
+                that.flow_type = 1;
+            }
         } else {
             that.$router.go(-1);
         }
@@ -765,6 +808,9 @@ export default {
     color: #999999;
     padding-left: 0.27rem;
     border-bottom:1px solid #DCDCDC;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
 }
 
 .upTime {
@@ -1032,6 +1078,7 @@ export default {
     left:0;
     right:0;
     bottom:0;
+    z-index:4;
 }
 .goods-details-bottom-left,
 .goods-details-bottom-right {
@@ -1339,6 +1386,58 @@ input[type="number"] {
     width:100%;
     height:auto;
     margin-bottom:.1rem;
+}
+
+
+
+.flow-con {
+    position: relative;
+}
+.flow-vertical {
+    width: 1px;
+    border-left: 1px dashed #fe7649;
+    position: absolute;
+    top: 0.1rem;
+    left: 0.15rem;
+    bottom: 1.1rem;
+    z-index: 1;
+}
+.left-flow,
+.right-flow {
+    display: inline-block;
+    vertical-align: top;
+}
+.left-flow {
+    width: .3rem;
+    height:.3rem;
+    border-radius:.15rem;
+    text-align: center;
+    font-size: 0.22rem;
+    color: #ffffff;
+    background: #fe7649;
+    line-height: 0.3rem;
+    background: -webkit-linear-gradient(#fe7649, #ffcd7f);
+    background: -o-linear-gradient(#fe7649, #ffcd7f);
+    background: -moz-linear-gradient(#fe7649, #ffcd7f);
+    background: linear-gradient(to right, #fe7649, #ffcd7f);
+    position: relative;
+    top:-.05rem;
+    z-index: 2;
+}
+.right-flow {
+    width: 6rem;
+    font-size: 0.26rem;
+    margin-left: 0.15rem;
+}
+.r-flow-tit {
+    color: #333333;
+    line-height: 0.3rem;
+    margin-bottom: 0.02rem;
+}
+.r-flow-text {
+    color: #999999;
+    line-height: 0.43rem;
+    margin-bottom: 0.05rem;
 }
 </style>
 

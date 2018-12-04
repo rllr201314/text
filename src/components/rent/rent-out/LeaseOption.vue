@@ -341,7 +341,10 @@ export default {
                 for (var i in areaAll) {
                     if (ind == areaAll[i].server_id) {
                         areaAll[i].ischeck = true;
-                        that.upData.server_id =  areaAll[i].server_id
+                        that.upData.server_id =  areaAll[i].server_id;
+                        if(that.sellOptData.area == "未选择"){
+                            that.sellOptData.area = that.optionData.operation_info[0].area_name;//存起来好拼接
+                        }
                         that.sellOptData.server = that.sellOptData.area + ">" + areaAll[i].server_name;
                         continue;
                     }

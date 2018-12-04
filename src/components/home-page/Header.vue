@@ -161,7 +161,7 @@ export default {
             } else if (flag == "message") {
                 that.$router.push({ name: "MessageAll_Server" });
             } else if (flag == "take") {
-                that.$router.push({ name: "BuyWaitReceiveStatus" });
+                that.$router.push({ name: "BuyOrderAll" });
             }
         },
         getMsg() {

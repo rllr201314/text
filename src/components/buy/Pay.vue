@@ -88,7 +88,7 @@
                     </div>
                     <div class="right-pay-info">
                         <div class="isbalance" >
-                            <div class="balance-left" @click="Balace('true')">
+                            <div class="balance-left" @click="Balace('true')" v-if="false">
                                 <img :src="deposit?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
                                 <span>使用押金抵扣</span>
                             </div>
@@ -142,7 +142,6 @@ export default {
                     title: "商品下单",
                     goBack:'',
                 },
-                // s
                 payInfo: {
                     showTitle: true,
                     payment: {
@@ -159,7 +158,7 @@ export default {
             fee_info:'',//手续费信息
             password:'',//安全交易密码
             show_pop:false,
-            hint:'（请在下单后45分钟之内完成支付）',
+            hint:'（请在下单后40分钟之内完成支付）',
             selePrice:true,//是否可以选择余额支付或者押金支付 下单成功后不可选择
             showPaySuccess:false,
             old_price:0,//价格
@@ -584,9 +583,7 @@ export default {
                                 that.$router.push({name:'Safety_Center',query:{type:1}});//type:1，已实名认证
                             },'div');
                     }else if(res.data.code == 400){
-                        mui.alert(res.data.msg,'提示','确认',function(){
-                                that.$router.go(-1);
-                            },'div');
+                        mui.alert(res.data.msg,'提示','确认','','div');
                     }
                 }
             }).catch((err)=>{

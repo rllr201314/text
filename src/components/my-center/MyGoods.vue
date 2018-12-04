@@ -725,7 +725,7 @@ export default {
     padding:0 .2rem;
 }
 .list {
-    background: #f6f6f6;
+    background: #f6f8fe;
 }
 
 .nodata{
@@ -835,5 +835,8 @@ input {
     font-size: 0.26rem;
     color: #999999;
     padding-left: 0.27rem;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
 }
 </style>
