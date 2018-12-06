@@ -31,7 +31,7 @@
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
                 <div class="minirefresh-scroll list">
                     <ul>
-                        <div class="goods-strip" v-for="item in goodsInfo" @click="goMessageDetails(item.goods_id)">
+                        <div class="goods-strip" v-for="item in goodsInfo" @click="goMessageDetails(item.goods_status,item.goods_id)">
                             <div class="goods-strip-title">
                                 <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
                                 <div class="goods-type" v-else>代练号</div>
@@ -252,11 +252,15 @@ export default {
             }
         },
         // 跳转议价详情
-        goMessageDetails(goods_id) {
-            this.$router.push({
-                name: "MessageDetails",
-                query: { goods_id: goods_id }
-            });
+        goMessageDetails(status,goods_id) {
+            if(status == 5){
+                mui.toast('当前商品未上架或已售出，不可处理',{ duration:'short', type:'div' });
+            }else{
+                this.$router.push({
+                    name: "MessageDetails",
+                    query: { goods_id: goods_id }
+                });
+            }
         }
     }
 };
@@ -505,7 +509,7 @@ input[type="number"] {
     top: 2.88rem;
 }
 .list {
-    background: #f6f6f6;
+    background: #f6f8fe;
 }
 .nodata{
     padding-top:2.88rem;

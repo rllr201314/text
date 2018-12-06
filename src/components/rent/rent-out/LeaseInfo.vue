@@ -400,8 +400,6 @@ export default {
             category_id:'',
             upData: {},
             requestData: {
-                rent_id:"",
-                // deal_type: "",
                 category_id: "",
                 operation_id: "",
                 area_id: "",
@@ -1077,6 +1075,7 @@ export default {
                                 that.judgeInfo(data.chargeInfo);
                             }else if(flag == 2){//编辑
                                 var oldData = that.oldData;
+                                //账号绑定
                                 var safe = data.account_bind;
                                 for(var i in safe){
                                     safe[i].ischeck = false;
@@ -1087,8 +1086,8 @@ export default {
                                         }
                                     }
                                 }
-                                that.sellData.seleSafeData.safe = safe;//账号绑定
-                                
+                                that.sellData.seleSafeData.safe = safe;
+                                //是否议价
                                 var sellType = res.data.data.sell_type;
                                 for (var i in sellType) {
                                     if (sellType[i].value == oldData.sell_type) {
@@ -1098,7 +1097,7 @@ export default {
                                     }
                                     sellType[i].ischeck = false;
                                 }
-                                that.sellData.sellType.sell = sellType; //是否议价
+                                that.sellData.sellType.sell = sellType; 
                                 // 角色性别
                                 for(var i in data.person_sex){
                                     if(data.person_sex[i].value == oldData.person_sex){
@@ -1129,6 +1128,16 @@ export default {
                                 that.sellData.sex = data.person_sex; //角色性别
                                 that.sellData.faction = data.faction; //职业
                                 that.sellData.accountType = data.account_type; //账号类型
+
+                                var rent_type = data.rent_type;//出租方式
+                                for(var i in rent_type){
+                                    if(rent_type[i].value == oldData.rent_type){
+                                        that.requestData.rent_type = rent_type[i].value;
+                                        that.seleData.rentType = rent_type[i].name;
+                                    }
+                                }
+                                that.sellData.rentWay = rent_type;
+
                                 that.judgeInfo(data.chargeInfo);//判断合同还是保险
                             }
                         }
@@ -1149,6 +1158,12 @@ export default {
                         that.showLoading = false;
                         // console.log(res.data.data);
                         var data = res.data.data;
+                        // 判断是不是租售
+                        if(data.rent_method == 3){
+                            that.showSell = true;
+                        }else{
+                            that.showSell = false;
+                        }
                         that.category_id = data.category_id;
                         var that_req = that.requestData;
                         // that_req.deal_type = data.deal_type; //商品类型
@@ -1158,6 +1173,8 @@ export default {
                         if (data.server_id != "") {
                             that_req.server_id = data.server_id;
                         }
+                        that_req.day_rent = data.day_rent;
+                        that_req.cash = data.cash;
                         that_req.goods_price = parseInt(data.goods_price);
                         that_req.min_price = parseInt(data.min_price);
                         that_req.role_level = data.role_level;
@@ -1251,7 +1268,7 @@ export default {
             }else if(opt.flag == 2){
                 that.showLoading = true;
                 that.getRedact(opt.g);
-                that.comData.showTitle.title = "编辑";
+                that.comData.showTitle.title = "出租编辑";
                 that.editOrpublish = 2;
                 that.requestData.goods_id = opt.g;
             }else{

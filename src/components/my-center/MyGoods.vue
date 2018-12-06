@@ -148,7 +148,7 @@
                                 <div class="hint-bottom" v-if="item.rent_method == 2 || item.rent_method == 3" v-text="item.goods_description"></div>
                                 <div class="order-operate">
                                     <div class="right-operate">
-                                        <span class="pay" @click="getGoods(item.goods_id)">编辑</span>
+                                        <span class="pay" @click="getGoods(item.rent_method,item.goods_id)">编辑</span>
                                     </div>
                                 </div>
                             </div>
@@ -332,16 +332,15 @@ export default {
                             // 默认进来显示已上架商品
                             var data = res.data.data.data;
                             if (flag == "refresh") {
+                                that.miniRefresh.endDownLoading();
                                 if(data == ""){
                                     that.showNoData = true;
-                                    that.miniRefresh.endDownLoading();
                                     that.putawayData = '';
                                     that.removeData = '';
                                     that.auditData = '';
                                 }else{
                                     document.getElementById('minirefresh').scrollTop = 0;
                                     that.showNoData = false;
-                                    that.miniRefresh.endDownLoading();
                                     if (opt == 3) {
                                         that.putawayData = data;
                                     } else if (opt == 2) {
@@ -415,7 +414,7 @@ export default {
             );
         },
         // 编辑商品
-        getGoods(goods_id) {
+        getGoods(goods_type,goods_id) {
             var that = this;
             mui.confirm(
                 "确定编辑商品",
@@ -423,13 +422,12 @@ export default {
                 ["取消", "确认"],
                 function(e) {
                     if (e.index == 1) {
-                        that.$router.push({
-                            name: "SellInfo",
-                            query: {
-                                flag: 2,
-                                g: goods_id
-                            }
-                        });
+                        // 账号出售
+                        if(goods_type == 1){
+                            that.$router.push({name: "SellInfo",query:{flag: 2,g:goods_id}});
+                        }else if(goods_type > 1){//账号租售
+                            that.$router.push({name: "LeaseInfo",query:{flag: 2,g:goods_id}});
+                        }
                     }
                 },
                 "div"
@@ -838,5 +836,5 @@ input {
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
-}
+} 
 </style>

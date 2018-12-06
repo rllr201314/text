@@ -215,7 +215,7 @@ export default {
     top:.88rem;
 }
 .list-con{
-    background: #f6f6f6;
+    background: #f6f8fe;
 }
 .list{
     background: #ffffff;

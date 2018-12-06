@@ -1,5 +1,5 @@
 <template>
-    <div class="login-wrap">
+    <div class="login-wrap" @keydown.enter="enterFn">
         <div class="login-header">
             <!-- <Header v-bind:showTitle="comData.showTitle"></Header> -->
             <div class="login-title">
@@ -84,6 +84,9 @@ export default {
         }
     },
     methods: {
+        enterFn(){
+            this.loginFn();
+        },
         gobake(){
             this.$router.push({ name: "HomePage" });
         },

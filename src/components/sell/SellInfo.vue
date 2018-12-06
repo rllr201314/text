@@ -375,7 +375,7 @@ export default {
                 wx: "",
                 images: [],
                 goods_id:null,
-            }
+            },
         };
     },
     methods: {

@@ -86,8 +86,7 @@ export default {
                 tit:'竞拍：100级万寸神宠',
                 state:2,
                 time:'1:20:34:33'
-            }]
-
+            }],
         }
     },
     computed:{    
@@ -142,43 +141,10 @@ export default {
         InsuranceCell,//保险
         HotLine,//客服热线
         UserHelp,//用户帮助
-        Footer
+        Footer,
     },
     mounted(){
         this.getData();
-        // // 活动倒计时----
-        // var time = null;
-        // var second=5; 
-        // var minute=0; 
-        // var hour=0; 
-        // var day=0; 
-        // var flag=false; 
-        // function countDown(){ 
-        //     second-=1; 
-        //     if(second==0){ 
-        //     minute=minute-1; 
-        //     second=60; 
-        //         if(minute<0){ 
-        //             hour=hour-1; 
-        //             minute=59; 
-        //             if(hour<0){ 
-        //                 day-=1; 
-        //                 hour=23; 
-        //                 if(day<0){ 
-        //                     flag=true; 
-        //                 } 
-        //             } 
-        //         } 
-        //     } 
-        //     if(flag){ 
-        //         console.log("活动结束！");
-        //         clearInterval(time);
-        //     }else{
-        //         console.log("距离活动时间还剩："+day+"天"+hour+"小时"+minute+"分"+second+"秒")
-        //     } 
-        // } 
-        // time=setInterval(countDown,1000); 
-              
     }
 }
 </script>

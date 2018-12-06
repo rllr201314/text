@@ -285,7 +285,7 @@ export default {
     top: 0.88rem;
 }
 .list {
-    background: #f6f6f6;
+    background: #f6f8fe;
     padding: 0.2rem;
 }
 .nodata{

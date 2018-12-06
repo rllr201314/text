@@ -8,60 +8,67 @@
                 <span>全部清空</span>
             </div>
         </div>
-        <div class="bragin-con">
-            <div class="goods-strip" v-for="item in goodsInfo" @click="goDetail(item.goods_id)">
-                <div class="goods-strip-top">
-                    <div class="goods-strip-title">
-                        <div class="title-ico deal-ico" v-if="item.rent_method == 1 || item.rent_method == 3">成品号</div>
-                        <div class="title-ico rent-ico" v-if="item.rent_method == 2 || item.rent_method == 3">租号</div>
-                        <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                        <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
-                        <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
-                        <div class="area" v-text="item.platform_name"></div>
-                        <div class="goods-collect">
-                            <img class="collect" src="../../../../static/img/goods-details/ok_collect_ico.png" alt="">
-                            <span>已收藏</span>
-                        </div>
-                    </div>
-                    <div class="goods-strip-content">
-                        <div class="goods-des" v-text="item.goods_title"></div>
-                        <div class="goods-ico">
-                            <img v-if="item.is_safe == 1" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
-                            <img v-if="item.is_stage == 1" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
-                            <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
-                        </div>
-                    </div>
-                    <div class="goods-strip-bot">
-                        <div v-if="item.rent_method == 1">
-                            <span class="goods-price">￥<span v-text="item.goods_price"></span></span>
-                            <div class="bargain" v-if="item.sell_type == 2">可议价</div>
-                        </div>
-                        <div class="original-price" v-if="item.rent_method == 3">
-                            <span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span>
-                        </div>
-                    </div>
-                    <div v-if="item.rent_method == 2 || item.rent_method == 3">
-                        <div class="goods-strip-bottom">
-                            <div>
-                                <img src="../../../../static/img/rent/rent-ico.png" alt="">
-                                <span>租金</span>
-                                <span class="red-color">￥</span><span class="goods_price" v-text="item.day_rent"></span>/<span v-text="item.rent_unit"></span>
+        <div class="bragin-con" v-show="!showNoData">
+        
+        <div id="minirefresh" class="minirefresh-wrap list-wrap">
+            <div class="minirefresh-scroll list">
+                <ul>
+                    <div class="goods-strip" v-for="item in goodsInfo" @click="goDetail(item.goods_id)">
+                        <div class="goods-strip-top">
+                            <div class="goods-strip-title">
+                                <div class="title-ico deal-ico" v-if="item.rent_method == 1 || item.rent_method == 3">成品号</div>
+                                <div class="title-ico rent-ico" v-if="item.rent_method == 2 || item.rent_method == 3">租号</div>
+                                <div class="account-type" v-if="item.client_id == 1">安卓</div>
+                                <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
+                                <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                <div class="area" v-text="item.platform_name"></div>
+                                <div class="goods-collect">
+                                    <img class="collect" src="../../../../static/img/goods-details/ok_collect_ico.png" alt="">
+                                    <span>已收藏</span>
+                                </div>
                             </div>
-                            <div>
-                                <img src="../../../../static/img/rent/pledge-ico.png" alt="">
-                                <span>押金</span>
-                                <span>￥</span><span v-text="item.cash"></span>
+                            <div class="goods-strip-content">
+                                <div class="goods-des" v-text="item.goods_title"></div>
+                                <div class="goods-icon">
+                                    <img v-if="item.is_safe == 1" src="../../../../static/img/goodscreen/safe_ico.png" alt="">
+                                    <img v-if="item.is_stage == 1" src="../../../../static/img/goodscreen/stages_ico.png" alt="">
+                                    <img v-if="item.is_compact == 1" src="../../../../static/img/goodscreen/contract_ico.png" alt="">
+                                </div>
                             </div>
-                            <div>
-                                <img src="../../../../static/img/rent/pledge-ico.png" alt="">
-                                <span>最短租期</span>
-                                <span v-text="item.least_lease"></span>
+                            <div class="goods-strip-bot">
+                                <div v-if="item.rent_method == 1">
+                                    <span class="goods-price">￥<span v-text="item.goods_price"></span></span>
+                                    <div class="bargain" v-if="item.sell_type == 2">可议价</div>
+                                </div>
+                                <div class="original-price" v-if="item.rent_method == 3">
+                                    <span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span>
+                                </div>
+                            </div>
+                            <div v-if="item.rent_method == 2 || item.rent_method == 3">
+                                <div class="goods-strip-bottom">
+                                    <div>
+                                        <img src="../../../../static/img/rent/rent-ico.png" alt="">
+                                        <span>租金</span>
+                                        <span class="red-color">￥</span><span class="goods_price" v-text="item.day_rent"></span>/<span v-text="item.rent_unit"></span>
+                                    </div>
+                                    <div>
+                                        <img src="../../../../static/img/rent/pledge-ico.png" alt="">
+                                        <span>押金</span>
+                                        <span>￥</span><span v-text="item.cash"></span>
+                                    </div>
+                                    <div>
+                                        <img src="../../../../static/img/rent/pledge-ico.png" alt="">
+                                        <span>最短租期</span>
+                                        <span v-text="item.least_lease"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="hint-bottom" v-if="item.rent_method == 2 || item.rent_method == 3" v-text="item.goods_description"></div>
                     </div>
-                </div>
-                <div class="hint-bottom" v-if="item.rent_method == 2 || item.rent_method == 3" v-text="item.goods_description"></div>
+                </ul>
             </div>
+        </div>
         </div>
         <NoData v-if="showNoData"></NoData>
     </div>
@@ -94,19 +101,40 @@ export default {
             },
             accountData: {},
             // 商品列表
-            goodsInfo: []
+            goodsInfo: [],
+            pages:null,
+            num_page:null,
         };
     },
     methods:{
-        getData(){
+        getData(flag){
             var that = this;
-            that.$axios.post(process.env.API_HOST+"collection").then((res) => {
+
+            that.$axios.post(process.env.API_HOST+"collection",{
+                page:that.num_page
+            }).then((res) => {
                 if(res.status == 200){
                     if(res.data.code == 200){
-                        if(res.data.data.data != ""){
-                            that.goodsInfo = res.data.data.data;
-                        }else{
-                            that.showNoData = true;
+                        var data = res.data.data.data;
+                        if(flag == 'refresh'){
+                            that.miniRefresh.endDownLoading();
+                            if(data != ""){
+                                that.goodsInfo = data;
+                                that.pages = res.data.data.last_page;
+                                that.num_page = res.data.data.current_page;
+                            }else{
+                                that.showNoData = true;
+
+                            }
+                        }else if(flag == 'push'){
+                            if(data != ""){
+                                that.miniRefresh.endUpLoading();
+                                for(var i in data){
+                                    that.goodsInfo.push(data[i]);
+                                }
+                            }else{
+                                that.miniRefresh.endUpLoading(true);
+                            }
                         }
                     }
                 }
@@ -132,10 +160,39 @@ export default {
                 query: { goods_id: goods_id }
             });
         },
+        refresh() {
+            var that = this;
+            that.miniRefresh = new MiniRefresh({
+                container: "#minirefresh",
+                down: {
+                    isAuto: true,
+                    bounceTime: 500,
+                    callback: () => {
+                        that.num_page = 1;
+                        that.getData('refresh');
+                    }
+                },
+                up: {
+                    isAuto: false,
+                    loadFull: {
+                        isEnable: false
+                    },
+                    isShowUpLoading: true,
+                    callback: () => {
+                        that.num_page++;
+                        if(that.num_page <= that.pages){
+                            that.getData('push');
+                        }else{
+                            that.miniRefresh.endUpLoading(true);
+                        }
+                    }
+                }
+            });
+        }
     },
     mounted(){
         var that = this;
-        that.getData();
+        this.refresh();
     }
 };
 </script>
@@ -143,7 +200,6 @@ export default {
 .bargain-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top:.88rem;
     background:#f6f8fe;
 }
 .bargain-tit {
@@ -151,6 +207,12 @@ export default {
     background: #f6f8fe;
     text-align:right;
     font-size:0;
+    position:fixed;
+    top:.88rem;
+    left:0;
+    right:0;
+    max-width:640px;
+    margin:0 auto;
 }
 .tit-box {
     font-size: 0.24rem;
@@ -170,6 +232,19 @@ export default {
 .bragin-con .goods-strip:nth-last-child(1) {
     margin-bottom: 0;
 }
+.bragin-con {
+    position:relative;
+    height:100vh;
+    max-width:640px;
+    margin:0 auto;
+}
+.list-wrap {
+    top:1.58rem;
+}
+.list {
+    background: #f6f8fe;
+}
+
 .con-tit {
     line-height: 0.7rem;
     color: #999999;
@@ -268,12 +343,12 @@ export default {
     line-height: 0.31rem;
     color: #333333;
 }
-.goods-ico {
+.goods-icon {
     float: right;
     text-align: right;
     display:flex;
 }
-.goods-ico img {
+.goods-icon img {
     width: 0.36rem;
     height: 0.36rem;
     margin-left: 0.12rem;
@@ -285,6 +360,9 @@ export default {
 .goods-price {
     color: #fa5856;
     font-size: 0.34rem;
+    display: inline-block;
+    margin-bottom:.2rem;
+    vertical-align: middle;
 }
 .goods-price span{
     font-size:.36rem;
@@ -302,6 +380,7 @@ export default {
     border-bottom-left-radius: 0.18rem;
     border-bottom-right-radius: 0.18rem;
     vertical-align: middle;
+    margin-bottom:.2rem;
 }
 .goods-collect {
     font-size: 0.24rem;
