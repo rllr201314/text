@@ -86,7 +86,7 @@
                     <div class="sell-strip account-bind">
                         <span class="sell-lefttext">账号绑定</span>
                         <div class="strip-radio-right">
-                            <div class="screen-sort" v-for="item in sellData.seleSafeData.safe" @click="seleSafe(item.value)">
+                            <div class="screen-sort" v-for="item in sellData.seleSafeData.safe" @click="seleSafeFn(item.value)">
                                 <img class="screen-sort-check" :src="item.ischeck?sellData.seleSafeData.imgSrc.Ok:sellData.seleSafeData.imgSrc.No" alt="">
                                 <span v-text="item.name"></span>
                             </div>
@@ -303,6 +303,7 @@ export default {
                 accountType: "未选择"
             },
             forceCompact:false,//不强制
+            jump_fore_compact:false,
             safeOrCompact: {
                 //-------------------------------------------------------------------**********************************************
                 showSafe: false, //显示保险
@@ -376,6 +377,7 @@ export default {
                 images: [],
                 goods_id:null,
             },
+
         };
     },
     methods: {
@@ -429,8 +431,68 @@ export default {
             var imgList = that.sellData.upimgAll.imgSrc;
             imgList.splice(ind, 1);
         },
+        //角色类别 -- 账号类型
+        seleType(opt, flag) {
+            var that = this;
+            mui("#sheet-" + flag).popover("toggle");
+            if (flag == "sex") {
+                //角色性别
+                var sex = that.sellData.sex;
+                for (var i in sex) {
+                    if (opt == sex[i].value) {
+                        that.requestData.person_sex = sex[i].value;
+                        that.seleData.sex = sex[i].name;
+                    }
+                }
+            } else if (flag == "accountType") {
+                //账号类型
+                var accountType = that.sellData.accountType;
+                for (var i in accountType) {
+                    if (opt == accountType[i].value) {
+                        that.requestData.account_type = accountType[i].value;
+                        that.seleData.accountType = accountType[i].name;
+                    }
+                }
+                // 是否强制购买合同
+                var safe = this.sellData.seleSafeData.safe;
+                var sense = [];
+                for (var i in safe) {
+                    if (safe[i].ischeck == true) {
+                        sense.push(safe[i].value);
+                    }
+                }
+                if(sense != ''){
+                    // 网易手机账号
+                    if( that.requestData.account_type == 1){
+                        for(var i in sense){
+                            if(sense[i] == 1 || sense[i] == 2){
+                                that.safeOrCompact.showNoCompact = false;
+                                that.sellData.optSafe = true;
+                                break;
+                            }else{
+                                if(!that.jump_fore_compact){
+                                    that.safeOrCompact.showNoCompact = true;
+                                }
+                            }
+                        }
+                    }else if( that.requestData.account_type == 2){
+                        for(var i in sense){
+                            if(sense[i] == 1){
+                                that.safeOrCompact.showNoCompact = false;
+                                that.sellData.optSafe = true;
+                                break;
+                            }else{
+                                if(!that.jump_fore_compact){
+                                    that.safeOrCompact.showNoCompact = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         // 账号绑定
-        seleSafe(flag) {
+        seleSafeFn(flag) {
             var that = this;
             var safeArr = that.sellData.seleSafeData.safe;
             if (flag == "4") {
@@ -450,8 +512,41 @@ export default {
                         safeArr[i].ischeck = false;
                     }
                 }
-
-                
+            }
+            // 是否强制购买合同
+            var sense = [];
+            for (var i in safeArr) {
+                if (safeArr[i].ischeck == true) {
+                    sense.push(safeArr[i].value);
+                }
+            }
+            if(that.requestData.account_type != ''){
+                // 网易手机账号
+                if( that.requestData.account_type == 1){
+                    for(var i in sense){
+                        if(sense[i] == 1 || sense[i] == 2){
+                            that.safeOrCompact.showNoCompact = false;
+                            that.sellData.optSafe = true;
+                            break;
+                        }else{
+                            if(!that.jump_fore_compact){
+                                that.safeOrCompact.showNoCompact = true;
+                            }
+                        }
+                    }
+                }else if( that.requestData.account_type == 2){
+                    for(var i in sense){
+                        if(sense[i] == 1){
+                            that.safeOrCompact.showNoCompact = false;
+                            that.sellData.optSafe = true;
+                            break;
+                        }else{
+                            if(!that.jump_fore_compact){
+                                that.safeOrCompact.showNoCompact = true;
+                            }
+                        }
+                    }
+                }
             }
         },
         // 选择是否议价
@@ -581,30 +676,7 @@ export default {
                 }
             // }
         },
-        //角色类别 -- 账号类型
-        seleType(opt, flag) {
-            var that = this;
-            mui("#sheet-" + flag).popover("toggle");
-            if (flag == "sex") {
-                //角色性别
-                var sex = that.sellData.sex;
-                for (var i in sex) {
-                    if (opt == sex[i].value) {
-                        that.requestData.person_sex = sex[i].value;
-                        that.seleData.sex = sex[i].name;
-                    }
-                }
-            } else if (flag == "accountType") {
-                //账号类型
-                var accountType = that.sellData.accountType;
-                for (var i in accountType) {
-                    if (opt == accountType[i].value) {
-                        that.requestData.account_type = accountType[i].value;
-                        that.seleData.accountType = accountType[i].name;
-                    }
-                }
-            }
-        },
+        
         // 获取标签小类
         getTagCon(tag_type_id) {
             var that = this;
@@ -689,12 +761,6 @@ export default {
                     that_req.tag = str.substring(1);
                 }
                 var upImg = that.sellData.upimgAll.imgSrc;
-                // if (upImg.length == 0) {
-                //     mui.alert("请选择商品图片", "提示", "确认", "", "div");
-                //     return false;
-                // } else {
-                //     that_req.images = upImg;
-                // }
                 if(upImg.length > 0){
                     that_req.images = upImg;
                 }
@@ -711,8 +777,8 @@ export default {
                 var sense = [];
                 for (var i in safe) {
                     if (safe[i].ischeck == true) {
-                        sense.push(safe[i].value);
                         safe_flag = true;
+                        sense.push(safe[i].value);
                         safe_str += "," + safe[i].value;
                     }
                 }
@@ -765,26 +831,20 @@ export default {
                 var noCompact = that.safeOrCompact.showNoCompact;
                 var safe = that.safeOrCompact.showSafe;
                 var noSafe = that.safeOrCompact.showNoSafe;
-                if (compact) {
-                    // console.log('合同')
+                if (compact) {//合同
                     that_req.is_compact = 1;
-                    if (noCompact) {
-                        // console.log('可选合同');
+                    if (noCompact) {//可选合同
                         var isSell = that.sellData.optSafe;
-                        if (!isSell) {
-                            // console.log('不买合同');
+                        if (!isSell) {//不买合同
                             that_req.is_compact = 2;
                         }
                     }
                     that_req.is_safe = 2;
-                } else if (safe) {
-                    // console.log('保险');
+                } else if (safe) {//保险
                     that_req.is_safe = 1;
-                    if (noSafe) {
-                        // console.log('可选保险');
+                    if (noSafe) {//可选保险
                         var isSell = that.sellData.optSafe;
-                        if (!isSell) {
-                            // console.log('不买保险');
+                        if (!isSell) {//不买保险
                             that_req.is_safe = 2;
                         }
                     }
@@ -883,7 +943,9 @@ export default {
             if (force_compact == 1) {
                 that.safeOrCompact.showCompact = true;
                 that.safeOrCompact.showNoCompact = false;
+                that.jump_fore_compact = true;//必须购买合同
             } else if (force_compact == 2) {
+                that.jump_fore_compact = false;//必须购买合同不强制
                 if (is_compact == 1) {
                     that.safeOrCompact.showCompact = true;
                     that.safeOrCompact.showNoCompact = true;

@@ -351,6 +351,7 @@ export default {
                 rentType:'未选择'
             },
             forceCompact:false,//不强制
+            jump_fore_compact:false,
             safeOrCompact: {
                 //-------------------------------------------------------------------**********************************************
                 showSafe: false, //显示保险
@@ -506,6 +507,41 @@ export default {
                     }
                 }
             }
+            // 是否强制购买合同
+            var sense = [];
+            for (var i in safeArr) {
+                if (safeArr[i].ischeck == true) {
+                    sense.push(safeArr[i].value);
+                }
+            }
+            if(that.requestData.account_type != ''){
+                // 网易手机账号
+                if( that.requestData.account_type == 1){
+                    for(var i in sense){
+                        if(sense[i] == 1 || sense[i] == 2){
+                            that.safeOrCompact.showNoCompact = false;
+                            that.sellData.optSafe = true;
+                            break;
+                        }else{
+                            if(!that.jump_fore_compact){
+                                that.safeOrCompact.showNoCompact = true;
+                            }
+                        }
+                    }
+                }else if( that.requestData.account_type == 2){
+                    for(var i in sense){
+                        if(sense[i] == 1){
+                            that.safeOrCompact.showNoCompact = false;
+                            that.sellData.optSafe = true;
+                            break;
+                        }else{
+                            if(!that.jump_fore_compact){
+                                that.safeOrCompact.showNoCompact = true;
+                            }
+                        }
+                    }
+                }
+            }
         },
         // 选择是否议价
         seleSell(flag) {
@@ -656,6 +692,42 @@ export default {
                         that.seleData.accountType = accountType[i].name;
                     }
                 }
+                // 是否强制购买合同
+                var safe = this.sellData.seleSafeData.safe;
+                var sense = [];
+                for (var i in safe) {
+                    if (safe[i].ischeck == true) {
+                        sense.push(safe[i].value);
+                    }
+                }
+                if(sense != ''){
+                    // 网易手机账号
+                    if( that.requestData.account_type == 1){
+                        for(var i in sense){
+                            if(sense[i] == 1 || sense[i] == 2){
+                                that.safeOrCompact.showNoCompact = false;
+                                that.sellData.optSafe = true;
+                                break;
+                            }else{
+                                if(!that.jump_fore_compact){
+                                    that.safeOrCompact.showNoCompact = true;
+                                }
+                            }
+                        }
+                    }else if( that.requestData.account_type == 2){
+                        for(var i in sense){
+                            if(sense[i] == 1){
+                                that.safeOrCompact.showNoCompact = false;
+                                that.sellData.optSafe = true;
+                                break;
+                            }else{
+                                if(!that.jump_fore_compact){
+                                    that.safeOrCompact.showNoCompact = true;
+                                }
+                            }
+                        }
+                    }
+                }
             } else if (flag == "rentType") {
                 //账号类型
                 var rentWay = that.sellData.rentWay;
@@ -788,7 +860,7 @@ export default {
                             that.showLoading = false;
                             return false;
                         }
-                    } else if (that_req.sell_type == 2) {//--------------------------------------------------------------------------------------
+                    } else if (that_req.sell_type == 2) {
                         if (that_req.goods_price == "") {
                             mui.alert("请输入可议价最高价格","确认","","div");
                             that.showLoading = false;
@@ -968,7 +1040,9 @@ export default {
             if (force_compact == 1) {
                 that.safeOrCompact.showCompact = true;
                 that.safeOrCompact.showNoCompact = false;
+                that.jump_fore_compact = true;//必须购买合同
             } else if (force_compact == 2) {
+                that.jump_fore_compact = false;//必须购买合同不强制
                 if (is_compact == 1) {
                     that.safeOrCompact.showCompact = true;
                     that.safeOrCompact.showNoCompact = true;
