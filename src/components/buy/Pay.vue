@@ -291,7 +291,6 @@ export default {
                             that.price = that.fee_info.offline_amount;
                         }
                     }
-                    
                 }
             }
         },
