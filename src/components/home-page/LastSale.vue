@@ -27,6 +27,7 @@
                 <div>
                     <span class="last-text">保险理赔</span>
                 </div>
+                <img class="safe-ico" src="../../../static/img/safe_ico.png" alt="">
                 <div class="info-bottom bottom-list">
                     <ul>
                         <li v-for="(item,index) in flow.safe_info" :key="index" class="stript">
@@ -153,11 +154,19 @@ export default {
         white-space:nowrap;/*不显示的地方用省略号...代替*/
         text-overflow:ellipsis;/* 支持 IE */
     }
-
+    .safe-ico{
+        width:.26rem;
+        height:.29rem;
+        vertical-align: middle;
+    }
     .top-list,.bottom-list{
         width:6rem;
         height:.4rem;
         overflow: hidden;
+    }
+    .bottom-list{
+        width:5.7rem;
+        display: inline-block;vertical-align: middle;
     }
     .stript{
         position: relative;;
