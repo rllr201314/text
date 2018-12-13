@@ -73,7 +73,7 @@
                             </div>
                             <div class="upimg-cell">
                                 <img src="../../../static/img/order/add_img.png" alt="">
-                                <input type="file" id="upImg" accept="image/*" multiple capture @change="addImg">
+                                <input type="file" id="upImg" accept="image/*" multiple @change="addImg">
                             </div>
                         </div>
                     </div>
