@@ -88,16 +88,17 @@
                                     </span>
                                     <span class="red-color">（定额还款、定期还完）</span>
                                 </div>
-                                <div class="hint-box">
-                                    <div>首付30%以上，每月利息5%</div>
-                                    <div>每月最低需还：<span class="black-color">本金+利息</span></div>
-                                    <div class="periods-box">
-                                        期数：
-                                        <span class="periods-str" v-for="item in periods_data" @click="selePeriodsFn(item.value)">
-                                            <img class="check-img" :src="item.isclick?'./static/img/order/okcheck.png':'./static/img/order/nocheck.png'" alt="">
-                                            <span v-text="item.name"></span>
-                                        </span>
-                                    </div>
+                            </div>
+                            <div class="hint-box">
+                                <div>首付30%以上，每月利息5%</div>
+                                <span class="down-pay-tit">首付</span><input type="number" class="price-inp">元
+                                <div>每月最低需还：<span class="black-color">本金+利息</span></div>
+                                <div class="periods-box">
+                                    期数：
+                                    <span class="periods-str" v-for="item in periods_data" @click="selePeriodsFn(item.value)">
+                                        <img class="check-img" :src="item.isclick?'./static/img/order/okcheck.png':'./static/img/order/nocheck.png'" alt="">
+                                        <span v-text="item.name"></span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -565,14 +566,17 @@ export default {
     color: #ff5e5e;
 }
 .hint-box {
-    width: 5.23rem;
     background: #f6f6f6;
     font-size: 0.24rem;
     color: #666666;
     padding: 0.2rem;
+    margin-right: 0.2rem;
 }
 .hint-box div {
     line-height: 0.45rem;
+}
+.down-pay-tit{
+    margin-right:.2rem;
 }
 .periods-str {
     margin: 0 0.27rem;
