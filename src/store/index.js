@@ -30,6 +30,8 @@ export default new Vuex.Store({
       sort_price: "",
       sort_collection: "",
       is_video: "",
+      person_sex:"",
+      faction_id:"",
       content: '',
     },
   },

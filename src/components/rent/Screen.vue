@@ -67,7 +67,7 @@
         <div class="screen-box screen-type-box" v-show="screenInfoAll[3].isShow">
             <div class="screen-type-strip">
                 <div class="screen-strip-left input-price-left">价格范围</div>
-                <div class="screen-strip-right input-price-right">
+                <div class="screen-strip-right input-price-right right-margin">
                     <input class="downPrice" type="number" v-model="begin_price">
                     <span>——</span>
                     <input class="upPrice" type="number" v-model="end_price">元
@@ -75,7 +75,7 @@
             </div>
             <div class="screen-type-strip">
                 <div class="screen-strip-left sort-left-text">排序方式</div>
-                <div class="screen-strip-right">
+                <div class="screen-strip-right right-margin">
                     <div class="screen-sort" @click="seleSort('down')">
                         <img class="screen-sort-check" :src="sortPrice.ischeck.downSort?sortPrice.sortSrc.sortPriceOk:sortPrice.sortSrc.sortPriceNo" alt="">
                         <span>价格从高到低</span>
@@ -98,10 +98,25 @@
                     <div class="screen-strip-box" v-for="item in screen_info.accountBind" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('accountBind',item.value)"></div>
                 </div>
             </div>
-            <div class="screen-type-strip">
+            <div class="screen-type-strip" v-if="false">
                 <div class="screen-strip-left">视频状态</div>
                 <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.videoStatus" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('videoStatus',item.value)"></div>
+                    <div class="screen-strip-box" v-for="item in screen_info.videoStatus" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                    @click="seleScreen('videoStatus',item.value)"></div>
+                </div>
+            </div>
+            <div class="screen-type-strip">
+                <div class="screen-strip-left">性别</div>
+                <div class="screen-strip-right">
+                    <div class="screen-strip-box" v-for="item in screen_info.person_sex" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                    @click="seleScreen('person_sex',item.value)"></div>
+                </div>
+            </div>
+            <div class="screen-type-strip">
+                <div class="screen-strip-left">门派</div>
+                <div class="screen-strip-right">
+                    <div class="screen-strip-box" v-for="item in screen_info.faction" v-text="item.faction_name" :class="item.ischeck?'red-bg':'black-bg'" 
+                    @click="seleScreen('faction',item.faction_id)"></div>
                 </div>
             </div>
             <div class="screen-type-strip">
@@ -172,7 +187,7 @@ export default {
             is_safe: "",
             role_level: "",
             sort_price: "",
-            sort_collection: "",
+            sort_collection: "",person_sex:"",faction_id:"",
             
             area_content:'',//区服搜索内容
 
@@ -306,6 +321,8 @@ export default {
                         value: 2
                     }
                 ],
+                faction:[],
+                person_sex:[],
                 // 售价类型
                 sellType: [],
                 // 是否分期
@@ -374,6 +391,8 @@ export default {
             that_r.is_stage = that.is_stage;
             that_r.is_safe = that.is_safe;
             that_r.role_level = that.role_level;
+            that_r.person_sex = that.person_sex;
+            that_r.faction_id = that.faction_id;
             that_r.page = 1;
             $('#minirefresh').scrollTop(0);
             that.$emit('getData',that_r);
@@ -393,6 +412,21 @@ export default {
             that_r.sort_price = null;
             that_r.sort_collection = null;
             that_r.is_video = null;
+            that.request.person_sex = null;
+            that.request.faction_id = null;
+            that.is_stage = null;
+            that.is_safe = null;
+            that.is_compact = null;
+            that.sell_type = null;
+            that.is_bind = null;
+            that.role_level = null;
+            that.begin_price = null;
+            that.end_price = null;
+            that.sort_price = null;
+            that.sort_collection = null;
+            that.is_video = null;
+            that.person_sex = null;
+            that.faction_id = null;
             
             var sortArr = that.sortPrice.ischeck;
             sortArr.moreSort = false;
@@ -400,45 +434,10 @@ export default {
             sortArr.downSort = false;
 
             
-            var accountBindAll = that.screen_info.accountBind;
-            for (var i in accountBindAll) {
-                accountBindAll[i].ischeck = false;
-            }
-            var imgStatusAll = that.screen_info.imgStatus;
-            for (var i in imgStatusAll) {
-                imgStatusAll[i].ischeck = false;
-            }
-            var videoStatusAll = that.screen_info.videoStatus;
-            for (var i in videoStatusAll) {
-                videoStatusAll[i].ischeck = false;
-            }
-            var sellTypeAll = that.screen_info.sellType;
-            for (var i in sellTypeAll) {
-                sellTypeAll[i].ischeck = false;
-            }
-            var isStagesAll = that.screen_info.isStages;
-            for (var i in isStagesAll) {
-                isStagesAll[i].ischeck = false;
-            }
-            var isInsuranceAll = that.screen_info.isInsurance;
-            for (var i in isInsuranceAll) {
-                isInsuranceAll[i].ischeck = false;
-            }
-            var levelTypeAll = that.screen_info.levelType;
-            for (var i in levelTypeAll) {
-                levelTypeAll[i].ischeck = false;
-            }
-            var pokemonTypeAll = that.screen_info.pokemonType;
-            for (var i in pokemonTypeAll) {
-                pokemonTypeAll[i].ischeck = false;
-            }
-            var professionTypeAll = that.screen_info.professionType;
-            for (var i in professionTypeAll) {
-                professionTypeAll[i].ischeck = false;
-            }
-            var schoolTypeAll = that.screen_info.schoolType;
-            for (var i in schoolTypeAll) {
-                schoolTypeAll[i].ischeck = false;
+            for(var i in that.screen_info){
+                for(var j in that.screen_info[i]){
+                    that.screen_info[i][j].ischeck = false;
+                }
             }
             that_r.page = 1;
             $('#minirefresh').scrollTop(0);
@@ -565,11 +564,6 @@ export default {
                 that.request.client_id = value;
                 that.request.page = 1;
                 $('#minirefresh').scrollTop(0);
-                // that.$store.commit('addPage','refresh');
-                // that.$store.commit('changeRequest',{name:'operation_id',value:''});
-                // that.$store.commit('changeRequest',{name:'area_id',value:''});
-                // that.$store.commit('changeRequest',{name:'server_id',value:''});
-                // that.$store.commit('changeRequest',{name:'client_id',value});
                 that.$emit('getData',that.request);
             }
             that.hiddenScreenFun(); //隐藏筛选
@@ -592,20 +586,12 @@ export default {
 
             that.request.operation_id = operation_id;
             that.request.page = 1;
-            // $('#minirefresh').scrollTop(0);
-            // that.getGoodsInfo(that.request);
-
-            
-            // that.$store.commit('addPage','refresh');
-            // that.$store.commit('changeRequest',{name:'operation_id',value:operation_id});
             that.$emit('getData',that.request);
         },
         // 选择服务器
         seleServer(opt, flag) {
             var that = this;
             that.request.page = 1;
-            // $('#minirefresh').scrollTop(0);
-            // that.$store.commit('addPage','refresh');
 
             if (flag == "area") {
                 var areaAll = that.server_info;
@@ -618,7 +604,6 @@ export default {
                     areaAll[i].ischeck = false;
                 }
                 that.request.area_id = opt;
-                // that.$store.commit('changeRequest',{name:'area_id',value:opt});
                 that.$emit('getData',that.request);
 
             } else if (flag == "server") {
@@ -634,9 +619,6 @@ export default {
                 }
                 that.request.area_id = that.seleAreaText.id;
                 that.request.server_id = opt;
-                
-                // that.$store.commit('changeRequest',{name:'area_id',value:that.seleAreaText.id});
-                // that.$store.commit('changeRequest',{name:'server_id',value:opt});
                 that.$emit('getData',that.request);
             }
             that.hiddenScreenFun(); //隐藏筛选
@@ -768,7 +750,7 @@ export default {
             var that = this;
             // 账号绑定
             if (flag == "accountBind") {
-                var accountBindAll = this.screen_info.accountBind;
+                var accountBindAll = that.screen_info.accountBind;
                 if (seleTag == "4") {
                     for (var i in accountBindAll) {
                         if (seleTag == accountBindAll[i].value) {
@@ -788,111 +770,70 @@ export default {
                     }
                 }
             } else if (flag == "videoStatus") {//视频绑定
-                var videoStatusAll = this.screen_info.videoStatus;
-                for (var i in videoStatusAll) {
-                    if (seleTag == videoStatusAll[i].value) {
-                        videoStatusAll[i].ischeck = !videoStatusAll[i].ischeck;
-                        if(videoStatusAll[i].ischeck){
-                            that.is_video = seleTag;
-                        }else{
-                            that.is_video = "";
-                        }
-                        continue;
-                    }
-                    videoStatusAll[i].ischeck = false;
-                }
+                that.is_video = that.setScreen(seletag,that.screen_info.videoStatus);
+            } else if(flag == "person_sex"){//性别
+                that.person_sex = that.setScreen(seleTag,that.screen_info.person_sex);
+            } else if(flag == 'faction'){//门派
+                that.faction_id = that.setScreen(seleTag,that.screen_info.faction,'faction_id');
             } else if (flag == "sellType") {//售价类型
-                var sellTypeAll = this.screen_info.sellType;
-                for (var i in sellTypeAll) {
-                    if (seleTag == sellTypeAll[i].value) {
-                        sellTypeAll[i].ischeck = !sellTypeAll[i].ischeck;
-                        if(sellTypeAll[i].ischeck){
-                            that.sell_type = seleTag;
-                        }else{
-                            that.sell_type = "";
-                        }
-                        continue;
-                    }
-                    sellTypeAll[i].ischeck = false;
-                }
+                that.sell_type = that.setScreen(seleTag,that.screen_info.sellType);
             } else if (flag == "isStages") {//是否分期
-                var isStagesAll = this.screen_info.isStages;
-                for (var i in isStagesAll) {
-                    if (seleTag == isStagesAll[i].value) {
-                        isStagesAll[i].ischeck = !isStagesAll[i].ischeck;
-                        if(isStagesAll[i].ischeck){
-                            that.is_stage = seleTag;
-                        }else{
-                            that.is_stage = "";
-                        }
-                        continue;
-                    }
-                    isStagesAll[i].ischeck = false;
-                }
+                that.is_stage = that.setScreen(seleTag,that.screen_info.isStages);
             } else if (flag == "isInsurance") {//保险情况
-                var isInsuranceAll = this.screen_info.isInsurance;
-                for (var i in isInsuranceAll) {
-                    if (seleTag == isInsuranceAll[i].value) {
-                        isInsuranceAll[i].ischeck = !isInsuranceAll[i].ischeck;
-                        if(isInsuranceAll[i].ischeck){
-                            that.is_safe = seleTag;
-                        }else{
-                            that.is_safe = "";
-                        }
-                        continue;
-                    }
-                    isInsuranceAll[i].ischeck = false;
-                }
+                that.is_safe = that.setScreen(seleTag,that.screen_info.isInsurance);
             } else if (flag == "levelType") {//等级
-                var levelTypeAll = this.screen_info.levelType;
-                for (var i in levelTypeAll) {
-                    if (seleTag == levelTypeAll[i].value) {
-                        levelTypeAll[i].ischeck = !levelTypeAll[i].ischeck;
-                        if(levelTypeAll[i].ischeck){
-                            that.role_level = seleTag;
-                        }else{
-                            that.role_level = "";
-                        }
-                        continue;
-                    }
-                    levelTypeAll[i].ischeck = false;
-                }
+                that.role_level = that.setScreen(seleTag,that.screen_info.levelType);
             } else if (flag == "pokemon") {
                 // console.log(seleTag);
-                var pokemonTypeAll = this.screen_info.pokemonType;
+                var pokemonTypeAll = that.screen_info.pokemonType;
                 for (var i in pokemonTypeAll) {
                     if (seleTag == pokemonTypeAll[i].name) {
                         pokemonTypeAll[i].ischeck = true;
-                        this.hiddenScreenFun(); //隐藏筛选
+                        that.hiddenScreenFun(); //隐藏筛选
                         continue;
                     }
                     pokemonTypeAll[i].ischeck = false;
                 }
             } else if (flag == "profession") {
-                var professionTypeAll = this.screen_info.professionType;
+                var professionTypeAll = that.screen_info.professionType;
                 for (var i in professionTypeAll) {
                     if (seleTag == professionTypeAll[i].name) {
                         professionTypeAll[i].ischeck = true;
 
-                        this.hiddenScreenFun(); //隐藏筛选
+                        that.hiddenScreenFun(); //隐藏筛选
                         continue;
                     }
                     professionTypeAll[i].ischeck = false;
                 }
             } else if (flag == "school") {
-                var schoolTypeAll = this.screen_info.schoolType;
+                var schoolTypeAll = that.screen_info.schoolType;
                 for (var i in schoolTypeAll) {
                     if (seleTag == schoolTypeAll[i].name) {
                         schoolTypeAll[i].ischeck = true;
 
-                        this.hiddenScreenFun(); //隐藏筛选
+                        that.hiddenScreenFun(); //隐藏筛选
                         continue;
                     }
                     schoolTypeAll[i].ischeck = false;
                 }
             }
         },
-
+        setScreen(seleTag,data,val = 'value'){
+            var result = null;
+            for(var i in data){
+                if(seleTag == data[i][val]){
+                    data[i].ischeck = !data[i].ischeck;
+                    if(data[i].ischeck){
+                        result = seleTag;
+                    }else{
+                        result = "";
+                    }
+                    continue;
+                }
+                data[i].ischeck = false;
+            }
+            return result;
+        },
         // 配置
         getConfig(category_id) {
             var that = this;
@@ -930,21 +871,12 @@ export default {
                                 client_idAll[i].ischeck = false;
                             }
                             that.phone_info = client_idAll;
-                            var account_bind = res.data.data.account_bind_all;
-                            for (var i in account_bind) {
-                                account_bind[i].ischeck = false;
-                            }
-                            that.screen_info.accountBind = account_bind;
-                            var sell_type = res.data.data.sell_type;
-                            for (var i in sell_type) {
-                                sell_type[i].ischeck = false;
-                            }
-                            that.screen_info.sellType = sell_type;
-                            var role_level = res.data.data.role_level;
-                            for (var i in role_level) {
-                                role_level[i].ischeck = false;
-                            }
-                            that.screen_info.levelType = role_level;
+
+                            that.screen_info.accountBind = that.setConfig(res.data.data.account_bind_all);
+                            that.screen_info.person_sex = that.setConfig(res.data.data.person_sex);
+                            that.screen_info.faction = that.setConfig(res.data.data.faction);
+                            that.screen_info.sellType = that.setConfig(res.data.data.sell_type);
+                            that.screen_info.levelType = that.setConfig(res.data.data.role_level);
                             // 调用商品列表接口
                             that.request.page = 1;
                             that.$emit('getData',that.request);
@@ -954,6 +886,12 @@ export default {
                 .catch(function(err) {
                     console.log(err);
                 });
+        },
+        setConfig(data){
+            for(var i in data){
+                data[i].ischeck = false;
+            }
+            return data;
         },
         // 获取区服
         getOperation(client_id) {
@@ -1271,6 +1209,8 @@ export default {
 /* ============================ 筛选 ======================== */
 .screen-type-box {
     padding: 0.3rem 0;
+    overflow-y:auto;
+    height:calc(100vh - 1.65rem);
 }
 .screen-type-strip {
     display: flex;
@@ -1288,7 +1228,6 @@ export default {
     display: inline-block;
     width: 76%;
     vertical-align: top;
-    margin-bottom: 0.3rem;
 }
 .screen-strip-right input::-webkit-outer-spin-button,
 .raise-price input::-webkit-inner-spin-button {
@@ -1350,6 +1289,7 @@ input[type="number"] {
     -moz-border-radius: 0.06rem;
     border-radius: 0.06rem;
     color: #666666;
+    margin-bottom: 0.3rem;
 }
 .screen-strip-box-level{
     display: inline-block;
@@ -1361,6 +1301,10 @@ input[type="number"] {
     -moz-border-radius: 0.06rem;
     border-radius: 0.06rem;
     color: #666666;
+    margin-bottom: 0.3rem;
+}
+.right-margin{
+    margin-bottom: 0.3rem;
 }
 /* 筛选确认 */
 .screen-type-bottom {
