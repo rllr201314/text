@@ -65,87 +65,89 @@
         </div>
         <!-- 筛选 -->
         <div class="screen-box screen-type-box" v-show="screenInfoAll[3].isShow">
-            <div class="screen-type-strip">
-                <div class="screen-strip-left input-price-left">价格范围</div>
-                <div class="screen-strip-right input-price-right right-margin">
-                    <input class="downPrice" type="number" v-model="begin_price">
-                    <span>——</span>
-                    <input class="upPrice" type="number" v-model="end_price">元
-                </div>
-            </div>
-            <div class="screen-type-strip">
-                <div class="screen-strip-left sort-left-text">排序方式</div>
-                <div class="screen-strip-right right-margin">
-                    <div class="screen-sort" @click="seleSort('down')">
-                        <img class="screen-sort-check" :src="sortPrice.ischeck.downSort?sortPrice.sortSrc.sortPriceOk:sortPrice.sortSrc.sortPriceNo" alt="">
-                        <span>价格从高到低</span>
-                        <img class="screen-sort-ico" src="../../../static/img/goodscreen/arrow_down.png" alt="">
-                    </div>
-                    <div class="screen-sort" @click="seleSort('up')">
-                        <img class="screen-sort-check" :src="sortPrice.ischeck.upSort?sortPrice.sortSrc.sortPriceOk:sortPrice.sortSrc.sortPriceNo" alt="">
-                        <span>价格从低到高</span>
-                        <img class="screen-sort-ico" src="../../../static/img/goodscreen/arrow_up.png" alt="">
-                    </div>
-                    <div class="screen-sort" @click="seleSort('more')">
-                        <img class="screen-sort-check" :src="sortPrice.ischeck.moreSort?sortPrice.sortSrc.sortPriceOk:sortPrice.sortSrc.sortPriceNo" alt="">
-                        <span>收藏最多</span>
+            <div class="scorll-safari">
+                <div class="screen-type-strip">
+                    <div class="screen-strip-left input-price-left">价格范围</div>
+                    <div class="screen-strip-right input-price-right right-margin">
+                        <input class="downPrice" type="number" v-model="begin_price">
+                        <span>——</span>
+                        <input class="upPrice" type="number" v-model="end_price">元
                     </div>
                 </div>
-            </div>
-            <div class="screen-type-strip">
-                <div class="screen-strip-left">账号绑定</div>
-                <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.accountBind" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('accountBind',item.value)"></div>
+                <div class="screen-type-strip">
+                    <div class="screen-strip-left sort-left-text">排序方式</div>
+                    <div class="screen-strip-right right-margin">
+                        <div class="screen-sort" @click="seleSort('down')">
+                            <img class="screen-sort-check" :src="sortPrice.ischeck.downSort?sortPrice.sortSrc.sortPriceOk:sortPrice.sortSrc.sortPriceNo" alt="">
+                            <span>价格从高到低</span>
+                            <img class="screen-sort-ico" src="../../../static/img/goodscreen/arrow_down.png" alt="">
+                        </div>
+                        <div class="screen-sort" @click="seleSort('up')">
+                            <img class="screen-sort-check" :src="sortPrice.ischeck.upSort?sortPrice.sortSrc.sortPriceOk:sortPrice.sortSrc.sortPriceNo" alt="">
+                            <span>价格从低到高</span>
+                            <img class="screen-sort-ico" src="../../../static/img/goodscreen/arrow_up.png" alt="">
+                        </div>
+                        <div class="screen-sort" @click="seleSort('more')">
+                            <img class="screen-sort-check" :src="sortPrice.ischeck.moreSort?sortPrice.sortSrc.sortPriceOk:sortPrice.sortSrc.sortPriceNo" alt="">
+                            <span>收藏最多</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="screen-type-strip" v-if="false">
-                <div class="screen-strip-left">视频状态</div>
-                <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.videoStatus" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
-                    @click="seleScreen('videoStatus',item.value)"></div>
+                <div class="screen-type-strip">
+                    <div class="screen-strip-left">账号绑定</div>
+                    <div class="screen-strip-right">
+                        <div class="screen-strip-box" v-for="item in screen_info.accountBind" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('accountBind',item.value)"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="screen-type-strip">
-                <div class="screen-strip-left">性别</div>
-                <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.person_sex" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
-                    @click="seleScreen('person_sex',item.value)"></div>
+                <div class="screen-type-strip" v-if="false">
+                    <div class="screen-strip-left">视频状态</div>
+                    <div class="screen-strip-right">
+                        <div class="screen-strip-box" v-for="item in screen_info.videoStatus" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                        @click="seleScreen('videoStatus',item.value)"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="screen-type-strip">
-                <div class="screen-strip-left">门派</div>
-                <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.faction" v-text="item.faction_name" :class="item.ischeck?'red-bg':'black-bg'" 
-                    @click="seleScreen('faction',item.faction_id)"></div>
+                <div class="screen-type-strip">
+                    <div class="screen-strip-left">性别</div>
+                    <div class="screen-strip-right">
+                        <div class="screen-strip-box" v-for="item in screen_info.person_sex" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                        @click="seleScreen('person_sex',item.value)"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="screen-type-strip">
-                <div class="screen-strip-left">售价类型</div>
-                <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.sellType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('sellType',item.value)"></div>
+                <div class="screen-type-strip">
+                    <div class="screen-strip-left">门派</div>
+                    <div class="screen-strip-right">
+                        <div class="screen-strip-box" v-for="item in screen_info.faction" v-text="item.faction_name" :class="item.ischeck?'red-bg':'black-bg'" 
+                        @click="seleScreen('faction',item.faction_id)"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="screen-type-strip">
-                <div class="screen-strip-left">是否可分期</div>
-                <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.isStages" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isStages',item.value)"></div>
+                <div class="screen-type-strip">
+                    <div class="screen-strip-left">售价类型</div>
+                    <div class="screen-strip-right">
+                        <div class="screen-strip-box" v-for="item in screen_info.sellType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('sellType',item.value)"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="screen-type-strip">
-                <div class="screen-strip-left">保险情况</div>
-                <div class="screen-strip-right">
-                    <div class="screen-strip-box" v-for="item in screen_info.isInsurance" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isInsurance',item.value)"></div>
+                <div class="screen-type-strip">
+                    <div class="screen-strip-left">是否可分期</div>
+                    <div class="screen-strip-right">
+                        <div class="screen-strip-box" v-for="item in screen_info.isStages" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isStages',item.value)"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="screen-type-strip">
-                <div class="screen-strip-left">等级</div>
-                <div class="screen-strip-right">
-                    <div class="screen-strip-box-level" v-for="item in screen_info.levelType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('levelType',item.value)"></div>
+                <div class="screen-type-strip">
+                    <div class="screen-strip-left">保险情况</div>
+                    <div class="screen-strip-right">
+                        <div class="screen-strip-box" v-for="item in screen_info.isInsurance" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isInsurance',item.value)"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="screen-type-bottom">
-                <div class="ok-screen-btn" @click="okScreen">确认</div>
-                <div class="no-screen-btn" @click="cancleScreen">取消</div>
+                <div class="screen-type-strip">
+                    <div class="screen-strip-left">等级</div>
+                    <div class="screen-strip-right">
+                        <div class="screen-strip-box-level" v-for="item in screen_info.levelType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('levelType',item.value)"></div>
+                    </div>
+                </div>
+                <div class="screen-type-bottom">
+                    <div class="ok-screen-btn" @click="okScreen">确认</div>
+                    <div class="no-screen-btn" @click="cancleScreen">取消</div>
+                </div>
             </div>
         </div>
         <!-- 神兽 -->
@@ -493,6 +495,9 @@ export default {
                 } else {
                     showInfoAll[7].isShow = false;
                 }
+            }
+            if(showInfoAll[3].isShow){
+                $('.screen-type-box').css('-webkit-overflow-scroll','touch');
             }
         },
         // 隐藏---遮罩+筛选框
@@ -1211,6 +1216,9 @@ export default {
     padding: 0.3rem 0;
     overflow-y:auto;
     height:calc(100vh - 1.65rem);
+}
+.scorll-safari{
+    min-height:100vh;
 }
 .screen-type-strip {
     display: flex;
