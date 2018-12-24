@@ -301,11 +301,11 @@
                 <div class="pop-hint">
                     分享到其他平台提高浏览量，更快速的卖出商品
                 </div>
-                <div class="pop-box" @click="shareFn('wechatFriend')">
+                <div class="pop-box" @click="shareFn('wechatFriend')" v-if="false">
                     <img src="../../static/img/share/wechat.png" alt="">
                     <div>微信好友</div>
                 </div>
-                <div class="pop-box" @click="shareFn('wechatTimeline')">
+                <div class="pop-box" @click="shareFn('wechatTimeline')" v-if="false">
                     <img src="../../static/img/share/pyq.png" alt="">
                     <div>朋友圈</div>
                 </div>
@@ -470,7 +470,8 @@ export default {
             let clipboard = new ClipboardJS("#copy");
             clipboard.on("success", function(e) {
                 clipboard.destroy();
-                mui.toast("复制成功",{ duration:'short', type:'div' });
+                // mui.toast("复制成功",{ duration:'short', type:'div' });
+                mui.alert('链接复制成功,请转发','提示','确认','','div');
             });
             clipboard.on("error", function(e) {
                 clipboard.destory();
