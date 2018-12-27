@@ -164,7 +164,7 @@
                     <!-- <div class="more-info">查看更多详情</div> -->
                 </div>
                 <div class="showBox-right" v-show="safeOrflow.flow">
-                    <div v-if="flow_type == 1">
+                    <!-- <div v-if="flow_type == 1">
                         <div class="flow-left">
                             <img src="../../static/img/goods-details/flow.png" alt="">
                         </div>
@@ -181,6 +181,47 @@
                             <div class="flow-title">确认收货</div>
                             <div class="flow-content">买家确认收货</div>
                             <div class="flow-title">交易成功</div>
+                        </div>
+                    </div> -->
+                    <div class="flow-con" v-if="flow_type == 1">
+                        <div class="flow-vertical-sell"></div>
+                        <div class="flow-strip">
+                            <div class="left-flow">1</div>
+                            <div class="right-flow">
+                                <div class="r-flow-tit">下单支付</div>
+                                <div class="r-flow-text">支付成功，查看交易中的订单通过申请验号联系到客服验号完成后确认交易</div>
+                            </div>
+                        </div>
+                        <div class="flow-strip">
+                            <div class="left-flow">2</div>
+                            <div class="right-flow">
+                                <div class="r-flow-tit">等待发货</div>
+                                <div class="r-flow-text">
+                                    客服根据您提供的信息进行换绑及签约请保持在线并及时与客服沟通
+                                    <div class="red-color">重要：微信客服请前往官网鉴别客服真伪，谨防受骗！</div>    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flow-strip">
+                            <div class="left-flow">3</div>
+                            <div class="right-flow">
+                                <div class="r-flow-tit">买家收货</div>
+                                <div class="r-flow-text">通过游戏线上收货</div>
+                            </div>
+                        </div>
+                        <div class="flow-strip">
+                            <div class="left-flow">4</div>
+                            <div class="right-flow">
+                                <div class="r-flow-tit">确认收货</div>
+                                <div class="r-flow-text">买家确认收货</div>
+                            </div>
+                        </div>
+                        <div class="flow-strip">
+                            <div class="left-flow">5</div>
+                            <div class="right-flow">
+                                <div class="r-flow-tit">交易成功</div>
+                                <div class="r-flow-text"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="flow-con" v-if="flow_type == 2">
@@ -1403,6 +1444,15 @@ input[type="number"] {
     bottom: 1.1rem;
     z-index: 1;
 }
+.flow-vertical-sell{
+    width: 1px;
+    border-left: 1px dashed #fe7649;
+    position: absolute;
+    top: 0.1rem;
+    left: 0.15rem;
+    bottom:.2rem;
+    z-index: 1;
+}
 .left-flow,
 .right-flow {
     display: inline-block;
@@ -1422,7 +1472,7 @@ input[type="number"] {
     background: -moz-linear-gradient(#fe7649, #ffcd7f);
     background: linear-gradient(to right, #fe7649, #ffcd7f);
     position: relative;
-    top:-.05rem;
+    /* top:-.05rem; */
     z-index: 2;
 }
 .right-flow {

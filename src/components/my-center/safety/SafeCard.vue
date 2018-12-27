@@ -33,8 +33,11 @@
         </div>
         <div class="okBtn" @click="nextBtn">下一步</div>
         <div class="statement">
-            <span class="statement-tit">声明：</span>
-            <span>本认证信息已接入公安系统，对于一切认证身份均具有法律效力</span>
+            <div class="statement-tit">声明：</div>
+            <div class="statement-con">
+                <div>本认证信息已接入公安系统，对于一切认证身份均具有法律效力</div>
+                <div>实名认证遇到问题？您可以尝试进行<span @click="goAritificial" class="orange-color" v-if="false">人工认证</span></div>
+            </div>
         </div>
         <Loading  v-if="showLoading"></Loading>
     </div>
@@ -97,6 +100,10 @@ export default {
                 };
                 that.upimg.user_card = imgMsg.base64;
             };
+        },
+        // 前往人工认证
+        goAritificial(){
+            this.$router.push({name:'SafeAritificial'})
         },
         nextBtn() {
             var that = this;
@@ -180,6 +187,14 @@ export default {
     margin: 0 auto;
     padding-top: 0.88rem;
 }
+.safe-authentic-tit {
+    text-align: center;
+    padding: 0.5rem 0 0.18rem;
+}
+.safe-status {
+    width: 6.3rem;
+    height: 1rem;
+}
 .safe-authentic-content {
     padding: 0.2rem;
 }
@@ -194,14 +209,7 @@ export default {
     padding-left: 0.2rem;
     margin-bottom: 0.2rem;
 }
-.safe-authentic-tit {
-    text-align: center;
-    padding: 0.5rem 0 0.18rem;
-}
-.safe-status {
-    width: 6.3rem;
-    height: 1rem;
-}
+
 .safe-cell-tit {
     padding: 0.4rem 0;
 }
@@ -267,9 +275,21 @@ export default {
     margin: 0.3rem auto 0;
     width: 6.5rem;
     color: #999999;
+    display: flex;
+}
+.statement-con,.statement-tit{
+    display:inline-block;
 }
 .statement-tit {
+    width:.8rem;
     color: #666666;
+}
+.statement-con{
+    width:calc(100% - .8rem);
+}
+.orange-color{
+    color:#FE7649;
+    text-decoration: underline;
 }
 
 /* ==========input========= */
