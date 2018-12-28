@@ -130,7 +130,7 @@ export default {
                     showBack: false,
                     showLogo: 2, //显示头部log
                     showShare: 3, //1搜索2分享3菜单
-                    showBg: false, //是否显示背景
+                    showBg: true, //是否显示背景
                     title: "我要卖"
                 }
             },
