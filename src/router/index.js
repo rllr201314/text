@@ -437,16 +437,16 @@ export default new Router({
     //   component:(resolve) => require(['@/components/cbg/CbgState'],resolve)
     // },
     // 人工认证
-    // {
-    //   path:'/safe-aritificial',
-    //   name:'SafeAritificial',
-    //   component:(resolve) => require(['@/components/my-center/safety/SafeAritificial'],resolve),
-    // },
-    // {//状态
-    //   path:'/safe-state',
-    //   name:'SafeState',
-    //   component:(resolve) => require(['@/components/my-center/safety/SafeState'],resolve),
-    // },
+    {
+      path:'/safe-aritificial',
+      name:'SafeAritificial',
+      component:(resolve) => require(['@/components/my-center/safety/SafeAritificial'],resolve),
+    },
+    {//状态
+      path:'/safe-state',
+      name:'SafeState',
+      component:(resolve) => require(['@/components/my-center/safety/SafeState'],resolve),
+    },
     {
       path: '*',
       component: (resolve) => require(['@/components/multi/NoData'], resolve)

@@ -84,7 +84,7 @@ export default {
                 front: "./static/img/my-center/safe/add-front.png",
                 reverse:"./static/img/my-center/safe/add-reverse.png",
                 hand:"./static/img/my-center/safe/add-hand.png",
-                imgData: "image/gif, image/jpeg, image/png, image/jpg,image/bmp"
+                imgData: "image/gif, image/jpeg, image/png, image/jpg,image/bmp",
             },
             id_text:'',
             card_num:'',
@@ -121,7 +121,7 @@ export default {
             reader.onload = function(e) {
                 var imgMsg = {
                     name: fileName, //获取文件名
-                    base64: this.result //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里
+                    base64: this.result //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里 
                 };
                 that.upimg[flag] = imgMsg.base64;
             };
@@ -148,7 +148,7 @@ export default {
             }
         },
         submitFn(){
-
+            this.$router.push({name:'SafeState'});
         }
     }
 }
