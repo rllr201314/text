@@ -99,7 +99,7 @@ export default {
                     .post(process.env.API_HOST+"buyer_trade_fail")
                     .then(res => {
                         // console.log(res);
-                        if (res.status == 200) {
+                        if (res.status == 200) { 
                             if (res.data.code == 200) {
                                 if (res.data.data.data == "") {
                                     that.showNoData = true;
@@ -158,7 +158,6 @@ export default {
 .failure-wrap {
     max-width: 12rem;
     margin: 0 auto;
-    padding-top: 0.88rem;
 }
 .failure-cell {
     /* padding-left:.2rem; */
