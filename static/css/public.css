@@ -4,7 +4,6 @@
     -webkit-user-select:text;
 }
 body{
-    min-width: 640px;
     /* height:100vh; */
     line-height: .4rem; 
 }
