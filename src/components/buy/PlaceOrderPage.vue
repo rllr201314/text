@@ -1,6 +1,6 @@
 <template>
     <!-- 下单 -->
-    <div class="placeOrder-wrap">
+    <div class="wrap">
         <!-- 头部 -->
         <Header v-bind:showTitle="componentsData.showTitle"></Header>
         <div class="placeOrder-content">
@@ -684,11 +684,6 @@ export default {
 };
 </script>
 <style scoped>
-.placeOrder-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: 0.88rem;
-}
 .placeOrder-content {
     padding: 0.2rem 0.2rem 0;
 }

@@ -1,6 +1,6 @@
 <template>
     <!-- 我的竞拍 -->
-    <div class="auction-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="auction-title">
             <div class="auciton-status" @click="seleAucitonStatus('unpaid')" :class="auction_status?'red-border':''">待支付</div>
@@ -141,11 +141,6 @@ export default {
 };
 </script>
 <style  scoped>
-.auction-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 .auction-content {
     padding: 0.2rem;
 }

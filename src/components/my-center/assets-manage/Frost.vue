@@ -1,6 +1,6 @@
 <template>
     <!-- 冻结资产明细 -->
-    <div class="frost-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="frost-content">
             <div class="frost-cell">
@@ -79,11 +79,6 @@ import NoData from "@/components/multi/NoData";
     }
 </script>
 <style scoped>
-    .frost-wrap{
-        max-width:12rem;
-        margin:0 auto;
-        padding-top:.88rem;
-    }
     .frost-content{
         padding:.2rem;
     }

@@ -31,6 +31,11 @@ export default new Router({
       name: 'HomePage',
       component: (resolve) => require(['@/components/HomePage'], resolve)
     },
+    // {
+    //   path:'/pc_index',
+    //   name:'Pc_index',
+    //   component:(resolve) => require(['@/components/PcIndex'],resolve)
+    // },
     {
       path: '/good-list', //商品列表
       name: 'GoodScreen',

@@ -1,6 +1,6 @@
 <template>
     <!-- 代金券 -->
-    <div class="voucher-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="voucher-content">
             <div class="voucher-cell" v-for="item in voucherData">
@@ -50,11 +50,6 @@
     }
 </script>
 <style scoped>
-    .voucher-wrap{
-        max-width:12rem;
-        margin:0 auto;
-        padding-top:.88rem;
-    }
     .voucher-content{
         padding:.2rem;
     }

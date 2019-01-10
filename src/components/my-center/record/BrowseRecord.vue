@@ -1,6 +1,6 @@
 <template>
     <!-- 浏览记录 -->
-    <div class="browse-wrap">
+    <div class="browse-wrap wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="list-box-wrap" v-if="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
@@ -209,8 +209,7 @@ export default {
 </script>
 <style scoped>
 .browse-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
+    padding:0;
 }
 .browse-con {
     padding: 0 0.2rem;

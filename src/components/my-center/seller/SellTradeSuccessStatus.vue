@@ -1,6 +1,6 @@
 <template>
     <!-- 交易成功 -->
-    <div class="tradeSuccess-wrap">
+    <div class="tradeSuccess-wrap wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="list-box-wrap" v-if="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
@@ -162,8 +162,7 @@ export default {
 </script>
 <style  scoped>
 .tradeSuccess-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
+    padding:0;
 }
 .tradeSuccess-cell {
     /* padding-left:.2rem; */

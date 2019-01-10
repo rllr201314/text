@@ -1,5 +1,5 @@
 <template>
-    <div class="message-all-wrap">
+    <div class="message-all-wrap wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="list-box-wrap" v-if="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
@@ -154,8 +154,7 @@ export default {
 </script>
 <style scoped>
 .message-all-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
+    padding:0;
 }
 .message-strip {
     padding-right: 0.2rem;

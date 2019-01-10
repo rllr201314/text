@@ -1,5 +1,5 @@
 <template>
-    <div class="messageADetails-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="messageDetails-con">
             <div class="sortTit">
@@ -175,11 +175,6 @@ export default {
 };
 </script>
 <style scoped>
-.messageADetails-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 .messageDetails-con {
     padding: 0 0.2rem;
 }

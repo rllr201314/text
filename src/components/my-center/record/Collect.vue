@@ -1,6 +1,6 @@
 <template>
-    <!-- 议价记录 -->
-    <div class="bargain-wrap">
+    <!-- 收藏 -->
+    <div class="bargain-wrap wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="bargain-tit" v-if="!showNoData">
             <div class="tit-box" @click="delData">
@@ -198,9 +198,7 @@ export default {
 </script>
 <style scoped>
 .bargain-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    background:#f6f8fe;
+    padding:0;
 }
 .bargain-tit {
     line-height: 0.7rem;

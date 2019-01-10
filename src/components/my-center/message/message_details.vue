@@ -1,5 +1,5 @@
 <template>
-    <div class="mes-details-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="details-con">
             <div class="con-title">
@@ -72,11 +72,6 @@ export default {
 }
 </script>
 <style scoped>
-.mes-details-wrap{
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: 0.88rem;
-}
 .details-con{
     background:#ffffff;
     padding:0 .3rem;

@@ -1,6 +1,6 @@
 <template>
     <!-- 注册 -->
-    <div class="register-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle='comData.showTitle'></Header>
         <div class="register-content">
             <div class="register-cell">
@@ -179,11 +179,6 @@ export default {
 };
 </script>
 <style scoped>
-.register-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 .register-content {
     padding: 0.2rem;
 }

@@ -1,6 +1,6 @@
 <template>
     <!-- 我的商品 -->
-    <div class="mygoods-wrap">
+    <div class="mygoods-wrap wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="seleTit">
             <div :class="seleTit == 3?'red-border':''" @click="seleTitFn(3)">已上架</div>
@@ -480,8 +480,7 @@ export default {
 </script>
 <style scoped>
 .mygoods-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
+    padding:0;
 }
 .seleTit {
     display: flex;

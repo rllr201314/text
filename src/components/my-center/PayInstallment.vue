@@ -1,6 +1,6 @@
 <template>
     <!-- 分期支付 -->
-    <div class="pay-installment-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="payInstall-content">
             <div class="payInstall-cell">
@@ -146,11 +146,6 @@
     }
 </script>
 <style scoped>
-    .pay-installment-wrap{
-        max-width: 12rem;
-        margin:0 auto;
-        padding-top:.88rem;
-    }
     .payInstall-content{
         padding:.2rem;
     }

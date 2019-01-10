@@ -1,6 +1,6 @@
 <template>
     <!-- 分期账单 -->
-    <div class="billInstallment-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="bill-content">
             <div class="time-interval" v-if="false">
@@ -134,11 +134,6 @@
     }
 </script>
 <style scoped>
-    .billInstallment-wrap{
-        max-width:12rem;
-        margin:0 auto;
-        padding-top:.88rem;
-    }
     .bill-content{
         padding:.2rem .2rem 0;
     }

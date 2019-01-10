@@ -1,6 +1,6 @@
 <template>
     <!-- 人工认证 -->
-    <div class="aritificial-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="safe-authentic-tit">
             <img class="safe-status" src="../../../../static/img/my-center/safe/a-one.png" alt="">
@@ -154,9 +154,6 @@ export default {
 }
 </script>
 <style  scoped>
-.aritificial-wrap{
-    padding-top:.88rem;
-}
 .safe-authentic-tit {
     text-align: center;
     padding: 0.5rem 0 0.18rem;
@@ -188,7 +185,6 @@ export default {
     padding: 0;
     overflow: hidden;
 }
-
 #upImg {
     width: 3.25rem;
     height: 2.2rem;

@@ -1,5 +1,5 @@
 <template>
-    <div class="messageAll-wrap">
+    <div class="messageAll-wrap wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="search-wrap">
             <div class="search-left">
@@ -267,8 +267,7 @@ export default {
 </script>
 <style scoped>
 .messageAll-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
+    padding:0;
 }
 .search-wrap {
     background: #ffffff;

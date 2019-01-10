@@ -1,6 +1,6 @@
 <template>
     <!-- 支付 -->
-    <div class="pay-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="componentsData.showTitle"></Header>
         <div class="pay-content">
             <div class="pay-cell">
@@ -914,11 +914,6 @@ export default {
 };
 </script>
 <style scoped>
-.pay-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: 0.88rem;
-}
 .pay-content {
     padding: 0.2rem 0.2rem 0;
 }

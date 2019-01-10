@@ -1,6 +1,6 @@
 <template>
     <!-- 客服真伪验证 -->
-    <div class="authenticity-wrap">
+    <div class="authenticity-wrap wrap">
         <div class="authent-header">
             <div class="goback" @click="goback">
                 <img src="../../../static/img/header/back_ico.png" alt="">
@@ -206,10 +206,8 @@ export default {
 <style scoped>
 
 .authenticity-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
+    padding:0;
     position: relative;
-    min-height:100vh;
 }
 .authent-header {
     text-align: center;

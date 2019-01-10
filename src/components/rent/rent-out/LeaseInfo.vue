@@ -1,6 +1,6 @@
 <template>
     <!-- 填写出售信息页 -->
-    <div class="sellInfo-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="sellInfo-content">
             <div class="sellInfo-cell">
@@ -1353,11 +1353,6 @@ export default {
 };
 </script>
 <style scoped>
-.sellInfo-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 
 .sellInfo-content {
     padding: 0.2rem;

@@ -1,6 +1,6 @@
 <template>
     <!-- 未支付 -->
-    <div class="unpaid-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="unpaid-content">
             <div class="unpaid-cell" v-for="item in goodsData">
@@ -218,11 +218,6 @@ export default {
 };
 </script>
 <style scoped>
-.unpaid-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: 0.88rem;
-}
 .unpaid-content {
     padding: 0.2rem;
 }

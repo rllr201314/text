@@ -1,6 +1,6 @@
 <template>
     <!-- 活动支付页 -->
-    <div class="auctionPay-wrap">
+    <div class="auctionPay-wrap wrap">
         <div class="auctionPay-title">
             <Header v-bind:showTitle="comData.showTitle"></Header>
             <div class="statement">
@@ -74,10 +74,6 @@
 </script>
 
 <style scoped>
-    .auctionPay-wrap{
-        max-width:12rem;
-        margin:0 auto;
-    }
     .auctionPay-title{
         height:4rem;
         background:-webkit-linear-gradient(#FD915F,#FC534A);

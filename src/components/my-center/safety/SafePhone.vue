@@ -1,6 +1,6 @@
 <template>
     <!-- 安全认证之手机 -->
-    <div class="safe-authentic-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="safe-authentic-content">
             <div class="safe-cell safe-tit">
@@ -97,11 +97,6 @@ export default {
 };
 </script>
 <style scoped>
-.safe-authentic-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: 0.88rem;
-}
 .safe-authentic-content {
     padding: 0.2rem;
 }

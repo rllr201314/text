@@ -1,5 +1,5 @@
 <template>
-    <div class="active-wrap">
+    <div class="active-wrap wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="active-content">
             <HotEvents v-bind:showHotTitle="showHotTitle"></HotEvents>
@@ -41,8 +41,6 @@ export default {
 </script>
 <style scoped>
 .active-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
     padding:.88rem 0 2.8rem;
 }
 .active-content {

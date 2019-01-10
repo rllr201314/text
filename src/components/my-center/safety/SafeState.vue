@@ -1,6 +1,6 @@
 <template>
     <!-- 人工认证状态 -->
-    <div class="safewrap">
+    <div class="wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="safe-authentic-tit">
             <img class="safe-status" v-for="item in imgSrc" :src="item.key == status?item.url:''" alt="">
@@ -65,9 +65,6 @@ export default {
 }
 </script>
 <style scoped>
-.safewrap{
-    padding-top:.88rem;
-}
 .safe-authentic-tit {
     text-align: center;
     padding: 0.5rem 0 0.18rem;

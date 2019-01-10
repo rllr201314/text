@@ -1,6 +1,6 @@
 <template>
     <!-- 出售页 -->
-    <div class="sell-page-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="sell-page-content">
             <div class="search">
@@ -270,11 +270,6 @@ export default {
 </script>
 
 <style scoped>
-.sell-page-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: 0.88rem;
-}
 .sell-page-content {
     padding: 0.2rem;
 }

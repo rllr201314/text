@@ -1,5 +1,5 @@
 <template>
-    <div class="search-wrap">
+    <div class="search-wrap wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="titInp">
             <img class="search-ico" src="../../../static/img/search_ico.png" alt="">
@@ -210,6 +210,9 @@ export default {
 };
 </script>
 <style scoped>
+.search-wrap{
+    padding-top:0;
+}
 /*搜索*/
 .titInp {
     width: 5.8rem;

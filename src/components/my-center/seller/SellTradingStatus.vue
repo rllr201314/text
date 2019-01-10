@@ -1,6 +1,6 @@
 <template>
     <!-- 交易中 -->
-    <div class="trad-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="trad-content">
             <div class="trad-cell" v-for="item in goodsData">
@@ -96,11 +96,6 @@ export default {
 };
 </script>
 <style  scoped>
-.trad-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: 0.88rem;
-}
 .trad-content {
     padding: 0.2rem;
 }

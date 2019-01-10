@@ -1,6 +1,6 @@
 <template>
     <!-- 提现 -->
-    <div class="withdraw-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="withdraw-title">
             <div class="auciton-status" @click="seleWithStatus('balance')" :class="withdrawStatus?'red-border':''">余额提现</div>
@@ -181,11 +181,6 @@ import Loading from "@/components/multi/Loading";
     }
 </script>
 <style scoped>
-    .withdraw-wrap{
-        max-width: 12rem;
-        margin: 0 auto;
-        padding-top: 0.88rem;
-    }
     .withdraw-title{
         background:#FFFFFF;
         font-size:.26rem;

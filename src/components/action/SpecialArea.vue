@@ -1,5 +1,5 @@
 <template>
-  <div class="active-wrap">
+  <div class="wrap">
     <Header v-bind:show-title="showTitle"></Header>
     <img class="active-img" :src="imgUrl"/>
   </div>
@@ -42,12 +42,6 @@
 </script>
 
 <style scoped>
-  .active-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: .88rem;
-  }
-
   .active-img {
     width: 100%;
     height: 100%;

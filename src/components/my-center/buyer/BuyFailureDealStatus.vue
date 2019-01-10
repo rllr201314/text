@@ -1,6 +1,6 @@
 <template>
     <!-- 交易失败 -->
-    <div class="failure-wrap">
+    <div class="failure-wrap wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="list-box-wrap" v-if="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
@@ -156,8 +156,7 @@ export default {
 </script>
 <style  scoped>
 .failure-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
+    padding:0;
 }
 .failure-cell {
     /* padding-left:.2rem; */

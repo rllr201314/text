@@ -1,6 +1,6 @@
 <template>
     <!-- 电子保单 -->
-    <div class="guaranteeslip-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="guaranteeslip-con">
             <div class="guaran-tit">
@@ -110,11 +110,6 @@ export default {
 };
 </script>
 <style scoped>
-.guaranteeslip-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 .guaranteeslip-con{
     padding:.2rem;
 }

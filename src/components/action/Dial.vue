@@ -1,5 +1,5 @@
 <template>
-    <div class="dial-wrap">
+    <div class="dial-wrap wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="my-tit-btn" @click="showMyFn">查看我的奖品</div>
         <div class="dial-content">
@@ -286,7 +286,6 @@ export default {
 </script>
 <style scoped>
 .dial-wrap {
-    padding-top: 0.88rem;
     position:relative;
 }
 .dial-content {

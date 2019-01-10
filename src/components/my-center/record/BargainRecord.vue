@@ -1,6 +1,6 @@
 <template>
     <!-- 议价记录 -->
-    <div class="bargain-wrap">
+    <div class="bargain-wrap wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="bargin-tit">
             <div class="tit-box" @click="barginTypeFn('all')">
@@ -288,7 +288,8 @@ export default {
 <style scoped>
 .bargain-wrap {
     /* max-width: 12rem; */
-    margin: 0 auto;
+    /* margin: 0 auto; */
+    padding:0;
 }
 .bargin-tit {
     line-height: 0.8rem;

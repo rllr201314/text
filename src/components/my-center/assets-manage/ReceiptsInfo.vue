@@ -1,6 +1,6 @@
 <template>
     <!-- 收入明细详情 -->
-    <div class="receiptInfo-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="receiptInfo-content">
             <div class="receiptInfo-num">
@@ -77,11 +77,6 @@
     }
 </script>
 <style scoped>
-    .receiptInfo-wrap{
-        max-width: 12rem;
-        margin:0 auto;
-        padding-top:.88rem;
-    }
     .receiptInfo-content{
         font-size:.26rem;
         background:#ffffff;

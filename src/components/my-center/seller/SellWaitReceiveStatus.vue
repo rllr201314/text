@@ -1,6 +1,6 @@
 <template>
     <!-- 已发货 -->
-    <div class="wait-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="wait-content">
             <div class="wait-cell" v-for="item in goodsData">
@@ -92,11 +92,6 @@ export default {
 };
 </script>
 <style  scoped>
-.wait-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: 0.88rem;
-}
 .wait-content {
     padding: 0.2rem;
 }

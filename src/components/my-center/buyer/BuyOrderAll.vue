@@ -1,5 +1,5 @@
 <template>
-    <div class="orderAll-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="orderAll-content">
             <div class="orderAll-cell">
@@ -120,11 +120,6 @@
     }
 </script>
 <style scoped>
-    .orderAll-wrap{
-        max-width:12rem;
-        margin:0 auto;
-        padding-top:.88rem;
-    }
     .orderAll-content{
         padding:.2rem;
     }

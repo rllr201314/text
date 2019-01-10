@@ -1,6 +1,6 @@
 <template>
     <!-- 收货 -->
-    <div class="take-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="componentsData.showTitle"></Header>
         <div class="take-content">
             <div class="take-cell">
@@ -230,11 +230,6 @@ export default {
 };
 </script>
 <style>
-.take-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 .take-content {
     padding: 0.2rem 0.2rem 0;
 }

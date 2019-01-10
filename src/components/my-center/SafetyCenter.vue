@@ -1,6 +1,6 @@
 <template>
     <!-- 电子合同 -->
-    <div class="pact-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="pact-content">
             <div class="pact-cell">
@@ -88,11 +88,6 @@ export default {
 };
 </script>
 <style scoped>
-.pact-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 .pact-content {
     padding: 0.2rem;
 }

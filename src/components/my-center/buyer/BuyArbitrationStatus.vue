@@ -1,6 +1,6 @@
 <template>
     <!-- 仲裁中 -->
-    <div class="arbitration-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="arbitration-content">
             <div class="arbitration-cell" v-for="item in goodsData">
@@ -113,11 +113,6 @@ export default {
 };
 </script>
 <style  scoped>
-.arbitration-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: 0.88rem;
-}
 .arbitration-content {
     padding: 0.2rem;
 }

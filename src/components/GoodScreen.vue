@@ -1,6 +1,6 @@
 <template>
     <!-- 商品列表 商品筛选  -->
-    <div class="good-screen-wrap">
+    <div class="good-screen-wrap wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="titInp">
             <img class="search-ico" src="../../static/img/search_ico.png" alt="">
@@ -1262,8 +1262,7 @@ export default {
 
 <style scoped>
 .good-screen-wrap {
-    /* max-width: 12rem; */
-    margin: 0 auto;
+    padding:0;
 }
 
 /* 筛选 */
@@ -1842,7 +1841,7 @@ input[type="number"] {
 }
 .list-box-wrap{
     position:relative;
-    max-width:12rem;
+    max-width:640px;
     margin:0 auto;
     height:100vh;
 }

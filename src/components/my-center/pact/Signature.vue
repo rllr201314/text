@@ -1,6 +1,6 @@
 <template>
     <!-- 需要我签名 -->
-    <div class="signature-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="signature-content">
             <div class="signature-title">共<span v-text="num"></span>份合同待签署</div>
@@ -106,11 +106,6 @@ export default {
 };
 </script>
 <style scoped>
-.signature-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 .signature-content {
     padding: 0.2rem;
 }

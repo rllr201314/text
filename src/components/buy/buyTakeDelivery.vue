@@ -1,6 +1,6 @@
 <template>
     <!-- 收货 -->
-    <div class="take-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="componentsData.showTitle"></Header>
         <div class="take-content">
              <!-- 商品详情 -->
@@ -89,6 +89,7 @@
                     <div class="intie" v-if="takeType == 1||　takeType == 2">
                         <img src="../../../static/img/order/speed.png" alt="">
                         <span>客服正在为您火速换绑中，请您耐心等待</span>
+                        <div class="blue-color refresh-btn" @click="refreshFn">刷新状态</div>
                     </div>
                     <div class="confirm-receipt" v-if="takeType == 3 ||takeType == 5">
                         <div class="confirm-title" v-if="false">
@@ -115,16 +116,19 @@
                 <a href="https://web.jiaxincloud.com/gray/mobile.html?&thirdJson={}&bg=FD8159&dialogLogo=0&dialogType=1&dialogMode=1&lang=cn&blinkTitle=1&orgName=mglhodd3enu2mg&appName=kgh431&appChannel=20003&quoteUrl=https://web.jiaxincloud.com&pageTitle=看个号客服&pageUrl=https://web.jiaxincloud.com/onekey.html?id=mglhodd3enu2mg&appName=kgh431&appChannel=20003&alone=1&jump=true&jump=true" target="view_window"><span class="red-color">咨询客服</span></a>
             </div>
         </div>
+        <Loading class="black-bg" v-if="showNoData"></Loading>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header"; //头部
 import OrderInfo from "@/components/buy/OrderInfo"; //订单信息
+import Loading from "@/components/multi/Loading";//loading
 export default {
     name: "TakeDelivery",
     components: {
         Header,
-        OrderInfo
+        OrderInfo,
+        Loading
     },
     data() {
         return {
@@ -137,6 +141,7 @@ export default {
                     title: "收货"
                 },
             },
+            showNoData:false,
             passType:false,
             goodsInfo:{},
             // 已收货状态 仲裁显示 **
@@ -200,7 +205,7 @@ export default {
                 // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
-                      that.getData(that.goodsInfo.order_id,true);
+                      that.getData(that.goodsInfo.order_id,'open');
                     }
                 }
             }).catch((err)=>{
@@ -269,28 +274,31 @@ export default {
                     if(res.data.code == 200){
                         that.goodsInfo = res.data.data;
                         that.takeType = that.goodsInfo.bind_status;
-                        if(flag){
+                        if(flag == 'open'){
                           that.$common.linkServer();
+                        }else if(flag == "refresh"){
+                            that.showNoData = false;
                         }
                     }
                 }
             }).catch((err)=>{
                 console.log(err)
             })
+        },
+        // 刷新状态
+        refreshFn(){
+            var that = this;
+            that.showNoData = true;
+            that.getData(that.$route.query.order,'refresh');
         }
     },
     mounted(){
         var that = this;
-        that.getData(that.$route.query.order)
+        that.getData(that.$route.query.order);
     }
 };
 </script>
 <style>
-.take-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: 0.88rem;
-}
 .take-content {
     padding: 0.2rem 0.2rem 0;
 }
@@ -519,6 +527,10 @@ export default {
 .text-left{
     min-width: 1.1rem;
     margin-right:.3rem;
+}
+.refresh-btn{
+    text-decoration:underline;
+    margin-top:.1rem;
 }
 
 /* ==========input========= */

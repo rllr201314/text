@@ -1,6 +1,6 @@
 <template>
     <!-- 申请理赔 -->
-    <div class="apply-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="apply-con">
             <div class="apply-cell">
@@ -227,15 +227,9 @@ export default {
 };
 </script>
 <style scoped>
-.apply-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 .apply-con {
     padding: 0.2rem;
 }
-
 .apply-cell {
     background: #ffffff;
     -webkit-border-radius: 0.1rem;

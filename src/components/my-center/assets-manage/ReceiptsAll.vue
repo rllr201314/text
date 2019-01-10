@@ -1,6 +1,6 @@
 <template>
     <!-- 收入明细列表 -->
-    <div class="receiptAll-wrap">
+    <div class="receiptAll-wrap wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="seleTitle">
             <div :class="showBox == 1?'red-title':'black-title'" @click="seleTitle('all')">全部</div>
@@ -179,8 +179,7 @@ export default {
     background:none;
 }
 .receiptAll-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
+    padding:0;
 }
 .seleTitle {
     max-width:640px;

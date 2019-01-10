@@ -1,5 +1,5 @@
 <template>
-    <div class="pay-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="pay-content">
             <div class="tit">
@@ -55,11 +55,6 @@ export default {
 }
 </script>
 <style scoped>
-.pay-wrap{
-    max-width:12rem;
-    margin:0 auto;
-    padding-top:.88rem;
-}
 .pay-content{
     text-align:center;
 }

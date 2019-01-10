@@ -1,5 +1,5 @@
 <template>
-    <div class="goods-details-wrap">
+    <div class="goods-details-wrap wrap">
         <Header v-bind:showTitle="componentsData.showTitle"></Header>
         <Swiper v-if="false" :imgList="imgList"></Swiper>
         <!-- 商品标题 -->
@@ -738,10 +738,7 @@ export default {
 </script>
 <style scoped>
 .goods-details-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
     padding: 0.88rem 0 1rem;
-    
 }
 
 /* 商品标题 */

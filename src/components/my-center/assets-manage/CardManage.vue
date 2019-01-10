@@ -1,6 +1,6 @@
 <template>
     <!-- 银行卡管理 -->
-    <div class="cardmanage-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="cardmanage-content">
             <div class="add-card" v-if="pageType==1">
@@ -126,11 +126,6 @@ import Loading from "@/components/multi/Loading";
     }
 </script>
 <style scoped>
-    .cardmanage-wrap{
-        max-width: 12rem;
-        margin:0 auto;
-        padding-top:.88rem;
-    }
     .cardmanage-content{
         font-size:.26rem;
         color:#333333;

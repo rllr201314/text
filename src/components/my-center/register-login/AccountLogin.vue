@@ -1,5 +1,5 @@
 <template>
-    <div class="login-wrap" @keydown.enter="enterFn">
+    <div class="login-wrap wrap" @keydown.enter="enterFn">
         <div class="login-header">
             <!-- <Header v-bind:showTitle="comData.showTitle"></Header> -->
             <div class="login-title">
@@ -181,9 +181,7 @@ export default {
 </script>
 <style scoped>
 .login-wrap {
-    max-width: 7.5rem;
-    margin: 0 auto;
-    /* padding-top:.88rem; */
+    padding-top:0;
 }
 .login-header {
     width: 100%;

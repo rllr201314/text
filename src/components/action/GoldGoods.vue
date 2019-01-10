@@ -1,5 +1,5 @@
 <template>
-  <div class="active-wrap">
+  <div class="wrap">
     <Header v-bind:show-title="showTitle"></Header>
     <img class="gold-top" src="../../../static/img/home-page/gold_top.png">
     <div class="page-center">
@@ -69,11 +69,6 @@
 </script>
 
 <style scoped>
-  .active-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top: .88rem;
-  }
 
   .gold-top {
     width: 100%;

@@ -1,6 +1,6 @@
 <template>
     <!-- 资产明细 -->
-    <div class="assets-manage-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="manage-content">
             <div class="manage-cell assets-cell">
@@ -145,11 +145,6 @@
     }
 </script>
 <style scoped>
-    .assets-manage-wrap{
-        max-width: 12rem;
-        margin:0 auto;
-        padding-top:.88rem;
-    }
     .manage-content{
         padding:.2rem;
     }

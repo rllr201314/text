@@ -1,6 +1,6 @@
 <template>
     <!-- 活动页 -->
-    <div class="active-wrap">
+    <div class="active-wrap wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="active-content">
             <GameDivision></GameDivision>
@@ -45,11 +45,6 @@
 </script>
 
 <style scoped>
-.active-wrap {
-    max-width: 12rem;
-    margin:0 auto;
-    padding-top:.88rem;
-}
 .active-content{
     padding:.2rem;
 }

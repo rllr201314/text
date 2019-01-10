@@ -1,6 +1,6 @@
 <template>
     <!-- 设置交易密码 -->
-    <div class="register-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle='comData.showTitle'></Header>
         <div class="register-content">
             <div class="hint-title">为了您的账户余额安全，下面的验证可能会花费您2分钟时间</div>
@@ -212,11 +212,6 @@ export default {
 };
 </script>
 <style scoped>
-.register-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 .register-content {
     padding:0 0.2rem;
 }

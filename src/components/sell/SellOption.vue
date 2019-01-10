@@ -1,5 +1,5 @@
 <template>
-    <div class="sellOption-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="sellOpt-top">
             <div class="game-sign">
@@ -494,11 +494,6 @@ export default {
 };
 </script>
 <style scoped>
-.sellOption-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 .sellOpt-top {
     height: 5rem;
     background-image: url(../../../static/img/sell/header_bg.png);

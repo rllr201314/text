@@ -18,7 +18,7 @@ export default {
   },
   data(){
     return{
-      isRouterAlive:true
+      isRouterAlive:true,
     }
   },
   methods:{
@@ -28,15 +28,13 @@ export default {
       this.$nextTick(function(){
         this.isRouterAlive = true;
       })
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style>
 #app {
-  /* max-width:12rem;
-  margin:0 auto; */
   background:#f6f8fe;
 }
 </style>

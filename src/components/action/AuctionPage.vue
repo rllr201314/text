@@ -1,6 +1,6 @@
 <template>
     <!-- 拍卖页 -->
-    <div class="auction-wrap">
+    <div class="auction-wrap wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="swiper-info">
             <!--轮播图组件-->
@@ -231,8 +231,6 @@
 <style scoped>
     .auction-wrap{
         background:#f6f8fe;
-        max-width:12rem;
-        margin:0 auto;
     }
     .swiper-info{
         position: relative;

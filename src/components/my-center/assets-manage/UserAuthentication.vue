@@ -1,6 +1,6 @@
 <template>
     <!-- 用户认证 -->
-    <div class="userauthentic-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="userauthentic-content">
             <div class="add-card" v-if="pageType==1">
@@ -256,12 +256,6 @@ export default {
 };
 </script>
 <style scoped>
-.userauthentic-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    height: 100%;
-    padding-top: 0.88rem;
-}
 .userauthentic-content {
     font-size: 0.26rem;
     color: #333333;

@@ -1,6 +1,6 @@
 <template>
     <!-- 申请仲裁 -->
-    <div class="arbitration-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="componentsData.showTitle"></Header>
         <div class="arbitration-content">
             <div class="arbitration-cell">
@@ -287,11 +287,6 @@
     }
 </script>
 <style scoped>
-    .arbitration-wrap{
-        max-width:12rem;
-        margin:0 auto;
-        padding-top:.88rem;
-    }
     .arbitration-content{
         padding:.2rem;
     }

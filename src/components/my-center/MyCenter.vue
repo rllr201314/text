@@ -1,6 +1,6 @@
 <template>
     <!-- 个人中心 -->
-    <div class="mycenter-wrap">
+    <div class="wrap">
         <div class="mycenter-top">
             <Header v-bind:showTitle="comData.showTitle"></Header>
             <div class="user-login" v-if="myData.userStatus == 1">
@@ -582,14 +582,6 @@ export default {
 };
 </script>
 <style scoped>
-.mycenter-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-    position: relative;
-    background:#f6f6f6;
-    min-height:130vh;
-}
 .mycenter-top {
     background-image: url(../../../static/img/my-center/header.png);
     background-repeat: no-repeat;
@@ -624,10 +616,7 @@ export default {
 /* 内容部分 */
 .mycenter-content {
     padding: 0 0.2rem;
-    position: absolute;
-    left: 0;
-    top: 3rem;
-    right: 0;
+    margin-top:-.58rem;
 }
 .suspend-box {
     font-size: 0.24rem;

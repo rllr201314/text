@@ -1,6 +1,6 @@
 <template>
     <!-- 安全认证之手机 -->
-    <div class="safe-authentic-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="safe-authentic-tit">
             <img v-if="dent_type == 1"  class="safe-status" src="../../../../static/img/my-center/safe/four.png" alt="">
@@ -74,11 +74,6 @@ export default {
 };
 </script>
 <style scoped>
-.safe-authentic-wrap {
-    max-width: 12rem;
-    margin: 0 auto;
-    padding-top:.88rem;
-}
 .safe-authentic-content {
     padding: 0.2rem;
 }
