@@ -193,6 +193,7 @@ export default {
 .top-header {
     /* max-width:12rem; */
     max-width: 640px;
+    min-width: 640px;
     margin: 0 auto;
     height: 0.88rem;
     position: fixed;

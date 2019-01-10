@@ -12,7 +12,7 @@
                 <div class="info-cell">
                     <div class="cell-tit">
                         <div class="tit-strip" @click="seleline('on')" :class="is_line?'red-top':''">线上支付</div>
-                        <div class="tit-strip" @click="seleline('no')" :class="!is_line?'red-top':''">线下支付</div>
+                        <div class="tit-strip" @click="seleline('no')" :class="!is_line?'red-top':''" v-if="showOffline">线下支付</div>
                     </div>
                     <div class="opt-cell" v-show="is_line">
                         <div class="showPay">
@@ -121,7 +121,7 @@
         <Loading v-if="showLoading"></Loading>
         <div id="pay_card"></div>
         <!-- <PaySuccess v-if="showPaySuccess"></PaySuccess> -->
-        <LinkServer v-bind:is_line="is_line"></LinkServer>
+        <LinkServer v-bind:is_line="is_line" class="fixedRight"></LinkServer>
     </div>
 </template>
 <script>
@@ -182,6 +182,7 @@ export default {
             is_line: true, //线上true 线下false
             off_line:true,//未选择线下true 选择线下false
             payment_num:3,//默认银联
+            showOffline:true,//显示线下付款
             online: [
                 {
                     key: 3,
@@ -860,6 +861,7 @@ export default {
                 that.$router.go(-1);
             }
         }else if(that.$route.query.stage){// 分期支付
+            that.showOffline = false;
             var s_stages = sessionStorage.getItem('stage');
             var stages = that.$route.query.stage;
             if(s_stages == stages){
@@ -1189,6 +1191,18 @@ export default {
     left:0;
     bottom:0;
     right:0;
+}
+@media (max-width:1440px) {
+    .fixedRight{
+        right:0 !important;
+        margin-right:0!important;
+    }
+}
+@media (min-width:1440px) {
+    .fixedRight{
+        right:50% !important;
+        margin-right: -307px;
+    }
 }
 </style>
 

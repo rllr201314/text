@@ -7,6 +7,8 @@
                 <div class="minirefresh-scroll list">
                     <ul>
                         <div class="tradeSuccess-cell" v-for="item in goodsData">
+                            <img class="badge" v-if="item.rent_method == 1" src="../../../../static/img/badge/product.png" alt="">
+                            <img class="badge" v-if="item.rent_method == 2" src="../../../../static/img/badge/rent-badge.png" alt="">
                             <div class="gameLog">
                                 <img :src="item.game_logo" alt="">
                             </div>
@@ -19,8 +21,8 @@
                                 <div class="order-des" v-text="item.goods_title"></div>
                                 <div class="price-status">
                                     <span class="good-price">
-                                        <span>￥</span>
-                                        <span v-text="item.goods_amount"></span>
+                                        <span v-if="item.rent_method == 1">￥</span><span class="good-price" v-text="item.goods_amount"></span>
+                                        <span v-if="item.rent_method == 2">￥</span><span class="good-price" v-text="item.order_amount"></span>
                                     </span>
                                     <span class="order-status">交易成功</span>
                                 </div>
@@ -32,7 +34,7 @@
                                 </div>
                                 <div class="right-operate">
                                     <span class="cancel" v-text="item.text"></span>
-                                    <span class="pay" @click="goStatus(item.order_id)">查看</span>
+                                    <span class="pay" v-if="item.rent_method == 1" @click="goStatus(item.order_id)">查看</span>
                                 </div>
                             </div>
                         </div>
@@ -175,6 +177,14 @@ export default {
     box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     margin-bottom: 0.2rem;
     padding: 0 0.2rem;
+    position: relative;
+}
+.badge{
+    width:1.03rem;
+    height:1rem;
+    position: absolute;
+    top:0;
+    right:0;
 }
 .gameLog {
     display: inline-block;
