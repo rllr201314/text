@@ -8,25 +8,25 @@
         <div>杭州古都科技有限公司灵石县分公司@2018-2028</div>
         <div>kangehao.com版权所有</div>
         <div class="footer-link">
-          <a href="http://www.epicc.com.cn/?cmpid=2seb2pzBT00002">
+          <a href="http://www.epicc.com.cn/?cmpid=2seb2pzBT00002" target="_blank">
             <img src="../../../static/img/footer/ic_link_picc.png"/>
           </a>
-          <a href="https://www.yunhetong.com/">
+          <a href="https://www.yunhetong.com/" target="_blank">
             <img src="../../../static/img/footer/ic_link_yht.png"/>
           </a>
           <a id="_pingansec_bottomimagesmall_shiming"
-             href="http://si.trustutn.org/info?sn=592181121037343847839&certType=1">
+             href="http://si.trustutn.org/info?sn=592181121037343847839&certType=1" target="_blank">
             <img src="http://v.trustutn.org/images/cert/bottom_small_img.png"/>
           </a>
         </div>
         <div class="footer-link">
-          <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=14072902000115">
+          <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=14072902000115" target="_blank">
             <img src="../../../static/img/footer/ic_link_wjb.png"/>
           </a>
-          <a href="http://webscan.360.cn/index/checkwebsite?url=www.kangehao.com">
+          <a href="http://webscan.360.cn/index/checkwebsite?url=www.kangehao.com" target="_blank">
             <img src="../../../static/img/footer/ic_link_360.png"/>
           </a>
-          <a href="http://www.zjwhsc.com/zjwh/QR_Place_Info.aspx?Place_Guid=be5fce830e1b4e7e9e77253f9ac545af">
+          <a href="http://www.zjwhsc.com/zjwh/QR_Place_Info.aspx?Place_Guid=be5fce830e1b4e7e9e77253f9ac545af" target="_blank">
             <img src="../../../static/img/footer/ic_link_www.png"/>
           </a>
         </div>
