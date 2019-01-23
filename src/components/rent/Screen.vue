@@ -173,8 +173,6 @@ export default {
         return {
 
             // 提交的数据
-           
-            
             list: [],
             miniRefresh: null,
             showNoData: false,
@@ -473,6 +471,36 @@ export default {
                 screentop[index].tit_top_src =
                     "./static/img/goodscreen/upempty.png";
                 screentop[index].ischeck = true;
+            }
+            this.showScreenFun(flag); //显示哪一个筛选框
+        },
+        // 下一栏选项
+        bottomScreen(flag, index) {
+            var screenbottom = this.screenBottom;
+            var screentop = this.screenTop;
+            // 点击时让其他的变成未选状态
+            for (var i in screentop) {
+                screentop[i].tit_top_src =
+                    "./static/img/goodscreen/downempty.png";
+                screentop[i].ischeck = false;
+            }
+            for (var i in screenbottom) {
+                screenbottom[i].tit_bottom_src =
+                    "./static/img/goodscreen/downsolid.png";
+                if (i == index) {
+                    continue;
+                }
+                screenbottom[i].ischeck = false;
+            }
+            // 点击
+            if (screenbottom[index].ischeck) {
+                screenbottom[index].tit_bottom_src =
+                    "./static/img/goodscreen/downsolid.png";
+                screenbottom[index].ischeck = false;
+            } else {
+                screenbottom[index].tit_bottom_src =
+                    "./static/img/goodscreen/upsolid.png";
+                screenbottom[index].ischeck = true;
             }
             this.showScreenFun(flag); //显示哪一个筛选框
         },

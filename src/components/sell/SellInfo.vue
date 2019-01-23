@@ -377,7 +377,7 @@ export default {
                 images: [],
                 goods_id:null,
             },
-
+            extend_attribute:[],//延伸属性
         };
     },
     methods: {
@@ -1041,6 +1041,7 @@ export default {
                                 that.sellData.sex = data.person_sex; //角色性别
                                 that.sellData.faction = data.faction; //职业
                                 that.sellData.accountType = data.account_type; //账号类型
+                                that.extend_attribute = data.extend_attribute;
                                 that.judgeInfo(data.chargeInfo);
                             }else if(flag == 2){//编辑
                                 var oldData = that.oldData;

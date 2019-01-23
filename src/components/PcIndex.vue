@@ -1,16 +1,16 @@
 <template>
     <div class="pc-wrap">
         <div class="title">
-            <div class="content clearfloat #top">
+            <div class="content clearfloat">
                 <div class="con-left">
                     <img src="../../static/img/pc_index/home.png" alt="">
                     <span>您好，欢迎来看个号！</span>
                     <img src="../../static/img/pc_index/download.png" alt="">
                 </div>
                 <div class="con-right sele-btn">
-                    <span>登录</span>
+                    <span @click="loginFn('login')">登录</span>
                     <span>|</span>
-                    <span>注册</span>
+                    <span @click="loginFn('register')">注册</span>
                 </div>
             </div>
         </div>
@@ -28,8 +28,8 @@
                 <ul class="nav-box flex-wrap">
                     <li></li>
                     <li>首页</li>
-                    <li>我购买的</li>
-                    <li>我出售的</li>
+                    <li @click="goLink(true,'buy-order')">我购买的</li>
+                    <li @click="goLink(true,'sell-order')">我出售的</li>
                     <li>热门活动<img src="../../static/img/pc_index/new-ico.png" alt=""></li>
                     <li>···</li>
                 </ul>
@@ -116,7 +116,7 @@
                 </div>
             </div>
             <div class="content flex-wrap plate">
-                <img v-for="item in plate" :src="item" alt="">
+                <img v-for="item in plate" :src="item.url" alt="" @click="goLink(false,item.path)">
             </div>
             <div class="container content flex-wrap">
                 <div class="container-left">
@@ -153,7 +153,7 @@
                             </div>
                         </div>
                         <ul class="list">
-                            <li class="list-strip big-list" v-for="(item,index) in accountList" @click="seleNav(index,'new')" :class="index == newSlide?'on':''">
+                            <li class="list-strip big-list" v-for="(item,index) in accountList" @click="seleNav(index,'boutique')" :class="index == boutiqueSlide?'on':''">
                                 <a href="javascript:;" class="clearfloat">
                                     <span v-text="item.name" class="list-text list-name"></span>
                                     <span v-if="item.type == 1" class="sign cph">成品号</span>
@@ -171,11 +171,32 @@
                 <div class="container-right">
                     <div class="cell verify-box interval">
                         <div class="verify-tit">客服真伪验证</div>
-                        <div class="verify-con flex-wrap" v-for="(item,index) in verifyList">
-                            <input class="search-inp" type="text" :placeholder="item.placeholder">
-                            <div class="search-btn" v-text="item.btnVal"></div>
+                        <div class="verify-con flex-wrap" v-for="(item,index) in verifyList" :key="index">
+                            <input class="search-inp" type="text" :placeholder="item.placeholder" v-model="verifyData[item.flag]" @input="clearVerifyDataFn(item.flag)">
+                            <div class="search-btn" v-text="item.btnVal" @click="verifyFn(item.flag)"></div>
                         </div>
-                        <div class="verify-bot flex-wrap">
+                        <div class="verify-bot flex-wrap" v-if="verifyResult == 1">
+                            <img src="../../static/img/pc_index/true-user.png" alt="">
+                            <div class="verify-text">
+                                <div>看个号客服</div>
+                                <div>为您竭诚服务</div>
+                            </div>
+                        </div>
+                        <div class="verify-bot flex-wrap" v-if="verifyResult == 2">
+                            <img src="../../static/img/pc_index/false-good.png" alt="">
+                            <div class="verify-text">
+                                <div>您验证的信息非看个号官方提供</div>
+                                <div>请尽快<span class="red-color">停止操作</span>以免您的财产损失</div>
+                            </div>
+                        </div>
+                        <div class="verify-bot flex-wrap" v-if="verifyResult == 3">
+                            <img src="../../static/img/pc_index/false-link.png" alt="">
+                            <div class="verify-text">
+                                <div>您搜索的商品非看个号平台提供</div>
+                                <div><span class="red-color">请勿操作</span>，谨防受骗</div>
+                            </div>
+                        </div>
+                        <div class="verify-bot flex-wrap" v-if="verifyResult == 4">
                             <img src="../../static/img/pc_index/true-good.png" alt="">
                             <div class="verify-text">
                                 <div>您搜索的商品是由看个号</div>
@@ -194,7 +215,7 @@
                         </div>
                         <div class="">
                             <ul class="list flex-wrap faq-wrap">
-                                <li class="list-strip faq-strip" v-for="item in faq">
+                                <li class="list-strip faq-strip" v-for="(item,index) in faq" :key="index">
                                     <a href="javascript:;"><span v-text="item" class="list-text"></span></a>
                                 </li>
                             </ul>
@@ -280,33 +301,40 @@
         </div>
         <div class="fixed-right">
             <ul>
-                <li class="fixed-sell">
+                <li class="fixed-sell" @click="goLink(false,'buy')">
                     <img src="../../static/img/pc_index/buy.png" alt="">
                     <div>我要买</div>
                 </li>
-                <li class="fixed-cell">我要卖</li>
-                <li class="fixed-cell">帐号寄租</li>
-                <li class="fixed-cell">咨询客服</li>
-                <li class="fixed-cell">我的收藏</li>
+                <li class="fixed-cell" @click="goLink(true,'sell')">我要卖</li>
+                <li class="fixed-cell" @click="goLink(true,'rent-out')">帐号寄租</li>
+                <li class="fixed-cell" @click="$common.linkServer()">咨询客服</li>
+                <li class="fixed-cell" @click="goLink(true,'collect')">我的收藏</li>
                 <li class="fixed-top">
-                    <a href="#top">
+                    <a href="javascript:;" @click="topFn">
                         <img src="../../static/img/pc_index/top.png" alt="">
                         <div>返回顶部</div>
                     </a>
                 </li>
             </ul>
         </div>
+        <Loading v-show="showLoading" class="showload"></Loading>
     </div>
 </template>
 <script>
+import Loading from "@/components/multi/Loading"
 export default {
     name:"Pc_index",
+    components:{
+        Loading
+    },
     data(){
         return{
+            showLoading:false,
             imgList:[{img:'static/img/swiper_cont.png'},{img:'static/img/pc_index/slideshow.png'},{img:'static/img/swiper_cont.png'},{img:'static/img/pc_index/slideshow.png'}],
             gameNav:['推荐','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
             navSlide:0,//导航栏
             newSlide:null,//最新上架
+            boutiqueSlide:null,//精品推荐
             gameList:[{
                 url:'static/img/mh_ico.png',
                 text:'梦幻西游'
@@ -326,7 +354,12 @@ export default {
                 url:'static/img/mh_ico.png',
                 text:'梦幻西游'
             }],
-            plate:['./static/img/pc_index/rent.png','./static/img/pc_index/topup.png','./static/img/pc_index/cbg.png','./static/img/pc_index/gold.png'],
+            plate:[
+                {url:'./static/img/pc_index/rent.png',path:'rent'},
+                {url:'./static/img/pc_index/topup.png',path:'special-area?type=2'},
+                {url:'./static/img/pc_index/cbg.png',path:'special-area?type=1'},
+                {url:'./static/img/pc_index/gold.png',path:'gold-goods'}
+            ],
             accountList:[
                 {name:'大话西游',type:1,des:'方寸山xxxxxxxxxx100级高输出力士方寸山xxxxxxxxxx100级高输出力士方寸山xxxxxxxxxx100级高输出力士方寸山xxxxxxxxxx100级高输出力士',price:'1000'},
                 {name:'大话西游',type:1,des:'方寸山xxxxxxxxxx100级高输出力士',price:'1000'},
@@ -340,10 +373,12 @@ export default {
             ],
             deal_num:['1','2','3','4'],
             verifyList:[
-                {placeholder:'请输入QQ客服进行验证',btnVal:'验证QQ客服'},
-                {placeholder:'请输入客服微信进行验证',btnVal:'验证微信客服'},
-                {placeholder:'请复制商品链接进行验证',btnVal:'验证商品链接'},
+                {placeholder:'请输入QQ客服进行验证',btnVal:'验证QQ客服',flag:'qq'},
+                {placeholder:'请输入客服微信进行验证',btnVal:'验证微信客服',flag:'wx'},
+                {placeholder:'请复制商品链接进行验证',btnVal:'验证商品链接',flag:'link'},
             ],
+            verifyData:{qq:'',wx:'',link:''},
+            verifyResult:0,
             faq:['买东西要手续费吗？','买东西要手续费吗？','买东西要手续费吗？','买东西要手续费吗？','买东西要手续费吗？'],
 
         } 
@@ -365,7 +400,107 @@ export default {
                 this.navSlide = index;
             }else if(flag == 'new'){
                 this.newSlide = index;
+            }else if(flag == 'boutique'){
+                this.boutiqueSlide = index;
             }
+        },
+        // 登录
+        loginFn(flag){
+            if(flag == 'login'){
+                this.$router.push({path:'account-login'})
+            }else if(flag == 'register'){
+                this.$router.push({path:'register'})
+            }
+        },
+        // 判断是否登录
+        existToken(){
+            var token = this.$store.state.token == ''|| undefined ? false:true;
+            return token;
+        },
+        // 跳转
+        goLink(judge,flag){
+            // 需要判断是否登录
+            var that = this;
+            if(judge && !that.existToken()){
+                that.$router.push({path:'account-login'})
+                return false;
+            }
+            that.$router.push({path:flag})
+        },
+        // 清空其他验证的内容
+        clearVerifyDataFn(flag){
+            var that = this;
+            for(var i in that.verifyData){
+                if(flag == i){
+                    continue;
+                }
+                that.verifyData[i] = '';
+            }
+        },
+        verifyFn(flag){
+            var that = this;
+            var request = {};
+            if(flag == 'qq'){
+                if(that.verifyData.qq == '' || that.verifyData.qq.length < 5){
+                    mui.toast("请输入正确的QQ号", { duration: "500", type: "div" });
+                    return false;
+                }
+                request.authentic_type = 1;
+                request.content = that.verifyData.qq;
+            }else if(flag == 'wx'){
+                var reg=/^[a-zA-Z\d_]{5,}$/;    
+                if(!reg.test(that.verifyData.wx)){
+                    mui.toast("请输入正确的微信号", { duration: "short", type: "div" });
+                    return false;
+                }
+                request.authentic_type = 2;
+                request.content = that.verifyData.wx;
+            }else if(flag == 'link'){
+                if(that.verifyData.link == ""){
+                    mui.toast("请输入商品链接", { duration: "short", type: "div" });
+                    return false;
+                }
+                request.authentic_type = 3;
+                request.content = that.verifyData.link;
+            }
+            that.showLoading = true;
+            that.$axios.post(process.env.API_HOST+"authentic_kf",request).then((res)=>{
+                if(res.status == 200){
+                    that.showLoading = false;
+                        console.log(res)
+                    if(res.data.code == 200){
+                        if(request.authentic_type == 1){
+                            if(res.data.data.flag == 1){
+                                that.nicename = res.data.data.nickname;
+                                that.verifyResult = 1;
+                            }else{
+                                that.verifyResult = 2;
+                            }
+                        }else if(request.authentic_type == 2){
+                            if(res.data.data.flag == 1){
+                                that.nicename = res.data.data.nickname;
+                                that.verifyResult = 1;
+                            }else{
+                                that.verifyResult = 2;
+                            }
+                        }else if(request.authentic_type == 3){
+                            if(res.data.data.flag == 1){
+                                that.verifyResult = 4;
+                            }else{
+                                that.verifyResult = 3;
+                            }
+                        }
+                    }else{
+                        mui.toast(res.data.msg, { duration: "short", type: "div" });
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err);
+                that.attt = JSON.stringify(err);
+            })
+        },
+        topFn(){
+            $(window).scrollTop(0);
         }
     },
     mounted(){
@@ -486,10 +621,14 @@ export default {
     }
     .sele-btn span:nth-child(1){
         color:#FE7649;
+        cursor: pointer;
     }
     .sele-btn span:nth-child(2){
         margin:0 14px;
         vertical-align:top;
+    }
+    .sele-btn span:nth-child(3){
+        cursor: pointer;
     }
     /* 搜索栏 */
     .head-search{
@@ -530,6 +669,7 @@ export default {
     .nav-box li{
         width:189px;
         text-align:center;
+        cursor: pointer;
     }
     .nav-box li:nth-child(1){
         background:url('../../static/img/pc_index/safe-tit.png') no-repeat;
@@ -756,6 +896,7 @@ export default {
     /* 客服验证 */
     .verify-box{
         text-align:center;
+        padding-bottom:16px;
     }
     .verify-tit{
         padding: 28px 0 19px;
@@ -780,7 +921,7 @@ export default {
         text-align:left;
         font-size:12px;
         color:#666666;
-        padding:16px 0 16px 33px;
+        padding:16px 0 0 33px;
     }
     .verify-bot img{
         width:55px;
@@ -890,6 +1031,7 @@ export default {
         justify-content: center;
         margin-bottom:33px;
         align-items:center;
+        line-height: 20px;
     }
     .l-help{
         padding:0;
@@ -927,9 +1069,7 @@ export default {
         font-size:12px;color:#666666;
     }
     .filing{
-        font-size:12px;
-        color:#999999;
-        line-height: 20px;
+        font-size:12px;color:#999999;line-height: 20px;
     }
     @media (max-width:1440px) {
         .fixed-right{
@@ -965,7 +1105,7 @@ export default {
     }
     .fixed-sell{
         padding:10px 0 5px;
-        max-height: 60px;
+        height: 60px;
         color:#ffffff;
         background:-webkit-linear-gradient(#FD915F,#FC534A);
         background:-o-linear-gradient(#FD915F,#FC534A);
@@ -975,6 +1115,9 @@ export default {
     .fixed-sell img{
         width:28px;
         height:21px;
+    }
+    .fixed-sell div{
+        line-height: 10px;
     }
     .fixed-top{
         background: #ffffff;
@@ -986,8 +1129,14 @@ export default {
         max-height: 60px;
 
     }
+    .fixed-top div{
+        line-height: 10px;
+    }
     .fixed-top img{
         width:21px;
         height:13px;
+    }
+    .showload{
+        z-index:9999;
     }
 </style>

@@ -188,7 +188,6 @@ export default {
                 }
             }).catch((err)=>{
                 console.log(err);
-                // mui.alert(JSON.stringify(err),'tiii','shiii','','div');
                 that.attt = JSON.stringify(err);
             })
         }

@@ -98,6 +98,10 @@
         <!-- 商品描述 -->
         <div class="goods-details-info">
             <div class="goods-info-content">
+                <div class="goods-info-strip" v-if="detailData.rent_method == 1 ||detailData.rent_method == 3">
+                    <div class="text-left">账号类型</div>
+                    <div class="text-right" v-text="detailData.account_type"></div>
+                </div>
                 <div class="goods-info-strip">
                     <div class="text-left">基本信息</div>
                     <div class="text-right" v-if="detailData.server_name != null" v-text="detailData.platform_name + '>' +　detailData.area_name+'>'+detailData.server_name"></div>

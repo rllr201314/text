@@ -56,7 +56,6 @@
     import HotLine from '@/components/home-page/Hotline'//联系客服
     import UserHelp from '@/components/home-page/UserHelp'//用户帮助
 
-
 export default {
     data(){
         return{
