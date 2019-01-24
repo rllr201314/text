@@ -17,6 +17,36 @@
                         <span class="sell-lefttext">角色等级</span>
                         <input type="number" placeholder="请输入角色等级" v-model="requestData.role_level" oninput="if(value.length>3)value=value.slice(0,3)">
                     </div>
+                    <div v-for="(item,index) in extend_attribute" :key="index">
+                        <div class="sell-strip" v-if="item.value_type == 1">
+                            <span class="sell-lefttext" v-text="item.title"></span>
+                            <input type="text" :placeholder="item.tip" maxlength="20">
+                        </div>
+                        <div class="sell-strip" v-if="item.value_type == 2">
+                            <span class="sell-des" v-text="item.title"></span>
+                            <textarea name="des" id="arbdes" cols="25" rows="3" :placeholder="item.tip" maxlength="200"></textarea>
+                        </div>
+                        <div class="sell-strip" v-if="item.value_type == 3">
+                            <span class="sell-lefttext" v-text="item.title"></span>
+                            <input type="text" :placeholder="item.tip" maxlength="20" oninput="value=value.replace(/\D/g,'')">
+                        </div>
+                        <div class="sell-strip" v-if="item.value_type == 4">
+                            <span class="sell-lefttext" v-text="item.title"></span>
+                            <input type="text" :placeholder="item.tip" maxlength="20">
+                        </div>
+                        <div class="sell-strip" v-if="item.value_type == 5">
+                            <div><span class="sell-lefttext" v-text="item.title"></span>（<span v-text="item.tip"></span>）</div>
+                            <div class="strip-con flex-wrap">
+                                <div class="con-option" :class="val.select?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name"></div>
+                            </div>
+                        </div>
+                        <div class="sell-strip" v-if="item.value_type == 5">
+                            <div><span class="sell-lefttext" v-text="item.title"></span>（<span v-text="item.tip"></span>）</div>
+                            <div class="strip-con flex-wrap">
+                                <div class="con-option" :class="val.select?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name"></div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="sell-strip" @click="showPop('faction')">
                         <span class="sell-lefttext">职业</span>
                         <div class="right-opt">
@@ -377,7 +407,7 @@ export default {
                 images: [],
                 goods_id:null,
             },
-
+            extend_attribute:[],//自定义属性 值类型，1：文本字符型，2：多行文本字符型，3：数值型（整数），4：数值型（小数），5：单选，6：多选，7：日期型
         };
     },
     methods: {
@@ -1041,6 +1071,15 @@ export default {
                                 that.sellData.sex = data.person_sex; //角色性别
                                 that.sellData.faction = data.faction; //职业
                                 that.sellData.accountType = data.account_type; //账号类型
+                                var extend = data.extend_attribute;
+                                for(var i in extend){
+                                    if(extend[i].value_type == 5 || extend[i].value_type == 6){
+                                        for(var j in extend[i].option){
+                                            extend[i].option[j].select = false;
+                                        }
+                                    }
+                                }
+                                that.extend_attribute = extend;
                                 that.judgeInfo(data.chargeInfo);
                             }else if(flag == 2){//编辑
                                 var oldData = that.oldData;
@@ -1812,5 +1851,32 @@ input[type="number"] {
 }
 .safe-hint{
     line-height:.2rem;
+}
+
+
+
+
+/* 延伸属性 */
+.flex-wrap{
+    display:flex;
+}
+.strip-con{
+    flex-wrap:wrap;
+    padding:0 .2rem;
+}
+.strip-con div{
+    margin-bottom:.2rem;
+}
+.con-option{
+    height: 0.6rem;
+    line-height: 0.6rem;
+    font-size: 0.24rem;
+    padding: 0 0.15rem;
+    margin-right: 0.4rem;
+    -webkit-border-radius: 0.06rem;
+    -moz-border-radius: 0.06rem;
+    border-radius: 0.06rem;
+    border: 1px solid #d2d2d2;
+    background: #ffffff;
 }
 </style>
