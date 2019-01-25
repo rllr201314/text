@@ -20,30 +20,30 @@
                     <div v-for="(item,index) in extend_attribute" :key="index">
                         <div class="sell-strip" v-if="item.value_type == 1">
                             <span class="sell-lefttext" v-text="item.title"></span>
-                            <input type="text" :placeholder="item.tip" maxlength="20">
+                            <input type="text" :placeholder="item.tip" maxlength="20" @input="extendFn(item.value_type,item.attribute_id)">
                         </div>
                         <div class="sell-strip" v-if="item.value_type == 2">
                             <span class="sell-des" v-text="item.title"></span>
-                            <textarea name="des" id="arbdes" cols="25" rows="3" :placeholder="item.tip" maxlength="200"></textarea>
+                            <textarea name="des" id="arbdes" cols="25" rows="3" :placeholder="item.tip" maxlength="200" @input="extendFn(item.value_type,item.attribute_id)"></textarea>
                         </div>
                         <div class="sell-strip" v-if="item.value_type == 3">
                             <span class="sell-lefttext" v-text="item.title"></span>
-                            <input type="text" :placeholder="item.tip" maxlength="20" oninput="value=value.replace(/\D/g,'')">
+                            <input type="text" :placeholder="item.tip" maxlength="20" oninput="value=value.replace(/\D/g,'')" @input="extendFn(item.value_type,item.attribute_id)">
                         </div>
                         <div class="sell-strip" v-if="item.value_type == 4">
                             <span class="sell-lefttext" v-text="item.title"></span>
-                            <input type="text" :placeholder="item.tip" maxlength="20">
+                            <input type="text" :placeholder="item.tip" maxlength="20" @input="extendFn(item.value_type,item.attribute_id)">
                         </div>
                         <div class="sell-strip" v-if="item.value_type == 5">
                             <div><span class="sell-lefttext" v-text="item.title"></span>（<span v-text="item.tip"></span>）</div>
                             <div class="strip-con flex-wrap">
-                                <div class="con-option" :class="val.select?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name"></div>
+                                <div :class="val.select?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name" @click="extendFn(item.value_type,item.attribute_id,val.option_value)"></div>
                             </div>
                         </div>
-                        <div class="sell-strip" v-if="item.value_type == 5">
+                        <div class="sell-strip" v-if="item.value_type == 6">
                             <div><span class="sell-lefttext" v-text="item.title"></span>（<span v-text="item.tip"></span>）</div>
                             <div class="strip-con flex-wrap">
-                                <div class="con-option" :class="val.select?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name"></div>
+                                <div :class="val.select?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name" @click="extendFn(item.value_type,item.attribute_id,val.option_value)"></div>
                             </div>
                         </div>
                     </div>
@@ -406,12 +406,132 @@ export default {
                 wx: "",
                 images: [],
                 goods_id:null,
+                extend_attribute:[],
             },
             extend_attribute:[],//自定义属性 值类型，1：文本字符型，2：多行文本字符型，3：数值型（整数），4：数值型（小数），5：单选，6：多选，7：日期型
         };
     },
     methods: {
-        // 添加图片
+        // 自定义属性方法--
+        extendFn(type,attribute_id,option){
+            var that = this;
+            switch(type){
+                case 1://文本字符型
+                case 2://多行文本字符型
+                case 3://数值型（整数）
+                case 4://数值型（小数）
+                    var event=window.event || arguments.callee.caller.arguments[0];
+                    if(that.requestData.extend_attribute == ''){
+                        that.requestData.extend_attribute.push({
+                            attribute_id:attribute_id,
+                            option_value:String(event.target.value),
+                        })
+                    }else{
+                        let flag = true;//用来判断that.request.extend_attribute 是否有对应的attribute值
+                        for(var x in that.requestData.extend_attribute){
+                            if(that.requestData.extend_attribute[x].attribute_id == attribute_id){
+                                flag = false;
+                                if(event.target.value == ""){//值为空，移除id对应对象，用来提交时判断是否是必选/必填
+                                    that.requestData.extend_attribute.splice(x,1);
+                                }else{
+                                    that.requestData.extend_attribute[x].option_value =String(event.target.value);
+                                }
+                                break;
+                            }
+                        }
+                        if(flag){
+                            that.requestData.extend_attribute.push({
+                                attribute_id:attribute_id,
+                                option_value:String(event.target.value)
+                            })
+                        }
+                    }
+                    break;
+                case 5://单选
+                    for(var i in that.extend_attribute){
+                        if(that.extend_attribute[i].value_type == type){
+                            for(var j in that.extend_attribute[i].option){
+                                if(that.extend_attribute[i].option[j].option_value == option){
+                                    that.extend_attribute[i].option[j].select = !this.extend_attribute[i].option[j].select;
+                                    if(that.requestData.extend_attribute == ''){
+                                        that.requestData.extend_attribute.push({
+                                            attribute_id:attribute_id,
+                                            option_value:String(option)
+                                        })
+                                    }else{
+                                        let flag = true;//用来判断that.request.extend_attribute 是否有对应的attribute值
+                                        for(var x in that.requestData.extend_attribute){
+                                            if(that.requestData.extend_attribute[x].attribute_id == attribute_id){
+                                                flag = false;
+                                                if(that.extend_attribute[i].option[j].select){//判断是选中还是取消，选中或者重新选中-重新赋值，取消选中则移除id对应的对象
+                                                    that.requestData.extend_attribute[x].option_value =String(option);
+                                                }else{
+                                                    that.requestData.extend_attribute.splice(x,1);
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        if(flag){
+                                            that.requestData.extend_attribute.push({
+                                                attribute_id:attribute_id,
+                                                option_value:String(option)
+                                            })
+                                        }
+                                    }
+                                    continue;
+                                }
+                                that.extend_attribute[i].option[j].select = false;
+                            }
+                        }
+                    }
+                    break;
+                case 6://多选
+                    for(var i in that.extend_attribute){
+                        if(that.extend_attribute[i].value_type == type){
+                            for(var j in that.extend_attribute[i].option){
+                                if(that.extend_attribute[i].option[j].option_value == option){
+                                    that.extend_attribute[i].option[j].select = !that.extend_attribute[i].option[j].select;
+                                    // debugger;
+                                    if(that.requestData.extend_attribute == ''){
+                                        that.requestData.extend_attribute.push({
+                                            attribute_id:attribute_id,
+                                            option_value:String(option)
+                                        })
+                                    }else{
+                                        let flag = true;//用来判断that.request.extend_attribute 是否有对应的attribute值
+                                        for(var x in that.requestData.extend_attribute){
+                                            if(that.requestData.extend_attribute[x].attribute_id == attribute_id){
+                                                flag = false;
+                                                if(that.requestData.extend_attribute[x].option_value.indexOf(option) == -1){
+                                                    that.requestData.extend_attribute[x].option_value+=option;
+                                                    break;
+                                                }else{
+                                                    var reg = new RegExp(option,'g');
+                                                    that.requestData.extend_attribute[x].option_value=that.requestData.extend_attribute[x].option_value.replace(reg,'');
+                                                    if(that.requestData.extend_attribute[x].option_value == ""){//多选属性 值为空，移除选择属性id对象
+                                                        that.requestData.extend_attribute.splice(x,1);
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if(flag){
+                                            that.requestData.extend_attribute.push({
+                                                attribute_id:attribute_id,
+                                                option_value:String(option)
+                                            })
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+            console.log(that.requestData.extend_attribute);
+        },
+        // 添加图片---------------------
         addImg(event) {
             var that = this;
             var imgSrcArr = that.sellData.upimgAll.imgSrc;
@@ -931,6 +1051,50 @@ export default {
                 }else if(that.editOrpublish == 2){
                     url = 'edit_goods';
                 }
+                // var required_num = 0;//必填属性的个数，循环增加判断that_req.extend_attribute值中必选是否选择
+                // for(var i in that.extend_attribute){
+                //     if(that.extend_attribute[i].is_is_required == 1){
+                //         require++;
+                //         for(var j in that_req.extend_attribute){
+                //             if(that.extend_attribute[i].attribute_id == that_req.extend_attribute[j].attribute_id){
+                //                 if(that_req.extend_attribute[j].option == ""){
+                //                     mui.alert(that.extend_attribute[i].title+'为空', "提示", "确认", "", "div");
+                //                     return false;
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
+                var extend_arr = [];//存储已选属性的id,用来查找必选属性是否选择
+                for(var i in that_req.extend_attribute){
+                    extend_arr.push(that_req.extend_attribute[i].attribute_id);
+                }
+                var required_arr = [];//存储必选属性的id,用来判断必选属性的值是否为空
+                for(var i in that.extend_attribute){
+                    if(that.extend_attribute[i].is_required == 1){
+                        required_arr.push(that.extend_attribute[i].attribute_id);
+                        if(extend_arr.indexOf(that.extend_attribute[i].attribute_id) == -1){
+                            mui.alert(that.extend_attribute[i].title+'为空', "提示", "确认", "", "div");
+                            that.showLoading = false;
+                            return false;
+                        }
+                    }
+                }
+                // for(var i in that_req.extend_attribute){
+                //     if(required_arr.indexOf(that_req.extend_attribute[i].attribute_id) == -1){
+                //         mui.alert('请您填写完毕后发布','提示','确认','','div');
+                //         that.showLoading = false;
+                //         return false;
+                //     }else{
+                //         if(that_req.extend_attribute[i].option_value == ''){
+                //             mui.alert('请您填写完毕后发布','提示','确认','','div');
+                //             that.showLoading = false;
+                //             return false;
+                //         }
+                //     }
+                // }
+
+
                 that.$axios.post(process.env.API_HOST+url,that_req).then(function(res) {
                     // console.log(res);
                     that.showLoading = false;
