@@ -490,6 +490,9 @@ export default {
             this.$refs.input1.blur();
             this.getGoodsInfo(this.request);
         },
+        out(){
+            this.getGoodsInfo(this.request);
+        },
         showKey(){
             this.$refs.input1.blur();
         },
@@ -528,9 +531,6 @@ export default {
                     }
                 }
             }
-        },
-        out(){
-            this.getGoodsInfo(this.request);
         },
         // 上一栏选项
         topScreen(flag, index) {
@@ -1890,7 +1890,8 @@ input[type="number"] {
     width: 0.23rem;
     height: 0.24rem;
     position: absolute;
-    top: 0.32rem;
-    right: 0.25rem;
+    top: 0.12rem;
+    right: 0.1rem;
+    margin:.2rem;
 }
 </style>

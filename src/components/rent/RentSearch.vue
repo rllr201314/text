@@ -248,8 +248,9 @@ export default {
     width: 0.23rem;
     height: 0.24rem;
     position: absolute;
-    top: 0.32rem;
-    right: 0.25rem;
+    top: 0.12rem;
+    right: 0.1rem;
+    margin:.2rem;
 }
 
 .goods-wrap {
