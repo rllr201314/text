@@ -857,6 +857,7 @@ export default {
                                         that.filtrate_extend.push(that.extend_attribute[i]);
                                     }
                                 }
+                                console.log(that.filtrate_extend)
                             }else{
                                 that.show_extend = false;
                             }

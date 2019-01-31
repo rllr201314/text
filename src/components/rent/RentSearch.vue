@@ -4,8 +4,7 @@
         <div class="titInp">
             <img class="search-ico" src="../../../static/img/search_ico.png" alt="">
             <form action="javascript:return true;">
-                <!-- <input class="search-title" type="search" placeholder="请输入搜索内容" v-model.trim="request.content" @keyup.13="show()" ref="input1" @blur="out()"> -->
-                <input class="search-title" type="search" placeholder="请输入搜索内容" v-model.trim="request.content" @input="out">
+                <input class="search-title" type="search" placeholder="请输入搜索内容" v-model.trim="request.content" @keyup.13="show()" ref="input1" @blur="out()">
             </form>
             <img class="empty-ico" src="../../../static/img/empty_ico.png" alt="" @click="emptyFun()">
         </div>
@@ -288,10 +287,10 @@ export default {
     width: 0.23rem;
     height: 0.24rem;
     position: absolute;
-    top: 0.32rem;
-    right: 0.25rem;
+    top: 0.12rem;
+    right: 0.1rem;
+    margin:.2rem;
 }
-
 .goods-wrap {
     position: relative;
     top: 0;
