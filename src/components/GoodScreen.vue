@@ -3,7 +3,7 @@
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="titInp">
             <img class="search-ico" src="../../static/img/search_ico.png" alt="">
-            <form action="javascript:return true;">
+            <form @submit.prevent action="#">
                 <input class="search-title" type="search" placeholder="请输入搜索内容" v-model.trim="request.content" @keyup.13="show()" ref="input1" @blur="out()">
             </form>
             <img class="empty-ico" src="../../static/img/empty_ico.png" alt="" @click="emptyFun()">
@@ -85,17 +85,23 @@ export default {
         //一键清空
         emptyFun() {
             this.request.content = '';
+            this.request.page = 1;
             this.getGoodsInfo(this.request);
+            $('#minirefresh').scrollTop(0);
+
         },
         // 隐藏键盘
         show(e) {
             this.$refs.input1.blur();
+            this.request.page = 1;
             this.getGoodsInfo(this.request);
+            $('#minirefresh').scrollTop(0);
+
         },
         out() {
-            // this.$refs.input1.blur();
+            this.request.page = 1;
             this.getGoodsInfo(this.request);
-            // $('#minirefresh').scrollTop(0);
+            $('#minirefresh').scrollTop(0);
         },
         getData(data,flag) {
             this.request = data;

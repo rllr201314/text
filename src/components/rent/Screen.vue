@@ -144,6 +144,12 @@
                         <div class="screen-strip-box-level" v-for="(item,index) in screen_info.levelType" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('levelType',item.value)"></div>
                     </div>
                 </div>
+                <div v-for="(item,index) in filtrate_extend" :key="index">
+                    <div class="screen-strip-left" v-text="item.title"></div>
+                    <div class="screen-strip-right">
+                        <div class="screen-strip-box-level" v-for="(item,index) in item.option" :key="index" v-text="item.option_name" :class="item.checked?'red-bg':'black-bg'"></div>
+                    </div>
+                </div>
                 <div class="screen-type-bottom">
                     <div class="ok-screen-btn" @click="okScreen">确认</div>
                     <div class="no-screen-btn" @click="cancleScreen">取消</div>
@@ -153,10 +159,10 @@
         <!-- 神兽 -->
         <div class="bottom-screen-box" :class="show_extend?'show_extend':'screen-box'" v-show="extend_box">
             <div v-if="show_attribute.value_type == 5">
-                <div class="screen-strip-box" v-for="(item,index) in show_attribute.option" v-text="item.option_name" :key="index" :class="item.checked?'red-bg':'black-bg'" @click="selectExtentFn(item.option_value,item.attribute_id,'radio')"></div>
+                <div class="screen-strip-box" v-for="(item,index) in show_attribute.option" v-text="item.option_name" :key="index" :class="item.checked?'red-bg':'black-bg'" @click="selectExtentFn(item.option_value,item.attribute_id,show_attribute.value_type)"></div>
             </div>
             <div v-if="show_attribute.value_type == 6">
-                <div class="screen-strip-box" v-for="(item,index) in show_attribute.option" v-text="item.option_name" :key="index" :class="item.checked?'red-bg':'black-bg'" @click="selectExtentFn(item.option_value,item.attribute_id,'multi')"></div>
+                <div class="screen-strip-box" v-for="(item,index) in show_attribute.option" v-text="item.option_name" :key="index" :class="item.checked?'red-bg':'black-bg'" @click="selectExtentFn(item.option_value,item.attribute_id,show_attribute.value_type)"></div>
             </div>
         </div>
         <!-- 遮罩 -->
@@ -279,6 +285,45 @@ export default {
     },
 
     methods: {
+         showKey(){
+            this.$refs.input1.blur();
+        },
+        outKey(flag){
+            var that = this;
+            if(flag == 'a'){//没有服务器
+                var text = that.area_content;
+                if(text == ""){
+                    that.server_info = JSON.parse(JSON.stringify(that.old_server));
+                }else{
+                    var server_info = that.old_server;
+                    var obj = [];
+                    for(var i in server_info){
+                        if(server_info[i].area_name.indexOf(text) != -1){
+                            obj.push(server_info[i]);
+                        }
+                    }
+                    if(obj != []){
+                        that.server_info = obj;
+                    }
+                }
+            }else if(flag == 's'){
+                var text = that.area_content;
+                if(text == ""){
+                    that.server_info = JSON.parse(JSON.stringify(that.old_server));
+                }else{
+                    var server_info = that.old_server;
+                    var obj = [];
+                    for(var i in server_info){
+                        if(server_info[i].server_name.indexOf(text) != -1){
+                            obj.push(server_info[i]);
+                        }
+                    }
+                    if(obj != []){
+                        that.server_info = obj;
+                    }
+                }
+            }
+        },
         // 确认筛选
         okScreen() {
             var that = this;
@@ -436,7 +481,7 @@ export default {
             var that = this;
             var option = that.show_attribute.option;
             var all_extend = that.request.extend_attribute;
-            if(type == 'multi'){
+            if(type == 6){
                 for(var i in option){
                     if(option[i].option_value == value){
                         option[i].checked = !option[i].checked;
@@ -479,7 +524,7 @@ export default {
                     }
                 }
                 console.log(that.request.extend_attribute)
-            }else if(type == 'radio'){
+            }else if(type == 5){
                 for(var i in option){
                     if(option[i].option_value == value){
                         option[i].checked = !option[i].checked;
@@ -906,24 +951,11 @@ export default {
     },
     mounted() {
         var that = this;
-        // var opt = sessionStorage.getItem("opt");
-        // if(that.$route.query.opt){
-        //     that.request = JSON.parse(JSON.stringify(that.$store.state.list_request));
-        //     if (opt == that.$route.query.opt) {
-        //         that.request.category_id = opt;
-        //         that.request.rent_status = this.param.rent_status;
-                if(that.param.rent_status == 1){
-                    that.screenTop[0].tit_top_text = "成品号"
-                }else{
-                    that.screenTop[0].tit_top_text = "租号"
-                }
-        //         that.getConfig(opt);
-        //     } else {
-        //         that.$router.go(-1);
-        //     }
-        // }else{
-        //     that.$router.go(-1);
-        // }
+        if(that.param.rent_status == 1){
+            that.screenTop[0].tit_top_text = "成品号"
+        }else{
+            that.screenTop[0].tit_top_text = "租号"
+        }
     },
 
     
@@ -1188,35 +1220,15 @@ export default {
     border: 1px solid #d2d2d2;
     background: #ffffff;
 }
-/* 服务器确认按钮
-    .area-type-btn{
-        width:1.89rem;
-        text-align:center;
-        line-height: .6rem;
-        height:.6rem;
-        color:#FFFFFF;
-        font-size:.26rem;
-        margin:.1rem auto .4rem;
-        -webkit-border-radius:.3rem;
-        -moz-border-radius: .3rem;
-        border-radius: .3rem;
-        background:-webkit-linear-gradient(#FD915F,#FC534A);
-        background:-o-linear-gradient(#FD915F,#FC534A);
-        background:-moz-linear-gradient(#FD915F,#FC534A);
-        background:linear-gradient(to right, #FD915F , #FC534A);
-        -webkit-box-shadow: .06rem .05rem .09rem  #FD895C;
-        -moz-box-shadow: .06rem .05rem .09rem #FD895C;
-        box-shadow: .06rem .05rem .09rem #FD895C;
-    } */
 /* ============================ 筛选 ======================== */
 .screen-type-box {
     padding: 0.3rem 0;
-    overflow-y:auto;
-    height:100vh;
-    -webkit-overflow-scroll:touch;
+    bottom:0;
+    overflow-y: auto;
 }
 .scorll-safari{
     min-height:100vh;
+    /* overflow-y: auto; */
 }
 .screen-type-strip {
     display: flex;
