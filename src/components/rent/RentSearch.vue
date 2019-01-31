@@ -4,16 +4,17 @@
         <div class="titInp">
             <img class="search-ico" src="../../../static/img/search_ico.png" alt="">
             <form action="javascript:return true;">
-                <input class="search-title" type="search" placeholder="请输入搜索内容" v-model.trim="request.content" @keyup.13="show()" ref="input1" @blur="out()">
+                <!-- <input class="search-title" type="search" placeholder="请输入搜索内容" v-model.trim="request.content" @keyup.13="show()" ref="input1" @blur="out()"> -->
+                <input class="search-title" type="search" placeholder="请输入搜索内容" v-model.trim="request.content" @input="out">
             </form>
             <img class="empty-ico" src="../../../static/img/empty_ico.png" alt="" @click="emptyFun()">
         </div>
-        <Screen @getData="getData"></Screen>
+        <Screen @getData="getData" :param="param" ref="mychild"></Screen>
         <div class="goods-wrap" v-show="goodsList != ''?true:false">
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
                 <div class="minirefresh-scroll list">
                     <ul>
-                        <div class="goods-strip" v-for="(item,index) in goodsList" @click="goDetail(item.goods_id)">
+                        <div class="goods-strip" v-for="(item,index) in goodsList" :key="index" @click="goDetail(item.goods_id)">
                             <div class="goods-strip-top">
                                 <div class="goods-strip-title">
                                     <div class="boutique" v-if="item.is_recommend == 1">精</div>
@@ -85,7 +86,10 @@ export default {
             goodsInfo: "",
             goodsList: [], //商品列表
             request: "",
-            toload: 1
+            toload: true,
+            param:{
+                rent_status:2,//租号
+            }
         };
     },
     methods: {
@@ -107,16 +111,22 @@ export default {
             this.getGoodsInfo(this.request);
         },
         out() {
+            // this.$refs.input1.blur();
+            // $('#minirefresh').scrollTop(0);
             this.getGoodsInfo(this.request);
         },
-        getData(data) {
+        getData(data,flag) {
             this.request = data;
-
-            if (this.toload > 0) {
-                this.toload--;
+            if (this.toload ) {
+                this.toload = false;
                 this.refresh();
             } else {
                 this.getGoodsInfo(data, "refresh");
+            }
+            if(flag){
+                $('.list-wrap').css({'top':'2.58rem'})
+            }else{
+                $('.list-wrap').css({'top':'1.68rem'})
             }
         },
         // 获取商品列表
@@ -180,13 +190,6 @@ export default {
                     },
                     isShowUpLoading: true,
                     callback: () => {
-                        // that.$store.commit('addPage','add');
-                        // var page = that.$store.state.list_request.page;
-                        // if(page <= that.pages){
-                        //     that.getGoodsInfo(that.$store.state.list_request,'push');
-                        // }else{
-                        //     that.miniRefresh.endUpLoading(true);
-                        // }
                         that.request.page++;
                         if (that.request.page <= that.pages) {
                             that.getGoodsInfo(that.request, "push");
@@ -199,14 +202,51 @@ export default {
         }
     },
     mounted() {
-        // var that = this;
-        // var time = setInterval(function(){
-        //     if(that.request != ""){
-        //         that.refresh();
-        //         clearInterval(time);
-        //     }
-        // },300)
-    }
+        var that = this;
+        var opt = sessionStorage.getItem("opt");
+        if(that.$route.query.opt){
+            that.request = JSON.parse(JSON.stringify(that.$store.state.list_request));
+            that.request.rent_status = 2;
+            if (opt == that.$route.query.opt) {
+                that.request.category_id = opt;
+                that.$refs.mychild.getConfig(opt,that.request);
+            } else {
+                that.$router.go(-1);
+            }
+        }else{
+            that.$router.go(-1);
+        }
+    },
+    activated(){
+        var that = this;
+        if(!that.$route.meta.isBack){
+            that.request = JSON.parse(JSON.stringify(that.$store.state.list_request));
+            that.request.rent_status = 2;
+            var opt = sessionStorage.getItem("opt");
+            if(that.$route.query.opt){
+                if (opt == that.$route.query.opt) {
+                    that.request.category_id = opt;
+                    that.$refs.mychild.getConfig(opt,that.request);
+                } else {
+                    that.$router.go(-1);
+                }
+            }
+
+        }else{
+            $('#minirefresh').scrollTop(that.$route.meta.scroll_top);
+        }
+        that.$route.meta.isBack = false;
+    },
+     beforeRouteLeave(to,from,next){
+        from.meta.scroll_top = $('#minirefresh').scrollTop();
+        next();
+    },
+    beforeRouteEnter(to,from,next){
+        if(from.path == '/details'){
+            to.meta.isBack=true;
+        }
+        next();
+    },
 };
 </script>
 <style scoped>

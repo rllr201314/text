@@ -2,42 +2,42 @@
     <div class="screen-wrap">
         <div class="screen-title">
             <div class="screen-title-top">
-                <div class="title-top-cell" v-for="(item,index) in screenTop" @click="topScreen(item.flag,index)">
+                <div class="title-top-cell" v-for="(item,index) in screenTop" :key="index" @click="topScreen(item.flag,index)">
                     <span class="title-top-title" v-text="item.tit_top_text"></span>
-                    <img class="title-top-img" :src="item.tit_top_src" alt="">
+                    <img class="title-top-img" :src="item.ischeck?'./static/img/goodscreen/upempty.png':'./static/img/goodscreen/downempty.png'" alt="">
                 </div>
             </div>
-            <div class="screen-title-bottom" v-if="showBottom">
-                <div class="title-bottom-cell" v-for="(item,index) in screenBottom" @click="bottomScreen(item.flag,index)">
-                    <span class="title-bottom-title" v-text="item.tit_bottom_text"></span>
-                    <img class="title-bottom-img" :src="item.tit_bottom_src" alt="">
+            <div class="screen-title-bottom" v-if="show_extend">
+                <div class="title-bottom-cell" v-for="(item,index) in operation_attribute" :key="index" @click="bottomScreen(item.attribute_id)">
+                    <span class="title-bottom-title" v-text="item.title"></span>
+                    <img class="title-bottom-img" :src="item.ischeck?'./static/img/goodscreen/upsolid.png':'./static/img/goodscreen/downsolid.png'" alt="">
                 </div>
             </div>
         </div>
         <!-- 账号 -->
-        <div class="screen-box account-type-box" v-show="screenInfoAll[0].isShow">
-            <div class="account-type-strip" v-for="item in account_info" :class="item.ischeck?'red-color':'black-color'" v-text="item.name" @click="seleAccount(item.value)"></div>
+        <div class="account-type-box" :class="show_extend?'show_extend':'screen-box'" v-show="screenTop[0].ischeck">
+            <div class="account-type-strip" v-for="(item,index) in account_info" :key="index" :class="item.ischeck?'red-color':'black-color'" v-text="item.name" @click="seleAccount(item.value)"></div>
         </div>
         <!-- 手机型号 -->
-        <div class="screen-box phone-type-box" v-show="screenInfoAll[1].isShow">
-            <div class="phone-type-strip" v-for="item in phone_info" :class="item.ischeck?'red-color':'black-color'" v-text="item.alias" @click="selePhone(item.value)"></div>
+        <div class="phone-type-box" :class="show_extend?'show_extend':'screen-box'" v-show="screenTop[1].ischeck">
+            <div class="phone-type-strip" v-for="(item,index) in phone_info" :key="index" :class="item.ischeck?'red-color':'black-color'" v-text="item.alias" @click="selePhone(item.value)"></div>
         </div>
         <!-- 服务器 -->
-        <div class="screen-box server-type-box" v-show="screenInfoAll[2].isShow">
+        <div class="server-type-box" :class="show_extend?'show_extend':'screen-box'" v-show="screenTop[2].ischeck">
             <div class="sele-server">
                 <div v-if="!showOperation" class="sele-server-box">
-                    <div v-for="(item,index) in seleOpe" v-text="item" @click="delOpe(index)"></div>
+                    <div v-for="(item,index) in seleOpe" v-text="item" :key="index" @click="delOpe(index)"></div>
                 </div>
                 <div class="sele-null" v-else>请选择商品类型</div>
             </div>
             <!-- 平台 -->
             <div class="phone-type-box scroll-view" v-show="showOperation"> 
-                <div class="phone-type-strip" v-for="item in operation_info" :class="item.ischeck?'red-color':'black-color'" v-text="item.platform_name" @click="seleOperation(item.operation_id)"></div>
+                <div class="phone-type-strip" v-for="(item,index) in operation_info" :key="index" :class="item.ischeck?'red-color':'black-color'" v-text="item.platform_name" @click="seleOperation(item.operation_id)"></div>
             </div>
             <div v-show="!showOperation" class="server-operation">
                 <!-- 区 -->
                 <div class="server-operation-box" v-if="showArea">
-                    <div class="operation-type-strip" v-for="item in area_info" :class="item.ischeck?'red-border':'black-border'" v-text="item.area_name" @click="getArea(item.area_id)"></div>
+                    <div class="operation-type-strip" v-for="(item,index) in area_info" :key="index" :class="item.ischeck?'red-border':'black-border'" v-text="item.area_name" @click="getArea(item.area_id)"></div>
                 </div>
                 <!-- 服 -->
                 <div class="server-area-box" v-if="showArea">
@@ -46,7 +46,7 @@
                         <img class="search-area-ico" src="../../../static/img/search_ico.png" alt="">
                     </div>
                     <div class="area-type-content">
-                        <div class="area-type-strip" v-for="item in server_info" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.server_name" @click="seleServer(item.server_id,'server')"></div>
+                        <div class="area-type-strip" v-for="(item,index) in server_info" :key="index" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.server_name" @click="seleServer(item.server_id,'server')"></div>
                     </div>
                     <!-- <div class="area-type-btn">确认</div> -->
                 </div>
@@ -57,14 +57,14 @@
                         <img class="search-area-ico" src="../../../static/img/search_ico.png" alt="">
                     </div>
                     <div class="area-type-content">
-                        <div class="area-type-strip" v-for="item in server_info" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.area_name" @click="seleServer(item.area_id,'area')"></div>
+                        <div class="area-type-strip" v-for="(item,index) in server_info" :key="index" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.area_name" @click="seleServer(item.area_id,'area')"></div>
                     </div>
                     <!-- <div class="area-type-btn">确认</div> -->
                 </div>
             </div>
         </div>
         <!-- 筛选 -->
-        <div class="screen-box screen-type-box" v-show="screenInfoAll[3].isShow">
+        <div class="screen-type-box" :class="show_extend?'show_extend':'screen-box'" v-show="screenTop[3].ischeck">
             <div class="scorll-safari">
                 <div class="screen-type-strip">
                     <div class="screen-strip-left input-price-left">价格范围</div>
@@ -96,52 +96,52 @@
                 <div class="screen-type-strip">
                     <div class="screen-strip-left">账号绑定</div>
                     <div class="screen-strip-right">
-                        <div class="screen-strip-box" v-for="item in screen_info.accountBind" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('accountBind',item.value)"></div>
+                        <div class="screen-strip-box" v-for="(item,index) in screen_info.accountBind" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('accountBind',item.value)"></div>
                     </div>
                 </div>
                 <div class="screen-type-strip" v-if="false">
                     <div class="screen-strip-left">视频状态</div>
                     <div class="screen-strip-right">
-                        <div class="screen-strip-box" v-for="item in screen_info.videoStatus" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                        <div class="screen-strip-box" v-for="(item,index) in screen_info.videoStatus" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
                         @click="seleScreen('videoStatus',item.value)"></div>
                     </div>
                 </div>
                 <div class="screen-type-strip">
                     <div class="screen-strip-left">性别</div>
                     <div class="screen-strip-right">
-                        <div class="screen-strip-box" v-for="item in screen_info.person_sex" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
+                        <div class="screen-strip-box" v-for="(item,index) in screen_info.person_sex" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
                         @click="seleScreen('person_sex',item.value)"></div>
                     </div>
                 </div>
                 <div class="screen-type-strip">
                     <div class="screen-strip-left">门派</div>
                     <div class="screen-strip-right">
-                        <div class="screen-strip-box" v-for="item in screen_info.faction" v-text="item.faction_name" :class="item.ischeck?'red-bg':'black-bg'" 
+                        <div class="screen-strip-box" v-for="(item,index) in screen_info.faction" :key="index" v-text="item.faction_name" :class="item.ischeck?'red-bg':'black-bg'" 
                         @click="seleScreen('faction',item.faction_id)"></div>
                     </div>
                 </div>
                 <div class="screen-type-strip">
                     <div class="screen-strip-left">售价类型</div>
                     <div class="screen-strip-right">
-                        <div class="screen-strip-box" v-for="item in screen_info.sellType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('sellType',item.value)"></div>
+                        <div class="screen-strip-box" v-for="(item,index) in screen_info.sellType" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('sellType',item.value)"></div>
                     </div>
                 </div>
                 <div class="screen-type-strip">
                     <div class="screen-strip-left">是否可分期</div>
                     <div class="screen-strip-right">
-                        <div class="screen-strip-box" v-for="item in screen_info.isStages" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isStages',item.value)"></div>
+                        <div class="screen-strip-box" v-for="(item,index) in screen_info.isStages" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isStages',item.value)"></div>
                     </div>
                 </div>
                 <div class="screen-type-strip">
                     <div class="screen-strip-left">保险情况</div>
                     <div class="screen-strip-right">
-                        <div class="screen-strip-box" v-for="item in screen_info.isInsurance" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isInsurance',item.value)"></div>
+                        <div class="screen-strip-box" v-for="(item,index) in screen_info.isInsurance" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isInsurance',item.value)"></div>
                     </div>
                 </div>
                 <div class="screen-type-strip">
                     <div class="screen-strip-left">等级</div>
                     <div class="screen-strip-right">
-                        <div class="screen-strip-box-level" v-for="item in screen_info.levelType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('levelType',item.value)"></div>
+                        <div class="screen-strip-box-level" v-for="(item,index) in screen_info.levelType" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('levelType',item.value)"></div>
                     </div>
                 </div>
                 <div class="screen-type-bottom">
@@ -151,36 +151,27 @@
             </div>
         </div>
         <!-- 神兽 -->
-        <div class="screen-box bottom-screen-box pokemon-type-box" v-show="screenInfoAll[4].isShow">
-            <div class="screen-strip-box" v-for="item in screen_info.pokemonType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('pokemon',item.name)"></div>
-        </div>
-        <!-- 职业 -->
-        <div class="screen-box bottom-screen-box profession-type-box" v-show="screenInfoAll[5].isShow">
-            <div class="screen-strip-box" v-for="item in screen_info.professionType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('profession',item.name)"></div>
-        </div>
-        <!-- 门派 -->
-        <div class="screen-box bottom-screen-box school-type-box" v-show="screenInfoAll[6].isShow">
-            <div class="screen-strip-box" v-for="item in screen_info.schoolType" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('school',item.name)"></div>
+        <div class="bottom-screen-box" :class="show_extend?'show_extend':'screen-box'" v-show="extend_box">
+            <div v-if="show_attribute.value_type == 5">
+                <div class="screen-strip-box" v-for="(item,index) in show_attribute.option" v-text="item.option_name" :key="index" :class="item.checked?'red-bg':'black-bg'" @click="selectExtentFn(item.option_value,item.attribute_id,'radio')"></div>
+            </div>
+            <div v-if="show_attribute.value_type == 6">
+                <div class="screen-strip-box" v-for="(item,index) in show_attribute.option" v-text="item.option_name" :key="index" :class="item.checked?'red-bg':'black-bg'" @click="selectExtentFn(item.option_value,item.attribute_id,'multi')"></div>
+            </div>
         </div>
         <!-- 遮罩 -->
-        <div class="goodscreen-shade" v-show="screenInfoAll[7].isShow" @click="hiddenScreenFun('flag')"></div>
+        <div class="goodscreen-shade" v-show="shade" @click="hiddenScreenFun('flag')"></div>
     </div>
 </template>
 <script>
 export default {
     name: "Screen",
+    props:['param'],
     data() {
         return {
-
             // 提交的数据
-           
-            
-            list: [],
             miniRefresh: null,
             showNoData: false,
-            pages: "", //总页数
-            goodsInfo: "",
-            showBottom: false, //不显示下方筛选栏
             begin_price: "",
             end_price: "",
             is_video: "",
@@ -190,93 +181,13 @@ export default {
             role_level: "",
             sort_price: "",
             sort_collection: "",person_sex:"",faction_id:"",
-            
             area_content:'',//区服搜索内容
 
             // 筛选---之上
-            screenTop: [
-                {
-                    flag: "account",
-                    tit_top_text: "租号",
-                    tit_top_src: "./static/img/goodscreen/downempty.png",
-                    ischeck: false
-                },
-                {
-                    flag: "phone",
-                    tit_top_text: "苹果",
-                    tit_top_src: "./static/img/goodscreen/downempty.png",
-                    ischeck: false
-                },
-                {
-                    flag: "server",
-                    tit_top_text: "服务器",
-                    tit_top_src: "./static/img/goodscreen/downempty.png",
-                    ischeck: false
-                },
-                {
-                    flag: "screen",
-                    tit_top_text: "筛选",
-                    tit_top_src: "./static/img/goodscreen/downempty.png",
-                    ischeck: false
-                }
-            ],
-            // 筛选---之下
-            screenBottom: [
-                {
-                    flag: "pokemon",
-                    tit_bottom_text: "神兽",
-                    tit_bottom_src: "./static/img/goodscreen/downsolid.png",
-                    ischeck: false
-                },
-                {
-                    flag: "profession",
-                    tit_bottom_text: "职业",
-                    tit_bottom_src: "./static/img/goodscreen/downsolid.png",
-                    ischeck: false
-                },
-                {
-                    flag: "school",
-                    tit_bottom_text: "门派",
-                    tit_bottom_src: "./static/img/goodscreen/downsolid.png",
-                    ischeck: false
-                }
-            ],
-            // 选择筛选需要的条件---------
-            screenInfoAll: [
-                {
-                    name: "account",
-                    isShow: false //是否显示选择--账号--选项块
-                },
-                {
-                    name: "phone",
-                    isShow: false //是否显示选择--手机--选项块
-                },
-                {
-                    name: "server",
-                    isShow: false //是否显示选择--服务器--选项块
-                },
-                {
-                    name: "screen",
-                    isShow: false //是否显示选择--筛选--选项块
-                },
-                {
-                    name: "pokemon",
-                    isShow: false //是否显示----神兽--选项块
-                },
-                {
-                    name: "profession",
-                    isShow: false //是否显示---职业--选项块
-                },
-                {
-                    name: "school",
-                    isShow: false //是否显示--学校--选项块
-                },
-                {
-                    name: "shade",
-                    isShow: false //是否显示遮罩
-                }
-            ],
-            
+            screenTop: [{flag: "account",tit_top_text: "成品号",tit_top_src: "./static/img/goodscreen/downempty.png",ischeck: false},
+                        {flag: "phone",tit_top_text: "苹果",tit_top_src: "./static/img/goodscreen/downempty.png",ischeck: false},
+                        {flag: "server",tit_top_text: "服务器",tit_top_src: "./static/img/goodscreen/downempty.png",ischeck: false},
+                        {flag: "screen",tit_top_text: "筛选",tit_top_src: "./static/img/goodscreen/downempty.png",ischeck: false}],
             // 账号类型
             account_info: [],
             // 手机系统
@@ -355,13 +266,15 @@ export default {
                 ],
                 // 等级
                 levelType: [],
-                // 神兽
-                pokemonType: [],
-                // 职业
-                professionType: [],
-                // 门派
-                schoolType: [],
-            }
+            },
+            extend_attribute:[],//所有的属性
+            operation_attribute:[],// 可操作的属性 is_menu == 1 最多显示三个
+            show_attribute:{},//可选择的属性 弹出框
+            hide_attribute:[],//所有可选择的属性 all
+            extend_box:false,//筛选属性弹框
+            shade:false,//遮罩
+            show_extend:'',//显示自定义菜单
+            filtrate_extend:[],
         }
     },
 
@@ -397,7 +310,7 @@ export default {
             that_r.faction_id = that.faction_id;
             that_r.page = 1;
             $('#minirefresh').scrollTop(0);
-            that.$emit('getData',that_r);
+            that.$emit('getData',that_r,that.show_extend);
             that.hiddenScreenFun(); //隐藏筛选
         },
         cancleScreen() {
@@ -443,85 +356,170 @@ export default {
             }
             that_r.page = 1;
             $('#minirefresh').scrollTop(0);
-            that.$emit('getData',that_r);
+            that.$emit('getData',that_r,that.show_extend);
             that.hiddenScreenFun(); //隐藏筛选
         },
          // 上一栏选项
         topScreen(flag, index) {
-            var screentop = this.screenTop;
-            var screenbottom = this.screenBottom;
-            // 点击时让其他的变成未选状态
-            for (var i in screenbottom) {
-                screenbottom[i].tit_bottom_src =
-                    "./static/img/goodscreen/downsolid.png";
-                screenbottom[i].ischeck = false;
-            }
-            for (var i in screentop) {
-                screentop[i].tit_top_src =
-                    "./static/img/goodscreen/downempty.png";
-                if (i == index) {
+            var that = this;
+            var top = this.screenTop;
+            for(var i in top){
+                if(flag == top[i].flag){
+                    top[i].ischeck = !top[i].ischeck;
+                    if(top[i].ischeck){
+                        that.shade = true;
+                    }else{
+                        that.shade = false;
+                    }
                     continue;
                 }
-                screentop[i].ischeck = false;
+                top[i].ischeck = false;
             }
-            // 点击
-            if (screentop[index].ischeck) {
-                screentop[index].tit_top_src =
-                    "./static/img/goodscreen/downempty.png";
-                screentop[index].ischeck = false;
-            } else {
-                screentop[index].tit_top_src =
-                    "./static/img/goodscreen/upempty.png";
-                screentop[index].ischeck = true;
+            if(that.show_extend){//判断有没有多选属性
+                var bottom = this.operation_attribute;
+                for(var i in bottom){
+                   bottom[i].ischeck = false;
+                }
+                that.extend_box = false;
             }
-            this.showScreenFun(flag); //显示哪一个筛选框
         },
-        // 显示哪一个筛选框的方法
-        showScreenFun(flag) {
-            var showInfoAll = this.screenInfoAll; //筛选框集合
-            // 判断显示哪一个筛选条件
-            for (var i in showInfoAll) {
-                if (showInfoAll[i].name == flag) {
-                    showInfoAll[i].isShow = !showInfoAll[i].isShow;
+        // 下一栏刷新
+        bottomScreen(id){
+            var that = this;
+            var top = that.screenTop;
+            for(var i in top){
+                top[i].ischeck = false;
+            }
+            var operation = that.operation_attribute;
+            var hide = that.hide_attribute;
+            for(var i in operation){
+                if(operation[i].attribute_id == id){
+                    operation[i].ischeck = !operation[i].ischeck;
+                    if(operation[i].ischeck){//点击的这个属性的值为true显示弹框，匹配对应的值
+                        that.extend_box = true;
+                        that.shade = true;
+                        for(var i in hide){
+                            if(hide[i].attribute_id == id){
+                                that.show_attribute = hide[i]
+                            }
+                        }
+                    }else{
+                        that.extend_box = false;
+                        that.shade = false;
+                        that.show_attribute = {};
+                    }
                     continue;
                 }
-                showInfoAll[i].isShow = false;
-            }
-            // 判断遮罩是否显示
-            for (var i in showInfoAll) {
-                if (showInfoAll[i].isShow == true) {
-                    showInfoAll[7].isShow = true;
-                    break;
-                } else {
-                    showInfoAll[7].isShow = false;
-                }
-            }
-            if(showInfoAll[3].isShow){
-                $('.screen-type-box').css('-webkit-overflow-scroll','touch');
+                operation[i].ischeck = false;
             }
         },
         // 隐藏---遮罩+筛选框
         hiddenScreenFun(flag) {
             var that = this;
-            var showInfoAll = that.screenInfoAll; //筛选框集合
             var screentop = that.screenTop;
-            var screenbottom = that.screenBottom;
-            for (var i in showInfoAll) {
-                showInfoAll[i].isShow = false;
-            }
-            // 点击时让---上/下--栏选项变成未选状态
             for (var i in screentop) {
-                screentop[i].tit_top_src =
-                    "./static/img/goodscreen/downempty.png";
                 screentop[i].ischeck = false;
             }
-            for (var i in screenbottom) {
-                screenbottom[i].tit_bottom_src = "./static/img/goodscreen/downsolid.png";
-                screenbottom[i].ischeck = false;
+            if(that.show_extend){//判断有没有多选属性
+                var bottom = this.operation_attribute;
+                for(var i in bottom){
+                   bottom[i].ischeck = false;
+                }
+                that.extend_box = false;
             }
+            that.shade = false;
             if(flag){
               that.okScreen();//传参是为了不让重复调用
             }
+        },
+        selectExtentFn(value,id,type){
+            var that = this;
+            var option = that.show_attribute.option;
+            var all_extend = that.request.extend_attribute;
+            if(type == 'multi'){
+                for(var i in option){
+                    if(option[i].option_value == value){
+                        option[i].checked = !option[i].checked;
+                        if(option[i].checked){
+                            if(all_extend == ''){
+                                all_extend.push({
+                                    attribute_id:id,
+                                    option_value:String(value)
+                                })
+                            }else{
+                                var flag = true;
+                                for(var x in all_extend){
+                                    if(all_extend[x].attribute_id == id){
+                                        flag = false;
+                                        var arr =  all_extend[x].option_value.split(',');
+                                        arr.push(value);
+                                        all_extend[x].option_value = arr.join(',');
+                                    }
+                                }
+                                if(flag){
+                                    all_extend.push({
+                                        attribute_id:id,
+                                        option_value:String(value)
+                                    })
+                                }
+                            }
+                        }else{
+                            for(var x in all_extend){
+                                if(all_extend[x].attribute_id == id){
+                                    var arr = all_extend[x].option_value.split(',');
+                                    arr.splice(arr.indexOf(String(value)),1);
+                                    all_extend[x].option_value = arr.join(',');
+                                    if(all_extend[x].option_value == ''){
+                                        all_extend.splice(x,1)
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+                console.log(that.request.extend_attribute)
+            }else if(type == 'radio'){
+                for(var i in option){
+                    if(option[i].option_value == value){
+                        option[i].checked = !option[i].checked;
+                        if(option[i].checked){
+                            if(all_extend == ''){
+                                all_extend.push({
+                                    attribute_id:id,
+                                    option_value:String(value)
+                                })
+                            }else{
+                                var flag = true;
+                                for(var x in all_extend){
+                                    if(all_extend[x].attribute_id == id){
+                                        flag = false;
+                                        all_extend[x].option_value = String(value);
+                                    }
+                                }
+                                if(flag){
+                                    all_extend.push({
+                                        attribute_id:id,
+                                        option_value:String(value)
+                                    })
+                                }
+                            }
+                        }else{
+                            for(var x in all_extend){
+                                if(all_extend[x].attribute_id == id){
+                                    all_extend.splice(x,1)
+                                }
+                            }
+                        }
+                        continue;
+                    }
+                    option[i].checked = false;
+                }
+                
+                console.log(that.request.extend_attribute)
+            }
+            that.$emit('getData',that.request,that.show_extend);
+            that.hiddenScreenFun(); //隐藏筛选
         },
         // 选择账号类型
         seleAccount(value) {
@@ -532,18 +530,14 @@ export default {
                 if (accountAll[i].value == value) {
                     accountAll[i].ischeck = true;
                     text.tit_top_text = accountAll[i].name;
-
                     continue;
                 }
                 accountAll[i].ischeck = false;
             }
-            that.hiddenScreenFun(); //隐藏筛选
             that.request.deal_type = value;
             that.request.page = 1;
-
-            // that.$store.commit('addPage','refresh');
-            // that.$store.commit('changeRequest',{name:'deal_type',value:value})
-            that.$emit('getData',that.request);
+            that.$emit('getData',that.request,that.show_extend);
+            that.hiddenScreenFun(); //隐藏筛选
         },
         // 选择手机系统
         selePhone(value) {
@@ -569,7 +563,7 @@ export default {
                 that.request.client_id = value;
                 that.request.page = 1;
                 $('#minirefresh').scrollTop(0);
-                that.$emit('getData',that.request);
+                that.$emit('getData',that.request,that.show_extend);
             }
             that.hiddenScreenFun(); //隐藏筛选
         },
@@ -591,13 +585,12 @@ export default {
 
             that.request.operation_id = operation_id;
             that.request.page = 1;
-            that.$emit('getData',that.request);
+            that.$emit('getData',that.request,that.show_extend);
         },
         // 选择服务器
         seleServer(opt, flag) {
             var that = this;
             that.request.page = 1;
-
             if (flag == "area") {
                 var areaAll = that.server_info;
                 for (var i in areaAll) {
@@ -609,7 +602,7 @@ export default {
                     areaAll[i].ischeck = false;
                 }
                 that.request.area_id = opt;
-                that.$emit('getData',that.request);
+                that.$emit('getData',that.request,that.show_extend);
 
             } else if (flag == "server") {
                 var areaAll = that.server_info;
@@ -624,7 +617,7 @@ export default {
                 }
                 that.request.area_id = that.seleAreaText.id;
                 that.request.server_id = opt;
-                that.$emit('getData',that.request);
+                that.$emit('getData',that.request,that.show_extend);
             }
             that.hiddenScreenFun(); //隐藏筛选
         }, 
@@ -639,8 +632,7 @@ export default {
                 that.request.operation_id = "";
                 that.request.area_id = "";
                 that.request.server_id = "";
-                // that.getGoodsInfo(that.request);
-                that.$emit('getData',that.request);
+                that.$emit('getData',that.request,that.show_extend);
             }
             if (ind == "1") {
                 if (that.showArea) {
@@ -650,16 +642,14 @@ export default {
                     }
                     that.request.area_id = "";
                     that.request.server_id = "";
-                    // that.getGoodsInfo(that.request);
-                    that.$emit('getData',that.request);
+                    that.$emit('getData',that.request,that.show_extend);
                 } else {
                     that.seleOpe.splice(1, 1);
                     for (var i in that.server_info) {
                         that.server_info[i].ischeck = false;
                     }
                     that.request.area_id = "";
-                    // that.getGoodsInfo(that.request);
-                    that.$emit('getData',that.request);
+                    that.$emit('getData',that.request,that.show_extend);
                 }
             } else if (ind == "2") {
                 that.seleOpe.splice(2, 1);
@@ -667,20 +657,17 @@ export default {
                     that.server_info[i].ischeck = false;
                 }
                 that.request.server_id = "";
-                // that.getGoodsInfo(that.request);
-                that.$emit('getData',that.request);
+                that.$emit('getData',that.request,that.show_extend);
             }
-            // console.log(that.seleOpe);
         },
         // 获取区服
         getServer(operation_id) {
             var that = this;
             that.$axios
-                .post(process.env.API_HOST+"area_server", {//--------------------------------------------------
+                .post(process.env.API_HOST+"area_server", {
                     operation_id: operation_id
                 })
                 .then(function(res) {
-                    // console.log(res);
                     if (res.data.data.server_info == "") {
                         that.showArea = false;
                         that.old_server = res.data.data.area_info;
@@ -788,39 +775,6 @@ export default {
                 that.is_safe = that.setScreen(seleTag,that.screen_info.isInsurance);
             } else if (flag == "levelType") {//等级
                 that.role_level = that.setScreen(seleTag,that.screen_info.levelType);
-            } else if (flag == "pokemon") {
-                // console.log(seleTag);
-                var pokemonTypeAll = that.screen_info.pokemonType;
-                for (var i in pokemonTypeAll) {
-                    if (seleTag == pokemonTypeAll[i].name) {
-                        pokemonTypeAll[i].ischeck = true;
-                        that.hiddenScreenFun(); //隐藏筛选
-                        continue;
-                    }
-                    pokemonTypeAll[i].ischeck = false;
-                }
-            } else if (flag == "profession") {
-                var professionTypeAll = that.screen_info.professionType;
-                for (var i in professionTypeAll) {
-                    if (seleTag == professionTypeAll[i].name) {
-                        professionTypeAll[i].ischeck = true;
-
-                        that.hiddenScreenFun(); //隐藏筛选
-                        continue;
-                    }
-                    professionTypeAll[i].ischeck = false;
-                }
-            } else if (flag == "school") {
-                var schoolTypeAll = that.screen_info.schoolType;
-                for (var i in schoolTypeAll) {
-                    if (seleTag == schoolTypeAll[i].name) {
-                        schoolTypeAll[i].ischeck = true;
-
-                        that.hiddenScreenFun(); //隐藏筛选
-                        continue;
-                    }
-                    schoolTypeAll[i].ischeck = false;
-                }
             }
         },
         setScreen(seleTag,data,val = 'value'){
@@ -840,8 +794,9 @@ export default {
             return result;
         },
         // 配置
-        getConfig(category_id) {
+        getConfig(category_id,request) {
             var that = this;
+            that.request = request;
             that.$axios
                 .post(process.env.API_HOST+"search_config", {
                     category_id: category_id
@@ -855,9 +810,10 @@ export default {
                                 deal_type[i].ischeck = false;
                                 if (deal_type[i].name == "成品号") {
                                     deal_type[i].ischeck = true;
-                                    deal_type[i].name = "租号";
+                                    if(that.param.rent_status == 2){
+                                       deal_type[i].name = "租号";
+                                    }
                                     that.request.deal_type = deal_type[i].value;
-                                    // that.$store.commit('changeRequest',{name:'deal_type',value:deal_type[i].value});
                                 }
                             }
                             that.account_info = deal_type;
@@ -870,21 +826,43 @@ export default {
                                     client_idAll[i].ischeck = true;
                                     that.getOperation(client_idAll[i].value); //调用获取平台接口
                                     that.request.client_id = client_idAll[i].value;
-                                    // that.$store.commit('changeRequest',{name:'client_id',value:client_idAll[i].value});
                                     continue;
                                 }
                                 client_idAll[i].ischeck = false;
                             }
                             that.phone_info = client_idAll;
-
                             that.screen_info.accountBind = that.setConfig(res.data.data.account_bind_all);
                             that.screen_info.person_sex = that.setConfig(res.data.data.person_sex);
                             that.screen_info.faction = that.setConfig(res.data.data.faction);
                             that.screen_info.sellType = that.setConfig(res.data.data.sell_type);
                             that.screen_info.levelType = that.setConfig(res.data.data.role_level);
+
+                            that.extend_attribute = [],that.hide_attribute = [],that.operation_attribute = [],that.filtrate_extend = [];
+                            // debugger;
+                            if(res.data.data.extend_attribute != ''){
+                                that.show_extend = true;
+                                that.extend_attribute = res.data.data.extend_attribute;
+                                for(var i in that.extend_attribute){
+                                    if(that.extend_attribute[i].is_menu == 1 && that.operation_attribute.length < 3){//下栏筛选值
+                                        var operation_obj = {},hide_obj= {};
+                                        operation_obj.attribute_id = that.extend_attribute[i].attribute_id;
+                                        operation_obj.title = that.extend_attribute[i].title;
+                                        operation_obj.ischeck = false;
+                                        hide_obj.attribute_id = that.extend_attribute[i].attribute_id;//属性id
+                                        hide_obj.option = that.extend_attribute[i].option;//属性选项
+                                        hide_obj.value_type = that.extend_attribute[i].value_type;//属性类型
+                                        that.operation_attribute.push(operation_obj);
+                                        that.hide_attribute.push(hide_obj);
+                                    }else if(that.extend_attribute[i].value_type == 5 || that.extend_attribute[i].value_type == 6){//筛选页显示属性 现只判断多选和单选
+                                        that.filtrate_extend.push(that.extend_attribute[i]);
+                                    }
+                                }
+                            }else{
+                                that.show_extend = false;
+                            }
                             // 调用商品列表接口
                             that.request.page = 1;
-                            that.$emit('getData',that.request);
+                            that.$emit('getData',that.request,that.show_extend);
                         }
                     }
                 })
@@ -926,24 +904,29 @@ export default {
         },
     },
     mounted() {
-
         var that = this;
-        // that.$store.commit('changeRequest',{name:'category_id',value:1});
+        // var opt = sessionStorage.getItem("opt");
+        // if(that.$route.query.opt){
+        //     that.request = JSON.parse(JSON.stringify(that.$store.state.list_request));
+        //     if (opt == that.$route.query.opt) {
+        //         that.request.category_id = opt;
+        //         that.request.rent_status = this.param.rent_status;
+                if(that.param.rent_status == 1){
+                    that.screenTop[0].tit_top_text = "成品号"
+                }else{
+                    that.screenTop[0].tit_top_text = "租号"
+                }
+        //         that.getConfig(opt);
+        //     } else {
+        //         that.$router.go(-1);
+        //     }
+        // }else{
+        //     that.$router.go(-1);
+        // }
+    },
 
-        var opt = sessionStorage.getItem("opt");
-        if(that.$route.query.opt){
-            that.request = JSON.parse(JSON.stringify(that.$store.state.list_request));
-            if (opt == that.$route.query.opt) {
-                that.request.category_id = opt;
-                that.request.rent_status = 2;
-                that.getConfig(opt);
-            } else {
-                that.$router.go(-1);
-            }
-        }else{
-            that.$router.go(-1);
-        }
-    }
+    
+    
 };
 </script>
 <style scoped>
@@ -978,6 +961,7 @@ export default {
     color: #666666;
     font-size: 0.24rem;
     height: 0.9rem;
+    box-shadow:.01rem .04rem .06rem #c9c8c8;
 }
 .title-top-cell img {
     width: 0.2rem;
@@ -1028,6 +1012,18 @@ export default {
     position: fixed;
     left: 0;
     top: 1.65rem;
+    right: 0;
+    z-index: 6;
+    max-width:640px;
+    margin:0 auto;
+}
+.show_extend{
+    background: #ffffff;
+    border-top: 0.01rem solid #e5e5e5;
+    background: #ffffff;
+    position: fixed;
+    left: 0;
+    top: 2.5rem;
     right: 0;
     z-index: 6;
     max-width:640px;
@@ -1215,7 +1211,8 @@ export default {
 .screen-type-box {
     padding: 0.3rem 0;
     overflow-y:auto;
-    height:calc(100vh - 1.65rem);
+    height:100vh;
+    -webkit-overflow-scroll:touch;
 }
 .scorll-safari{
     min-height:100vh;
@@ -1355,7 +1352,7 @@ input[type="number"] {
 
 /* 筛选下栏------ */
 .bottom-screen-box {
-    padding: 0.3rem 0.2rem;
+    padding: 0.3rem 0.2rem 0;
 }
 .bottom-screen-box div {
     margin-bottom: 0.3rem;

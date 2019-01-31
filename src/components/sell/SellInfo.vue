@@ -20,30 +20,30 @@
                     <div v-for="(item,index) in extend_attribute" :key="index">
                         <div class="sell-strip" v-if="item.value_type == 1">
                             <span class="sell-lefttext" v-text="item.title"></span>
-                            <input type="text" :placeholder="item.tip" maxlength="20" @input="extendFn(item.value_type,item.attribute_id)">
+                            <input type="text" :value="item.value" :placeholder="item.tip" maxlength="20" @input="extendFn(item.value_type,item.attribute_id)">
                         </div>
                         <div class="sell-strip" v-if="item.value_type == 2">
                             <span class="sell-des" v-text="item.title"></span>
-                            <textarea name="des" id="arbdes" cols="25" rows="3" :placeholder="item.tip" maxlength="200" @input="extendFn(item.value_type,item.attribute_id)"></textarea>
+                            <textarea name="des" :value="item.value" id="arbdes" cols="25" rows="3" :placeholder="item.tip" maxlength="200" @input="extendFn(item.value_type,item.attribute_id)"></textarea>
                         </div>
                         <div class="sell-strip" v-if="item.value_type == 3">
                             <span class="sell-lefttext" v-text="item.title"></span>
-                            <input type="text" :placeholder="item.tip" maxlength="20" oninput="value=value.replace(/\D/g,'')" @input="extendFn(item.value_type,item.attribute_id)">
+                            <input type="text" :value="item.value" :placeholder="item.tip" maxlength="20" oninput="value=value.replace(/\D/g,'')" @input="extendFn(item.value_type,item.attribute_id)">
                         </div>
                         <div class="sell-strip" v-if="item.value_type == 4">
                             <span class="sell-lefttext" v-text="item.title"></span>
-                            <input type="text" :placeholder="item.tip" maxlength="20" @input="extendFn(item.value_type,item.attribute_id)">
+                            <input type="text" :value="item.value" :placeholder="item.tip" maxlength="20" @input="extendFn(item.value_type,item.attribute_id)">
                         </div>
                         <div class="sell-strip" v-if="item.value_type == 5">
                             <div><span class="sell-lefttext" v-text="item.title"></span>（<span v-text="item.tip"></span>）</div>
                             <div class="strip-con flex-wrap">
-                                <div :class="val.select?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name" @click="extendFn(item.value_type,item.attribute_id,val.option_value)"></div>
+                                <div :class="val.checked?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name" @click="extendFn(item.value_type,item.attribute_id,val.option_value)"></div>
                             </div>
                         </div>
                         <div class="sell-strip" v-if="item.value_type == 6">
                             <div><span class="sell-lefttext" v-text="item.title"></span>（<span v-text="item.tip"></span>）</div>
                             <div class="strip-con flex-wrap">
-                                <div :class="val.select?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name" @click="extendFn(item.value_type,item.attribute_id,val.option_value)"></div>
+                                <div :class="val.checked?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name" @click="extendFn(item.value_type,item.attribute_id,val.option_value)"></div>
                             </div>
                         </div>
                     </div>
@@ -452,7 +452,7 @@ export default {
                         if(that.extend_attribute[i].value_type == type){
                             for(var j in that.extend_attribute[i].option){
                                 if(that.extend_attribute[i].option[j].option_value == option){
-                                    that.extend_attribute[i].option[j].select = !this.extend_attribute[i].option[j].select;
+                                    that.extend_attribute[i].option[j].checked = !this.extend_attribute[i].option[j].checked;
                                     if(that.requestData.extend_attribute == ''){
                                         that.requestData.extend_attribute.push({
                                             attribute_id:attribute_id,
@@ -463,7 +463,7 @@ export default {
                                         for(var x in that.requestData.extend_attribute){
                                             if(that.requestData.extend_attribute[x].attribute_id == attribute_id){
                                                 flag = false;
-                                                if(that.extend_attribute[i].option[j].select){//判断是选中还是取消，选中或者重新选中-重新赋值，取消选中则移除id对应的对象
+                                                if(that.extend_attribute[i].option[j].checked){//判断是选中还是取消，选中或者重新选中-重新赋值，取消选中则移除id对应的对象
                                                     that.requestData.extend_attribute[x].option_value =String(option);
                                                 }else{
                                                     that.requestData.extend_attribute.splice(x,1);
@@ -480,7 +480,7 @@ export default {
                                     }
                                     continue;
                                 }
-                                that.extend_attribute[i].option[j].select = false;
+                                that.extend_attribute[i].option[j].checked = false;
                             }
                         }
                     }
@@ -490,7 +490,7 @@ export default {
                         if(that.extend_attribute[i].value_type == type){
                             for(var j in that.extend_attribute[i].option){
                                 if(that.extend_attribute[i].option[j].option_value == option){
-                                    that.extend_attribute[i].option[j].select = !that.extend_attribute[i].option[j].select;
+                                    that.extend_attribute[i].option[j].checked = !that.extend_attribute[i].option[j].checked;
                                     // debugger;
                                     if(that.requestData.extend_attribute == ''){
                                         that.requestData.extend_attribute.push({
@@ -498,16 +498,18 @@ export default {
                                             option_value:String(option)
                                         })
                                     }else{
-                                        let flag = true;//用来判断that.request.extend_attribute 是否有对应的attribute值
+                                        var flag = true;//用来判断that.request.extend_attribute 是否有对应的attribute值
                                         for(var x in that.requestData.extend_attribute){
                                             if(that.requestData.extend_attribute[x].attribute_id == attribute_id){
                                                 flag = false;
-                                                if(that.requestData.extend_attribute[x].option_value.indexOf(option) == -1){
-                                                    that.requestData.extend_attribute[x].option_value+=option;
+                                                var extend_multi = that.requestData.extend_attribute[x].option_value.split(',');
+                                                if(extend_multi.indexOf(String(option)) == -1){
+                                                    extend_multi.push(option);
+                                                    that.requestData.extend_attribute[x].option_value = extend_multi.join(',');
                                                     break;
                                                 }else{
-                                                    var reg = new RegExp(option,'g');
-                                                    that.requestData.extend_attribute[x].option_value=that.requestData.extend_attribute[x].option_value.replace(reg,'');
+                                                    extend_multi.splice(extend_multi.indexOf(String(option)),1);
+                                                    that.requestData.extend_attribute[x].option_value = extend_multi.join(',');
                                                     if(that.requestData.extend_attribute[x].option_value == ""){//多选属性 值为空，移除选择属性id对象
                                                         that.requestData.extend_attribute.splice(x,1);
                                                     }
@@ -527,6 +529,8 @@ export default {
                             }
                         }
                     }
+                    break;
+                default:
                     break;
             }
             console.log(that.requestData.extend_attribute);
@@ -1051,20 +1055,6 @@ export default {
                 }else if(that.editOrpublish == 2){
                     url = 'edit_goods';
                 }
-                // var required_num = 0;//必填属性的个数，循环增加判断that_req.extend_attribute值中必选是否选择
-                // for(var i in that.extend_attribute){
-                //     if(that.extend_attribute[i].is_is_required == 1){
-                //         require++;
-                //         for(var j in that_req.extend_attribute){
-                //             if(that.extend_attribute[i].attribute_id == that_req.extend_attribute[j].attribute_id){
-                //                 if(that_req.extend_attribute[j].option == ""){
-                //                     mui.alert(that.extend_attribute[i].title+'为空', "提示", "确认", "", "div");
-                //                     return false;
-                //                 }
-                //             }
-                //         }
-                //     }
-                // }
                 var extend_arr = [];//存储已选属性的id,用来查找必选属性是否选择
                 for(var i in that_req.extend_attribute){
                     extend_arr.push(that_req.extend_attribute[i].attribute_id);
@@ -1080,21 +1070,6 @@ export default {
                         }
                     }
                 }
-                // for(var i in that_req.extend_attribute){
-                //     if(required_arr.indexOf(that_req.extend_attribute[i].attribute_id) == -1){
-                //         mui.alert('请您填写完毕后发布','提示','确认','','div');
-                //         that.showLoading = false;
-                //         return false;
-                //     }else{
-                //         if(that_req.extend_attribute[i].option_value == ''){
-                //             mui.alert('请您填写完毕后发布','提示','确认','','div');
-                //             that.showLoading = false;
-                //             return false;
-                //         }
-                //     }
-                // }
-
-
                 that.$axios.post(process.env.API_HOST+url,that_req).then(function(res) {
                     // console.log(res);
                     that.showLoading = false;
@@ -1235,15 +1210,8 @@ export default {
                                 that.sellData.sex = data.person_sex; //角色性别
                                 that.sellData.faction = data.faction; //职业
                                 that.sellData.accountType = data.account_type; //账号类型
-                                var extend = data.extend_attribute;
-                                for(var i in extend){
-                                    if(extend[i].value_type == 5 || extend[i].value_type == 6){
-                                        for(var j in extend[i].option){
-                                            extend[i].option[j].select = false;
-                                        }
-                                    }
-                                }
-                                that.extend_attribute = extend;
+
+                                that.extend_attribute = data.extend_attribute;
                                 that.judgeInfo(data.chargeInfo);
                             }else if(flag == 2){//编辑
                                 var oldData = that.oldData;
@@ -1338,6 +1306,10 @@ export default {
                         that_req.video_url = data.video_url;
                         that_req.account = data.account;
                         that.oldData = data;//编辑商品旧数据
+                        that.extend_attribute = data.extend_attribute;
+                        that_req.extend_attribute = data.goods_attribute;
+                        console.log(that.requestData.extend_attribute);
+
                         
                         that.getConfig(that_req,2);//请求选择参数
                         that.getTagType();//请求标签大类
