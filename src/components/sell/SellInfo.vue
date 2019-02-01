@@ -449,7 +449,7 @@ export default {
                     break;
                 case 5://单选
                     for(var i in that.extend_attribute){
-                        if(that.extend_attribute[i].value_type == type){
+                        if(that.extend_attribute[i].attribute_id == attribute_id){
                             for(var j in that.extend_attribute[i].option){
                                 if(that.extend_attribute[i].option[j].option_value == option){
                                     that.extend_attribute[i].option[j].checked = !this.extend_attribute[i].option[j].checked;
@@ -487,7 +487,7 @@ export default {
                     break;
                 case 6://多选
                     for(var i in that.extend_attribute){
-                        if(that.extend_attribute[i].value_type == type){
+                        if(that.extend_attribute[i].attribute_id == attribute_id){
                             for(var j in that.extend_attribute[i].option){
                                 if(that.extend_attribute[i].option[j].option_value == option){
                                     that.extend_attribute[i].option[j].checked = !that.extend_attribute[i].option[j].checked;

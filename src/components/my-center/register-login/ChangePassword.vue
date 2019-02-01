@@ -52,30 +52,6 @@ export default {
         // 获取验证码
         getCode() {
             var that = this;
-            // var phone = that.phoneNum;
-            // var reg = /^1[3-9][0-9]{9}$/g;
-            // if (phone == "") {
-            //     mui.toast("手机号码不能为空",{ duration:'short', type:'div' });
-            // } else if (!phone.match(reg)) {
-            //     mui.toast("您的手机号不正确",{ duration:'short', type:'div' });
-            // } else {
-            //     that.$axios
-            //         .post(process.env.API_HOST+"sms_code", {
-            //             mobile: phone
-            //         })
-            //         .then(function(res) {
-            //             if (res.status == 200) {
-            //                 if (res.data.code == 200) {
-            //                     mui.toast(res.data.msg,{ duration:'short', type:'div' });
-            //                 } else {
-            //                     mui.toast(res.data.msg,{ duration:'short', type:'div' });
-            //                 }
-            //             }
-            //         })
-            //         .catch(function(error) {
-            //             console.log(error);
-            //         });
-            // }
             if (that.isGetCode) {
                 var phone = that.phoneNum;
                 var reg = /^1[3-9][0-9]{9}$/g;

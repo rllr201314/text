@@ -36,7 +36,8 @@
             <div class="statement-tit">声明：</div>
             <div class="statement-con">
                 <div>本认证信息已接入公安系统，对于一切认证身份均具有法律效力</div>
-                <div>实名认证遇到问题？您可以尝试进行<span @click="goAritificial" class="orange-color" v-if="false">人工认证</span></div>
+                <div v-if="false">实名认证遇到问题？您可以尝试进行<span @click="goAritificial" class="orange-color" >人工认证</span></div>
+                <div>实名认证请在20分钟内完成，若超出20分钟，则需要退出该界面，并重新发起认证</div>
             </div>
         </div>
         <Loading  v-if="showLoading"></Loading>

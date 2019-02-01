@@ -147,7 +147,7 @@
                 <div v-for="(item,index) in filtrate_extend" :key="index">
                     <div class="screen-strip-left" v-text="item.title"></div>
                     <div class="screen-strip-right">
-                        <div class="screen-strip-box-level" v-for="(item,index) in item.option" :key="index" v-text="item.option_name" :class="item.checked?'red-bg':'black-bg'"></div>
+                        <div class="screen-strip-box-level" v-for="(val,index) in item.option" :key="index" v-text="val.option_name" :class="val.checked?'red-bg':'black-bg'" @click="seleFiltrateExtendFn(item.value_type,val.attribute_id,val.option_value)"></div>
                     </div>
                 </div>
                 <div class="screen-type-bottom">
@@ -387,7 +387,6 @@ export default {
             that.is_video = null;
             that.person_sex = null;
             that.faction_id = null;
-            
             var sortArr = that.sortPrice.ischeck;
             sortArr.moreSort = false;
             sortArr.upSort  = false;
@@ -399,6 +398,23 @@ export default {
                     that.screen_info[i][j].ischeck = false;
                 }
             }
+            for(var i in that.filtrate_extend){
+                for(var j in that.filtrate_extend[i].option){
+                    that.filtrate_extend[i].option[j].checked = false;
+                }
+            }
+            var extend_arr = that.request.extend_attribute;
+            // for(var i in extend_arr){
+            for(var i=0,type=true;i<extend_arr.length;type?i++:i){
+                if(extend_arr[i].flag == "screen"){
+                    extend_arr.splice(i,1);
+                    type = false;
+                }else{
+                    type = true;
+                }
+            }
+            console.log(that.filtrate_extend);
+            console.log(that.request.extend_attribute);
             that_r.page = 1;
             $('#minirefresh').scrollTop(0);
             that.$emit('getData',that_r,that.show_extend);
@@ -477,6 +493,7 @@ export default {
               that.okScreen();//传参是为了不让重复调用
             }
         },
+        // 下栏筛选方法
         selectExtentFn(value,id,type){
             var that = this;
             var option = that.show_attribute.option;
@@ -523,7 +540,6 @@ export default {
                         break;
                     }
                 }
-                console.log(that.request.extend_attribute)
             }else if(type == 5){
                 for(var i in option){
                     if(option[i].option_value == value){
@@ -560,11 +576,108 @@ export default {
                     }
                     option[i].checked = false;
                 }
-                
-                console.log(that.request.extend_attribute)
             }
             that.$emit('getData',that.request,that.show_extend);
             that.hiddenScreenFun(); //隐藏筛选
+        },
+        // 筛选框自定义属性筛选
+        seleFiltrateExtendFn(type,id,value){
+            var that = this;
+            var arr = that.filtrate_extend;
+            var all_extend = that.request.extend_attribute;
+            if(type == 5){
+                for(var i in arr){
+                    if(arr[i].attribute_id == id){
+                        for(var j in arr[i].option){
+                            if(arr[i].option[j].option_value == value){
+                                arr[i].option[j].checked = !arr[i].option[j].checked;
+                                if(arr[i].option[j].checked){
+                                    if(all_extend == ''){
+                                        all_extend.push({
+                                            attribute_id:id,
+                                            option_value:String(value),
+                                            flag:'screen'
+                                        })
+                                    }else{
+                                        var flag = true;
+                                        for(var x in all_extend){
+                                            if(all_extend[x].attribute_id == id){
+                                                flag = false;
+                                                all_extend[x].option_value = String(value);
+                                            }
+                                        }
+                                        if(flag){
+                                            all_extend.push({
+                                                attribute_id:id,
+                                                option_value:String(value),
+                                                flag:'screen'
+                                            })
+                                        }
+                                    }
+                                }else{
+                                    for(var x in all_extend){
+                                        if(all_extend[x].attribute_id == id){
+                                            all_extend.splice(x,1)
+                                        }
+                                    }
+                                }
+                                continue;
+                            }
+                            arr[i].option[j].checked = false;
+                        }
+                        break;
+                    }
+                }
+            }else if(type == 6){
+                for(var i in arr){
+                    if(arr[i].attribute_id == id){
+                        for(var j in arr[i].option){
+                            if(arr[i].option[j].option_value == value){
+                                arr[i].option[j].checked = !arr[i].option[j].checked;
+                                if(arr[i].option[j].checked){
+                                    if(all_extend == ''){
+                                        all_extend.push({
+                                            attribute_id:id,
+                                            option_value:String(value),
+                                            flag:'screen'
+                                        })
+                                    }else{
+                                        var flag = true;
+                                        for(var x in all_extend){
+                                            if(all_extend[x].attribute_id == id){
+                                                flag = false;
+                                                var arr =  all_extend[x].option_value.split(',');
+                                                arr.push(value);
+                                                all_extend[x].option_value = arr.join(',');
+                                            }
+                                        }
+                                        if(flag){
+                                            all_extend.push({
+                                                attribute_id:id,
+                                                option_value:String(value),
+                                                flag:'screen'
+                                            })
+                                        }
+                                    }
+                                }else{
+                                    for(var x in all_extend){
+                                        if(all_extend[x].attribute_id == id){
+                                            var arr = all_extend[x].option_value.split(',');
+                                            arr.splice(arr.indexOf(String(value)),1);
+                                            all_extend[x].option_value = arr.join(',');
+                                            if(all_extend[x].option_value == ''){
+                                                all_extend.splice(x,1)
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
         },
         // 选择账号类型
         seleAccount(value) {
@@ -902,7 +1015,6 @@ export default {
                                         that.filtrate_extend.push(that.extend_attribute[i]);
                                     }
                                 }
-                                console.log(that.filtrate_extend)
                             }else{
                                 that.show_extend = false;
                             }
