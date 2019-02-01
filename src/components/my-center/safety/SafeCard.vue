@@ -33,10 +33,19 @@
         </div>
         <div class="okBtn" @click="nextBtn">下一步</div>
         <div class="statement">
-            <div class="statement-tit">声明：</div>
-            <div class="statement-con">
-                <div>本认证信息已接入公安系统，对于一切认证身份均具有法律效力</div>
-                <div>实名认证遇到问题？您可以尝试进行<span @click="goAritificial" class="orange-color" v-if="false">人工认证</span></div>
+            <div class="statement-wrap">
+                <div class="statement-tit">声明：</div>
+                <div class="statement-con">
+                    <div>本认证信息已接入公安系统，对于一切认证身份均具有法律效力</div>
+                    <div v-if="false">实名认证遇到问题？您可以尝试进行<span @click="goAritificial" class="orange-color" >人工认证</span></div>
+                </div>
+            </div>
+            <div class="statement-wrap">
+                <div class="statement-tit">注意事项：</div>
+                <div class="statement-con">
+                    <div>实名认证请在20分钟内完成，若超出20分钟，则需要退出该界面，并重新发起认证;</div>
+                    <div>同一身份证号或银行卡号24小时内认证不能超过10次，否则请在12小时后再次尝试。</div>
+                </div>
             </div>
         </div>
         <Loading  v-if="showLoading"></Loading>
@@ -270,17 +279,21 @@ export default {
     margin: 0.3rem auto 0;
     width: 6.5rem;
     color: #999999;
+    /* display: flex; */
+}
+.statement-wrap{
     display: flex;
+    margin-bottom:.2rem;
 }
 .statement-con,.statement-tit{
     display:inline-block;
 }
 .statement-tit {
-    width:.8rem;
+    min-width:1.2rem;
     color: #666666;
 }
 .statement-con{
-    width:calc(100% - .8rem);
+    width:calc(100% - 1.2rem);
 }
 .orange-color{
     color:#FE7649;
