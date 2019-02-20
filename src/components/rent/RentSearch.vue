@@ -123,7 +123,7 @@ export default {
                 this.getGoodsInfo(data, "refresh");
             }
             if(flag){
-                $('.list-wrap').css({'top':'2.58rem'})
+                $('.list-wrap').css({'top':'2.38rem'})
             }else{
                 $('.list-wrap').css({'top':'1.68rem'})
             }

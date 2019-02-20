@@ -13,10 +13,6 @@
                         <span class="sell-lefttext">商品标题</span>
                         <input type="text" placeholder="请输入商品标题(20字以内)" v-model="requestData.goods_title" maxlength="20">
                     </div>
-                    <div class="sell-strip">
-                        <span class="sell-lefttext">角色等级</span>
-                        <input type="number" placeholder="请输入角色等级" v-model="requestData.role_level" oninput="if(value.length>3)value=value.slice(0,3)">
-                    </div>
                     <div v-for="(item,index) in extend_attribute" :key="index">
                         <div class="sell-strip" v-if="item.value_type == 1">
                             <span class="sell-lefttext" v-text="item.title"></span>
@@ -35,46 +31,24 @@
                             <input type="text" :value="item.value" :placeholder="item.tip" maxlength="20" @input="extendFn(item.value_type,item.attribute_id)">
                         </div>
                         <div class="sell-strip" v-if="item.value_type == 5">
-                            <div><span class="sell-lefttext" v-text="item.title"></span>（<span v-text="item.tip"></span>）</div>
+                            <div class="sell-strip-title"><span v-text="item.title"></span> <span class="red-color">（<span v-text="item.tip"></span>）</span></div>
                             <div class="strip-con flex-wrap">
                                 <div :class="val.checked?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name" @click="extendFn(item.value_type,item.attribute_id,val.option_value)"></div>
                             </div>
                         </div>
                         <div class="sell-strip" v-if="item.value_type == 6">
-                            <div><span class="sell-lefttext" v-text="item.title"></span>（<span v-text="item.tip"></span>）</div>
+                            <div class="sell-strip-title"><span v-text="item.title"></span> <span class="red-color">（<span v-text="item.tip"></span>）</span></div>
                             <div class="strip-con flex-wrap">
                                 <div :class="val.checked?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name" @click="extendFn(item.value_type,item.attribute_id,val.option_value)"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="sell-strip" @click="showPop('faction')">
-                        <span class="sell-lefttext">职业</span>
-                        <div class="right-opt">
-                            <span v-text="seleData.faction"></span>
-                            <img src="../../../static/img/order/next.png" alt="">
-                        </div>
-                    </div>
-                    <div class="sell-strip" @click="showPop('sex')">
-                        <span class="sell-lefttext">角色性别</span>
-                        <div class="right-opt">
-                            <span v-text="seleData.sex"></span>
-                            <img src="../../../static/img/order/next.png" alt="">
-                        </div>
-                    </div>
+                    
                     <div class="sell-strip">
                         <span class="sell-des">商品描述</span>
                         <textarea name="des" id="arbdes" cols="25" rows="3" placeholder="请对商品进行描述(200字以内)" v-model="requestData.goods_description" maxlength="200"></textarea>
                     </div>
-                    <div class="sell-strip">
-                        <div class="sell-strip-title">
-                            <span>商品标签</span>
-                            <span class="red-color">（打上标签，买家更容易搜到哦）</span>
-                        </div>
-                        <div class="sell-strip-content">
-                            <div class="seleTag" v-for="item in sellData.showTag" v-text="item.tag_content"></div>
-                            <div class="addTag" @click="addTagFn">＋添加</div>
-                        </div>
-                    </div>
+                    
                     <div class="sell-strip">
                         <div class="sell-strip-title">
                             <span>上传图片</span>
@@ -153,7 +127,6 @@
                         <span class="sell-lefttext">商品售价</span>
                         <input type="number" placeholder="填写商品价格" v-model="requestData.goods_price" oninput="if(value.length>7)value=value.slice(0,7)">
                     </div>
-                    <!-- /////88888888888888888888888888888888888888888888888888888888888888888888888888888888888888 -->
                     <div class="sell-strip" v-if="safeOrCompact.showSafe">
                         <div>
                             <div class="sell-left">保险服务</div>
@@ -224,63 +197,7 @@
             </div>
         </div>
         <div class="nextBtn" @click="addGoods">下一步</div>
-        <div class="tag-wrap" v-show="showTagAll">
-            <div class="sele-tag-wrap">
-                <div class="sele-tit">已选标签（
-                    <span v-text="sellData.seleTag.length"></span>/5）</div>
-                <div class="sele-con">
-                    <div class="sele-tag" v-for="item in sellData.seleTag" v-text="item.tag_content" @click="seleTagCon(item.tag_id)"></div>
-                </div>
-            </div>
-            <!-- 可选择菜单 -->
-            <div class="screen-box server-type-box">
-                <!-- 标签大类 -->
-                <div class="server-operation-box">
-                    <div class="operation-type-strip" v-for="item in sellData.tagType" :class="item.ischeck?'red-border':'black-border'" v-text="item.tag_name" @click="seleTagType(item.tag_type_id)"></div>
-                </div>
-                <!-- 标签小类 -->
-                <div class="server-area-box">
-                    <div class="area-type-search">
-                        <input type="text" placeholder="搜索">
-                        <img class="search-area-ico" src="../../../static/img/search_ico.png" alt="">
-                    </div>
-                    <div class="area-type-content">
-                        <div class="area-type-strip" v-for="item in sellData.tagContent" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.tag_content" @click="seleTagCon(item.tag_id)"></div>
-                    </div>
-                    <div class="screen-type-bottom">
-                        <div class="ok-screen-btn" @click="affirmTag">确认</div>
-                        <div class="no-screen-btn" @click="cancelTag">取消</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="shade" v-show="showTagAll"></div>
-        <div v-show="showMenu_type" class="type-mu">
-            <div class="pop-view-tit option-gray">请选择职业</div>
-            <ul>
-                <li class="option-black" v-for="item in sellData.faction" @click="seleFaction(item.faction_id)" v-text="item.faction_name"></li>
-            </ul>
-            <div class="pop-view-con"></div>
-            <div class="pop-view-bot" @click="hiddenFn">取消</div>
-        </div>
         <!-- 弹出框 -->
-        <!-- 角色性别 -->
-        <div id="sheet-sex" class="mui-popover mui-popover-bottom mui-popover-action">
-            <!-- 可选择菜单 -->
-            <ul class="pop-view">
-                <li class="pop-view-tit option-gray">
-                    <div>请选择角色类别</div>
-                </li>
-                <!-- 商品类型 -->
-                <li class="option-black" v-for="item in sellData.sex" @click="seleType(item.value,'sex')" v-text="item.name"></li>
-            </ul>
-            <!-- 取消菜单 -->
-            <ul class="pop-view">
-                <li class="mui-table-view-cell option-black">
-                    <a href="#sheet-sex">取消</a>
-                </li>
-            </ul>
-        </div>
         <!-- 弹出框 -->
         <!-- 账号类型 -->
         <div id="sheet-accountType" class="mui-popover mui-popover-bottom mui-popover-action">
@@ -326,7 +243,6 @@ export default {
             showMenu_type:false,
             showLoading:false,
             editOrpublish:null,
-            showTagAll: false,
             seleData: {
                 faction: "未选择",
                 sex: "未选择",
@@ -389,10 +305,10 @@ export default {
                 server_id: "",
                 goods_title: "",
                 goods_description: "",
-                role_level: "",
-                faction_id: "",
-                person_sex: "",
-                tag: "",
+                // role_level: "",
+                // faction_id: "",
+                // person_sex: "",
+                // tag: "",
                 account_type: "",
                 account_bind: "",
                 is_safe: "",
@@ -439,6 +355,12 @@ export default {
                                 break;
                             }
                         }
+                        // 因为选择单选或多选后 更新that.extend_attribute 所以要赋值。
+                        for(var j in that.extend_attribute){
+                            if(that.extend_attribute[j].attribute_id == attribute_id){
+                                that.extend_attribute[j].value = event.target.value
+                            }
+                        }
                         if(flag){
                             that.requestData.extend_attribute.push({
                                 attribute_id:attribute_id,
@@ -448,6 +370,7 @@ export default {
                     }
                     break;
                 case 5://单选
+                    // debugger;
                     for(var i in that.extend_attribute){
                         if(that.extend_attribute[i].attribute_id == attribute_id){
                             for(var j in that.extend_attribute[i].option){
@@ -486,6 +409,7 @@ export default {
                     }
                     break;
                 case 6://多选
+                    // debugger;
                     for(var i in that.extend_attribute){
                         if(that.extend_attribute[i].attribute_id == attribute_id){
                             for(var j in that.extend_attribute[i].option){
@@ -524,6 +448,7 @@ export default {
                                             })
                                         }
                                     }
+                                    
                                     break;
                                 }
                             }
@@ -533,7 +458,7 @@ export default {
                 default:
                     break;
             }
-            console.log(that.requestData.extend_attribute);
+            // console.log(that.requestData.extend_attribute);
         },
         // 添加图片---------------------
         addImg(event) {
@@ -589,16 +514,17 @@ export default {
         seleType(opt, flag) {
             var that = this;
             mui("#sheet-" + flag).popover("toggle");
-            if (flag == "sex") {
-                //角色性别
-                var sex = that.sellData.sex;
-                for (var i in sex) {
-                    if (opt == sex[i].value) {
-                        that.requestData.person_sex = sex[i].value;
-                        that.seleData.sex = sex[i].name;
-                    }
-                }
-            } else if (flag == "accountType") {
+            // if (flag == "sex") {
+            //     //角色性别
+            //     var sex = that.sellData.sex;
+            //     for (var i in sex) {
+            //         if (opt == sex[i].value) {
+            //             that.requestData.person_sex = sex[i].value;
+            //             that.seleData.sex = sex[i].name;
+            //         }
+            //     }
+            // } else 
+            if (flag == "accountType") {
                 //账号类型
                 var accountType = that.sellData.accountType;
                 for (var i in accountType) {
@@ -724,85 +650,8 @@ export default {
                 this.sellData.optSafe = false;
             }
         },
-        // 选择标签大类-----------------------------------------------------------------
-        seleTagType(tag_type_id) {
-            var tagType = this.sellData.tagType;
-            for (var i in tagType) {
-                if (tag_type_id == tagType[i].tag_type_id) {
-                    tagType[i].ischeck = true;
-                    continue;
-                }
-                tagType[i].ischeck = false;
-            }
-            this.getTagCon(tag_type_id);
-        },
-        // 选择小类
-        seleTagCon(tag_id) {
-            var that = this;
-            var tagContent = that.sellData.tagContent;
-            var seleTag = that.sellData.seleTag;
-            for (var i in tagContent) {
-                if (tagContent[i].tag_id == tag_id) {
-                    if (tagContent[i].ischeck) {
-                        tagContent[i].ischeck = false;
-                        for (var j in seleTag) {
-                            if (seleTag[j].tag_id == tag_id) {
-                                seleTag.splice(j, 1);
-                            }
-                        }
-                    } else {
-                        if (seleTag.length < 5) {
-                            that.sellData.seleTag.push(tagContent[i]);
-                            tagContent[i].ischeck = true;
-                        } else {
-                            mui.alert("最多只能选择五个标签哦！","提示","确认","","div");
-                        }
-                    }
-                    break;
-                }
-            }
-        },
-        //   确认选择标签
-        affirmTag() {
-            var that = this;
-            that.sellData.showTag = [];
-            var seleTag = that.sellData.seleTag;
-            for (var i in seleTag) {
-                that.sellData.showTag.push(seleTag[i]);
-            }
-            this.showTagAll = false;
-            $("body").css("overflow", "");
-        },
-        //   取消
-        cancelTag() {
-            var that = this;
-            that.sellData.seleTag = [];
-            var showTag = that.sellData.showTag;
-            for (var i in showTag) {
-                that.sellData.seleTag.push(showTag[i]);
-            }
-            this.showTagAll = false;
-            $("body").css("overflow", "");
-        },
-        // 添加标签
-        addTagFn() {
-            var that = this;
-            this.showTagAll = true;
-            $("body").css("overflow", "hidden");
-            var tagCon = that.sellData.tagContent;
-            var seleTag = that.sellData.seleTag;
-            for (var i in tagCon) {
-                tagCon[i].ischeck = false;
-            }
-            // 再判断
-            for (var i in seleTag) {
-                for (var x in tagCon) {
-                    if (seleTag[i].tag_id == tagCon[x].tag_id) {
-                        tagCon[x].ischeck = true;
-                    }
-                }
-            }
-        },
+
+       
         // 显示那个弹出框
         showPop(flag) {
             if(flag == 'faction'){
@@ -814,85 +663,15 @@ export default {
         hiddenFn(){
             this.showMenu_type = false;
         },
-        // 选择职业 
-        seleFaction(opt){
-            // 职业
-            var that =this;
-            that.showMenu_type = false;
-
-            // if (flag == "faction") {
-                var faction = that.sellData.faction;
-                for (var i in faction) {
-                    if (opt == faction[i].faction_id) {
-                        that.requestData.faction_id = faction[i].faction_id;
-                        that.seleData.faction = faction[i].faction_name;
-                    }
-                }
-            // }
-        },
-        
-        // 获取标签小类
-        getTagCon(tag_type_id) {
-            var that = this;
-            that.$axios
-                .post(process.env.API_HOST+"tag_content", {
-                    category_id: that.category_id,
-                    tag_type_id: tag_type_id
-                })
-                .then(function(res) {
-                    if (res.status == 200) {
-                        if (res.data.code == 200) {
-                            var tagAll = res.data.data;
-                            var seleTag = that.sellData.seleTag;
-                            // 先赋值
-                            for (var i in tagAll) {
-                                tagAll[i].ischeck = false;
-                            }
-                            // 再判断
-                            for (var i in seleTag) {
-                                for (var x in tagAll) {
-                                    if (seleTag[i].tag_id == tagAll[x].tag_id) {
-                                        tagAll[x].ischeck = true;
-                                    }
-                                }
-                            }
-                            that.sellData.tagContent = tagAll;
-                        }
-                    }
-                })
-                .catch(function(err) {
-                    console.log(err);
-                });
-        },
         // 发布商品
         addGoods() {
             var that = this;
             if(!that.showLoading){
                 that.showLoading = true;
                 var that_req = that.requestData;
+
                 if (that_req.goods_title == "") {
                     mui.alert("请输入商品标题", "提示", "确认", "", "div");
-                    that.showLoading = false;
-                    return false;
-                }
-                if (that_req.role_level == "") {
-                    mui.alert("请输入游戏等级", "提示", "确认", "", "div");
-                    that.showLoading = false;
-                    return false;
-                } else {
-                    if (that_req.role_level > 999) {
-                        mui.alert("请输入正确的游戏等级","提示","确认", "","div");
-                        that.showLoading = false;
-                        return false;
-                    }
-                }
-                if (that_req.faction_id == "") {
-                    mui.alert("请选择职业", "提示", "确认", "", "div");
-                    that.showLoading = false;
-                    return false;
-                }
-                if (that_req.person_sex == "") {
-                    mui.alert("请选择角色性别", "提示", "确认", "", "div");
                     that.showLoading = false;
                     return false;
                 }
@@ -906,14 +685,7 @@ export default {
                     return false;
                 }
 
-                var tagAll = that.sellData.showTag;
-                if(tagAll.length > 0) {
-                    var str = "";
-                    for (var i in tagAll) {
-                        str += "," + tagAll[i].tag_id;
-                    }
-                    that_req.tag = str.substring(1);
-                }
+               
                 var upImg = that.sellData.upimgAll.imgSrc;
                 if(upImg.length > 0){
                     that_req.images = upImg;
@@ -1141,40 +913,12 @@ export default {
                     that.safeOrCompact.showSafe = false;
                     that.safeOrCompact.showNoSafe = false;
                 }
-            }
+            } 
             if (that.safeOrCompact.showSafe == true) {
                 that.safeOrCompact.parcent = parseInt(safe_rate * 100);
                 that.safeOrCompact.isMax = true;
                 that.safeOrCompact.maxPrice = max_safe;
             }
-        },
-        getTagType(){
-            var that = this;
-            // 请求标签大类
-            that.$axios
-                .post(process.env.API_HOST+"tag_type", {
-                    category_id: that.category_id
-                })
-                .then(function(res) {
-                    // console.log(res);
-                    if (res.status == 200) {
-                        if (res.data.code == 200) {
-                            var tagType = res.data.data;
-                            for (var i in tagType) {
-                                if (i == 0) {
-                                    tagType[0].ischeck = true;
-                                    continue;
-                                }
-                                tagType[i].ischeck = false;
-                            }
-                            that.sellData.tagType = tagType;
-                            that.getTagCon(tagType[0].tag_type_id);
-                        }
-                    }
-                })
-                .catch(function(err) {
-                    console.log(err);
-                });
         },
         getConfig(opt,flag){
             var that = this;
@@ -1237,20 +981,6 @@ export default {
                                     sellType[i].ischeck = false;
                                 }
                                 that.sellData.sellType.sell = sellType; //是否议价
-                                // 角色性别
-                                for(var i in data.person_sex){
-                                    if(data.person_sex[i].value == oldData.person_sex){
-                                        that.requestData.person_sex = data.person_sex[i].value;
-                                        that.seleData.sex = data.person_sex[i].name;
-                                    }
-                                }
-                                // 职业
-                                for(var i in data.faction){
-                                    if(data.faction[i].faction_id == oldData.faction_id){
-                                        that.requestData.faction_id = data.faction[i].faction_id;
-                                        that.seleData.faction = data.faction[i].faction_name;
-                                    }
-                                }
                                 // 账号类型
                                 for(var i in data.account_type){
                                     if(data.account_type[i].value == oldData.account_type){
@@ -1258,8 +988,6 @@ export default {
                                         that.seleData.accountType = data.account_type[i].name;
                                     }
                                 }
-                                that.sellData.showTag = oldData.tag;
-                                that.sellData.seleTag = oldData.tag;
                                 // 图片
                                 for(var i in oldData.images){
                                     that.sellData.upimgAll.imgSrc.push(oldData.images[i].img_url);
@@ -1298,7 +1026,7 @@ export default {
                         }
                         that_req.goods_price = parseInt(data.goods_price);
                         that_req.min_price = parseInt(data.min_price);
-                        that_req.role_level = data.role_level;
+                        // that_req.role_level = data.role_level;
                         that_req.goods_title = data.goods_title;
                         that_req.goods_description = data.goods_description;
                         that_req.mobile = data.mobile;
@@ -1308,11 +1036,10 @@ export default {
                         that.oldData = data;//编辑商品旧数据
                         that.extend_attribute = data.extend_attribute;
                         that_req.extend_attribute = data.goods_attribute;
-                        console.log(that.requestData.extend_attribute);
+                        // console.log(that.requestData.extend_attribute);
 
                         
                         that.getConfig(that_req,2);//请求选择参数
-                        that.getTagType();//请求标签大类
                     }
                 }
             }).catch((err) => {
@@ -1378,7 +1105,6 @@ export default {
                     that.requestData.area_id = data.area_id;
                     that.requestData.server_id = data.server_id;
                     that.getConfig(data,opt.flag);//请求选择参数
-                    that.getTagType();//获取标签大类
                     that.comData.showTitle.title = "我要卖";
                     that.editOrpublish = 1;
                 }else{
@@ -1488,7 +1214,7 @@ export default {
 }
 
 .sell-strip-title {
-    margin-top: 0.2rem;
+    margin: 0.2rem 0;
 }
 
 .sell-strip-content {
@@ -1998,7 +1724,7 @@ input[type="number"] {
 }
 .strip-con{
     flex-wrap:wrap;
-    padding:0 .2rem;
+    /* padding:0 .2rem; */
 }
 .strip-con div{
     margin-bottom:.2rem;

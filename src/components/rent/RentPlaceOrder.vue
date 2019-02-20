@@ -11,31 +11,35 @@
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
                     <span>商品详情</span>
                 </div>
-                <div class="goods-info-content">
-                    <img :src="goodsInfo.game_logo" alt="">
+                <div class="goods-info-content"  @click="showAttributeFn(true)">
+                    <img class="game-log" :src="goodsInfo.game_logo" alt="">
                     <div class="goods-info">
                         <div class="goods-info-title" v-text="goodsInfo.goods_title"></div>
-                        <div class="goods-info-box">
-                            <div class="goods-info-left">
-                                <div class="text-left">系统</div>
-                                <div class="text-left">等级</div>
-                                <div class="text-left">门派</div>
-                                <div class="text-left">商品类型</div>
-                                <div class="text-left">账号绑定</div>
-                            </div>
-                            <div class="goods-info-right">
-                                <div class="text-right" v-if="goodsInfo.server_name != null" v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name+'>'+goodsInfo.server_name"></div>
-                                <div class="text-right" v-else v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name"></div>
-                                <div class="text-right">
-                                    <span v-text="goodsInfo.role_level"></span>级</div>
-                                <div class="text-right" v-text="goodsInfo.faction_name"></div>
-                                <div class="text-right">出租</div>
-                                <div class="text-right" v-text="goodsInfo.account_bind"></div>
-                            </div>
-                        </div>
                     </div>
+                    <img class="right-next" src="../../../static/img/my-center/next_ico.png" alt="">
                 </div>
             </div>
+            <div class="goods-info-box" @click="showAttributeFn(false)" v-show="show_attribute">
+                <div class="goods-info-strip">
+                    <div class="text-left">系统</div>
+                    <div class="text-right" v-if="goodsInfo.server_name != null" v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name+'>'+goodsInfo.server_name"></div>
+                    <div class="text-right" v-else v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name"></div>
+                </div>
+                <div class="goods-info-strip">
+                    <div class="text-left">商品类型</div>
+                    <div class="text-right" v-if="goodsInfo.deal_type == 1">成品号</div>
+                    <div class="text-right" v-else>代练号</div>
+                </div>
+                <div class="goods-info-strip">
+                    <div class="text-left">账号绑定</div>
+                    <div class="text-right" v-text="goodsInfo.account_bind"></div>
+                </div>
+                <div class="goods-info-strip" v-for="(item,index) in extend_attribute" :key="index">
+                    <div class="text-left" v-text="item.title"></div>
+                    <div class="text-right" v-text="item.value"></div>
+                </div>
+            </div>
+            <div class="shade" @click="showAttributeFn(false)" v-show="show_attribute"></div>
             <!-- 联系方式 -->
             <div class="contact-wrap placeOrder-cell" v-if="orderType">
                 <div class="goods-info-top">
@@ -193,10 +197,20 @@ export default {
             operaSafe: {
                 safe: true,
                 noSafe: false
-            }
+            },
+            show_attribute:false,
+            extend_attribute:[],
         };
     },
     methods: {
+        showAttributeFn(flag){
+            var that = this;   
+            if(flag){
+                that.show_attribute = true;
+            }else{
+                that.show_attribute = false;
+            }
+        },
         // 隐藏遮罩
         hiddenFn(){
             this.showTime = false;
@@ -307,6 +321,7 @@ export default {
                             that.tremPirce = Number(res.data.data.day_rent) * Number(res.data.data.least_lease);
                             that.showNoData = false;
                             that.totalPrice = Number(that.tremPirce) + Number(res.data.data.cash);
+                            that.extend_attribute = that.goodsInfo.goods_attribute;
                         }else if(res.data.code == 400){
                             that.showNoData = true;
                             mui.alert(res.data.msg,'提示','确认',function(){
@@ -458,15 +473,21 @@ export default {
     font-size: 0.26rem;
     color: #666666;
 }
-.goods-info-content img {
+.game-log{
     width: 1.1rem;
     height: 1.1rem;
     margin: 0 0.6rem 0 0.35rem;
     vertical-align: middle;
 }
+.right-next{
+    width:.13rem;
+    height:.24rem;
+    vertical-align: middle;
+    margin-right:.2rem;
+}
 .goods-info {
     display: inline-block;
-    width: 4.8rem;
+    width: 4.5rem;
     vertical-align: middle;
 }
 .goods-info-title {
@@ -474,12 +495,52 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #333333;
-    margin-bottom: 0.15rem;
 }
+
 .goods-info-box {
-    display: flex;
-    justify-content: space-between;
-    padding-right:.2rem;
+    max-width: 630px;
+    margin:0 auto;
+    background: #ffffff;
+    font-size: 0.26rem;
+    color: #666666;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.2rem;
+    /* -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
+    box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6; */
+    padding:.2rem .38rem;
+    left:.2rem;
+    right:.2rem;
+    position: fixed;
+    z-index:6;
+}
+.goods-info-strip{
+    display:flex;
+    align-items: top;
+    margin-bottom:.1rem;
+    user-select:text;
+}
+.text-left{
+    color: #666666;
+    min-width:1.5rem;
+    margin-right:.3rem;
+}
+.text-right{
+    color: #333333;
+    word-break: break-all;
+    white-space: normal;
+}
+.shade {
+    position: fixed;
+    left: 0;
+    top: .88rem;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 4;
+    margin:0 auto;
+    max-width:640px;
 }
 .goods-info-left{
     width: 40%;

@@ -15,46 +15,28 @@
                     <img class="game-log" :src="goodsInfo.game_logo" alt="">
                     <div class="goods-info">
                         <div class="goods-info-title" v-text="goodsInfo.goods_title"></div>
-                        <!-- <div class="goods-info-box">
-                            <div class="goods-info-left">
-                                <div class="text-left">系统</div>
-                                <div class="text-left">等级</div>
-                                <div class="text-left">门派</div>
-                                <div class="text-left">商品类型</div>
-                                <div class="text-left">账号绑定</div>
-                            </div>
-                            <div class="goods-info-right">
-                                <div class="text-right" v-if="goodsInfo.server_name != null" v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name+'>'+goodsInfo.server_name"></div>
-                                <div class="text-right" v-else v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name"></div>
-                                <div class="text-right">
-                                    <span v-text="goodsInfo.role_level"></span>级</div>
-                                <div class="text-right" v-text="goodsInfo.faction_name"></div>
-                                <div class="text-right" v-if="goodsInfo.deal_type == 1">成品号</div>
-                                <div class="text-right" v-else>代练号</div>
-                                <div class="text-right" v-text="goodsInfo.account_bind"></div>
-                            </div>
-                        </div> -->
                     </div>
                     <img class="right-next" src="../../../static/img/my-center/next_ico.png" alt="">
                 </div>
             </div>
             <div class="goods-info-box" @click="showAttributeFn(false)" v-show="show_attribute">
-                <div class="goods-info-left">
+                <div class="goods-info-strip">
                     <div class="text-left">系统</div>
-                    <div class="text-left">等级</div>
-                    <div class="text-left">门派</div>
-                    <div class="text-left">商品类型</div>
-                    <div class="text-left">账号绑定</div>
-                </div>
-                <div class="goods-info-right">
                     <div class="text-right" v-if="goodsInfo.server_name != null" v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name+'>'+goodsInfo.server_name"></div>
                     <div class="text-right" v-else v-text="goodsInfo.platform_name+'>'+ goodsInfo.area_name"></div>
-                    <div class="text-right">
-                        <span v-text="goodsInfo.role_level"></span>级</div>
-                    <div class="text-right" v-text="goodsInfo.faction_name"></div>
+                </div>
+                <div class="goods-info-strip">
+                    <div class="text-left">商品类型</div>
                     <div class="text-right" v-if="goodsInfo.deal_type == 1">成品号</div>
                     <div class="text-right" v-else>代练号</div>
+                </div>
+                <div class="goods-info-strip">
+                    <div class="text-left">账号绑定</div>
                     <div class="text-right" v-text="goodsInfo.account_bind"></div>
+                </div>
+                <div class="goods-info-strip" v-for="(item,index) in extend_attribute" :key="index">
+                    <div class="text-left" v-text="item.title"></div>
+                    <div class="text-right" v-text="item.value"></div>
                 </div>
             </div>
             <div class="shade" @click="showAttributeFn(false)" v-show="show_attribute"></div>
@@ -320,6 +302,7 @@ export default {
                 noSafe: false
             },
             show_attribute:false,
+            extend_attribute:[],
         };
     },
     methods: {
@@ -594,6 +577,7 @@ export default {
                             that.goodsInfo = res.data.data.goods_info;
                             that.stage = res.data.data.stage;
                             that.remaining_sum = res.data.data.remaining_sum;
+                            that.extend_attribute = res.data.data.goods_info.goods_attribute;
                             // 可以选择分期的话默认 首付30% 分一期 判断可购合同还是保险
                             that.stageInfo = that.stage.first_one_interest;
                             if(that.goodsInfo.is_discuss == 1){//是否议价
@@ -768,6 +752,7 @@ export default {
     width:.13rem;
     height:.24rem;
     vertical-align: middle;
+    margin-right:.2rem;
 }
 .goods-info {
     display: inline-block;
@@ -779,26 +764,39 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #333333;
-    margin-bottom: 0.15rem;
 }
 .goods-info-box {
-    display: flex;
-    justify-content: space-around;
+    max-width: 630px;
+    margin:0 auto;
     background: #ffffff;
     font-size: 0.26rem;
     color: #666666;
     -webkit-border-radius: 0.1rem;
     -moz-border-radius: 0.1rem;
     border-radius: 0.1rem;
-    -webkit-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
-    -moz-box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
-    box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
-    padding:.2rem;
+    padding:.2rem .48rem;
     left:.2rem;
     right:.2rem;
     position: fixed;
     z-index:6;
 }
+.goods-info-strip{
+    display:flex;
+    align-items: top;
+    margin-bottom:.1rem;
+    user-select:text;
+}
+.text-left{
+    color: #666666;
+    min-width:1.5rem;
+    margin-right:.3rem;
+}
+.text-right{
+    color: #333333;
+    word-break: break-all;
+    white-space: normal;
+}
+
 .shade {
     position: fixed;
     left: 0;
@@ -809,21 +807,6 @@ export default {
     z-index: 4;
     margin:0 auto;
     max-width:640px;
-}
-.goods-info-left{
-    width: 40%;
-    overflow: hidden;
-}
-.goods-info-left div {
-    margin-bottom: 0.1rem;
-    white-space: nowrap;
-}
-.goods-info-right div {
-    margin-bottom: 0.1rem;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    color: #333333;
 }
 .contact-content {
     padding-left: 0.2rem;

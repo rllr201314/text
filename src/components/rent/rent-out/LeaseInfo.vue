@@ -13,37 +13,39 @@
                         <span class="sell-lefttext">商品标题</span>
                         <input type="text" placeholder="请输入商品标题(20字以内)" v-model="requestData.goods_title" maxlength="20">
                     </div>
-                    <div class="sell-strip">
-                        <span class="sell-lefttext">角色等级</span>
-                        <input type="number" placeholder="请输入角色等级" v-model="requestData.role_level" oninput="if(value.length>3)value=value.slice(0,3)">
-                    </div>
-                    <div class="sell-strip" @click="showPop('faction')">
-                        <span class="sell-lefttext">职业</span>
-                        <div class="right-opt">
-                            <span v-text="seleData.faction"></span>
-                            <img src="../../../../static/img/order/next.png" alt="">
+                    <div v-for="(item,index) in extend_attribute" :key="index">
+                        <div class="sell-strip" v-if="item.value_type == 1">
+                            <span class="sell-lefttext" v-text="item.title"></span>
+                            <input type="text" :value="item.value" :placeholder="item.tip" maxlength="20" @input="extendFn(item.value_type,item.attribute_id)">
                         </div>
-                    </div>
-                    <div class="sell-strip" @click="showPop('sex')">
-                        <span class="sell-lefttext">角色性别</span>
-                        <div class="right-opt">
-                            <span v-text="seleData.sex"></span>
-                            <img src="../../../../static/img/order/next.png" alt="">
+                        <div class="sell-strip" v-if="item.value_type == 2">
+                            <span class="sell-des" v-text="item.title"></span>
+                            <textarea name="des" :value="item.value" id="arbdes" cols="25" rows="3" :placeholder="item.tip" maxlength="200" @input="extendFn(item.value_type,item.attribute_id)"></textarea>
+                        </div>
+                        <div class="sell-strip" v-if="item.value_type == 3">
+                            <span class="sell-lefttext" v-text="item.title"></span>
+                            <input type="text" :value="item.value" :placeholder="item.tip" maxlength="20" oninput="value=value.replace(/\D/g,'')" @input="extendFn(item.value_type,item.attribute_id)">
+                        </div>
+                        <div class="sell-strip" v-if="item.value_type == 4">
+                            <span class="sell-lefttext" v-text="item.title"></span>
+                            <input type="text" :value="item.value" :placeholder="item.tip" maxlength="20" @input="extendFn(item.value_type,item.attribute_id)">
+                        </div>
+                        <div class="sell-strip" v-if="item.value_type == 5">
+                            <div class="sell-strip-title"><span v-text="item.title"></span> <span class="red-color">（<span v-text="item.tip"></span>）</span></div>
+                            <div class="strip-con flex-wrap">
+                                <div :class="val.checked?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name" @click="extendFn(item.value_type,item.attribute_id,val.option_value)"></div>
+                            </div>
+                        </div>
+                        <div class="sell-strip" v-if="item.value_type == 6">
+                            <div class="sell-strip-title"><span v-text="item.title"></span> <span class="red-color">（<span v-text="item.tip"></span>）</span></div>
+                            <div class="strip-con flex-wrap">
+                                <div :class="val.checked?'sele-tag':'con-option'" v-for="(val,ind) in item.option" :key="ind" v-text="val.option_name" @click="extendFn(item.value_type,item.attribute_id,val.option_value)"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="sell-strip">
                         <span class="sell-des">商品描述</span>
                         <textarea name="des" id="arbdes" cols="25" rows="3" placeholder="请对商品进行描述(200字以内)" v-model="requestData.goods_description" maxlength="200"></textarea>
-                    </div>
-                    <div class="sell-strip">
-                        <div class="sell-strip-title">
-                            <span>商品标签</span>
-                            <span class="red-color">（打上标签，买家更容易搜到哦）</span>
-                        </div>
-                        <div class="sell-strip-content">
-                            <div class="seleTag" v-for="item in sellData.showTag" v-text="item.tag_content"></div>
-                            <div class="addTag" @click="addTagFn">＋添加</div>
-                        </div>
                     </div>
                     <div class="sell-strip">
                         <div class="sell-strip-title">
@@ -224,36 +226,6 @@
             </div>
         </div>
         <div class="nextBtn" @click="addGoods">下一步</div>
-        <div class="tag-wrap" v-show="showTagAll">
-            <div class="sele-tag-wrap">
-                <div class="sele-tit">已选标签（<span v-text="sellData.seleTag.length"></span>/5）</div>
-                <div class="sele-con">
-                    <div class="sele-tag" v-for="item in sellData.seleTag" v-text="item.tag_content" @click="seleTagCon(item.tag_id)"></div>
-                </div>
-            </div>
-            <!-- 可选择菜单 -->
-            <div class="screen-box server-type-box">
-                <!-- 标签大类 -->
-                <div class="server-operation-box">
-                    <div class="operation-type-strip" v-for="item in sellData.tagType" :class="item.ischeck?'red-border':'black-border'" v-text="item.tag_name" @click="seleTagType(item.tag_type_id)"></div>
-                </div>
-                <!-- 标签小类 -->
-                <div class="server-area-box">
-                    <div class="area-type-search">
-                        <input type="text" placeholder="搜索">
-                        <img class="search-area-ico" src="../../../../static/img/search_ico.png" alt="">
-                    </div>
-                    <div class="area-type-content">
-                        <div class="area-type-strip" v-for="item in sellData.tagContent" :class="item.ischeck?'red-bg':'black-bg'" v-text="item.tag_content" @click="seleTagCon(item.tag_id)"></div>
-                    </div>
-                    <div class="screen-type-bottom">
-                        <div class="ok-screen-btn" @click="affirmTag">确认</div>
-                        <div class="no-screen-btn" @click="cancelTag">取消</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="shade" v-show="showTagAll"></div>
         <div v-show="showMenu_type" class="type-mu">
             <div class="pop-view-tit option-gray">请选择职业</div>
             <ul>
@@ -343,7 +315,6 @@ export default {
             showMenu_type:false,
             showLoading:false,
             editOrpublish:null,
-            showTagAll: false,
             seleData: {
                 faction: "未选择",
                 sex: "未选择",
@@ -407,10 +378,10 @@ export default {
                 server_id: "",
                 goods_title: "",
                 goods_description: "",
-                role_level: "",
-                faction_id: "",
-                person_sex: "",
-                tag: "",
+                // role_level: "",
+                // faction_id: "",
+                // person_sex: "",
+                // tag: "",
                 account_type: "",
                 account_bind: "",
                 is_safe: "",
@@ -430,11 +401,145 @@ export default {
                 wx: "",
                 images: [],
                 goods_id:null,
+                extend_attribute:[],
             },
+            extend_attribute:[],//自定义属性 值类型，1：文本字符型，2：多行文本字符型，3：数值型（整数），4：数值型（小数），5：单选，6：多选，7：日期型
 
         };
     },
     methods: {
+        // 自定义属性方法--
+        extendFn(type,attribute_id,option){
+            var that = this;
+            switch(type){
+                case 1://文本字符型
+                case 2://多行文本字符型
+                case 3://数值型（整数）
+                case 4://数值型（小数）
+                    var event=window.event || arguments.callee.caller.arguments[0];
+                    if(that.requestData.extend_attribute == ''){
+                        that.requestData.extend_attribute.push({
+                            attribute_id:attribute_id,
+                            option_value:String(event.target.value),
+                        })
+                    }else{
+                        let flag = true;//用来判断that.request.extend_attribute 是否有对应的attribute值
+                        for(var x in that.requestData.extend_attribute){
+                            if(that.requestData.extend_attribute[x].attribute_id == attribute_id){
+                                flag = false;
+                                if(event.target.value == ""){//值为空，移除id对应对象，用来提交时判断是否是必选/必填
+                                    that.requestData.extend_attribute.splice(x,1);
+                                }else{
+                                    that.requestData.extend_attribute[x].option_value =String(event.target.value);
+                                }
+                                break;
+                            }
+                        }
+                        // 因为选择单选或多选后 更新that.extend_attribute 所以要赋值。
+                        for(var j in that.extend_attribute){
+                            if(that.extend_attribute[j].attribute_id == attribute_id){
+                                that.extend_attribute[j].value = event.target.value
+                            }
+                        }
+                        if(flag){
+                            that.requestData.extend_attribute.push({
+                                attribute_id:attribute_id,
+                                option_value:String(event.target.value)
+                            })
+                        }
+                    }
+                    break;
+                case 5://单选
+                    // debugger;
+                    for(var i in that.extend_attribute){
+                        if(that.extend_attribute[i].attribute_id == attribute_id){
+                            for(var j in that.extend_attribute[i].option){
+                                if(that.extend_attribute[i].option[j].option_value == option){
+                                    that.extend_attribute[i].option[j].checked = !this.extend_attribute[i].option[j].checked;
+                                    if(that.requestData.extend_attribute == ''){
+                                        that.requestData.extend_attribute.push({
+                                            attribute_id:attribute_id,
+                                            option_value:String(option)
+                                        })
+                                    }else{
+                                        let flag = true;//用来判断that.request.extend_attribute 是否有对应的attribute值
+                                        for(var x in that.requestData.extend_attribute){
+                                            if(that.requestData.extend_attribute[x].attribute_id == attribute_id){
+                                                flag = false;
+                                                if(that.extend_attribute[i].option[j].checked){//判断是选中还是取消，选中或者重新选中-重新赋值，取消选中则移除id对应的对象
+                                                    that.requestData.extend_attribute[x].option_value =String(option);
+                                                }else{
+                                                    that.requestData.extend_attribute.splice(x,1);
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        if(flag){
+                                            that.requestData.extend_attribute.push({
+                                                attribute_id:attribute_id,
+                                                option_value:String(option)
+                                            })
+                                        }
+                                    }
+                                    continue;
+                                }
+                                that.extend_attribute[i].option[j].checked = false;
+                            }
+                        }
+                    }
+                    break;
+                case 6://多选
+                    // debugger;
+                    for(var i in that.extend_attribute){
+                        if(that.extend_attribute[i].attribute_id == attribute_id){
+                            for(var j in that.extend_attribute[i].option){
+                                if(that.extend_attribute[i].option[j].option_value == option){
+                                    that.extend_attribute[i].option[j].checked = !that.extend_attribute[i].option[j].checked;
+                                    // debugger;
+                                    if(that.requestData.extend_attribute == ''){
+                                        that.requestData.extend_attribute.push({
+                                            attribute_id:attribute_id,
+                                            option_value:String(option)
+                                        })
+                                    }else{
+                                        var flag = true;//用来判断that.request.extend_attribute 是否有对应的attribute值
+                                        for(var x in that.requestData.extend_attribute){
+                                            if(that.requestData.extend_attribute[x].attribute_id == attribute_id){
+                                                flag = false;
+                                                var extend_multi = that.requestData.extend_attribute[x].option_value.split(',');
+                                                if(extend_multi.indexOf(String(option)) == -1){
+                                                    extend_multi.push(option);
+                                                    that.requestData.extend_attribute[x].option_value = extend_multi.join(',');
+                                                    break;
+                                                }else{
+                                                    extend_multi.splice(extend_multi.indexOf(String(option)),1);
+                                                    that.requestData.extend_attribute[x].option_value = extend_multi.join(',');
+                                                    if(that.requestData.extend_attribute[x].option_value == ""){//多选属性 值为空，移除选择属性id对象
+                                                        that.requestData.extend_attribute.splice(x,1);
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if(flag){
+                                            that.requestData.extend_attribute.push({
+                                                attribute_id:attribute_id,
+                                                option_value:String(option)
+                                            })
+                                        }
+                                    }
+                                    
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+            // console.log(that.requestData.extend_attribute);
+        },
         // 添加图片
         addImg(event) {
             var that = this;
@@ -564,85 +669,6 @@ export default {
                 this.sellData.optSafe = false;
             }
         },
-        // 选择标签大类-----------------------------------------------------------------
-        seleTagType(tag_type_id) {
-            var tagType = this.sellData.tagType;
-            for (var i in tagType) {
-                if (tag_type_id == tagType[i].tag_type_id) {
-                    tagType[i].ischeck = true;
-                    continue;
-                }
-                tagType[i].ischeck = false;
-            }
-            this.getTagCon(tag_type_id);
-        },
-        // 选择小类
-        seleTagCon(tag_id) {
-            var that = this;
-            var tagContent = that.sellData.tagContent;
-            var seleTag = that.sellData.seleTag;
-            for (var i in tagContent) {
-                if (tagContent[i].tag_id == tag_id) {
-                    if (tagContent[i].ischeck) {
-                        tagContent[i].ischeck = false;
-                        for (var j in seleTag) {
-                            if (seleTag[j].tag_id == tag_id) {
-                                seleTag.splice(j, 1);
-                            }
-                        }
-                    } else {
-                        if (seleTag.length < 5) {
-                            that.sellData.seleTag.push(tagContent[i]);
-                            tagContent[i].ischeck = true;
-                        } else {
-                            mui.alert("最多只能选择五个标签哦！","提示","确认","","div");
-                        }
-                    }
-                    break;
-                }
-            }
-        },
-        //   确认选择标签
-        affirmTag() {
-            var that = this;
-            that.sellData.showTag = [];
-            var seleTag = that.sellData.seleTag;
-            for (var i in seleTag) {
-                that.sellData.showTag.push(seleTag[i]);
-            }
-            this.showTagAll = false;
-            $("body").css("overflow", "");
-        },
-        //   取消
-        cancelTag() {
-            var that = this;
-            that.sellData.seleTag = [];
-            var showTag = that.sellData.showTag;
-            for (var i in showTag) {
-                that.sellData.seleTag.push(showTag[i]);
-            }
-            this.showTagAll = false;
-            $("body").css("overflow", "");
-        },
-        // 添加标签
-        addTagFn() {
-            var that = this;
-            this.showTagAll = true;
-            $("body").css("overflow", "hidden");
-            var tagCon = that.sellData.tagContent;
-            var seleTag = that.sellData.seleTag;
-            for (var i in tagCon) {
-                tagCon[i].ischeck = false;
-            }
-            // 再判断
-            for (var i in seleTag) {
-                for (var x in tagCon) {
-                    if (seleTag[i].tag_id == tagCon[x].tag_id) {
-                        tagCon[x].ischeck = true;
-                    }
-                }
-            }
-        },
         // 显示那个弹出框
         showPop(flag) {
             if(flag == 'faction'){
@@ -654,36 +680,12 @@ export default {
         hiddenFn(){
             this.showMenu_type = false;
         },
-        // 选择职业 
-        seleFaction(opt){
-            // 职业
-            var that =this;
-            that.showMenu_type = false;
-
-            // if (flag == "faction") {
-                var faction = that.sellData.faction;
-                for (var i in faction) {
-                    if (opt == faction[i].faction_id) {
-                        that.requestData.faction_id = faction[i].faction_id;
-                        that.seleData.faction = faction[i].faction_name;
-                    }
-                }
-            // }
-        },
+        
         //角色类别 -- 账号类型
         seleType(opt, flag) {
             var that = this;
             mui("#sheet-" + flag).popover("toggle");
-            if (flag == "sex") {
-                //角色性别
-                var sex = that.sellData.sex;
-                for (var i in sex) {
-                    if (opt == sex[i].value) {
-                        that.requestData.person_sex = sex[i].value;
-                        that.seleData.sex = sex[i].name;
-                    }
-                }
-            } else if (flag == "accountType") {
+            if (flag == "accountType") {
                 //账号类型
                 var accountType = that.sellData.accountType;
                 for (var i in accountType) {
@@ -739,39 +741,6 @@ export default {
                 }
             }
         },
-        // 获取标签小类
-        getTagCon(tag_type_id) {
-            var that = this;
-            that.$axios
-                .post(process.env.API_HOST+"tag_content", {
-                    category_id: that.category_id,
-                    tag_type_id: tag_type_id
-                })
-                .then(function(res) {
-                    if (res.status == 200) {
-                        if (res.data.code == 200) {
-                            var tagAll = res.data.data;
-                            var seleTag = that.sellData.seleTag;
-                            // 先赋值
-                            for (var i in tagAll) {
-                                tagAll[i].ischeck = false;
-                            }
-                            // 再判断
-                            for (var i in seleTag) {
-                                for (var x in tagAll) {
-                                    if (seleTag[i].tag_id == tagAll[x].tag_id) {
-                                        tagAll[x].ischeck = true;
-                                    }
-                                }
-                            }
-                            that.sellData.tagContent = tagAll;
-                        }
-                    }
-                })
-                .catch(function(err) {
-                    console.log(err);
-                });
-        },
         // 发布商品
         addGoods() {
             var that = this;
@@ -783,27 +752,7 @@ export default {
                     that.showLoading = false;
                     return false;
                 }
-                if (that_req.role_level == "") {
-                    mui.alert("请输入游戏等级", "提示", "确认", "", "div");
-                    that.showLoading = false;
-                    return false;
-                } else {
-                    if (that_req.role_level > 999) {
-                        mui.alert("请输入正确的游戏等级","提示","确认", "","div");
-                        that.showLoading = false;
-                        return false;
-                    }
-                }
-                if (that_req.faction_id == "") {
-                    mui.alert("请选择职业", "提示", "确认", "", "div");
-                    that.showLoading = false;
-                    return false;
-                }
-                if (that_req.person_sex == "") {
-                    mui.alert("请选择角色性别", "提示", "确认", "", "div");
-                    that.showLoading = false;
-                    return false;
-                }
+                
                 if (that_req.goods_description == "") {
                     mui.alert("请输入商品描述", "提示", "确认", "", "div");
                     that.showLoading = false;
@@ -812,15 +761,6 @@ export default {
                     mui.alert("商品描述最多可以输入200字", "提示","确认","","div");
                     that.showLoading = false;
                     return false;
-                }
-
-                var tagAll = that.sellData.showTag;
-                if(tagAll.length > 0) {
-                    var str = "";
-                    for (var i in tagAll) {
-                        str += "," + tagAll[i].tag_id;
-                    }
-                    that_req.tag = str.substring(1);
                 }
                 var upImg = that.sellData.upimgAll.imgSrc;
                 if(upImg.length > 0){
@@ -998,6 +938,21 @@ export default {
                 }else if(that.editOrpublish == 2){
                     url = 'edit_goods';
                 }
+                var extend_arr = [];//存储已选属性的id,用来查找必选属性是否选择
+                for(var i in that_req.extend_attribute){
+                    extend_arr.push(that_req.extend_attribute[i].attribute_id);
+                }
+                var required_arr = [];//存储必选属性的id,用来判断必选属性的值是否为空
+                for(var i in that.extend_attribute){
+                    if(that.extend_attribute[i].is_required == 1){
+                        required_arr.push(that.extend_attribute[i].attribute_id);
+                        if(extend_arr.indexOf(that.extend_attribute[i].attribute_id) == -1){
+                            mui.alert(that.extend_attribute[i].title+'为空', "提示", "确认", "", "div");
+                            that.showLoading = false;
+                            return false;
+                        }
+                    }
+                }
                 that.$axios.post(process.env.API_HOST+url,that_req).then(function(res) {
                     // console.log(res);
                     that.showLoading = false;
@@ -1076,34 +1031,6 @@ export default {
                 that.safeOrCompact.maxPrice = max_safe;
             }
         },
-        getTagType(){
-            var that = this;
-            // 请求标签大类
-            that.$axios
-                .post(process.env.API_HOST+"tag_type", {
-                    category_id: that.category_id
-                })
-                .then(function(res) {
-                    // console.log(res);
-                    if (res.status == 200) {
-                        if (res.data.code == 200) {
-                            var tagType = res.data.data;
-                            for (var i in tagType) {
-                                if (i == 0) {
-                                    tagType[0].ischeck = true;
-                                    continue;
-                                }
-                                tagType[i].ischeck = false;
-                            }
-                            that.sellData.tagType = tagType;
-                            that.getTagCon(tagType[0].tag_type_id);
-                        }
-                    }
-                })
-                .catch(function(err) {
-                    console.log(err);
-                });
-        },
         getConfig(opt,flag){
             var that = this;
             // 请求选择参数
@@ -1146,6 +1073,7 @@ export default {
                                     }
                                 }
                                 that.sellData.rentWay = rent_type;
+                                that.extend_attribute = data.extend_attribute;
                                 that.judgeInfo(data.chargeInfo);
                             }else if(flag == 2){//编辑
                                 var oldData = that.oldData;
@@ -1193,8 +1121,6 @@ export default {
                                         that.seleData.accountType = data.account_type[i].name;
                                     }
                                 }
-                                that.sellData.showTag = oldData.tag;
-                                that.sellData.seleTag = oldData.tag;
                                 // 图片
                                 for(var i in oldData.images){
                                     that.sellData.upimgAll.imgSrc.push(oldData.images[i].img_url);
@@ -1259,9 +1185,10 @@ export default {
                         that_req.video_url = data.video_url;
                         that_req.account = data.account;
                         that.oldData = data;//编辑商品旧数据
+                        that.extend_attribute = data.extend_attribute;
+                        that_req.extend_attribute = data.goods_attribute;
                         
                         that.getConfig(that_req,2);//请求选择参数
-                        that.getTagType();//请求标签大类
                     }
                 }
             }).catch((err) => {
@@ -1333,7 +1260,6 @@ export default {
                         that.showSell = false;
                     }
                     that.getConfig(data,opt.flag);//请求选择参数
-                    that.getTagType();//获取标签大类
                     that.comData.showTitle.title = "我要出租";
                     that.editOrpublish = 1;
                 }else{
@@ -1444,7 +1370,7 @@ export default {
 }
 
 .sell-strip-title {
-    margin-top: 0.2rem;
+    margin: 0.2rem 0;
 }
 
 .sell-strip-content {
@@ -1949,5 +1875,29 @@ input[type="number"] {
     border:1px solid #D2D2D2;
     margin-right:.2rem;
     text-align:right;
+}
+
+/* 延伸属性 */
+.flex-wrap{
+    display:flex;
+}
+.strip-con{
+    flex-wrap:wrap;
+    /* padding:0 .2rem; */
+}
+.strip-con div{
+    margin-bottom:.2rem;
+}
+.con-option{
+    height: 0.6rem;
+    line-height: 0.6rem;
+    font-size: 0.24rem;
+    padding: 0 0.15rem;
+    margin-right: 0.4rem;
+    -webkit-border-radius: 0.06rem;
+    -moz-border-radius: 0.06rem;
+    border-radius: 0.06rem;
+    border: 1px solid #d2d2d2;
+    background: #ffffff;
 }
 </style>

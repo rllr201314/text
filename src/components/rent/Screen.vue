@@ -2,14 +2,14 @@
     <div class="screen-wrap">
         <div class="screen-title">
             <div class="screen-title-top">
-                <div class="title-top-cell" v-for="(item,index) in screenTop" :key="index" @click="topScreen(item.flag,index)">
-                    <span class="title-top-title" v-text="item.tit_top_text"></span>
+                <div class="title-top-cell" v-for="(item,index) in screenTop" :key="index" @click="topScreen(item.flag,index)" :class="item.ischeck?'sele-border':''">
+                    <span :class="item.ischeck?'red-color':'black-color'" v-text="item.tit_top_text" ></span>
                     <img class="title-top-img" :src="item.ischeck?'./static/img/goodscreen/upempty.png':'./static/img/goodscreen/downempty.png'" alt="">
                 </div>
             </div>
             <div class="screen-title-bottom" v-if="show_extend">
                 <div class="title-bottom-cell" v-for="(item,index) in operation_attribute" :key="index" @click="bottomScreen(item.attribute_id)">
-                    <span class="title-bottom-title" v-text="item.title"></span>
+                    <span :class="item.ischeck?'red-color':'gray-color'" v-text="item.title"></span>
                     <img class="title-bottom-img" :src="item.ischeck?'./static/img/goodscreen/upsolid.png':'./static/img/goodscreen/downsolid.png'" alt="">
                 </div>
             </div>
@@ -106,14 +106,14 @@
                         @click="seleScreen('videoStatus',item.value)"></div>
                     </div>
                 </div>
-                <div class="screen-type-strip">
+                <div class="screen-type-strip" v-if="false">
                     <div class="screen-strip-left">性别</div>
                     <div class="screen-strip-right">
                         <div class="screen-strip-box" v-for="(item,index) in screen_info.person_sex" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" 
                         @click="seleScreen('person_sex',item.value)"></div>
                     </div>
                 </div>
-                <div class="screen-type-strip">
+                <div class="screen-type-strip" v-if="false">
                     <div class="screen-strip-left">门派</div>
                     <div class="screen-strip-right">
                         <div class="screen-strip-box" v-for="(item,index) in screen_info.faction" :key="index" v-text="item.faction_name" :class="item.ischeck?'red-bg':'black-bg'" 
@@ -138,16 +138,26 @@
                         <div class="screen-strip-box" v-for="(item,index) in screen_info.isInsurance" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isInsurance',item.value)"></div>
                     </div>
                 </div>
-                <div class="screen-type-strip">
+                <!-- <div class="screen-type-strip">
                     <div class="screen-strip-left">等级</div>
                     <div class="screen-strip-right">
                         <div class="screen-strip-box-level" v-for="(item,index) in screen_info.levelType" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('levelType',item.value)"></div>
                     </div>
-                </div>
+                </div> -->
                 <div v-for="(item,index) in filtrate_extend" :key="index">
-                    <div class="screen-strip-left" v-text="item.title"></div>
-                    <div class="screen-strip-right">
-                        <div class="screen-strip-box-level" v-for="(val,index) in item.option" :key="index" v-text="val.option_name" :class="val.checked?'red-bg':'black-bg'" @click="seleFiltrateExtendFn(item.value_type,val.attribute_id,val.option_value)"></div>
+                    <div v-if="item.value_type == 3" class="screen-type-strip">
+                        <div class="screen-strip-left" v-text="item.title"></div>
+                        <div class="screen-strip-right input-price-right right-margin">
+                            <input class="screen-inp" type="number" v-model.trim="item.value[0]" @input="seleFiltrateExtendFn(item.value_type,item.attribute_id,item.value)">
+                            <span>~</span>
+                            <input class="screen-inp" type="number" v-model.trim="item.value[1]" @input="seleFiltrateExtendFn(item.value_type,item.attribute_id,item.value)">
+                        </div>
+                    </div>
+                    <div v-if="item.value_type == 5 || item.value_type == 6" class="screen-type-strip">
+                        <div class="screen-strip-left" v-text="item.title"></div>
+                        <div class="screen-strip-right">
+                            <div class="screen-strip-box" v-for="(val,index) in item.option" :key="index" v-text="val.option_name" :class="val.checked?'red-bg':'black-bg'" @click="seleFiltrateExtendFn(item.value_type,val.attribute_id,val.option_value)"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="screen-type-bottom">
@@ -156,7 +166,7 @@
                 </div>
             </div>
         </div>
-        <!-- 神兽 -->
+        <!-- 自定义属性 -->
         <div class="bottom-screen-box" :class="show_extend?'show_extend':'screen-box'" v-show="extend_box">
             <div v-if="show_attribute.value_type == 5">
                 <div class="screen-strip-box" v-for="(item,index) in show_attribute.option" v-text="item.option_name" :key="index" :class="item.checked?'red-bg':'black-bg'" @click="selectExtentFn(item.option_value,item.attribute_id,show_attribute.value_type)"></div>
@@ -281,6 +291,7 @@ export default {
             shade:false,//遮罩
             show_extend:'',//显示自定义菜单
             filtrate_extend:[],
+            flag_operation_attribute:[],//存储operation_attribute 用来恢复默认
         }
     },
 
@@ -399,12 +410,16 @@ export default {
                 }
             }
             for(var i in that.filtrate_extend){
-                for(var j in that.filtrate_extend[i].option){
-                    that.filtrate_extend[i].option[j].checked = false;
+                if(that.filtrate_extend[i].value_type == 5 || that.filtrate_extend[i].value_type == 6){
+                    for(var j in that.filtrate_extend[i].option){
+                        that.filtrate_extend[i].option[j].checked = false;
+                    }
+                }
+                if(that.filtrate_extend[i].value_type == 3){
+                    that.filtrate_extend[i].value = ['',''];
                 }
             }
             var extend_arr = that.request.extend_attribute;
-            // for(var i in extend_arr){
             for(var i=0,type=true;i<extend_arr.length;type?i++:i){
                 if(extend_arr[i].flag == "screen"){
                     extend_arr.splice(i,1);
@@ -413,8 +428,8 @@ export default {
                     type = true;
                 }
             }
-            console.log(that.filtrate_extend);
-            console.log(that.request.extend_attribute);
+            // console.log(that.filtrate_extend);
+            // console.log(that.request.extend_attribute);
             that_r.page = 1;
             $('#minirefresh').scrollTop(0);
             that.$emit('getData',that_r,that.show_extend);
@@ -503,6 +518,7 @@ export default {
                     if(option[i].option_value == value){
                         option[i].checked = !option[i].checked;
                         if(option[i].checked){
+                            that.changeText(true,id,option[i].option_name);//筛选属性的名称改为值得名称；
                             if(all_extend == ''){
                                 all_extend.push({
                                     attribute_id:id,
@@ -526,6 +542,7 @@ export default {
                                 }
                             }
                         }else{
+                            that.changeText(false,id);//变成默认值；
                             for(var x in all_extend){
                                 if(all_extend[x].attribute_id == id){
                                     var arr = all_extend[x].option_value.split(',');
@@ -545,6 +562,7 @@ export default {
                     if(option[i].option_value == value){
                         option[i].checked = !option[i].checked;
                         if(option[i].checked){
+                            that.changeText(true,id,option[i].option_name);
                             if(all_extend == ''){
                                 all_extend.push({
                                     attribute_id:id,
@@ -566,6 +584,7 @@ export default {
                                 }
                             }
                         }else{
+                            that.changeText(false,id);//变成默认值；
                             for(var x in all_extend){
                                 if(all_extend[x].attribute_id == id){
                                     all_extend.splice(x,1)
@@ -580,12 +599,60 @@ export default {
             that.$emit('getData',that.request,that.show_extend);
             that.hiddenScreenFun(); //隐藏筛选
         },
+        // 改变自定义筛选栏字体
+        changeText(flag,id,text){
+            var that = this;
+                // debugger;
+            var operation = that.operation_attribute;
+            if(flag){
+                for(var i in operation){
+                    if(operation[i].attribute_id == id){
+                        operation[i].title = text;
+                        break;
+                    }
+                }
+            }else{
+                // that.operation_attribute = that.flag_operation_attribute;
+                // console.log(that.operation_attribute)
+                // console.log(that.flag_operation_attribute)
+                for(var i in operation){
+                    if(operation[i].attribute_id == id){
+                        operation[i].title = that.flag_operation_attribute[i].title;
+                        break;
+                    }
+                }
+            }
+        },
         // 筛选框自定义属性筛选
         seleFiltrateExtendFn(type,id,value){
             var that = this;
             var arr = that.filtrate_extend;
             var all_extend = that.request.extend_attribute;
-            if(type == 5){
+            if(type == 3){
+                var val = value.join(',');
+                if(all_extend == ""){
+                    all_extend.push({
+                        attribute_id:id,
+                        option_value:val,
+                        flag:'screen'
+                    })
+                }else{
+                    var flag = true;
+                    for(var x in all_extend){
+                        if(all_extend[x].attribute_id == id){
+                            flag = false;
+                            all_extend[x].option_value =val;
+                        }
+                    }
+                    if(flag){
+                        all_extend.push({
+                            attribute_id:id,
+                            option_value:val,
+                            flag:'screen'
+                        })
+                    }
+                }
+            }else if(type == 5){
                 for(var i in arr){
                     if(arr[i].attribute_id == id){
                         for(var j in arr[i].option){
@@ -678,6 +745,7 @@ export default {
                     }
                 }
             }
+            // console.log(that.request.extend_attribute)
         },
         // 选择账号类型
         seleAccount(value) {
@@ -856,6 +924,28 @@ export default {
                     console.log(err);
                 });
         },
+         // 获取服务器
+        getArea(area_id) {
+            var that = this;
+            var all = that.server_all;
+            var info = (that.server_info = []);
+            for (var i in all) {
+                if (area_id == all[i].area_id) {
+                    all[i].ischeck = false;
+                    info.push(all[i]);
+                }
+            }
+            var areaAll = that.area_info;
+            for (var i in areaAll) {
+                if (areaAll[i].area_id == area_id) {
+                    that.seleAreaText.name = areaAll[i].area_name;
+                    that.seleAreaText.id = areaAll[i].area_id;
+                    areaAll[i].ischeck = true;
+                    continue;
+                }
+                areaAll[i].ischeck = false;
+            }
+        },
         // 筛选--排序
         seleSort(flag) {
             var that = this;
@@ -931,9 +1021,10 @@ export default {
                 that.is_stage = that.setScreen(seleTag,that.screen_info.isStages);
             } else if (flag == "isInsurance") {//保险情况
                 that.is_safe = that.setScreen(seleTag,that.screen_info.isInsurance);
-            } else if (flag == "levelType") {//等级
-                that.role_level = that.setScreen(seleTag,that.screen_info.levelType);
-            }
+            } 
+            // else if (flag == "levelType") {//等级
+            //     that.role_level = that.setScreen(seleTag,that.screen_info.levelType);
+            // }
         },
         setScreen(seleTag,data,val = 'value'){
             var result = null;
@@ -1011,10 +1102,14 @@ export default {
                                         hide_obj.value_type = that.extend_attribute[i].value_type;//属性类型
                                         that.operation_attribute.push(operation_obj);
                                         that.hide_attribute.push(hide_obj);
-                                    }else if(that.extend_attribute[i].value_type == 5 || that.extend_attribute[i].value_type == 6){//筛选页显示属性 现只判断多选和单选
+                                    }else if((that.extend_attribute[i].value_type == 5 && that.extend_attribute[i].option != '')|| (that.extend_attribute[i].value_type == 6 && that.extend_attribute[i].option != "")){//筛选页显示属性 现只判断多选和单选 
+                                        that.filtrate_extend.push(that.extend_attribute[i]);
+                                    }else if(that.extend_attribute[i].value_type == 3){// 3 是数值类型
+                                        that.extend_attribute[i].value = ['',''];
                                         that.filtrate_extend.push(that.extend_attribute[i]);
                                     }
                                 }
+                                that.flag_operation_attribute = JSON.parse(JSON.stringify(that.operation_attribute))
                             }else{
                                 that.show_extend = false;
                             }
@@ -1096,17 +1191,19 @@ export default {
     justify-content: space-around;
 }
 .screen-title-top {
-    color: #333333;
     font-size: 0.28rem;
     height: 0.8rem;
     line-height: 0.8rem;
     border-bottom: 0.01rem solid #e5e5e5;
+    background:#F8F8F8;
 }
 .screen-title-bottom {
-    color: #666666;
     font-size: 0.24rem;
-    height: 0.9rem;
+    height: 0.7rem;
     box-shadow:.01rem .04rem .06rem #c9c8c8;
+}
+.title-top-cell {
+    padding:0 .1rem 0 .15rem;
 }
 .title-top-cell img {
     width: 0.2rem;
@@ -1120,8 +1217,6 @@ export default {
 .title-bottom-cell {
     width: 2rem;
     height: 0.5rem;
-    background: #f6f8fe;
-    border-radius: 0.04rem;
     text-align: center;
     margin: auto 0;
 }
@@ -1129,10 +1224,12 @@ export default {
     width: 0.2rem;
     height: 0.1rem;
     margin: auto 0 auto 0.14rem;
+    vertical-align: middle;
 }
 .title-bottom-cell span {
     display: inline-block;
     line-height: 0.5rem;
+    vertical-align: middle;
 }
 
 
@@ -1168,7 +1265,7 @@ export default {
     background: #ffffff;
     position: fixed;
     left: 0;
-    top: 2.5rem;
+    top: 2.38rem;
     right: 0;
     z-index: 6;
     max-width:640px;
@@ -1187,11 +1284,17 @@ export default {
     line-height: 0.9rem;
     border-bottom: 0.01rem solid #e5e5e5;
 }
+.sele-border{
+    border-bottom: .05rem solid #FF5D54;
+}
 .black-color {
-    color: #666666;
+    color: #333333;
 }
 .red-color {
     color: #fe7649;
+}
+.gray-color{
+    color: #666666;
 }
 /* 手机系统 */
 .phone-type-box {
@@ -1339,7 +1442,7 @@ export default {
     overflow-y: auto;
 }
 .scorll-safari{
-    min-height:100vh;
+    /* min-height:100vh; */
     /* overflow-y: auto; */
 }
 .screen-type-strip {

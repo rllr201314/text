@@ -143,7 +143,8 @@ export default {
     methods: {
         // 前往认证
         goAuthentication() {
-            this.$router.push({ name: "SafePhone" });
+            // this.$router.push({ name: "SafePhone" });
+            this.$router.push({path:'/safe-card'});
         },
         // 获取银行卡配置
         getData() {

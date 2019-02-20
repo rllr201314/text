@@ -112,7 +112,7 @@ export default {
                 this.getGoodsInfo(data, "refresh");
             }
             if(flag){
-                $('.list-wrap').css({'top':'2.58rem'})
+                $('.list-wrap').css({'top':'2.38rem'})
             }else{
                 $('.list-wrap').css({'top':'1.68rem'})
             }
@@ -224,7 +224,7 @@ export default {
         }
         that.$route.meta.isBack = false;
     },
-     beforeRouteLeave(to,from,next){
+    beforeRouteLeave(to,from,next){
         from.meta.scroll_top = $('#minirefresh').scrollTop();
         next();
     },
@@ -401,7 +401,7 @@ export default {
     text-overflow: ellipsis; /* 支持 IE */
     display: inline-block;
     font-size: 0.3rem;
-    line-height: 0.31rem;
+    line-height: 0.32rem;
     color: #333333;
 }
 .goods-ico {
