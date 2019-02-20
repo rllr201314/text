@@ -83,7 +83,8 @@ export default {
             })
         },
         goAuthentication(){
-            this.$router.push({path:'/safe-phone'})
+            // this.$router.push({path:'/safe-phone'});
+            this.$router.push({path:'/safe-card'});
         }
     },
     mounted(){

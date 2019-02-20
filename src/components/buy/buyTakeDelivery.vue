@@ -10,43 +10,42 @@
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
                     <span>订单详情</span>
                 </div>
-                <div class="goods-info-content">
-                    <img :src="goodsInfo.game_logo" alt="">
+                <div class="goods-info-content" @click="showAttributeFn(true)">
+                    <img class="game-log" :src="goodsInfo.game_logo" alt="">
                     <div class="goods-info">
                         <div class="goods-info-title" v-text="goodsInfo.goods_title"></div>
-                        <div class="goods-info-box">
-                            <div class="goods-info-strip">
-                                <div class="text-left">系统</div>
-                                <div class="text-right"   v-if="goodsInfo.client_id == 1">安卓</div>
-                                <div class="text-right"  v-else-if="goodsInfo.client_id == 2">苹果</div>
-                                <div class="text-right"  v-else-if="goodsInfo.client_id == 3">安卓混服</div>
-                            </div>
-                            <div class="goods-info-strip">
-                                <div class="text-left">客户端</div>
-                                <div class="text-right"  v-text="goodsInfo.platform_name"></div>
-                            </div>
-                            <div class="goods-info-strip">
-                                <div class="text-left">所在区服</div>
-                                <div class="text-right" v-if="goodsInfo.server_name != null" v-text=" goodsInfo.area_name+'>'+goodsInfo.server_name"></div>
-                                <div class="text-right" v-else v-text="goodsInfo.area_name"></div>
-                            </div>
-                            <div class="goods-info-strip">
-                                <div class="text-left">等级</div>
-                                <div class="text-right"><span v-text="goodsInfo.role_level"></span>级</div>
-                            </div>
-                            <div class="goods-info-strip">
-                                <div class="text-left">门派</div>
-                                <div class="text-right" v-text="goodsInfo.faction_name"></div>
-                            </div>
-                            <div class="goods-info-strip">
-                                <div class="text-left">商品类型</div>
-                                <div class="text-right" v-if="goodsInfo.deal_type == 1">成品号</div>
-                                <div class="text-right" v-else>代练号</div>
-                            </div>
-                        </div>
                     </div>
+                    <img class="right-next" src="../../../static/img/my-center/next_ico.png" alt="">
                 </div>
             </div>
+            <div class="goods-info-box" @click="showAttributeFn(false)" v-show="show_attribute">
+                <div class="goods-info-strip">
+                    <div class="text-left">系统</div>
+                    <div class="text-right"   v-if="goodsInfo.client_id == 1">安卓</div>
+                    <div class="text-right"  v-else-if="goodsInfo.client_id == 2">苹果</div>
+                    <div class="text-right"  v-else-if="goodsInfo.client_id == 3">安卓混服</div>
+                </div>
+                <div class="goods-info-strip">
+                    <div class="text-left">客户端</div>
+                    <div class="text-right"  v-text="goodsInfo.platform_name"></div>
+                </div>
+                <div class="goods-info-strip">
+                    <div class="text-left">所在区服</div>
+                    <div class="text-right" v-if="goodsInfo.server_name != null" v-text=" goodsInfo.area_name+'>'+goodsInfo.server_name"></div>
+                    <div class="text-right" v-else v-text="goodsInfo.area_name"></div>
+                </div>
+                
+                <div class="goods-info-strip">
+                    <div class="text-left">商品类型</div>
+                    <div class="text-right" v-if="goodsInfo.deal_type == 1">成品号</div>
+                    <div class="text-right" v-else>代练号</div>
+                </div>
+                <div class="goods-info-strip" v-for="(item,index) in extend_attribute" :key="index">
+                    <div class="text-left" v-text="item.title"></div>
+                    <div class="text-right" v-text="item.value"></div>
+                </div>
+            </div>
+            <div class="shade" @click="showAttributeFn(false)" v-show="show_attribute"></div>
             <!-- 订单号，分期情况，实际支付 -->
             <div class="take-cell">
                 <div class="goodsInfo">
@@ -176,10 +175,20 @@ export default {
                 gamePrint: 8,
                 account: "",
                 password: ""
-            }
+            },
+            show_attribute:false,
+            extend_attribute:[],
         };
     },
     methods: {
+        showAttributeFn(flag){
+            var that = this;   
+            if(flag){
+                that.show_attribute = true;
+            }else{
+                that.show_attribute = false;
+            }
+        },
         copyFn() {
             let that = this;
             let clipboard = new ClipboardJS("#copy");
@@ -274,8 +283,9 @@ export default {
                     if(res.data.code == 200){
                         that.goodsInfo = res.data.data;
                         that.takeType = that.goodsInfo.bind_status;
+                        that.extend_attribute = that.goodsInfo.goods_attribute;
                         if(flag == 'open'){
-                          that.$common.linkServer();
+                            that.$common.linkServer();
                         }else if(flag == "refresh"){
                             that.showNoData = false;
                         }
@@ -298,7 +308,7 @@ export default {
     }
 };
 </script>
-<style>
+<style scoped>
 .take-content {
     padding: 0.2rem 0.2rem 0;
 }
@@ -502,23 +512,28 @@ export default {
     font-size: 0.26rem;
     color: #666666;
     display:flex;
-    align-items: center;
-    justify-content:space-between;
+    align-items: center; 
+    justify-content:space-around;
 }
-.goods-info-content img {
+.game-log{
     width: 1.1rem;
     height: 1.1rem;
-    margin: 0 0 0 0.35rem;
+    margin: 0 0.6rem 0 0.35rem;
+}
+.right-next{
+    width:.13rem;
+    height:.24rem;
+    margin-right:.2rem;
 }
 .goods-info{
-    width:70%;
+    display: inline-block;
+    min-width: 4.5rem;
 }
 .goods-info-title {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #333333;
-    margin-bottom: 0.15rem;
 }
 .goods-info-strip{
     display: flex;
@@ -531,6 +546,50 @@ export default {
 .refresh-btn{
     text-decoration:underline;
     margin-top:.1rem;
+}
+
+.goods-info-box {
+    max-width: 630px;
+    margin:0 auto;
+    background: #ffffff;
+    font-size: 0.26rem;
+    color: #666666;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+    padding:.2rem .38rem;
+    left:.2rem;
+    right:.2rem;
+    position: fixed;
+    z-index:6;
+}
+.goods-info-strip{
+    display:flex;
+    align-items: top;
+    margin-bottom:.1rem;
+    user-select:text;
+}
+.text-left{
+    color: #666666;
+    min-width:1.5rem;
+    margin-right:.3rem;
+}
+.text-right{
+    color: #333333;
+    word-break: break-all;
+    white-space: normal;
+}
+
+.shade {
+    position: fixed;
+    left: 0;
+    top: .88rem;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 4;
+    margin:0 auto;
+    max-width:640px;
 }
 
 /* ==========input========= */

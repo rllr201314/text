@@ -9,11 +9,11 @@
                     <span>订单详情</span>
                 </div>
                 <div class="goods-info-con">
-                    <img class="goods-ico" :src="goodsInfo.game_logo" alt="">
-                    <div class="goods-info-des">
-                        <span v-text="goodsInfo.goods_title"></span>
-                        <img src="../../../static/img/order/next.png" alt="">
+                    <img class="game-log" :src="goodsInfo.game_logo" alt="">
+                    <div class="goods-info">
+                        <div class="goods-info-title" v-text="goodsInfo.goods_title"></div>
                     </div>
+                    <img class="right-next" src="../../../static/img/my-center/next_ico.png" alt="">
                 </div>
             </div>
             <!-- 订单号，分期情况，实际支付 -->
@@ -263,30 +263,31 @@ export default {
     padding: 0.2rem 0;
     font-size: 0.26rem;
     color: #666666;
+    display:flex;
+    align-items: center; 
+    justify-content:space-around;
 }
-.goods-ico {
-    width: 0.79rem;
-    height: 0.79rem;
-    margin: 0 0.2rem;
-    vertical-align: middle;
+.game-log{
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0 0.6rem 0 0.35rem;
 }
-.goods-info-des {
-    width: calc(100% - 1.5rem);
+.right-next{
+    width:.13rem;
+    height:.24rem;
+    margin-right:.2rem;
+}
+.goods-info{
     display: inline-block;
+    min-width: 4.5rem;
+}
+.goods-info-title {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #333333;
-    vertical-align: middle;
-    position: relative;
 }
-.goods-info-des img {
-    width: 0.11rem;
-    height: 0.23rem;
-    position: absolute;
-    top: 0.15rem;
-    right: 0;
-}
+
 .take-cell .goodsInfo:nth-last-child(1) {
     border: none;
 }

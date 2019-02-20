@@ -108,16 +108,12 @@
                     <div class="text-right" v-else v-text="detailData.platform_name + '>' +　detailData.area_name"></div>
                 </div>
                 <div class="goods-info-strip">
-                    <div class="text-left">等级</div>
-                    <div class="text-right"><span v-text="detailData.role_level"></span>级</div>
-                </div>
-                <div class="goods-info-strip">
-                    <div class="text-left">门派</div>
-                    <div class="text-right" v-text="detailData.faction_name"></div>
-                </div>
-                <div class="goods-info-strip">
                     <div class="text-left">商品描述</div>
                     <div class="text-right" v-text="detailData.goods_description"></div>
+                </div>
+                <div class="goods-info-strip" v-for="(item,index) in extend_attribute" :key="index">
+                    <div class="text-left" v-text="item.title"></div>
+                    <div class="text-right" v-text="item.value"></div>
                 </div>
             </div>
         </div>
@@ -416,8 +412,8 @@ export default {
                 emailBind: true
             },
             imgList:[],
-
             flow_type:null,
+            extend_attribute:[],//属性数组
         };
     },
     components: {
@@ -684,6 +680,8 @@ export default {
                                     that.imgList.push({img_url:'./static/img/goods-details/detail_img.png'});
                                 }
                                 that.$previewRefresh();
+                                that.extend_attribute = data.goods_info.goods_attribute;
+                                // console.log(that.extend_attribute)
                                 var bind = data.account_bind;
                                 for (var i in data.goods_info.account_bind) {
                                     if (data.goods_info.account_bind[i] == 1) {

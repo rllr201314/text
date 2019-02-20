@@ -29,6 +29,11 @@
                     <span class="strip-left">手机号</span>
                     <input type="number" placeholder="请填写您银行预留的联系电话" v-model="mobile">
                 </div>
+                <div class="safe-strip">
+                    <span class="strip-left">验证码</span>
+                    <input class="code-inp" type="number" placeholder="请输入验证码" v-model="code">
+                    <span class="get-code" @click="getCode" v-text="hintCode"></span>
+                </div>
             </div>
         </div>
         <div class="okBtn" @click="nextBtn">下一步</div>
@@ -49,6 +54,30 @@
             </div>
         </div>
         <Loading  v-if="showLoading"></Loading>
+        <div class="pop-view" v-show="showAlert">
+            <img class="hidden-pro" @click="hiddenPro" src="../../../../static/img/empty_ico.png" alt="">
+            <div class="pop-title gray-color">
+                尊敬的看个号用户，您好！为了提高您的实名认证通过率、避免重复提交证件照，请您仔细阅读注意事项，并按照要求上传信息
+            </div>
+            <div class="pop-header black-color">
+                上传要求：
+            </div>
+            <div class="gray-color">一、认证中若需要上传身份证照片，请拍摄清晰的身份证正反面照，露出身份证四个边角；</div>
+            <div class="gray-color">二、需要本人手持身份证他人拍摄，不要遮住脸部，照片清晰；</div>
+            <div class="gray-color">三、请使用本人有效身份证拍照；</div>
+            <div class="gray-color">四、为保证资金安全，避免提现被拒，请使用与身份证认证实名相符的银行卡信息</div>
+            <div class="gray-color">五、用户提交的姓名、身份证号、照片等信息必须真实有效，银行卡开户人、身份证姓名、手机实名认证必须保持一致，且为本人操作；</div>
+            <div class="gray-color">六、同一身份证号或银行卡号24小时内认证不能超过10次，否则请在12小时后再次尝试。</div>
+            <div class="pop-header black-color">
+                注意事项：
+            </div>
+            <div class="gray-color">一、实名认证成功后，该账户一旦提交提现申请，系统默认为本人操作；</div>
+            <div class="gray-color">二、实名认证后，认证人信息不能更改；</div>
+            <div class="gray-color">三、认证后用户有责任妥善保管账号及密码信息，切勿告知他人，因用户保管不善导致被盗号或密码失窃责任由用户自行承担；</div>
+            <div class="gray-color">四、本站承诺实名认证的过程不进行信息采集，保障用户信息安全；</div>
+            <div class="gray-color">五、协议签署具有法律效应，可在“云合同”<a class="orange-color" target="_blank" href="https:www.yunhetong.com">www.yunhetong.com</a>进行查询或在线验签。</div>
+        </div>
+        <div class="shade" v-show="showAlert"></div>
     </div>
 </template>
 <script>
@@ -58,7 +87,7 @@ export default {
     name: "SafeCard",
     components: {
         Header,
-        Loading
+        Loading,
     },
     data() {
         return {
@@ -79,10 +108,49 @@ export default {
             upimg: {
                 user_card: "./static/img/my-center/safe/user_card.png",
                 imgData: "image/gif, image/jpeg, image/png, image/jpg"
-            }
+            },
+            code:'',
+            hintCode: "获取验证码",
+            isGetCode: true,
+            showAlert:true,//提醒
         };
     },
     methods: {
+        hiddenPro(){
+            this.showAlert = false;
+        },
+        getCode() {
+            var that = this;
+            if (that.isGetCode) {
+                that.$axios
+                    .post(process.env.API_HOST+"check_mobile", {
+                        mobile: that.$store.state.mobile
+                    })
+                    .then(function(res) {
+                        if (res.status == 200) {
+                            if (res.data.code == 200) {
+                                that.hintCode = 60;
+                                that.isGetCode = false;
+                                var time = setInterval(function() {
+                                    that.hintCode--;
+                                    if (that.hintCode <= 0) {
+                                        clearInterval(time);
+                                        that.isGetCode = true;
+                                        that.hintCode = "获取验证码";
+                                    }
+                                }, 1000);
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                            } else{
+                                mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                                
+                            }
+                        }
+                    })
+                    .catch(function(err) {
+                        console.log(err);
+                    });
+            }
+        },
         addImg(event) {
             var that = this;
             var arr = [];
@@ -128,12 +196,17 @@ export default {
                 that.showLoading = false;
                 return false;
             }
+            if(that.code == ''){
+                mui.alert("验证码不能为空","提示","确认","","div");
+                that.showLoading = false;
+                return false;
+            }
             var request = {};
             request.name = that.username;
             request.id_no = that.id_num;
             request.bank_account = that.card_num;
             request.mobile = that.mobile;
-            request.verify_code = that.$route.query.code;
+            request.verify_code = that.code;
             that.$axios
                 .post(process.env.API_HOST+"authentic_four",request)
                 .then(res => {
@@ -259,7 +332,7 @@ export default {
 .okBtn {
     color: #ffffff;
     font-size: 0.28rem;
-    margin: 0.5rem auto 0;
+    margin: 0.2rem auto 0;
     width: 6.5rem;
     text-align: center;
     line-height: 0.8rem;
@@ -295,9 +368,71 @@ export default {
 .statement-con{
     width:calc(100% - 1.2rem);
 }
+
 .orange-color{
     color:#FE7649;
     text-decoration: underline;
+}
+.black-color{
+    color:#333333;
+}
+.gray-color{
+    color:#666666;
+}
+.get-code {
+    display: inline-block;
+    color: #fe7649;
+    font-size: 0.22rem;
+    height: 0.6rem;
+    line-height: 0.6rem;
+    width: 1.9rem;
+    text-align: center;
+    border: 1px solid #fe7649;
+    -webkit-border-radius: 0.15rem;
+    -moz-border-radius: 0.15rem;
+    border-radius: 0.15rem;
+    vertical-align: middle;
+}
+.code-inp{
+    width:3rem;
+}
+
+.pop-view{
+    max-width: 620px;
+    margin:0 auto;
+    font-size:.24rem;
+    position: fixed;
+    top: 1.3rem;
+    left: 0.3rem;
+    right: 0.3rem;
+    padding:0 .3rem .25rem;
+    border-radius: 0.1rem;
+    background:#ffffff;
+    z-index:15;
+}
+.hidden-pro {
+    width: 0.24rem;
+    height: 0.24rem;
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+}
+.shade {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 8;
+}
+.pop-title{
+    margin-top:.7rem;
+    text-indent:2em;
+    font-weight: bold;
+}
+.pop-header{
+    font-weight: bolder;
 }
 
 /* ==========input========= */

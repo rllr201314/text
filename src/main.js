@@ -51,7 +51,7 @@ axios.interceptors.response.use(
           if(router.currentRoute.fullPath == '/index' && store.state.hint > 0){
             mui.toast(response.data.msg, {duration: "short", type: "div"});
           }else if(store.state.hint > 0){
-            store.commit('sub_hint')
+            store.commit('sub_hint');
             mui.alert(response.data.msg,'提示','确认',function(){
               router.push({name: "AccountLogin",});
             },'div');

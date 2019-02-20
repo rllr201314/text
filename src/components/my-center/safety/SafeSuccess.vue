@@ -46,7 +46,8 @@ export default {
             if(this.dent_type == 1){
                 this.$router.push({name:'MyCenter'})
             }else{
-                this.$router.push({name:'SafePhone'});
+                // this.$router.push({name:'SafePhone'});
+                this.$router.push({path:'/safe-card'});
             }
         },
         getData(){

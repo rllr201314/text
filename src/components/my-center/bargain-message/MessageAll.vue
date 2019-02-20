@@ -27,6 +27,11 @@
             </div>
             <div class="search" @click="getdiscuss('search')">搜索</div>
         </div>
+        <div class="seleTit">
+            <div :class="seleTit == ''?'red-border':''" @click="seleTitFn()">全部</div>
+            <div :class="seleTit == 2?'red-border':''" @click="seleTitFn(2)">未读</div>
+            <div :class="seleTit == 1?'red-border':''" @click="seleTitFn(1)">已读</div>
+        </div>
         <div class="list-box-wrap" v-if="!showNoData">
             <div id="minirefresh" class="minirefresh-wrap list-wrap">
                 <div class="minirefresh-scroll list">
@@ -58,7 +63,7 @@
                                     </span>
                                 </div>
                                 <div class="hint">
-                                    <div class="bargain" v-if="item.order_state < 2 || item.order_state == ''">
+                                    <div class="bargain" :class="item.is_read==1?'gray-bg':'red-bg'" v-if="item.order_state < 2 || item.order_state == ''">
                                         <span>未处理的议价：</span>
                                         <span v-text="item.msg_count"></span>
                                     </div>
@@ -121,7 +126,9 @@ export default {
                 }
             ],
             c_id: "",
-            g_id: ""
+            g_id: "",
+            seleTit:2,
+            is_read:'',//默认全部 1-已读 2-未读
         };
     },
     mounted() {
@@ -155,20 +162,26 @@ export default {
                 }
             });
         },
+        seleTitFn(type = ""){
+            var that = this;
+            this.seleTit = type;
+            that.getdiscuss('',type);
+        },
         // 获取列表
-        getdiscuss(flag) {
+        getdiscuss(flag,type = 2) {
             var that = this;
             if (flag == "push") {
                 that.request.page = that.now_page;
             } else if (flag == "search") {
-                that.request.goods_status = that.g_id;
-                that.request.category_id = that.c_id;
-                that.request.goods_title = that.goods_title;
                 that.request.page = that.now_page = 1;
             } else {
                 that.request = {};
                 that.request.page = that.now_page;
             }
+            that.request.goods_status = that.g_id;
+            that.request.category_id = that.c_id;
+            that.request.goods_title = that.goods_title;
+            that.request.is_read = type;
             that.$axios
                 .post(process.env.API_HOST+"preview_discuss", that.request)
                 .then(function(res) {
@@ -458,8 +471,14 @@ export default {
     right: 0;
 }
 .bargain {
-    background: #fa5856;
+    /* background: #fa5856; */
     padding: 1px 3px;
+}
+.red-bg{
+    background: #fa5856;
+}
+.gray-bg{
+    background: #c6c6c6;
 }
 .sale {
     padding: 1px 5px;
@@ -505,12 +524,35 @@ input[type="number"] {
     height:100vh;
 }
 .list-wrap {
-    top: 2.88rem;
+    top: 3.5rem;
 }
 .list {
     background: #f6f8fe;
 }
 .nodata{
-    padding-top:2.88rem;
+    padding-top:3.5rem;
 }
+.seleTit {
+    display: flex;
+    font-size: 0.26rem;
+    color: #333333;
+    line-height: 0.8rem;
+    text-align: center;
+    /* background: #ffffff; */
+    position: fixed;
+    top: 2.68rem;
+    left: 0;
+    right: 0;
+    z-index: 66;
+    max-width:640px;
+    margin:0 auto;
+}
+.seleTit div {
+    width: 100%;
+}
+.red-border {
+    border-bottom: 0.04rem solid #ff7e4a;
+    color: #ff7e4a;
+}
+
 </style>

@@ -33,6 +33,7 @@ export default new Vuex.Store({
       person_sex:"",
       faction_id:"",
       content: '',
+      extend_attribute:[],
     },
   },
   mutations: {
@@ -61,22 +62,6 @@ export default new Vuex.Store({
     },
     sub_hint(state){
       state.hint = 0;
-    },
-    changeRequest(state, n) {
-      // state.list_request.item =item;
-      for (var i in state.list_request) {
-        if (i == n.name) {
-          state.list_request[i] = n.value
-        }
-      }
-    },
-    // 下拉加载 上拉刷新 更改page
-    addPage(state, flag) {
-      if (flag == 'add') {
-        state.list_request.page++;
-      } else if (flag == "refresh") {
-        state.list_request.page = 1;
-      }
     },
   }
 })

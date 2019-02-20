@@ -405,7 +405,11 @@ export default new Router({
     {
       path:'/rent-list',
       name:'RentSearch',
-      component: (resolve) => require(['@/components/rent/RentSearch'],resolve)
+      component: (resolve) => require(['@/components/rent/RentSearch'],resolve),
+      meta:{
+        keepAlive:true,
+        isBack:false,
+      }
     },
     // 租号详情
     {
