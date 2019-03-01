@@ -123,6 +123,13 @@ export default {
     components: {
         Header
     },
+    metaInfo:{
+        title:'手游号出租_看个号',
+        meta:[{
+            name:'keywords',
+            content:'手游号,梦幻号出租寄租,大话号出租寄租'
+        }]
+    },
     data() {
         return {
             comData: {

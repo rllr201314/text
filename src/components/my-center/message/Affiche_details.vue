@@ -69,6 +69,11 @@ export default {
         }else{
             that.$router.go(-1);
         }
+    },
+    metaInfo(){
+        return {
+            title:this.info.title+'_看个号'
+        }
     }
 }
 </script>

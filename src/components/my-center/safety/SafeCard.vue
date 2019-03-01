@@ -409,6 +409,8 @@ export default {
     border-radius: 0.1rem;
     background:#ffffff;
     z-index:15;
+    max-height: 75vh;
+    overflow-y: auto;
 }
 .hidden-pro {
     width: 0.24rem;

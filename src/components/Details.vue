@@ -164,25 +164,6 @@
                     <!-- <div class="more-info">查看更多详情</div> -->
                 </div>
                 <div class="showBox-right" v-show="safeOrflow.flow">
-                    <!-- <div v-if="flow_type == 1">
-                        <div class="flow-left">
-                            <img src="../../static/img/goods-details/flow.png" alt="">
-                        </div>
-                        <div class="flow-right">
-                            <div class="flow-title">下单支付</div>
-                            <div class="flow-content">支付成功，进入与 [联系发货客服] 聊天界面</div>
-                            <div class="flow-title">等待发货</div>
-                            <div class="flow-content">客服登录卖家账号，为买家发货。</div>
-                            <div class="flow-content">部分游戏需要买家同时在线才能发货，</div>
-                            <div class="flow-content">请保持在线并及时与发货客服沟通。</div>
-                            <div class="flow-content red-color">重要：道具交易不使用QQ沟通，谨防骗子！</div>
-                            <div class="flow-title">买家收货</div>
-                            <div class="flow-content">在游戏内取货</div>
-                            <div class="flow-title">确认收货</div>
-                            <div class="flow-content">买家确认收货</div>
-                            <div class="flow-title">交易成功</div>
-                        </div>
-                    </div> -->
                     <div class="flow-con" v-if="flow_type == 1">
                         <div class="flow-vertical-sell"></div>
                         <div class="flow-strip">
@@ -414,6 +395,8 @@ export default {
             imgList:[],
             flow_type:null,
             extend_attribute:[],//属性数组
+            title:'',
+            keywords:'',
         };
     },
     components: {
@@ -681,8 +664,6 @@ export default {
                                 }
                                 that.$previewRefresh();
                                 that.extend_attribute = data.goods_info.goods_attribute;
-                                // console.log(that.extend_attribute)
-                                var bind = data.account_bind;
                                 for (var i in data.goods_info.account_bind) {
                                     if (data.goods_info.account_bind[i] == 1) {
                                         that.accountBind.userBind = false;
@@ -700,6 +681,27 @@ export default {
                                         that.accountBind.emailBind = true;
                                     }
                                 }
+                                if(data.goods_info.rent_method == 1){
+                                    that.flow_type = 1;
+                                    that.title = data.goods_info.goods_title+data.goods_info.game_name+'交易平台_看个号';
+                                }else if(data.goods_info.rent_method == 2){
+                                    that.flow_type = 2;
+                                    that.title = data.goods_info.goods_title+data.goods_info.game_name+'租号平台_看个号';
+                                }else{
+                                    var showFlow = localStorage.getItem('detail_type');//sellpage 存储的
+                                    if(showFlow == 2){// 租号
+                                        that.flow_type = 2;
+                                        that.title = data.goods_info.goods_title+data.goods_info.game_name+'租号平台_看个号';
+                                    }else{// 买号
+                                        that.flow_type = 1;
+                                        that.title = data.goods_info.goods_title+data.goods_info.game_name+'交易平台_看个号';
+                                    }
+                                }
+                                var keywords_text = [];
+                                for(var i in data.goods_info.goods_attribute){
+                                    keywords_text.push(data.goods_info.goods_attribute[i].value);
+                                }
+                                that.keywords = keywords_text.join(',');
                             }
                         } else {
                             that.$router.push({path:'/'});
@@ -724,16 +726,17 @@ export default {
             that.getData();
             that.nativeShare = new NativeShare();
             that.url = window.location.href;
-            var showFlow = localStorage.getItem('detail_type');
-            if(showFlow == 2){
-                // 租号
-                that.flow_type = 2;
-            }else{
-                // 买号
-                that.flow_type = 1;
-            }
         } else {
             that.$router.go(-1);
+        }
+    },
+    metaInfo(){
+        return {
+            title:this.title,
+            meta:[{
+                name:'keywords',
+                content:this.keywords,
+            }]
         }
     }
 };
@@ -797,12 +800,9 @@ export default {
 }
 .goods-datails-title-des {
     width: 6rem;
-    overflow: hidden; /*超出的部分隐藏起来。*/
-    white-space: nowrap; /*不显示的地方用省略号...代替*/
-    text-overflow: ellipsis; /* 支持 IE */
     display: inline-block;
     font-size: 0.3rem;
-    line-height: 0.31rem;
+    line-height: 0.4rem;
     color: #333333;
     line-height: 0.35rem;
 }

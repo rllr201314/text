@@ -72,6 +72,8 @@ export default {
             param:{
                 rent_status:1,//1成品号 2租号
             },
+            title:'',
+            keywords:'',
         };
     },
     methods: {
@@ -126,6 +128,8 @@ export default {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var data = res.data.data.data;
+                            that.title = res.data.data.game_name+'_交易平台_看个号';
+                            that.keywords = res.data.data.game_name+'账号交易'
                             // 上拉加载
                             if (flag == "push") {
                                 if (data == "") {
@@ -186,6 +190,15 @@ export default {
                     }
                 }
             });
+        }
+    },
+    metaInfo(){
+        return {
+            title:this.title,
+            meta:[{
+                name:'keywords',
+                content:this.keywords,
+            }]
         }
     },
     mounted() {
@@ -396,12 +409,9 @@ export default {
 }
 .goods-des {
     width: 5rem;
-    overflow: hidden; /*超出的部分隐藏起来。*/
-    white-space: nowrap; /*不显示的地方用省略号...代替*/
-    text-overflow: ellipsis; /* 支持 IE */
     display: inline-block;
     font-size: 0.3rem;
-    line-height: 0.32rem;
+    line-height: 0.4rem;
     color: #333333;
 }
 .goods-ico {

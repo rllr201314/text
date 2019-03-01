@@ -300,6 +300,13 @@ export default {
         Header,
         Loading
     },
+    metaInfo:{
+        title:'手游号出租_看个号',
+        meta:[{
+            name:'keywords',
+            content:'手游号,梦幻号出租寄租,大话号出租寄租'
+        }]
+    },
     data() {
         return {
             comData: {
@@ -888,9 +895,10 @@ export default {
                     return false;
                 }
                 if(that_req.cash == ""){
-                    mui.alert("请输入押金", "提示", "确认", "", "div");
-                    that.showLoading = false;
-                    return false;
+                    // mui.alert("请输入押金", "提示", "确认", "", "div");
+                    // that.showLoading = false;
+                    // return false;
+                    that_req.cash = 0;
                 }
 
                 // 账号

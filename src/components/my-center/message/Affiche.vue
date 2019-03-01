@@ -28,6 +28,13 @@ import Header from "@/components/home-page/Header";
 import NoData from "@/components/multi/NoData";
 export default {
     name: "AfficheAll",
+    metaInfo:{
+        title:'资讯公告_看个号',
+        meta:[{
+            name:'keywords',
+            content:'看个号,手游交易,手游交易平台,手游号交易,手游交易网,梦幻西游,大话西游,金币号,苹果充值,ios充值'
+        }]
+    },
     data() {
         return {
             showTitle: {

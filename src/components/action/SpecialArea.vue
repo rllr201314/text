@@ -30,6 +30,8 @@
           "../../../static/img/home-page/treasure_house.png",
           "../../../static/img/home-page/recharge.png",
         ],
+        title:'',
+        keywords:'',
       }
     },
     mounted() {
@@ -37,6 +39,23 @@
       var type = that.$route.query.type;
       that.showTitle.title = that.titles[type];
       that.imgUrl = that.imgs[type];
+      console.log(type)
+      if(type == 1){
+        that.title = '藏宝阁分期_看个号';
+        that.keywords = '藏宝阁,梦幻藏宝阁分期,大话藏宝阁分期';
+      }else if(type == 2){
+        that.title = 'ios苹果游戏充值_看个号';
+        that.keywords = '苹果手游充值,苹果充值,ios充值';
+      }
+    },
+    metaInfo(){
+      return {
+        title:this.title,
+        meta:[{
+          name:'keywords',
+          content:this.keywords,
+        }]
+      }
     }
   }
 </script>

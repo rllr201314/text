@@ -64,6 +64,13 @@
           }
         })
       }
+    },
+    metaInfo:{
+      title:'金币物资号_梦幻西游_看个号',
+      meta:[{
+        name:'keywords',
+        content:'梦幻西游,金币号,物资号'
+      }]
     }
   }
 </script>

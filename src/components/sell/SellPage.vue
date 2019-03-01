@@ -100,10 +100,11 @@ export default {
                 { name: "Z", sele: false }
             ],
             gameList: [],
-            gameClassAll: []
+            gameClassAll: [],
+            title:'',
+            keywords:'',
         };
     },
-
     methods: {
         //一键清空
         emptyFun() {
@@ -243,6 +244,8 @@ export default {
         judgeFn() {
             var that = this;
             var user_type = that.$route.path;
+            that.title = '手游账号交易_看个号';
+            that.keywords = '手游交易,手游交易平台,手游号交易,手游交易网';//买 卖 公用
             if (user_type == "/buy") {
                 that.showTitle.title = "我要买";
                 localStorage.detail_type = 1;//详情显示购买流程判断
@@ -252,9 +255,13 @@ export default {
                 that.showTitle.title = "我要租号";
                 that.trade_type = 1;
                 localStorage.detail_type = 2;//详情显示购买流程判断
+                that.title = '手游账号出租_看个号';
+                that.keywords = '手游号,梦幻号出租寄租,大话号出租寄租';
             } else if (user_type == "/rent-out") {
                 that.showTitle.title = "出租账号";
                 that.trade_type = 1;
+                that.title = '手游号出租_看个号';
+                that.keywords = '手游号,梦幻号出租寄租,大话号出租寄租';
             }
             that.getData();
         }
@@ -265,7 +272,16 @@ export default {
     mounted() {
         var that = this;
         this.judgeFn();
-    }
+    },
+    metaInfo(){
+        return {
+            title:this.title,
+            meta:[{
+                name:'keywords',
+                content:this.keywords
+            }]
+        }
+    },
 };
 </script>
 

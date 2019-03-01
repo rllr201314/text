@@ -9,6 +9,8 @@ import store from './store/index'
 import qs from 'qs'
 import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
+import MetaInfo from 'vue-meta-info'
+Vue.use(MetaInfo)
 var options={
   fullscreenEl:false, //关闭全屏按钮
   pinchToClose:false,//捏以关闭
