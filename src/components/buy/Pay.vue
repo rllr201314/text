@@ -633,7 +633,7 @@ export default {
         goPayFn(){
             var that = this;
             if(!that.is_line && !that.off_line){
-                that.$router.push({name: "BuyUnpaidStatus" });//未支付
+                that.$router.push({name: "BuyOrderAll" });//未支付
             }else{
                 // 调支付
                 that.showLoading = true;

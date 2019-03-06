@@ -89,4 +89,7 @@ new Vue({
     App
   },
   template: '<App/>',
+  mounted () {
+    // document.dispatchEvent(new Event('render-event'));
+  }
 })

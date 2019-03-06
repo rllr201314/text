@@ -246,13 +246,12 @@ export default {
                     that.$router.go(-1);
                 }
             }
-
         }else{
             $('#minirefresh').scrollTop(that.$route.meta.scroll_top);
         }
         that.$route.meta.isBack = false;
     },
-     beforeRouteLeave(to,from,next){
+    beforeRouteLeave(to,from,next){
         from.meta.scroll_top = $('#minirefresh').scrollTop();
         next();
     },
