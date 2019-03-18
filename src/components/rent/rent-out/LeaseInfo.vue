@@ -72,7 +72,7 @@
                 </div>
             </div>
             <!-- 账号信息 -->
-            <div class="sellInfo-cell">
+            <div class="sellInfo-cell" v-if="showSell">
                 <div class="sell-cell-top">
                     <img src="../../../../static/img/goodscreen/vertical.png" alt="">
                     <span>账号信息</span>
@@ -773,31 +773,34 @@ export default {
                 if(upImg.length > 0){
                     that_req.images = upImg;
                 }
-                // 账号类型
-                if (that_req.account_type == "") {
-                    mui.alert("请选择账号类型", "提示", "确认", "", "div");
-                    that.showLoading = false;
-                    return false;
-                }
-                // 账号绑定
-                var safe = this.sellData.seleSafeData.safe;
-                var safe_flag = false;
-                var safe_str = "";
-                var sense = [];
-                for (var i in safe) {
-                    if (safe[i].ischeck == true) {
-                        sense.push(safe[i].value);
-                        safe_flag = true;
-                        safe_str += "," + safe[i].value;
+                // // 账号类型
+                if(that.showSell){
+                     if (that_req.account_type == "") {
+                        mui.alert("请选择账号类型", "提示", "确认", "", "div");
+                        that.showLoading = false;
+                        return false;
+                    }
+                    // 账号绑定
+                    var safe = this.sellData.seleSafeData.safe;
+                    var safe_flag = false;
+                    var safe_str = "";
+                    var sense = [];
+                    for (var i in safe) {
+                        if (safe[i].ischeck == true) {
+                            sense.push(safe[i].value);
+                            safe_flag = true;
+                            safe_str += "," + safe[i].value;
+                        }
+                    }
+                    if (safe_flag) {
+                        that_req.account_bind = safe_str.substring(1);
+                    } else {
+                        mui.alert("请选择账号绑定", "提示", "确认", "", "div");
+                        that.showLoading = false;
+                        return false;
                     }
                 }
-                if (safe_flag) {
-                    that_req.account_bind = safe_str.substring(1);
-                } else {
-                    mui.alert("请选择账号绑定", "提示", "确认", "", "div");
-                    that.showLoading = false;
-                    return false;
-                }
+
                 // 判断是否显示价格
                 if(that.showSell){
                     // 议价还是一口价 -- 价格

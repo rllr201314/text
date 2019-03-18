@@ -24,7 +24,7 @@
                                 <div class="area" v-text="item.area_name"></div>
                             </div>
                             <div class="goods-strip-content">
-                                <div class="goods-des" v-text="item.goods_title"></div>
+                                <div class="goods-des" :class="item.isSelect?'des_false':'des_true'" v-text="item.goods_title"></div>
                                 <div class="goods-ico">
                                     <img v-if="item.is_safe == 1" src="../../static/img/goodscreen/safe_ico.png" alt="">
                                     <img v-if="item.is_stage == 1" src="../../static/img/goodscreen/stages_ico.png" alt="">
@@ -74,11 +74,21 @@ export default {
             },
             title:'',
             keywords:'',
+            des_color:true,
         };
     },
     methods: {
         // 去详情
         goDetail(goods_id) {
+            var that = this;
+            let x = 0;
+            while(x < that.goodsList.length){
+                if(that.goodsList[x].goods_id == goods_id){
+                    that.goodsList[x].isSelect = true;
+                    break;
+                }
+                x++;
+            }
             this.$router.push({
                 name: "Details",
                 query: { goods_id: goods_id }
@@ -137,6 +147,7 @@ export default {
                                 } else {
                                     that.miniRefresh.endUpLoading(false);
                                     for (var i in res.data.data.data) {
+                                        res.data.data.data[i].isSelect = false;
                                         that.goodsList.push(
                                             res.data.data.data[i]
                                         );
@@ -148,6 +159,9 @@ export default {
                                     that.goodsList = "";
                                     that.miniRefresh.endDownLoading();
                                 } else {
+                                    for (var i in res.data.data.data) {
+                                        res.data.data.data[i].isSelect = false;
+                                    }
                                     that.goodsList = res.data.data.data;
                                     that.pages = res.data.data.last_page;
                                     that.showNoData = false;
@@ -412,7 +426,12 @@ export default {
     display: inline-block;
     font-size: 0.3rem;
     line-height: 0.4rem;
+}
+.des_true{
     color: #333333;
+}
+.des_false{
+    color: #999999;
 }
 .goods-ico {
     position: absolute;

@@ -4,26 +4,18 @@
     <img class="gold-top" src="../../../static/img/home-page/gold_top.png">
     <div class="page-center">
       <div class="page-center-content">
-        <div class="layout-title">
-          <div class="item-width-left">
-            服务器
-          </div>
-          <div class="item-width-right">
-            金币数
-          </div>
-          <div class="item-width-right">
-            绑定状态
-          </div>
-          <div class="item-width-center">
-            价格
-          </div>
+        <div class="layout-title title">
+          <div class="server">服务器</div>
+          <div class="gold">金币数</div>
+          <div class="bind">绑定状态</div>
+          <div class="price">价格</div>
         </div>
         <div>
-          <div class="layout-title" v-for="gold in golds">
-            <div class="item-width-value-left" v-text="gold.server"></div>
-            <div class="item-width-value-right" v-text="gold.gold_num"></div>
-            <div class="item-width-value-right" v-text="gold.bind"></div>
-            <div class="item-width-value-center">￥<span v-text="gold.price"></span></div>
+          <div class="layout-title content" v-for="gold in golds">
+            <div class="server" v-text="gold.server"></div>
+            <div class="gold" v-text="gold.gold_num"></div>
+            <div class="bind" v-text="gold.bind"></div>
+            <div class="price">￥<span v-text="gold.price"></span></div>
           </div>
         </div>
       </div>
@@ -102,45 +94,26 @@
     display: flex;
     flex-direction: row;
   }
-
-  .item-width-left {
-    width: 30%;
-    text-align: left;
+  .title{
+    /* text-align: left; */
     color: #3E96B5;
     font-size: 15px;
   }
-
-  .item-width-center {
-    width: 30%;
-    text-align: center;
-    color: #3E96B5;
-    font-size: 15px;
+  .server{
+    width:25%;
   }
-
-  .item-width-right {
-    width: 20%;
-    text-align: left;
-    color: #3E96B5;
-    font-size: 15px;
+  .gold{
+    width:30%;
   }
-
-  .item-width-value-left {
-    width: 30%;
-    text-align: left;
-    font-size: 12px;
-    padding-top: 10px;
+  .bind{
+    padding-left:1%;
+    width:20%;
   }
-
-  .item-width-value-center {
-    width: 30%;
-    text-align: center;
-    font-size: 12px;
-    padding-top: 10px;
+  .price{
+    padding-left:5%;
+    width:25%;
   }
-
-  .item-width-value-right {
-    width: 20%;
-    text-align: left;
+  .content{
     font-size: 12px;
     padding-top: 10px;
   }

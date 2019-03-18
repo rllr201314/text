@@ -211,6 +211,7 @@ export default {
     right:0;
     max-width:640px;
     margin:0 auto;
+    z-index: 10;
 }
 .tit-box {
     font-size: 0.24rem;

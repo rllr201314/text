@@ -103,6 +103,7 @@ export default {
             gameClassAll: [],
             title:'',
             keywords:'',
+            business_type:'',
         };
     },
     methods: {
@@ -218,7 +219,8 @@ export default {
             that.user_type = that.$route.path;
             that.$axios
                 .post(process.env.API_HOST + "category", {
-                    game_name: that.search_val
+                    game_name: that.search_val,
+                    business_type : that.business_type
                 })
                 .then(function(res) {
                     if (res.status == 200) {
@@ -249,12 +251,14 @@ export default {
             if (user_type == "/buy") {
                 that.showTitle.title = "我要买";
                 localStorage.detail_type = 1;//详情显示购买流程判断
+                that.business_type = 1;
             } else if (user_type == "/sell") {
                 that.showTitle.title = "我要卖";
             } else if (user_type == "/rent") {
                 that.showTitle.title = "我要租号";
                 that.trade_type = 1;
                 localStorage.detail_type = 2;//详情显示购买流程判断
+                that.business_type = 2;//
                 that.title = '手游账号出租_看个号';
                 that.keywords = '手游号,梦幻号出租寄租,大话号出租寄租';
             } else if (user_type == "/rent-out") {

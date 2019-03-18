@@ -23,16 +23,35 @@
                                     <div class="account-ios" v-else-if="item.client_id == 2">苹果</div>
                                     <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
                                     <div class="area" v-text="item.area_name"></div>
+                                    <div class="gold authentication" v-if="item.merchant_level == 1">
+                                        <img src="../../../static/img/rent/gold.png" alt="">
+                                        <span>金牌认证</span>
+                                    </div>
+                                    <div class="silver authentication" v-else-if="item.merchant_level == 2">
+                                        <img src="../../../static/img/rent/silver.png" alt="">
+                                        <span>银牌认证</span>
+                                    </div>
+                                    <div class="copper authentication" v-else-if="item.merchant_level == 3">
+                                        <img src="../../../static/img/rent/copper.png" alt="">
+                                        <span>铜牌认证</span>
+                                    </div>
                                 </div>
                                 <div class="goods-strip-content">
-                                    <div class="goods-des" v-text="item.goods_title"></div>
+                                    <div class="goods-des" :class="item.isSelect?'des_false':'des_true'" v-text="item.goods_title"></div>
                                     <div class="goods-ico">
                                         <img v-if="item.is_safe == 1" src="../../../static/img/goodscreen/safe_ico.png" alt="">
                                         <img v-if="item.is_stage == 1" src="../../../static/img/goodscreen/stages_ico.png" alt="">
                                         <img v-if="item.is_check == 1" src="../../../static/img/goodscreen/verify.png" alt="">
                                         <img v-if="item.is_compact == 1" src="../../../static/img/goodscreen/contract_ico.png" alt="">
                                     </div>
-                                    <div class="original-price" v-if="item.goods_price != 0"><span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span></div>
+                                    <div>
+                                        <div class="original-price" v-if="item.goods_price != 0">
+                                            <span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span>
+                                        </div>
+                                        <div class="yet" v-if="item.rent_status == 1">
+                                            <span class="yet-ico">已租出</span><span class="yet-text" v-if="item.rent_time != ''"><span v-text="item.rent_time"></span>后回收</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="goods-strip-bottom">
                                     <div>
@@ -96,6 +115,15 @@ export default {
     methods: {
         // 去详情
         goDetail(goods_id) {
+            var that = this;
+            let x = 0;
+            while(x < that.goodsList.length){
+                if(that.goodsList[x].goods_id == goods_id){
+                    that.goodsList[x].isSelect = true;
+                    break;
+                }
+                x++;
+            }
             this.$router.push({
                 name: "Details",
                 query: { goods_id: goods_id }
@@ -152,6 +180,7 @@ export default {
                                 } else {
                                     that.miniRefresh.endUpLoading(false);
                                     for (var i in res.data.data.data) {
+                                        res.data.data.data[i].isSelect = false;
                                         that.goodsList.push(
                                             res.data.data.data[i]
                                         );
@@ -163,6 +192,9 @@ export default {
                                     that.goodsList = "";
                                     that.miniRefresh.endDownLoading();
                                 } else {
+                                    for (var i in res.data.data.data) {
+                                        res.data.data.data[i].isSelect = false;
+                                    }
                                     that.goodsList = res.data.data.data;
                                     that.pages = res.data.data.last_page;
                                     that.showNoData = false;
@@ -429,6 +461,24 @@ export default {
     color: #999999;
     display: inline-block;
 }
+.authentication{
+    display: inline-block;
+}
+.gold{
+    color:#F6A200;
+}
+.silver{
+    color:#b1b1b1;
+}
+.copper{
+    color:#e69740;
+}
+.authentication img{
+    width:.36rem;
+    height:.36rem;
+    margin-bottom:-.1rem;
+    /* vertical-align: middle; */
+}
 /* 详情 -- 保障*/
 .goods-strip-content {
     position: relative;
@@ -439,7 +489,12 @@ export default {
     display: inline-block;
     font-size: 0.3rem;
     line-height: 0.4rem;
+}
+.des_true{
     color: #333333;
+}
+.des_false{
+    color: #999999;
 }
 .goods-ico {
     position: absolute;
@@ -457,10 +512,28 @@ export default {
     color: #666666;
     font-size: 0.26rem;
     line-height: 0.5rem;
+    display: inline-block;
 }
 .original-text {
     margin-right: 0.1rem;
 }
+.yet{
+    font-size:.2rem;
+    display: inline-block;
+}
+.yet-ico{
+    color:#ffffff;
+    background:#45C773;
+    display:inline-block;
+    line-height:.36rem;
+    padding:0 .16rem;
+    border-radius:.18rem;
+    margin:0 .07rem 0 .1rem;
+}
+.yet-text{
+    color:#999999;
+}
+
 /* 底部 */
 .goods-strip-bottom {
     line-height: 0.8rem;

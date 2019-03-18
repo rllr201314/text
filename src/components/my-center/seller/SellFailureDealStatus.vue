@@ -22,7 +22,7 @@
                                     <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
                                     <span class="order-status">交易失败</span>
                                 </div>
-                                <div class="causer">
+                                <div class="causer" v-if="item.reason != null">
                                     <span class="gray">原因</span>
                                     <span v-text="item.reason"></span>
                                 </div>

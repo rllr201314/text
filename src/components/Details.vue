@@ -6,8 +6,8 @@
         <div class="goods-details-title">
             <div class="goods-datails-title-top">
                 <div class="title-boutique" v-if="detailData.is_recommend == 1">精</div>
-                <div class="title-ico deal-ico" v-if="detailData.rent_method == 1 ||detailData.rent_method == 3 ">成品号</div>
-                <div class="title-ico rent-ico" v-if="detailData.rent_method == 2 ||detailData.rent_method == 3">租号</div>
+                <div class="title-ico deal-ico" v-if="detailData.rent_method == 1">成品号</div>
+                <div class="title-ico rent-ico" v-if="detailData.rent_method == 2">租号</div>
                 <div class="title-view-history">
                     <img src="../../static/img/goods-details/view_count_ico.png" alt="">
                     <span>浏览次数</span>
@@ -18,10 +18,7 @@
             <div class="title-goods-price" v-if="detailData.rent_method == 1">
                 ￥ <span v-text="detailData.goods_price"></span>
             </div>
-            <div v-if="detailData.rent_method == 2 || detailData.rent_method == 3">
-                <div class="original-price" v-if="detailData.goods_price != 0">
-                    <span class="original-text">原价</span><span>￥</span><span v-text="detailData.goods_price"></span>
-                </div>
+            <div v-if="detailData.rent_method == 2">
                 <div class="goods-strip-bottom">
                     <div>
                         <img src="../../static/img/rent/rent-ico.png" alt="">
@@ -46,24 +43,30 @@
             </div>
         </div>
         <!-- 卖家信息 -->
-        <div class="seller-info" v-if="false">
-            <img class="user-head-log" :src="detailData.head_img" alt="">
-            <div class="seller-info-right">
+        <div class="seller-info" v-if="detailData.rent_method == 2 && detailData.merchant_level != null">
+            <div class="seller-info-left">商家认证</div>
+            <div class="seller-info-right" v-if="detailData.merchant_level == 1">
                 <div class="seller-right-top">
-                    <div class="seller-name" v-text="detailData.username"></div>
-                    <!-- 暂时保留 -->
-                    <div class="seller-auth" v-if="false">
-                        <img src="../../static/img/goods-details/Authentication_ico.png" alt="">
-                        <span>已认证</span>
-                    </div>
-                    <div class="seller-gold" v-if="false">
-                        <img src="../../static/img/goods-details/goldSellers_ico.png" alt="">
-                        <span>金牌卖家</span>
-                    </div>
+                    <img src="../../static/img/rent/gold.png" alt=""><span>金牌认证</span>
                 </div>
-                <div class="seller-right-bottom" v-if="false">
-                    <span>信誉积分</span>
-                    <span v-text="goodsDetailsData.sellerInfo.credit"></span>
+                <div class="seller-right-bottom">
+                    商家为您提供20000元的帐号安全保障
+                </div>
+            </div>
+            <div class="seller-info-right" v-else-if="detailData.merchant_level == 2">
+                <div class="seller-right-top">
+                    <img src="../../static/img/rent/gold.png" alt=""><span>银牌认证</span>
+                </div>
+                <div class="seller-right-bottom">
+                    商家为您提供10000元的帐号安全保障
+                </div>
+            </div>
+            <div class="seller-info-right" v-else-if="detailData.merchant_level == 3">
+                <div class="seller-right-top">
+                    <img src="../../static/img/rent/gold.png" alt=""><span>铜牌认证</span>
+                </div>
+                <div class="seller-right-bottom">
+                    商家为您提供5000元的帐号安全保障
                 </div>
             </div>
         </div>
@@ -78,7 +81,7 @@
             </div>
         </div>
         <!-- 账号绑定 -->
-        <div class="accountBind-info detail-info">
+        <div class="detail-info" v-if="detailData.rent_method == 1">
             <div class="info-left">账号绑定</div>
             <div class="info-right">
                 <div class="user-bind">
@@ -98,7 +101,7 @@
         <!-- 商品描述 -->
         <div class="goods-details-info">
             <div class="goods-info-content">
-                <div class="goods-info-strip" v-if="detailData.rent_method == 1 ||detailData.rent_method == 3">
+                <div class="goods-info-strip" v-if="detailData.rent_method == 1">
                     <div class="text-left">账号类型</div>
                     <div class="text-right" v-text="detailData.account_type"></div>
                 </div>
@@ -249,10 +252,8 @@
             <div class="goods-strip" v-for="item in recommendData" @click="goDetail(item.goods_id)">
                 <div class="goods-strip-top">
                     <div class="goods-strip-title">
-                        <!-- <div class="goods-type" v-if="item.deal_type == 1">成品号</div>
-                        <div class="goods-type" v-else-if="item.deal_type == 2">代练号</div> -->
-                        <div class="title-ico deal-ico" v-if="item.rent_method == 1 || item.rent_method == 3">成品号</div>
-                        <div class="title-ico rent-ico" v-if="item.rent_method == 2 || item.rent_method == 3">租号</div>
+                        <div class="title-ico deal-ico" v-if="item.rent_method == 1">成品号</div>
+                        <div class="title-ico rent-ico" v-if="item.rent_method == 2">租号</div>
                         <div class="account-type" v-if="item.client_id == 1">安卓</div>
                         <div class="account-type" v-else-if="item.client_id == 2">苹果</div>
                         <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
@@ -263,10 +264,7 @@
                     <div class="goods-price" v-if="item.rent_method == 1">￥
                         <span v-text="item.goods_price"></span>
                     </div>
-                    <div v-if="item.rent_method == 2 || item.rent_method == 3">
-                        <div class="original-price" v-if="item.rent_method == 3">
-                            <span class="original-text">原价</span><span>￥</span><span v-text="item.goods_price"></span>
-                        </div>
+                    <div v-if="item.rent_method == 2">
                         <div class="goods-strip-bottom">
                             <div>
                                 <img src="../../static/img/rent/rent-ico.png" alt="">
@@ -286,7 +284,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="hint-bottom" v-if="item.rent_method == 2 || item.rent_method == 3" v-text="item.goods_description"></div>
+                <div class="hint-bottom" v-if="item.rent_method == 2" v-text="item.goods_description"></div>
             </div>
             <div class="more-info" v-if="false">查看更多</div>
         </div>
@@ -301,9 +299,10 @@
                 <div>收藏</div>
             </div>
             <div class="goods-details-bottom-right" v-if="detailData.sell_type == 1 && detailData.rent_method != 3"></div>
-            <div class="rent-btn goods-details-bottom-right" @click="rentFn" v-if="detailData.rent_method == 2 || detailData.rent_method == 3">立即租号</div>
+            <div class="rent-btn goods-details-bottom-right" @click="rentFn" v-if="detailData.rent_method == 2 && detailData.is_pay == 1">立即租号</div>
+            <div class="outrent-btn goods-details-bottom-right" v-if="detailData.rent_method == 2 && detailData.is_pay == 2">已租出</div>
             <div class="bargain goods-details-bottom-right" v-if="detailData.sell_type == 2" @click="bargainFn">议价</div>
-            <div class="buy goods-details-bottom-right" @click="buyFn" v-if="detailData.rent_method == 1 || detailData.rent_method == 3">立即购买</div>
+            <div class="buy goods-details-bottom-right" @click="buyFn" v-if="detailData.rent_method == 1">立即购买</div>
         </div>
         <!-- 议价弹框 -->
         <div class="hoodle" v-show="showShade">
@@ -687,15 +686,6 @@ export default {
                                 }else if(data.goods_info.rent_method == 2){
                                     that.flow_type = 2;
                                     that.title = data.goods_info.goods_title+data.goods_info.game_name+'租号平台_看个号';
-                                }else{
-                                    var showFlow = localStorage.getItem('detail_type');//sellpage 存储的
-                                    if(showFlow == 2){// 租号
-                                        that.flow_type = 2;
-                                        that.title = data.goods_info.goods_title+data.goods_info.game_name+'租号平台_看个号';
-                                    }else{// 买号
-                                        that.flow_type = 1;
-                                        that.title = data.goods_info.goods_title+data.goods_info.game_name+'交易平台_看个号';
-                                    }
                                 }
                                 var keywords_text = [];
                                 for(var i in data.goods_info.goods_attribute){
@@ -756,7 +746,7 @@ export default {
     color: #ffffff;
     font-size: 0.24rem;
     line-height: 0.36rem;
-    margin-bottom: 0.2rem;
+    /* margin-bottom: 0.2rem; */
 }
 /* 精品 */
 .title-boutique {
@@ -804,7 +794,7 @@ export default {
     font-size: 0.3rem;
     line-height: 0.4rem;
     color: #333333;
-    line-height: 0.35rem;
+    line-height: 0.55rem;
 }
 
 .title-goods-price {
@@ -872,42 +862,42 @@ export default {
 }
 /* 卖家信息 */
 .seller-info {
-    padding: 0.26rem 0.2rem;
+    padding: 0.26rem 0.15rem;
     margin-bottom: 0.2rem;
     background: #ffffff;
 }
-.user-head-log {
-    width: 0.8rem;
-    height: 0.8rem;
-    margin-right: 0.19rem;
-    vertical-align: middle;
+.seller-info-left{
+    color:#666666;
+    font-size:.26rem;
+    display: inline-block;
 }
 .seller-info-right {
     display: inline-block;
     vertical-align: middle;
     font-size: 0.26rem;
     color: #666666;
+    margin-left:.27rem;
 }
 .seller-right-top div {
     display: inline-block;
+    font-size:.24rem;
 }
 .seller-right-top img {
-    width: 0.25rem;
-    height: 0.25rem;
+    width: 0.36rem;
+    height: 0.36rem;
     vertical-align: middle;
+    margin-top:-.1rem;
 }
 
 .seller-right-top span {
     vertical-align: middle;
+    color:#F6A200;
+    margin-left:.05rem;
 }
-.seller-name {
-    vertical-align: middle;
-    font-size: 0.28rem;
-    color: #333333;
-    margin-right: 0.32rem;
-}
+
 .seller-right-bottom {
-    margin-top: 0.17rem;
+    font-size:.22rem;
+    color:#999999;
 }
 
 .detail-info {
@@ -1156,6 +1146,9 @@ export default {
 }
 .rent-btn {
     background:#65BAFF;
+}
+.outrent-btn{
+    background:#999999;
 }
 .buy {
     background: #ff5e5e;

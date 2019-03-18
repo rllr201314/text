@@ -58,7 +58,8 @@
         </div>
         <div class="hint" v-if="false">
             <img src="../../../../static/img/goods-details/left_solid.png" alt="">
-            <span>没有更多记录啦</span><img src="../../../../static/img/goods-details/right_solid.png" alt="">
+            <span>没有更多记录啦</span>
+            <img src="../../../../static/img/goods-details/right_solid.png" alt="">
         </div>
         <NoData class="nodata" v-if="showNoData"></NoData>
     </div>
