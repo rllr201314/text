@@ -4,6 +4,9 @@
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="wait-content">
             <div class="wait-cell" v-for="item in goodsData">
+                <img class="badge" v-if="item.rent_method == 1" src="../../../../static/img/badge/product.png" alt="">
+                <img class="badge" v-if="item.rent_method == 2" src="../../../../static/img/badge/rent-badge.png" alt="">
+                <img class="badge" v-if="item.rent_method == 4" src="../../../../static/img/badge/cbg-badge.png" alt="">
                 <div class="gameLog">
                     <img :src="item.game_logo" alt="">
                 </div>
@@ -11,12 +14,12 @@
                     <div class="order-num">
                         <span>订单号</span>
                         <span v-text="item.order_sn"></span>
-                        <span class="history-time" v-text="item.create_time"></span>
                     </div>
                     <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
                         <span class="good-price">￥<span v-text="item.goods_amount"></span></span>
                         <span class="order-status">待收货</span>
+                        <span class="history-time" v-text="item.create_time"></span>
                     </div>
                 </div>
                 <div class="order-operate">
@@ -25,7 +28,7 @@
                         <span @click="$common.linkServer()">联系客服</span>
                     </div>
                     <div class="right-operate">
-                        <span class="pay" @click="goStatus(item.order_id)">查看</span>
+                        <span class="pay" @click="goStatus(item.rent_method,item.order_id)">查看</span>
                     </div>
                 </div>
             </div>
@@ -79,8 +82,14 @@ export default {
                     console.log(err);
                 });
         },
-        goStatus(order_id){
-            this.$router.push({name:'BuyTakeDelivery',query:{order:order_id}})
+        goStatus(status,order_id){
+            if(status == 1){//卖
+                this.$router.push({name:'BuyTakeDelivery',query:{order:order_id}})
+            }else if(status == 2){//租
+                this.$router.push({name:'RentState',query:{order:order_id}})
+            }else if(status == 4){//藏宝阁
+                this.$router.push({name:'CbgState',query:{order:order_id}})
+            }
         }
     },
     mounted() {
@@ -104,6 +113,14 @@ export default {
     box-shadow: 0.06rem 0.05rem 0.09rem #d6d6d6;
     margin-bottom: 0.2rem;
     padding: 0 0.2rem;
+    position: relative;
+}
+.badge{
+    width:1.03rem;
+    height:1rem;
+    position: absolute;
+    top:0;
+    right:0;
 }
 .gameLog {
     display: inline-block;
@@ -130,6 +147,7 @@ export default {
     position: relative;
 }
 .history-time {
+    font-size:.24rem;
     color: #999999;
     position: absolute;
     top: 0;
@@ -143,6 +161,9 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 0.1rem;
+}
+.price-status{
+    position:relative;
 }
 .price-status span {
     vertical-align: middle;

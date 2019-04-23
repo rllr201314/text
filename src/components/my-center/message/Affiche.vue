@@ -32,7 +32,10 @@ export default {
         title:'资讯公告_看个号',
         meta:[{
             name:'keywords',
-            content:'看个号,手游交易,手游交易平台,手游号交易,手游交易网,梦幻西游,大话西游,金币号,苹果充值,ios充值'
+            content:'看个号,手游交易,手游交易平台,手游账号交易,手游交易网,梦幻西游,大话西游,梦幻金币号,苹果充值,ios充值'
+        },{
+            name:'description',
+            content:'看个号(https://www.kangehao.com)是国内专业的手游交易平台，安全可靠专注手游的交易网站，提供手游账号交易、买号卖号交易的手游交易平台！'
         }]
     },
     data() {
@@ -58,7 +61,7 @@ export default {
             // var info = JSON.stringify(data)
             // sessionStorage.sign = info;
             // this.$router.push({name:'Affichee_Details',query:{sign:info}});
-            this.$router.push({name:'Affiche_Details',query:{article:id,type:type}})
+            this.$router.push({name:'Affiche_Details',params:{article:id,type:type}})
         },
         getData(flag) {
             var that = this;

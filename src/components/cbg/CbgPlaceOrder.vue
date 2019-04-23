@@ -6,39 +6,41 @@
         <div class="placeOrder-content">
             <!-- 商品详情 -->
             <div class="placeOrder-cell">
-                <img class="badge" src="../../../static/img/badge/rent-badge.png" alt="">
+                <img class="badge" src="../../../static/img/badge/cbg-badge.png" alt="">
                 <div class="goods-info-top">
                     <img src="../../../static/img/goodscreen/vertical.png" alt="">
-                    <span>商品详情</span>
+                    <span>订单详情</span>
                 </div>
                 <div class="goods-info-content">
                     <img :src="goodsInfo.game_logo" alt="">
                     <div class="goods-info">
                         <div class="goods-info-title" v-text="goodsInfo.goods_title"></div>
                         <div class="goods-info-box">
-                            <div>交易链接</div>
-                            <div class="t_link">123123</div>
+                            <div  class="goods-info-left">交易链接</div>
+                            <a class="t_link" target="view_window" :href="goodsInfo.link_href" v-text="goodsInfo.link_href" ></a>
                         </div>
                         <div class="goods-info-box">
                             <div class="goods-info-left">
                                 <div>官方交易价格</div>
                                 <div>分期方式</div>
-                                <div>首付</div>
+                                <!-- <div>首付</div> -->
                                 <div>期数</div>
                             </div>
                             <div class="goods-info-right">
-                                <div><span v-text="goodsInfo.role_level"></span>级</div>
-                                <div v-text="goodsInfo.faction_name"></div>
-                                <div v-if="goodsInfo.deal_type == 1">成品号</div>
-                                <div v-else>代练号</div>
-                                <div v-text="goodsInfo.account_bind"></div>
+                                <div><span v-text="goodsInfo.goods_amount"></span>元</div>
+                                <div v-if="goodsInfo.stage_type == 1">日分期</div>
+                                <div v-else-if="goodsInfo.stage_type == 2">月分期</div>
+                                <!-- <div v-text="goodsInfo.payment_amount"></div> -->
+                                <div v-if="goodsInfo.stage_type == 1">不限</div>
+                                <div v-else-if="goodsInfo.stage_type == 2"><span v-text="goodsInfo.several_stages"></span>期</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="stage-info">
-                    <div class="stage-box">
-                        123
+                    <div class="stage-box" v-for="(item,index) in goodsInfo.stage_info" :key="index">
+                            <span class="calputer-bot-left" v-text="item.stage_title"></span>
+                            <span class="calputer-bot-right" v-text="item.stage_value"></span>
                     </div>
                 </div>
             </div>
@@ -46,25 +48,25 @@
             <div class="placeOrder-cell">
                 <div class="contact-content">
                     <div class="contact-cell">
-                        <span class="celltext">押金</span>
+                        <span class="celltext">服务费</span>
                         <div class="cell-right">
                             <span class="unit-price price">￥
-                                <span v-text="totalPrice"></span>
+                                <span v-text="goodsInfo.other_charge"></span>
                             </span>
                         </div>
                     </div>
                      <div class="contact-cell">
-                        <span class="celltext">押金</span>
+                        <span class="celltext">首付金额</span>
                         <div class="cell-right">
                             <span class="unit-price price">￥
-                                <span v-text="totalPrice"></span>
+                                <span v-text="goodsInfo.deposit_price"></span>
                             </span>
                         </div>
                     </div>
                     <div class="contact-cell" >
                         <div class="cell-right">
                             <div class="total-price price">
-                                实际支付：<span class="red-color" v-text="totalPrice"></span>
+                                实际支付：<span class="red-color" v-text="goodsInfo.payment_amount"></span>
                             </div>
                         </div>
                     </div>
@@ -158,19 +160,14 @@ export default {
         getData() {
             var that = this;
             that.$axios
-                .post(process.env.API_HOST+"rent_info", {
-                    goods_id: that.$route.query.goods_id
+                .post(process.env.API_HOST+"store_info", {
+                    order_id: that.$route.query.order_id
                 })
                 .then(res => {
-                    console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             that.goodsInfo = res.data.data;
-                            that.tenancy_term = res.data.data.least_lease + '天';
-                            that.tremVal = res.data.data.least_lease;
-                            that.tremPirce = Number(res.data.data.day_rent) * Number(res.data.data.least_lease);
                             that.showNoData = false;
-                            that.totalPrice = Number(that.tremPirce) + Number(res.data.data.cash);
                         }else if(res.data.code == 400){
                             that.showNoData = true;
                             mui.alert(res.data.msg,'提示','确认',function(){
@@ -185,57 +182,25 @@ export default {
         },
         goPayFn(){
             var that = this;
-            var request = {};
-            // 微信
-            if (that.wx == "") {
-                mui.alert("请输入微信账号", "提示", "确认", "", "div");
-                return false;
-            }else{
-                var reg = /[\u4e00-\u9fa5]/g;
-                if(that.wx.match(reg)){
-                    mui.alert("请输入正确微信账号", "提示", "确认", "", "div");
-                    return false;
-                }
-                 request.wx = that.wx;
-            }
-            // 手机号
-            if (that.phone == "") {
-                mui.alert("请输入手机号", "提示", "确认", "", "div");
-                return false;
-            }else{
-                var reg = /^1[3-9][0-9]{9}$/g;
-                if (!that.phone.match(reg)) {
-                    mui.alert("您输入的手机号不正确","提示","确定","","div");
-                    return false;
-                }
-                request.phone = that.phone;
-            }
-            if(that.tremVal == ''){
-                mui.alert("请选择租期", "提示", "确认", "", "div");
-                return false;
-            }else{
-                request.lease_time = that.tremVal;
-            }
             // 判断是否勾选协议
             if(!that.protocol){
                 mui.alert("请阅读并同意《看个号平台交易协议》","提示","确定","","div");
                 return false;
             }
-            request.goods_id = that.$route.query.goods_id;
-            request = JSON.stringify(request)
-            that.$router.push({name:'Pay',query:{rent:request}})
-            sessionStorage.lease_time = request;
-            
+            var all = {};all.order_id = that.$route.query.order_id;
+            var order_info = JSON.stringify(all);
+            sessionStorage.unpaid_o = order_info;
+            this.$router.push({name:'Pay',query:{order_info}})
         }
     },
     mounted() {
         var that = this;
         that.showNoData = false;
-        // if (that.$route.query.goods_id != "" && that.$route.query.goods_id != undefined) {
-        //     that.getData();
-        // } else {
-        //     that.$router.go(-1);
-        // }
+        if (that.$route.query.order_id != "" && that.$route.query.order_id != undefined) {
+            that.getData();
+        } else {
+            that.$router.go(-1);
+        }
     }
 };
 </script>
@@ -304,7 +269,6 @@ export default {
 }
 .goods-info-box {
     display: flex;
-    justify-content: space-between;
 }
 .goods-info-left{
     width: 40%;
@@ -565,10 +529,16 @@ input[type="number"] {
     color:#999999;
     display:flex;
     justify-content: space-around;
+    line-height: .5rem;
 }
 .t_link{
     color:#999999;
     text-decoration: underline;
+    max-width: 3rem;
+    overflow:hidden; /*超出的部分隐藏起来。*/ 
+    white-space:nowrap;/*不显示的地方用省略号...代替*/
+    text-overflow:ellipsis;/* 支持 IE */
+
 } 
 
 </style>

@@ -1035,10 +1035,14 @@ export default {
                         that.oldData = data;//编辑商品旧数据
                         that.extend_attribute = data.extend_attribute;
                         that_req.extend_attribute = data.goods_attribute;
-                        // console.log(that.requestData.extend_attribute);
-
-                        
                         that.getConfig(that_req,2);//请求选择参数
+                    }else{
+                        mui.alert(res.data.msg,"提示","确认",
+                            function() {
+                                that.$router.go(-1);
+                            },
+                            "div"
+                        );
                     }
                 }
             }).catch((err) => {

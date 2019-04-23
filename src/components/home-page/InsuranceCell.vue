@@ -1,7 +1,7 @@
 <template>
     <!-- 保险 -->
     <div class="insurance-wrap">
-        <img src="../../../static/img/safe_cont.png" alt="">
+        <img src="../../../static/img/safe_cont.png" alt="中国人民保险">
     </div>
 </template>
 

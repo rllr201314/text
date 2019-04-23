@@ -27,7 +27,7 @@
                 <div>
                     <span class="last-text">保险理赔</span>
                 </div>
-                <img class="safe-ico" src="../../../static/img/safe_ico.png" alt="">
+                <img class="safe-ico" src="../../../static/img/safe_ico.png" alt="保险理赔">
                 <div class="info-bottom bottom-list">
                     <ul>
                         <li v-for="(item,index) in flow.safe_info" :key="index" class="stript">

@@ -91,7 +91,7 @@ export default {
             }
             this.$router.push({
                 name: "Details",
-                query: { goods_id: goods_id }
+                params: { goods_id: goods_id }
             });
         },
         //一键清空
@@ -138,7 +138,7 @@ export default {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var data = res.data.data.data;
-                            that.title = res.data.data.game_name+'_交易平台_看个号';
+                            that.title = res.data.data.game_name+'交易平台_看个号';
                             that.keywords = res.data.data.game_name+'账号交易'
                             // 上拉加载
                             if (flag == "push") {
@@ -212,16 +212,19 @@ export default {
             meta:[{
                 name:'keywords',
                 content:this.keywords,
+            },{
+                name:'description',
+                content:'看个号(https://www.kangehao.com)是国内专业的手游交易平台，安全可靠专注手游的交易网站，提供手游账号交易、买号卖号交易的手游交易平台！'
             }]
         }
     },
     mounted() {
         var that = this;
         var opt = sessionStorage.getItem("opt");
-        if(that.$route.query.opt){
+        if(that.$route.params.opt){
             that.request = JSON.parse(JSON.stringify(that.$store.state.list_request));
             that.request.rent_status = 1;
-            if (opt == that.$route.query.opt) {
+            if (opt == that.$route.params.opt) {
                 that.request.category_id = opt;
                 that.$refs.mychild.getConfig(opt,that.request);
             } else {
@@ -237,8 +240,8 @@ export default {
             that.request = JSON.parse(JSON.stringify(that.$store.state.list_request));
             that.request.rent_status = 1;
             var opt = sessionStorage.getItem("opt");
-            if(that.$route.query.opt){
-                if (opt == that.$route.query.opt) {
+            if(that.$route.params.opt){
+                if (opt == that.$route.params.opt) {
                     that.request.category_id = opt;
                     that.$refs.mychild.getConfig(opt,that.request);
                 } else {
@@ -256,7 +259,7 @@ export default {
         next();
     },
     beforeRouteEnter(to,from,next){
-        if(from.path == '/details'){
+        if(from.path.indexOf('/details/') > -1){
             to.meta.isBack=true;
         }
         next();

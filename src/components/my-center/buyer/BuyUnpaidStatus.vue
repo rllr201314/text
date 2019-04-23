@@ -5,7 +5,8 @@
         <div class="unpaid-content">
             <div class="unpaid-cell" v-for="item in goodsData">
                 <img class="badge" v-if="item.rent_method == 1" src="../../../../static/img/badge/product.png" alt="">
-                <img class="badge" v-if="item.rent_method == 2" src="../../../../static/img/badge/rent-badge.png" alt="">
+                <img class="badge" v-else-if="item.rent_method == 2" src="../../../../static/img/badge/rent-badge.png" alt="">
+                <img class="badge" v-else-if="item.rent_method == 4" src="../../../../static/img/badge/cbg-badge.png" alt="">
                 <div class="gameLog">
                     <img :src="item.game_logo" alt="">
                 </div>
@@ -16,7 +17,7 @@
                     </div>
                     <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
-                        <span class="good-price" v-if="item.rent_method == 1">￥<span v-text="item.goods_amount"></span></span>
+                        <span class="good-price" v-if="item.rent_method == 1 || item.rent_method == 4">￥<span v-text="item.goods_amount"></span></span>
                         <span class="good-price" v-if="item.rent_method == 2">￥<span v-text="item.order_amount"></span></span>
                         <span class="order-status">待支付</span>
                         <span class="history-time" v-text="item.create_time"></span>
@@ -136,6 +137,8 @@ export default {
                     sessionStorage.rent_unpaid_o = order_id;
                     this.$router.push({name:'Pay',query:{rent_unpaid_o:order_id}});
                 }
+            }else if(flag == 4){
+                this.$router.push({name:'CbgPlaceOrder',query:{order_id:order_id}})
             }
         },
         initTime(time){
@@ -169,41 +172,20 @@ export default {
                                     (function(i){
                                         var timer = setInterval(function(){
                                         that.goodsData[i].second -= 1;
-                                        if(that.goodsData[i].second<=0){ 
-                                            that.goodsData[i].minute-=1; 
-                                            that.goodsData[i].second=60; 
-                                            if(that.goodsData[i].minute<0){ 
-                                                that.goodsData[i].second = 0;
-                                                that.goodsData[i].minute = 0;
-                                                clearInterval(timer);
-                                            } 
-                                        }
-                                    },1000) 
+                                            if(that.goodsData[i].second<=0){ 
+                                                that.goodsData[i].minute-=1; 
+                                                that.goodsData[i].second=60; 
+                                                if(that.goodsData[i].minute<0){ 
+                                                    that.goodsData[i].second = 0;
+                                                    that.goodsData[i].minute = 0;
+                                                    clearInterval(timer);
+                                                } 
+                                            }
+                                        },1000) 
                                     })(i)
                                 }   
                             }
-
                         }
-                        // else if(res.data.code == 401){
-                        //      mui.confirm(
-                        //         res.data.msg,
-                        //         "提示",
-                        //         ["取消", "确认"],
-                        //         (e) => {
-                        //             if (e.index == 1) {
-                        //                 that.$router.push({
-                        //                     name: "AccountLogin",
-                        //                     params: {
-                        //                         redirect: "Details"
-                        //                     }
-                        //                 });
-                        //             } else {
-                        //                 that.$router.go(-2);
-                        //             }
-                        //         },
-                        //         "div"
-                        //     );
-                        // }
                     }
                 })
                 .catch(err => {

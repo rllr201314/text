@@ -448,6 +448,7 @@ export default {
                 url = 'do_stage'
                 request.order_id = that.stage_info.order;
                 request.stage_method = that.stage_info.way;
+                request.stage_money = that.stage_info.stage_money?that.stage_info.stage_money:0;
                 if(that.is_line){
                     request.payment_method = that.payment_num;
                 }else{
@@ -645,7 +646,8 @@ export default {
             var that = this;
             that.$axios.post(process.env.API_HOST+'stage_fee',{
                 order_id:request.order,
-                stage_method:request.way
+                stage_method:request.way,
+                stage_money:request.stage_money?request.stage_money:0,
             }).then((res)=>{
                 if(res.status == 200){
                     if(res.data.code == 200){

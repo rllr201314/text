@@ -16,11 +16,11 @@
                         <div class="goods-info-box">
                             <div class="goods-info-strip">
                                 <div class="text-left">交易链接</div>
-                                <div class="text-right t_link">安卓</div>
+                                <a class="t_link" target="view_window" :href="goodsInfo.link_href" v-text="goodsInfo.link_href" ></a>
                             </div>
                             <div class="goods-info-strip">
                                 <div class="text-left">官方交易价格</div>
-                                <div class="text-right"> ￥2000</div>
+                                <div class="text-right"> ￥<span v-text="goodsInfo.goods_amount"></span></div>
                             </div>
                             
                         </div>
@@ -32,28 +32,31 @@
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">订单号</div>
                     <div class="goodsInfo-right">
-                        <!-- <span v-text="goodsInfo.order_sn"></span> --><span>1231231313</span>
+                        <span v-text="goodsInfo.order_sn"></span>
                         <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="goodsInfo.order_sn" @click="copyFn()" id="copy">
                     </div>
                 </div>
                 <div class="stage-info">
-                    <div class="goodsInfo-left">租期</div>
-                    <div class="goodsInfo-right">7天</div>
+                    <div class="goodsInfo-left">分期情况</div>
+                    <div class="goodsInfo-right" v-text="goodsInfo.stage_type"></div>
                     <div class="stage-box">
-                        123
+                        <div class="calputer-bot-box" v-for="(item,index) in goodsInfo.stage_info" :key="index">
+                            <span class="calputer-bot-left" v-text="item.stage_title"></span>
+                            <span class="calputer-bot-right" v-text="item.stage_value"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="goodsInfo">
                     <div class="goodsInfo-left">实际支付</div>
                     <div class="goodsInfo-right">
-                        <span class="red-color" v-text="goodsInfo.order_amount"></span>
+                        <span class="red-color">￥<span v-text="goodsInfo.payment_amount"></span></span>
                         <span class="green-color">已支付</span>
                     </div>
                 </div>
             </div>
             <!-- 状态 -->
             <div class="take-status-img-cell">
-                <img v-for="item in takeData.takeTypeImg" v-show="item.key == -2" :src="item.imgsrc" alt="">
+                <img v-for="item in takeData.takeTypeImg" v-show="item.key == takeType" :src="item.imgsrc" alt="">
             </div>
             <!-- 收货状态 -->
             <div class="take-cell">
@@ -66,21 +69,33 @@
                 </div>
                 <div class="take-cell-content">
                     <!-- 验货跳过 -->
-                    <div v-if="takeType == -2">
+                    <div v-if="takeType == 1">
                         <div class="intie">为保证您在此次交易中的信息真实性，请先进行实名认证</div>
-                        <div class="cargo maxcargo" @click="verifyFn">前往实名认证</div>
+                        <div class="cargo maxcargo" @click="identifyFn">前往实名认证</div>
                     </div>
-                    <div v-if="takeType == -1">
+                    <div v-if="takeType == 2 || takeType == 5">
                         <div class="intie">客服正在为您草拟合同，请稍候片刻！</div>
-                        <div class="cargo" @click="verifyFn">前往签约</div>
-                    </div>
-                    <div class="intie" v-if="takeType == 1||　takeType == 2">
-                        <img src="../../../static/img/order/speed.png" alt="">
-                        <span>客服正在为您购买账号，购买成功后，客服会与您取得联系</span>
+                        <div class="cargo" v-if="takeType == 5" @click="verifyFn">前往签约</div>
                     </div>
                     <div class="intie" v-if="takeType == 3">
-                        <div>客服已发货，请您尽快确认收货</div>
-                        <div class="small-font">（24小时内未操作，则自动确认收货）</div>
+                        <img class="rocket" src="../../../static/img/order/speed.png" alt="">
+                        <span>客服正在为您购买账号，购买成功后，客服会与您取得联系</span>
+                    </div>
+                    <div class="intie" v-if="takeType == 4">
+                        <div v-if="goodsInfo.is_end == 2">客服已发货，请您尽快确认收货</div>
+                        <div v-if="goodsInfo.is_end == 2" class="small-font">（24小时内未操作，则自动确认收货）</div>
+                        <div class="account" v-if="takeType == 4">
+                            <div class="accountText">
+                                <span>游戏账号:</span>
+                                <input v-model="goodsInfo.account" disabled="disabled">
+                            </div>
+                            <div class="accountText">
+                                <span>密码:</span>
+                                <input :type="passType?'type':'password'" v-model="goodsInfo.password" disabled="disabled">
+                                <img class="see" :src="passType?'../../../static/img/order/noSee.png':'../../../static/img/order/see.png'" alt="" @click="seePasswordFn">
+                            </div>
+                            <div class="cargo" v-if="goodsInfo.is_end == 2" @click="endTrade">确认收货</div>
+                        </div>
                     </div>
 
                 </div>
@@ -94,14 +109,12 @@
 </template>
 <script>
 import Header from "@/components/home-page/Header"; //头部
-// import OrderInfo from "@/components/buy/OrderInfo"; //订单信息
 import Protocal from "@/components/multi/Protocal";//协议
 export default {
     name: "RentState",
     components: {
         Header,
         Protocal,
-        // OrderInfo
     },
     data() {
         return {
@@ -123,34 +136,30 @@ export default {
             passType:false,
             goodsInfo:{},
             // 已收货状态 仲裁显示 **
-            takeType: 3, //1-申请验货 2-前往签约 3-换绑 4-确认收货 5-申请仲裁 || -1 确认交易 1&&2换绑  3确认收货 5-申请仲裁
+            takeType:'', //1 认证 2签约 3  4确认
 
             takeData: {
                 takeTypeImg: [
                     {
-                        key: -2,
+                        key: 1,
                         imgsrc: "./static/img/cbg/one.png"
                     },
                     {
-                        key: -1,
+                        key: 2,//签约 没合同
                         imgsrc: "./static/img/cbg/two.png"
                     },
                     {
-                        key: 1,//1&&2换绑
+                        key: 5,//签约 待签
+                        imgsrc: "./static/img/cbg/two.png"
+                    },
+                    {
+                        key: 3,//1&&2换绑
                         imgsrc: "./static/img/cbg/three.png"
                     },
                     {
-                        key: 2,//1&&2换绑
-                        imgsrc: "./static/img/cbg/three.png"
-                    },
-                    {
-                        key: 3,
+                        key: 4,
                         imgsrc: "./static/img/cbg/four.png"
                     },
-                    {
-                        key: 5,//没改
-                        imgsrc: "./static/img/cbg/four.png"
-                    }
                 ],
                 gamePrint: 8,
                 account: "",
@@ -185,21 +194,12 @@ export default {
         seePasswordFn(){
             this.passType = !this.passType;
         },
+        identifyFn(){
+            this.$router.push({name:'SafeCard'})
+        },
         // 申请验货
         verifyFn(){
-            var that = this;
-            that.$axios.post(process.env.API_HOST+'verify_goods',{
-                order_id:that.goodsInfo.order_id
-            }).then((res)=>{
-                // console.log(res);
-                if(res.status == 200){
-                    if(res.data.code == 200){
-                      that.getData(that.goodsInfo.order_id,true);
-                    }
-                }
-            }).catch((err)=>{
-                console.log(err);
-            });
+            this.$router.push({name:'Signature'})
         },
         // 确认交易
         agree(){
@@ -221,7 +221,7 @@ export default {
         // 确认收货
         endTrade(){
             var that = this;
-            that.$axios.post(process.env.API_HOST+"end_trade",{
+            that.$axios.post(process.env.API_HOST+"end_store",{
                 order_id:that.goodsInfo.order_id
             }).then((res)=>{
                 // console.log(res);
@@ -255,14 +255,31 @@ export default {
         },
         getData(order_id,flag){
             var that = this;
-            that.$axios.post(process.env.API_HOST+"buyer_trade_status",{
+            that.$axios.post(process.env.API_HOST+"buy_store_status",{
                 order_id:order_id
             }).then((res)=>{
-                // console.log(res)
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.goodsInfo = res.data.data;
-                        that.takeType = that.goodsInfo.bind_status;
+                        if(that.goodsInfo.is_identify == 1){
+                            if(that.goodsInfo.is_bind == 1){
+                                if(that.goodsInfo.store_status == 1){
+                                    if(that.goodsInfo.is_end == 1){
+                                        that.takeType = 4;//确认收货
+                                    }else{
+                                        that.takeType = 4;//确认收货
+                                    }
+                                }else{
+                                    that.takeType = 3;//采购
+                                }
+                            }else if(that.goodsInfo.is_bind == 2){
+                                that.takeType = 2;//签约 -- 没合同
+                            }else if(that.goodsInfo.is_bind == 3){
+                                that.takeType = 5;//签约 -- 待签
+                            }
+                        }else{
+                            that.takeType = 1;//实名认证
+                        }
                         if(flag){
                           that.$common.linkServer();
                         }
@@ -275,11 +292,11 @@ export default {
     },
     mounted(){
         var that = this;
-        // that.getData(that.$route.query.order)
+        that.getData(that.$route.query.order)
     }
 };
 </script>
-<style>
+<style scoped>
 .take-content {
     padding: 0.2rem 0.2rem 0;
 }
@@ -380,10 +397,42 @@ export default {
 .maxcargo{
     width: 1.7rem;
 }
+.account {
+    background: #f6f6f6;
+    padding: 0.2rem 0.15rem;
+    margin: 0.2rem 0;
+}
+.text-center{
+    text-align:center;
+}
+.accountText {
+    line-height: 0.5rem;
+    color: #333333;
+}
+.accountText span {
+    width: 1.3rem;
+    display: inline-block;
+    text-align: right;
+    padding-right: 0.1rem;
+    color: #666666;
+}
+.see{
+    width:.35rem;
+    height:.22rem;
+}
+.accountText input {
+    margin: 0;
+    padding: 0.1rem;
+    font-size: 0.26rem;
+    border: none;
+    width: 3rem;
+    height: 0.6rem;
+    background:#f6f6f6;
+}
 .intie {
     text-align: center;
 }
-.intie img {
+.rocket {
     width: 0.25rem;
     height: 0.25rem;
     vertical-align: middle;
@@ -528,6 +577,9 @@ input[type="number"] {
 .t_link{
     color:#999999;
     text-decoration: underline;
+    overflow:hidden; /*超出的部分隐藏起来。*/ 
+    white-space:nowrap;/*不显示的地方用省略号...代替*/
+    text-overflow:ellipsis;/* 支持 IE */
 }
 .stage-info{
     line-height: 0.9rem;
@@ -539,8 +591,22 @@ input[type="number"] {
     line-height: .5rem;
     font-size:.24rem;
     color:#999999;
+}
+.calputer-bot-box{
+    line-height: .5rem;
     display:flex;
     justify-content: space-around;
+}
+.calputer-bot-box span{
+    display: inline-block;
+}
+.calputer-bot-right{
+    color:#666666;
+}
+.calputer-bot-left{
+    color:#999999;
+    min-width: 1rem;
+    margin-right:.3rem;
 }
 .small-font{
     font-size:.22rem;

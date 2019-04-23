@@ -2,23 +2,23 @@
     <!-- 导航栏 -->
     <div class="user-opera">
         <div class="cell user-account" @click="seleOpt('buy')">
-            <img src="../../../static/img/user_cont.png" alt="">
+            <img src="../../../static/img/user_cont.png" alt="账号">
             <div>账号</div>
         </div>
         <div class="cell user-level" @click="seleOpt('rent')">
-            <img src="../../../static/img/rent.png" alt="">
+            <img src="../../../static/img/rent.png" alt="租号">
             <div>租号</div>
         </div>
         <div class="cell user-stages" @click="seleOpt('stage')"> 
-            <img src="../../../static/img/stages_ico.png" alt="">
+            <img src="../../../static/img/stages_ico.png" alt="分期">
             <div>分期</div>
         </div>
         <div class="cell user-activity" @click="seleOpt('active')">
-            <img src="../../../static/img/activity_ico.png" alt="">
+            <img src="../../../static/img/activity_ico.png" alt="活动">
             <div>活动</div>
         </div>
         <div class="cell user-sell" @click="seleOpt('sell')">
-            <img src="../../../static/img/sell_cont.png" alt="">
+            <img src="../../../static/img/sell_cont.png" alt="我要卖">
             <div>我要卖</div>
         </div>
         <div class="rent-code" v-show="showPop">

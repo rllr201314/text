@@ -9,6 +9,7 @@
                         <div class="tradeSuccess-cell" v-for="item in goodsData">
                             <img class="badge" v-if="item.rent_method == 1" src="../../../../static/img/badge/product.png" alt="">
                             <img class="badge" v-if="item.rent_method == 2" src="../../../../static/img/badge/rent-badge.png" alt="">
+                            <img class="badge" v-if="item.rent_method == 4" src="../../../../static/img/badge/cbg-badge.png" alt="">
                             <div class="gameLog">
                                 <img :src="item.game_logo" alt="">
                             </div>
@@ -133,6 +134,8 @@ export default {
                 this.$router.push({name:'BuyTakeDelivery',query:{order:order_id}})
             }else if(status == 2){//租
                 this.$router.push({name:'RentState',query:{order:order_id}})
+            }else if(status == 4){//藏宝阁
+                this.$router.push({name:'CbgState',query:{order:order_id}})
             }
         },
         refresh() {

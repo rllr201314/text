@@ -36,10 +36,9 @@
     },
     mounted() {
       var that = this;
-      var type = that.$route.query.type;
+      var type = that.$route.params.type;
       that.showTitle.title = that.titles[type];
       that.imgUrl = that.imgs[type];
-      console.log(type)
       if(type == 1){
         that.title = '藏宝阁分期_看个号';
         that.keywords = '藏宝阁,梦幻藏宝阁分期,大话藏宝阁分期';
@@ -54,6 +53,9 @@
         meta:[{
           name:'keywords',
           content:this.keywords,
+        },{
+          name:'description',
+          content:'看个号(https://www.kangehao.com)是国内专业的手游交易平台，安全可靠专注手游的交易网站，提供手游账号交易、买号卖号交易的手游交易平台！'
         }]
       }
     }

@@ -26,13 +26,15 @@
                 <div class="game-classfiy-bottom">
                     <div class="game-classfiy-bottom-list" v-for="item in gameList" @click="goSellOption(item.category_id)">
                         <div class="list-left">
-                            <img :src="item.game_logo" alt="">
+                            <img :src="item.game_logo" :alt="item.game_name">
                         </div>
                         <div class="list-right">
                             <div class="list-info-title" v-text="item.game_name"></div>
-                            <div class="list-ico vs">代练</div>
-                            <div class="list-ico product">成品号</div>
-                            <div class="list-ico rent" v-if="trade_type == 1">租号</div>
+                            <div class="list-parent" v-for="(value,i) in item.business_info" :key="i">
+                                <div class="list-ico vs" v-if="value.value == 3" v-text="value.name"></div>
+                                <div class="list-ico product" v-else-if="value.value == 1" v-text="value.name">成品号</div>
+                                <div class="list-ico rent" v-else-if="value.value == 2" v-text="value.name">租号</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -153,9 +155,9 @@ export default {
         goSellOption(opt) {
             var that = this;
             var token = that.$store.state.token;
-            if (that.user_type == "/buy") {
+            if (that.user_type == "/buy" || that.user_type == "/buy/") {
                 //买
-                that.$router.push({ name: "GoodScreen", query: { opt } });
+                that.$router.push({ name: "GoodScreen", params: { opt:opt } });
                 sessionStorage.opt = opt;
             } else if (that.user_type == "/sell") {
                 //卖
@@ -178,9 +180,9 @@ export default {
                 }
             } else if (that.user_type == "/rent") {
                 //租
-                that.$router.push({ name: "RentSearch", query: { opt } });
+                that.$router.push({ name: "RentSearch", params: { opt:opt } });
                 sessionStorage.opt = opt;
-            } else if (that.user_type == "/rent-out") {
+            } else if (that.user_type == "/rent-out" || that.user_type == "/rent-out/") {
                 //出租
                 if (token == undefined || token == "") {
                     mui.confirm(
@@ -239,7 +241,7 @@ export default {
             if (data) {
                 this.$router.push({
                     name: "LeaseOption",
-                    query: { opt: data }
+                    params: { opt: data }
                 });
             }
         },
@@ -247,25 +249,27 @@ export default {
             var that = this;
             var user_type = that.$route.path;
             that.title = '手游账号交易_看个号';
-            that.keywords = '手游交易,手游交易平台,手游号交易,手游交易网';//买 卖 公用
-            if (user_type == "/buy") {
+            that.keywords = '手游交易,手游交易平台,手游账号交易,手游交易网';//买 卖 公用
+            if (user_type == "/buy" || user_type == "/buy/") {
                 that.showTitle.title = "我要买";
                 localStorage.detail_type = 1;//详情显示购买流程判断
                 that.business_type = 1;
             } else if (user_type == "/sell") {
                 that.showTitle.title = "我要卖";
-            } else if (user_type == "/rent") {
+                that.business_type = 1;
+            } else if (user_type == "/rent" ) {
                 that.showTitle.title = "我要租号";
                 that.trade_type = 1;
                 localStorage.detail_type = 2;//详情显示购买流程判断
                 that.business_type = 2;//
                 that.title = '手游账号出租_看个号';
                 that.keywords = '手游号,梦幻号出租寄租,大话号出租寄租';
-            } else if (user_type == "/rent-out") {
+            } else if (user_type == "/rent-out" || user_type == "/rent-out/") {
                 that.showTitle.title = "出租账号";
                 that.trade_type = 1;
                 that.title = '手游号出租_看个号';
                 that.keywords = '手游号,梦幻号出租寄租,大话号出租寄租';
+                that.business_type = 2;
             }
             that.getData();
         }
@@ -283,6 +287,9 @@ export default {
             meta:[{
                 name:'keywords',
                 content:this.keywords
+            },{
+                name:'description',
+                content:'看个号(https://www.kangehao.com)是国内专业的手游交易平台，安全可靠专注手游的交易网站，提供手游账号交易、买号卖号交易的手游交易平台！'
             }]
         }
     },
@@ -419,6 +426,9 @@ export default {
 .list-info-title {
     color: #333333;
     font-size: 0.26rem;
+}
+.list-parent{
+    display: inline-block;
 }
 .list-ico {
     display: inline-block;

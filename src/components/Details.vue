@@ -123,7 +123,7 @@
         <div class="goods-details-info">
             <div class="pictrue-title">详细信息展示</div>
             <div class="pictrue-con">
-                <img v-for="item in imgList" :src="item.img_url" alt="" preview>
+                <img v-for="item in imgList" :src="item.img_url" alt="详情图片" preview>
             </div>
         </div>
         <!-- 视频看号 -->
@@ -295,7 +295,7 @@
                 <div>分享</div>
             </div>
             <div class="collect goods-details-bottom-left" @click="collect()">
-                <img :src="detailData.is_collect == 1?'./static/img/goods-details/ok_collect_ico.png':'./static/img/goods-details/no_collect_ico.png'" alt="">
+                <img :src="detailData.is_collect == 1?'../static/img/goods-details/ok_collect_ico.png':'../static/img/goods-details/no_collect_ico.png'" alt="">
                 <div>收藏</div>
             </div>
             <div class="goods-details-bottom-right" v-if="detailData.sell_type == 1 && detailData.rent_method != 3"></div>
@@ -307,6 +307,7 @@
         <!-- 议价弹框 -->
         <div class="hoodle" v-show="showShade">
             <img src="../../static/img/my-center/record/bargain_tit.png" alt="">
+            <div class="hoodle-text">请合理出价，禁止恶意议价。</div>
             <div class="hoodle-con">
                 <input type="number" placeholder="请输入您的出价" v-model="bargain_price">
             </div>
@@ -631,13 +632,13 @@ export default {
         goDetail(goods_id) {
             this.$router.push({
                 name: "Details",
-                query: {goods_id: goods_id}
+                params: {goods_id: goods_id}
             });
         },
         // 获取数据
         getData() {
             var that = this;
-            that.goods_id = that.$route.query.goods_id;
+            that.goods_id = that.$route.params.goods_id;
             that.showLoading = true;
             that.$axios
                 .post(process.env.API_HOST+"goods_detail", {
@@ -682,10 +683,10 @@ export default {
                                 }
                                 if(data.goods_info.rent_method == 1){
                                     that.flow_type = 1;
-                                    that.title = data.goods_info.goods_title+data.goods_info.game_name+'交易平台_看个号';
+                                    that.title = data.goods_info.goods_title+'_'+data.goods_info.game_name+'交易平台_看个号';
                                 }else if(data.goods_info.rent_method == 2){
                                     that.flow_type = 2;
-                                    that.title = data.goods_info.goods_title+data.goods_info.game_name+'租号平台_看个号';
+                                    that.title = data.goods_info.goods_title+'_'+data.goods_info.game_name+'租号平台_看个号';
                                 }
                                 var keywords_text = [];
                                 for(var i in data.goods_info.goods_attribute){
@@ -710,8 +711,8 @@ export default {
     mounted() {
         var that = this;
         if (
-            that.$route.query.goods_id != "" &&
-            that.$route.query.goods_id != undefined
+            that.$route.params.goods_id != "" &&
+            that.$route.params.goods_id != undefined
         ) {
             that.getData();
             that.nativeShare = new NativeShare();
@@ -726,6 +727,9 @@ export default {
             meta:[{
                 name:'keywords',
                 content:this.keywords,
+            },{
+                name:'description',
+                content:'看个号(https://www.kangehao.com)是国内专业的手游交易平台，安全可靠专注手游的交易网站，提供手游账号交易、买号卖号交易的手游交易平台！'
             }]
         }
     }
@@ -734,6 +738,7 @@ export default {
 <style scoped>
 .goods-details-wrap {
     padding: 0.88rem 0 1rem;
+    
 }
 
 /* 商品标题 */
@@ -1263,9 +1268,14 @@ export default {
     width: 5rem;
     height: 1.64rem;
 }
+.hoodle-text{
+    font-size:.24rem;
+    color:#9D9D9D;
+    padding: 0 .2rem .1rem;
+}
 .hoodle-con {
     text-align: center;
-    margin-top: 0.4rem;
+    /* margin-top: 0.4rem; */
 }
 .shade {
     position: fixed;

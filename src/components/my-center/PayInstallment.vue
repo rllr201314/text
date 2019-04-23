@@ -10,30 +10,50 @@
                     <span class="black" v-text="time"></span>
                     <span class="right-time" v-if="payData.delay_day != 0">(逾期<span class="red-color">5</span>天)</span>
                 </div>
-                <div class="payInstall-strip refund">
-                    <span>选择还款方式</span>
-                    <div class="current" @click="seleMode('current')">
-                        <img :src="isCurrent?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">
-                        <span>还本期</span>
+                
+                <div v-if="flag == 1">
+                    <div class="payInstall-strip refund">
+                        <span>还款金额</span>
+                        <input type="number" v-model="repayment_amount">
                     </div>
-                    <div class="all" @click="seleMode('all')">
-                        <img :src="isCurrent?'../../../static/img/order/nocheck.png':'../../../static/img/order/okcheck.png'" alt="">
-                        <span>还全部</span>
+                    <div class="payInstall-strip ">
+                        <span class="strip-left">最低还款</span><span>￥<span v-text="payData.charge"></span></span><span style="margin-left:.2rem;">(最低还本期利息)</span>
+                    </div>
+                    <div class="payInstall-strip " v-if="payData.delay_day != 0">
+                        <span class="strip-left">滞纳金</span><span>￥<span v-text="payData.delay_money"></span></span>
+                    </div>
+                    <div class="payInstall-strip ">
+                        <span class="strip-left">剩余本金</span>
+                        <span class="red-color">￥<span class="red-color" v-text="payData.total_money"></span></span>
                     </div>
                 </div>
-                <div class="payInstall-strip ">
-                    <span class="strip-left">分期金额</span><span>￥<span v-text="payData.money"></span></span>
+                <div v-else-if="flag == 2">
+                    <div class="payInstall-strip refund">
+                        <span>选择还款方式</span>
+                        <div class="current" @click="seleMode('current')">
+                            <img :src="isCurrent?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">
+                            <span>还本期</span>
+                        </div>
+                        <div class="all" @click="seleMode('all')">
+                            <img :src="isCurrent?'../../../static/img/order/nocheck.png':'../../../static/img/order/okcheck.png'" alt="">
+                            <span>还全部</span>
+                        </div>
+                    </div>
+                    <div class="payInstall-strip ">
+                        <span class="strip-left">分期金额</span><span>￥<span v-text="payData.money"></span></span>
+                    </div>
+                    <div class="payInstall-strip ">
+                        <span class="strip-left">利息</span><span>￥<span v-text="payData.charge"></span></span>
+                    </div>
+                    <div class="payInstall-strip " v-if="payData.delay_day != 0">
+                        <span class="strip-left">滞纳金</span><span>￥<span v-text="payData.delay_money"></span></span>
+                    </div>
+                    <div class="payInstall-strip ">
+                        <span class="strip-left">应付金额</span>
+                        <span class="red-color">￥<span class="red-color" v-text="payData.total_money"></span></span>
+                    </div>
                 </div>
-                <div class="payInstall-strip ">
-                    <span class="strip-left">利息</span><span>￥<span v-text="payData.charge"></span></span>
-                </div>
-                <div class="payInstall-strip " v-if="payData.delay_day != 0">
-                    <span class="strip-left">滞纳金</span><span>￥<span v-text="payData.delay_money"></span></span>
-                </div>
-                <div class="payInstall-strip ">
-                    <span class="strip-left">应付金额</span>
-                    <span class="red-color">￥<span class="red-color" v-text="payData.total_money"></span></span>
-                </div>
+                
             </div>
         </div>
         <div class="nextBtn" @click="goPay">前往支付</div>
@@ -59,9 +79,11 @@
                 },
                 allData:{},
                 payData:{},
+                flag:null,
                 time:null,
                 isCurrent:true,
                 order_info:null,
+                repayment_amount:'',//还款金额
             }
         },
         methods:{
@@ -83,7 +105,11 @@
                     if(res.status == 200){
                         if(res.data.code == 200){
                             that.allData = res.data.data;
-                            that.payData = that.allData.next_stage;
+                            if(that.flag == 1){//日分期
+                                that.payData = that.allData.end_stage;
+                            }else if(that.flag == 2){//月份期
+                                that.payData = that.allData.next_stage;
+                            }
                         }
                     }
                 }).catch((err)=>{
@@ -92,21 +118,40 @@
             },
             goPay(){
                 var that = this;
-                // 分期支付
-                var stages = {};
-                if(that.isCurrent){//支付方式
-                    stages.way = 1;
-                    stages.price = that.allData.next_stage.total_money;
-                }else{
-                    stages.way = 2;
-                    stages.price = that.allData.end_stage.total_money;
+                if(that.flag == 1){
+                    // that.repayment_amount
+                    if(that.repayment_amount != ''){
+                        if(that.repayment_amount > that.payData.money){
+                            mui.alert('还款金额大于剩余本金','提示','确认','','div')
+                        }else{
+                            var stages = {};
+                            stages.way = 3;
+                            stages.stage_money = that.repayment_amount;//还款金额
+                            stages.order = that.order_info.order_id;
+                            stages.remaining_sum = that.allData.remaining_sum;
+                            stages = JSON.stringify(stages);
+                            sessionStorage.stage = stages;
+                            that.$router.push({name:'Pay',query:{stage:stages}})
+                        }
+                    }else{
+                        mui.alert('请输入还款金额','提示','确认','','div')
+                    }
+                }else if(that.flag == 2){
+                    // 分期支付
+                    var stages = {};
+                    if(that.isCurrent){//支付方式
+                        stages.way = 1;
+                        stages.price = that.allData.next_stage.total_money;
+                    }else{
+                        stages.way = 2;
+                        stages.price = that.allData.end_stage.total_money;
+                    }
+                    stages.order = that.order_info.order_id;
+                    stages.remaining_sum = that.allData.remaining_sum;
+                    stages = JSON.stringify(stages);
+                    sessionStorage.stage = stages;
+                    that.$router.push({name:'Pay',query:{stage:stages}})
                 }
-                stages.order = that.order_info.order_id;
-                stages.remaining_sum = that.allData.remaining_sum;
-                stages = JSON.stringify(stages);
-                sessionStorage.stage = stages;
-                that.$router.push({name:'Pay',query:{stage:stages}})
-
             },
             // 判断是不是JSON字符串
             isobjStr(str) {
@@ -132,6 +177,7 @@
                     if(that.isobjStr(sn_order)){
                         that.order_info = JSON.parse(sn_order)
                         that.time = that.order_info.time;
+                        that.flag = that.order_info.type;
                         that.getData();
                     }else{
                         that.$router.go(-1);
@@ -185,6 +231,15 @@
     .refund img{
         width:.22rem;
         height:.22rem;
+    }
+    .refund input {
+        width:3rem;
+        height: .6rem;
+        /* border:0; */
+        margin:0 0 0 .4rem;
+        padding:0.1rem;
+        font-size:.26rem;
+        color:#333333;
     }
     .right-time{
         display: inline-block;

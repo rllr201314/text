@@ -267,11 +267,11 @@ export default {
         getCategory() {
             var that = this;
             that.$axios
-                .post(process.env.API_HOST+"category")
+                .post(process.env.API_HOST+"categoryInfo")
                 .then(function(res) {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
-                            var category = res.data.data.is_hot;
+                            var category = res.data.data;
                             category.unshift({
                                 category_id: "",
                                 game_name: "全部"
@@ -426,7 +426,7 @@ export default {
                         if(goods_type == 1){
                             that.$router.push({name: "SellInfo",query:{flag: 2,g:goods_id}});
                         }else if(goods_type > 1){//账号租售
-                            that.$router.push({name: "LeaseInfo",query:{flag: 2,g:goods_id}});
+                            that.$router.push({name: "LeaseInfo",params:{flag: 2,upData:goods_id}});
                         }
                     }
                 },
@@ -437,7 +437,7 @@ export default {
         goDetail(id){
              this.$router.push({
                 name: "Details",
-                query: { goods_id: id }
+                params: { goods_id: id }
             });
         },
         refresh() {

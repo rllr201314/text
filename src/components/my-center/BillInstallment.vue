@@ -6,18 +6,21 @@
             <div class="time-interval" v-if="false">
                 <span>2018年7月</span><img src="../../../static/img/my-center/down_ico.png" alt="">
             </div>
-            <div class="bill-cell bidd-info">
-                <div class="bind-strip">
-                    <span  class="left-info">分期总金额</span>
-                    <span class="right-info"> ¥<span v-text="amount_info.total_amount"></span></span>
+            <div class="title-wrap">
+                <div class="bill-cell title-box">
+                    <img src="../../../static/img/bill/all.png" alt="">
+                    <div class="title-top">分期总金额</div>
+                    <div class="title-bottom">￥<span v-text="amount_info.total_amount"></span></div>
                 </div>
-                <div class="bind-strip">
-                    <span  class="left-info"> 已还金额</span>
-                    <span class="right-info"> ¥<span v-text="amount_info.repay_amount"></span></span>
+                <div class="bill-cell title-box">
+                    <img src="../../../static/img/bill/price.png" alt="">
+                    <div class="title-top">已还金额</div>
+                    <div class="title-bottom">¥<span v-text="amount_info.repay_amount"></span></div>
                 </div>
-                <div class="bind-strip">
-                    <span  class="left-info">剩余分期金额</span>
-                    <span class="right-info red-color"> ¥<span v-text="amount_info.remain_amount"></span></span>
+                <div class="bill-cell title-box">
+                    <img src="../../../static/img/bill/wallet.png" alt="">
+                    <div class="title-top">剩余分期金额</div>
+                    <div class="title-bottom">¥<span v-text="amount_info.remain_amount"></span></div>
                 </div>
             </div>
             <div class="bill-cell">
@@ -31,7 +34,7 @@
                             <span>订单号 </span>
                             <span class="black-color" v-text="item.order_sn"></span>
                             <img class="copy-img" src="../../../static/img/copy.png" alt="" :data-clipboard-text="item.order_sn" @click="copyFn()" id="copy">
-                            <span class="refund" @click="goPayFn(item.order_id,item.next_time)">我要还款</span>
+                            <span class="refund" @click="goPayFn(item.stage_type,item.order_id,item.next_time)">我要还款</span>
                         </div>
                         <div class="goods-des" v-text="item.goods_title"></div>
                         <div class="stage-info">
@@ -49,8 +52,26 @@
                                 <img :src="item.showStage?'../../../static/img/my-center/up_ico.png':'../static/img/my-center/down_ico.png'" alt="">
                             </div>
                         </div>
-                        <div class="stage-box" v-show="item.showStage">
-                            <div class="stage-strip" v-for="val in item.stage_info" :class="val.flag == 1?'':'black-color'">
+                        <div class="stage-box " v-show="item.showStage">
+                            <div v-if="item.stage_type == 1">
+                                <div class="stage-strip-l black-color">
+                                    <span class="periodsNum">首付</span>
+                                    <span >￥<span v-text="item.stage_info.deposit_price"></span></span>
+                                </div>
+                                <div class="stage-strip-l black-color">
+                                    <span class="periodsNum">已还清金额</span>
+                                    <span >￥<span v-text="item.stage_info.stage_month_money"></span></span>
+                                </div>
+                                <div class="stage-strip-l black-color">
+                                    <span class="periodsNum">剩余本金</span>
+                                    <span >￥<span v-text="item.stage_info.remain_stage_money"></span></span>
+                                </div>
+                                <div class="stage-strip-l black-color">
+                                    <span class="periodsNum">每日最低还款</span>
+                                    <span >￥<span v-text="item.stage_info.day_money"></span>({{item.stage_info.remain_stage_money}}*{{item.stage_info.day_rate}})</span>
+                                </div>
+                            </div>
+                            <div class="stage-strip" v-for="val in item.stage_info" :class="val.flag == 1?'':'black-color'" v-if="item.stage_type == 2">
                                 <div class="suc-refund">
                                     <img v-if="val.flag == 1" src="../../../static/img/my-center/suc_refund.png" alt="">
                                 </div>
@@ -119,8 +140,9 @@
                     console.log(err)
                 })
             },
-            goPayFn(order_id,time){
+            goPayFn(type,order_id,time){
                 var order_sn = {};
+                order_sn.type = type;
                 order_sn.order_id = order_id;
                 order_sn.time = time;
                 order_sn = JSON.stringify(order_sn);
@@ -147,6 +169,27 @@
         height:.11rem;
         margin-left:.15rem;
     }
+    .title-wrap{
+        display:flex;
+        justify-content: space-around;
+    }
+    .title-box{
+        width:2.16rem;
+        height:1.92rem;
+        background:#FFFFFF;
+        text-align: center;
+        padding:0.27rem 0;
+    }
+    .title-top{
+        color:#999999;
+        font-size:.26rem;
+        line-height: .5rem;
+    }
+    .title-bottom{
+        color:#333333;
+        font-size:.28rem;
+    }
+    /* **************************************************************************************** */
     .bill-cell{
         overflow: hidden;
         -webkit-border-radius: .1rem;
@@ -156,22 +199,6 @@
         -moz-box-shadow: .06rem .05rem .09rem #D6D6D6;
         box-shadow: .06rem .05rem .09rem #D6D6D6;
         margin-bottom:.2rem;
-    }
-    .bind-strip{
-        line-height: .5rem;
-    }
-    .bidd-info{
-        background:#FFFFFF;
-        padding:.2rem;
-        font-size:.26rem;
-        color:#333333;
-    }
-    .left-info{
-        width:1.7rem;
-        display: inline-block;
-        color:#666666;
-        text-align:right;
-        margin-right:.5rem;
     }
     .red-color{
         color:#FF5E5E;
@@ -287,8 +314,17 @@
         display: inline-block;
         margin-right:.3rem;
     }
+    .stage-strip-l{
+        line-height: .4rem;
+        color: #999999;
+    }
     .gray-color{
         color:#999999;
+    }
+    .stage-strip-l .periodsNum{
+        display: inline-block;
+        margin-right:.3rem;
+        min-width: 1.5rem;
     }
 
 

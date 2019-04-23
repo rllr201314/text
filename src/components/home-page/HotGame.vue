@@ -6,7 +6,7 @@
         </div>
         <div class="hot-game-content">
             <div class="hot-game-cell" v-for="item in hot_game" @click="goSellOption(item.category_id)">
-                <img :src="item.game_logo" alt="">
+                <img :src="item.game_logo" :alt="item.game_name">
                 <div v-text="item.game_name"></div>
             </div>
         </div>
@@ -19,7 +19,6 @@ export default {
     props:['hot_game'],
     data() {
         return {
-            hotGame: []
         };
     },
     methods: {
@@ -27,25 +26,9 @@ export default {
             var that = this;
             sessionStorage.buyOrsell == 1
             //买
-            that.$router.push({ name: "GoodScreen",query:{opt}});
+            that.$router.push({ name: "GoodScreen",params:{opt:opt}});
             sessionStorage.opt = opt;
         },
-        getData() {
-            var that = this;
-            that.$axios
-                .post(process.env.API_HOST+"category")
-                .then(res => {
-                    // console.log(res);
-                    if (res.status == 200) {
-                        if (res.data.code == 200) {
-                            that.hotGame = res.data.data.is_hot;
-                        }
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        }
     },
     mounted() {
         // this.getData();

@@ -61,7 +61,10 @@
       title:'金币物资号_梦幻西游_看个号',
       meta:[{
         name:'keywords',
-        content:'梦幻西游,金币号,物资号'
+        content:'梦幻西游,梦幻金币号,物资号'
+      },{
+        name:'description',
+        content:'看个号(https://www.kangehao.com)是国内专业的手游交易平台，安全可靠专注手游的交易网站，提供手游账号交易、买号卖号交易的手游交易平台！'
       }]
     }
   }

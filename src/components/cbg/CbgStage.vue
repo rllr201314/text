@@ -1,11 +1,11 @@
 <template>
-    <div class="cbg-wrap">
+    <div class="wrap">
         <Header v-bind:showTitle="showTitle"></Header>
         <div class="nav-tit" :class="nav_bg?'red-bg':'white-bg'">
             <div class="nav-btn" v-for="item in nav_data" v-text="item.name" @click="seleNav(item.value)" :class="item.isclick?item.role:''"></div>
         </div>
         <div class="cbg-con">
-            <div class="showbox" v-show="nav_data[0].isclick">
+            <div v-show="nav_data[0].isclick">
                 <div class="explain-tit"></div>
                 <div class="explain-con">
                     <div class="explain-cell">
@@ -44,31 +44,35 @@
                     </div>
                 </div>
             </div>
-            <div class="showbox box-con" v-show="nav_data[1].isclick">
+            <div class="box-con" v-show="nav_data[1].isclick">
                 <div class="con-cell">
                     <div class="top-cell">
-                        <div class="strip">
+                        <div class="strip" @click="showCategoryFn">
                             <span class="left-text">游戏分类</span>
-                            <div class="right-strip">
-                                <span class="grey-color">123</span>
+                            <div class="right-strip" >
+                                <span class="grey-color" v-text="category.name"></span>
                                 <img src="../../../static/img/order/next.png" alt="">
                             </div>
                         </div>
                         <div class="strip">
                             <span class="left-text">联系电话</span>
-                            <input type="number" class="place-inp" placeholder="请留下您的联系电话方便客服联系您">
+                            <input type="number" class="place-inp" placeholder="请留下您的联系电话方便客服联系您" v-model="mobile">
                         </div>
                         <div class="strip">
                             <span class="left-text">微信</span>
-                            <input type="text" class="place-inp" placeholder="请留下您的微信号码">
+                            <input type="text" class="place-inp" placeholder="请留下您的微信号码" v-model="wx">
                         </div>
                         <div class="strip">
                             <span class="left-text">商品链接</span>
-                            <input type="text" class="place-inp" placeholder="请输入您要办理分期的藏宝阁官方商品链接">
+                            <input type="text" class="place-inp" placeholder="请输入您要办理分期的藏宝阁官方商品链接" v-model="link_href">
+                        </div>
+                        <div class="strip">
+                            <span class="left-text">商品名称</span>
+                            <input type="text" class="place-inp" placeholder="请输入您要办理分期的藏宝阁官方商品名称" v-model="goods_title">
                         </div>
                         <div class="strip">
                             <span class="left-text">商品总价</span>
-                            <input type="number" class="price-inp right-inp"><span class="black-color">元</span>
+                            <input type="number" class="price-inp right-inp" v-model="goods_price"><span class="black-color">元</span>
                         </div>
                         <div class="hint-strip">
                             <span class="left-text">选择分期方式</span>
@@ -91,9 +95,9 @@
                             </div>
                             <div class="hint-box">
                                 <div>首付30%以上，每月利息5%</div>
-                                <span class="down-pay-tit">首付</span><input type="number" class="price-inp">元
+                                <span class="down-pay-tit">首付</span><input type="number" class="price-inp" v-model="down_payment">元
                                 <div>每月最低需还：<span class="black-color">本金+利息</span></div>
-                                <div class="periods-box">
+                                <div class="periods-box" v-if="stage_type == 2">
                                     期数：
                                     <span class="periods-str" v-for="item in periods_data" @click="selePeriodsFn(item.value)">
                                         <img class="check-img" :src="item.isclick?'./static/img/order/okcheck.png':'./static/img/order/nocheck.png'" alt="">
@@ -154,7 +158,7 @@
                     </div>
                 </div>
             </div>
-            <div class="showbox box-con" v-show="nav_data[2].isclick">
+            <div class="box-con" v-show="nav_data[2].isclick">
                 <div class="con-cell calputer">
                     <div class="sele-table">
                         <span class="tab-btn" v-for="item in stage_tab" v-text="item.name" :class="item.isclick?'orange-bg':'orange-color'" @click="seleCountTag(item.value)"></span>
@@ -163,11 +167,14 @@
                         <div class="calputer-left">
                             <div class="calputer-str">
                                 <span class="left-text">商品总价</span>
-                                <input type="text" class="right-inp"><span class="calputer-text">元</span>
+                                <input type="number" class="right-inp" oninput="value=value.replace(/\D/g,'')" v-model="count_price"><span class="calputer-text">元</span>
                             </div>
                             <div class="calputer-str">
-                                <span class="left-text">首付比例</span>
-                                <input type="text" class="right-inp"><span class="calputer-text">%</span>
+                                <span class="left-text">首付金额</span>
+                                <div class="down-box">
+                                    <input type="number" class="right-inp" v-model="ratio" oninput="value=value.replace(/\D/g,'')">
+                                    <div class="gray-color">首付金额不低于30%</div>
+                                </div>
                             </div>
                             <div class="calputer-str">
                                 <span class="left-text">期数</span>
@@ -176,10 +183,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="calputer-right">计算</div>
+                        <div class="calputer-right" @click="countFn">计算</div>
                     </div>
-                    <div class="calputer-bot">
-                        12312313
+                    <div class="calputer-bot" v-if="result != ''">
+                        <div class="calputer-bot-box" v-for="(item,index) in result" :key="index">
+                            <span class="calputer-bot-left" v-text="item.stage_title"></span>
+                            <span class="calputer-bot-right" v-text="item.stage_value"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -196,15 +206,34 @@
             分期申请提交成功，我们会尽快为您审核。稍后会有短信提醒，请您注意查收
             <div class="okbtn" @click="goApplyFn">确认</div>
         </div>
-        <div class="shade" v-show="apply_hint || show_count_per"></div>
+        <div class="shade" v-show="apply_hint || show_count_per || showMenu_type" ></div>
+         <!-- 商品类型 -->
+        <div v-show="showMenu_type" class="type-mu">
+            <div class="pop-view-tit option-gray">
+                请选择商品类型
+            </div>
+            <ul>
+                <!-- 商品类型 -->
+                <li class="option-black" v-for="item in category_list" @click="seleCategory(item.category_id)" v-text="item.game_name"></li>
+            </ul>
+            <div class="pop-view-con"></div>
+            <div class="pop-view-bot" @click="hiddenFn">取消</div>
+        </div>
+        <Loading v-show="show_loading"></Loading>
+        <LinkServer></LinkServer>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import Loading from '@/components/multi/Loading';
+  import LinkServer from "@/components/common/LinkServer";
 export default {
+    inject: ["reload"],
     name: "CbgStage",
     components: {
-        Header
+        Header,
+        Loading,
+        LinkServer
     },
     data() {
         return {
@@ -241,52 +270,121 @@ export default {
                 {
                     name: "1期",
                     value: 1,
-                    isclick: true
-                },
-                {
-                    name: "2期",
-                    value: 2,
                     isclick: false
                 },
                 {
                     name: "3期",
                     value: 3,
                     isclick: false
+                },
+                {
+                    name: "5期",
+                    value: 5,
+                    isclick: false
                 }
             ],
             stage_tab: [
                 {
                     name: "月分期",
-                    value: 1,
+                    value: 2,
                     isclick: true
                 },
                 {
                     name: "日分期",
-                    value: 2,
+                    value: 1,
                     isclick: false
                 }
             ],
-            stage_opt:true,//true 日分期 false 月分期
-            count_periods:'不限期',
+            stage_opt:'',//true 日分期 false 月分期
+            count_periods:'',
             apply_hint:false,
             count_periods_data:[{
                 name:'5期',
-                value:1,
+                value:5,
                 isclick:false,
             },{
                 name:'3期',
-                value:2,
+                value:3,
                 isclick:false,
             },{
                 name:'1期',
-                value:3,
+                value:1,
                 isclick:false,
             }],
             show_count_per:false,
-
+            showMenu_type:false,
+            category_list:[],
+            category:{name:'请选择',category_id:''},
+            goods_price:'',
+            mobile:'',
+            wx:'',
+            goods_title:'',
+            link_href:'',
+            stage_type:'',
+            down_payment:'',
+            stage_number:'',
+            // 分期计算器参数
+            count_price:'',//商品总价
+            ratio:'',//比例
+            result:[],
+            show_loading:false,
         };
     },
     methods: {
+        // 分期计算器
+        countFn(){
+            var that = this;
+            that.result = [];
+            var tab_value;//判读是日分期还是月分期
+            for(var i in that.stage_tab){
+                if(that.stage_tab[i].isclick){
+                    tab_value = that.stage_tab[i].value;
+                    break;
+                }
+            }
+            if(that.count_price == ''){
+                mui.alert('请输入商品总价','提示','确认','','div');
+                return false;
+            }else if(that.ratio == ''){
+                mui.alert('请输入首付金额','提示','确认','','div');
+                return false;
+            }else if(that.ratio < (that.count_price * 0.3)){
+                mui.alert('首付金额不能小于30%','提示','确认','','div');
+                return false;
+            }
+            
+            var periods;//期数
+            if(tab_value == 2){
+                for(var i in that.count_periods_data){
+                    if(that.count_periods_data[i].isclick){
+                        periods = that.count_periods_data[i].value;
+                        break;
+                    }
+                }//获取期数
+            }else if(tab_value == 1){
+                periods = '';
+            }
+            that.show_loading = true;
+            that.$axios.post(process.env.API_HOST+'store_stage',{
+                stage_type:tab_value,
+                goods_price:that.count_price,
+                down_payment:that.ratio,
+                stage_number:periods
+            }).then((res)=>{
+                console.log(res);
+                that.show_loading = false;
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.result = res.data.data.stage_info;
+                    }else{
+                        mui.alert(res.data.msg,'提示','确认','','div');
+                        return false;
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err);
+            })
+        },
         seleNav(val) {
             var that = this;
             var data = that.nav_data;
@@ -297,8 +395,35 @@ export default {
             }
             for (var i in data) {
                 if (data[i].value == val) {
-                    data[i].isclick = true;
-                    continue;
+                    if(val == 2){//我要分期要判断是否登录
+                        if(that.$store.state.token){
+                            sessionStorage.cbg_nav = val;
+                            data[i].isclick = true;
+                            continue;
+                        }else{
+                            mui.confirm(
+                                "请先登陆",
+                                "提示",
+                                ["取消", "确认"],
+                                function(e) {
+                                    if (e.index == 1) {
+                                        that.$router.push({
+                                            name: "AccountLogin"
+                                        });
+                                    }else{
+                                        sessionStorage.cbg_nav = 1;
+                                        data[0].isclick = true;
+                                        that.nav_bg = true;
+                                    }
+                                },
+                                "div"
+                            );
+                        }
+                    }else{
+                        sessionStorage.cbg_nav = val;
+                        data[i].isclick = true;
+                        continue;
+                    }
                 }
                 data[i].isclick = false;
             }
@@ -308,16 +433,20 @@ export default {
             var that = this;
             if(opt == 'day'){
                 that.stage_opt = true;
+                that.stage_type = 1;
             }else{
                 that.stage_opt = false;
+                that.stage_type = 2;
             }
         },
         // 选择期数
         selePeriodsFn(val){
+            var that = this;
             var that_d = this.periods_data;
             for(var i in that_d){
                 if(val == that_d[i].value){
                     that_d[i].isclick = true;
+                    that.stage_number = that_d[i].value;
                     continue;
                 }
                 that_d[i].isclick = false;
@@ -325,15 +454,80 @@ export default {
         },
         // 显示申请分期提示
         showHintFn(){
-            this.apply_hint = true;
+            var that = this;
+            var request = {};
+            if(that.category.category_id){
+                request.category_id = that.category.category_id;
+            }else{
+                mui.alert("请先选择游戏分类", "提示", "确认", "", "div");
+                return false;
+            }
+            if(that.mobile == ''){
+                mui.alert("请输入联系电话",'提示','确认','','div');
+                return false;
+            }else{
+                request.mobile = that.mobile;
+            }
+            if(that.wx == ''){
+                mui.alert("请输入微信",'提示','确认','','div');
+                return false;
+            }else{
+                request.wx = that.wx;
+            }
+            if(that.link_href == ''){
+                mui.alert("请输入商品链接",'提示','确认','','div');
+                return false;
+            }else{
+                request.link_href = that.link_href;
+            }
+             if(that.goods_title == ''){
+                mui.alert("请输入商品名称",'提示','确认','','div');
+                return false;
+            }else{
+                request.goods_title = that.goods_title;
+            }
+            if(that.goods_price == ''){
+                mui.alert("请输入商品总价",'提示','确认','','div');
+                return false;
+            }else{
+                request.goods_price = that.goods_price;
+            }
+
+            if(that.down_payment == ''){
+                mui.alert("请输入首付",'提示','确认','','div');
+                return false;
+            }else if(that.down_payment < (that.goods_price * 0.3)){
+                mui.alert("请首付30%起",'提示','确认','','div');
+                return false;
+            }else{
+                request.down_payment = that.down_payment;
+            }
+            request.stage_type = that.stage_type;
+            if(that.stage_type == 2){
+                request.stage_number = that.stage_number;
+            }
+            that.$axios.post(process.env.API_HOST+"store_goods",request).then(function(res){
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.apply_hint = true;
+                    }else{
+                        mui.alert(res.data.msg,'提示','确认','','div');
+                    }
+                }
+            }).catch(function(err){
+                console.log(err);
+            })
+            console.log(request)
         },
         // 分期
         goApplyFn(){
             this.apply_hint = false;
+            this.reload();
         },
         // 选择日分期还是月分期
         seleCountTag(val){
-            var that_d = this.stage_tab;
+            var that = this;
+            var that_d = that.stage_tab;
             for(var i in that_d){
                 if(val == that_d[i].value){
                     that_d[i].isclick = true;
@@ -341,10 +535,27 @@ export default {
                 }
                 that_d[i].isclick = false;
             }
+            // 月分期
+            if(val == 2){
+                that.count_periods = '1期'
+                for(var i in that.count_periods_data){
+                    that.count_periods_data[i].isclick = false;
+                }
+                that.count_periods_data[2].isclick = true;
+                that.count_price = '';
+                that.ratio = '';
+            }else{//日分期
+                that.count_periods = '不限期'
+                that.count_price = '';
+                that.ratio = '';
+            }
+            that.result = [];
         },
         // 显示计算期数弹框
         showCountPeriodsFn(){
-            this.show_count_per = true;
+            if(this.count_periods != '不限期'){
+                this.show_count_per = true;
+            }
         },
         // 选择计算期数
         seleCountPeriodsFn(val){
@@ -360,27 +571,72 @@ export default {
                 that_d[i].isclick = false;
             }
         },
+        showCategoryFn(){
+            this.showMenu_type = true;
+        },
+        // 选择游戏分类
+        seleCategory(value){
+            var that = this;
+            that.showMenu_type = false;
+            for(var i in that.category_list){
+                if(that.category_list[i].category_id == value){
+                    that.category.name = that.category_list[i].game_name;
+                    that.category.category_id = that.category_list[i].category_id;
+                    break;
+                }
+            }
+        },
+        hiddenFn(){
+            this.showMenu_type = false;
+        },
+        getCategory(){
+            var that = this;
+            that.$axios.post(process.env.API_HOST+"categoryInfo",{
+                business_type:4,
+            }).then(function(res){
+                if(res.status == 200){
+                    if(res.data.code == 200){
+                        that.category_list = res.data.data;
+                    }
+                }
+            }).catch(function(err){
+                console.log(err)
+            })
+        },
     },
+    mounted(){
+        var that = this;
+        that.getCategory();
+        if(sessionStorage.cbg_nav){
+            for(var i in that.nav_data){
+                if(that.nav_data[i].value == sessionStorage.cbg_nav){
+                    that.nav_data[i].isclick = true;
+                    if(sessionStorage.cbg_nav != 1){
+                        that.nav_bg = false;
+                        if(sessionStorage.cbg_nav == 2){
+                            
+                        }
+                    }
+                    continue;
+                }
+                that.nav_data[i].isclick = false;
+            }
+        }
+        that.stage_opt = true;that.stage_type = 1;//默认日分期
+        that.periods_data[0].isclick = true;that.stage_number = 1;//默认为一期
+
+        // 分期计算器 月分期-默认1期
+        that.count_periods = '1期'
+        that.count_periods_data[2].isclick = true;
+    }
 };
 </script>
 
 <style scoped>
-/* .nav-tit {
-    font-size:.26rem;
-    position: fixed;
-    top: 0.88rem;
-    left: 0;
-    right: 0;
-    max-width: 640px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-around;
-    line-height: 0.8rem;
-} */
 .nav-tit {
     font-size: 0.26rem;
     position: relative;
-    top: 0.88rem;
+    top: 0;
     left: 0;
     right: 0;
     max-width: 640px;
@@ -399,10 +655,6 @@ export default {
 .nav-btn {
     width: 100%;
     text-align: center;
-}
-.cbg-con {
-    /* padding-top:1.68rem; */
-    padding-top: 0.88rem;
 }
 .explain-tit {
     width: 100%;
@@ -489,6 +741,7 @@ export default {
 
 .box-con {
     padding: 0.2rem;
+    min-height: calc(100vh - 1.78rem);
 }
 .con-cell {
     background: #ffffff;
@@ -528,7 +781,7 @@ export default {
     width: 1.14rem;
     height: 0.42rem;
     margin: 0;
-    padding: 0;
+    padding: 0 .05rem;
     margin-right: 0.1rem;
 }
 .hint-strip {
@@ -709,7 +962,14 @@ export default {
 .calputer-str input{
     width:1.36rem;
     height:.6rem;
-    margin:0;padding:0;
+    margin:0;padding:0 .1rem;
+}
+.down-box{
+    display: inline-block;
+    vertical-align: top;
+}
+.down-box div{
+    line-height: .3rem;
 }
 .calputer-text{
     margin-left:.2rem;
@@ -736,7 +996,24 @@ export default {
 
 .calputer-bot{
     border-top:1px solid #E5E5E5;
+    font-size:.24rem;
+    padding-top:.2rem;
 }
+.calputer-bot-box{
+    line-height: .5rem;
+}
+.calputer-bot-box span{
+    display: inline-block;
+}
+.calputer-bot-right{
+    color:#666666;
+}
+.calputer-bot-left{
+    color:#999999;
+    min-width: 1rem;
+    margin-right:.3rem;
+}
+
 
 .pop-view{
     width:5rem;
@@ -776,9 +1053,51 @@ export default {
     background:rgba(0,0,0,0.5);
     z-index:5;
 }
+/* 弹出框 */
+.type-mu{
+    min-height:2rem;
+    color: #333333;
+    font-size: 0.28rem;
+    background:#FFFFFF;
+    text-align:center;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:50;
+    max-width: 640px;
+    margin:0 auto;
+}
+.pop-view-tit,.pop-view-bot{
+    line-height: .9rem;
+}
+.pop-view-con{
+    height:.2rem;
+    background:rgba(0,0,0,0.3);
+}
+.type-mu ul{
+    border-top:1px solid #e5e5e5;
+    border-bottom:1px solid #e5e5e5;
+    max-height:4rem;
+    list-style: none;
+    overflow-y:scroll;
+}
+/* 弹出框 */
+.option-gray {
+    color: #666666;
+    font-size: 0.28rem;
+}
+.option-black {
+    font-weight: 100;
+    line-height:.9rem;
+    border-bottom:1px solid #e5e5e5;
+}
+
+
 
 .right-inp{
     text-align: right;
+    padding:0 .05rem;
 }
 input{
     font-size:.24rem;

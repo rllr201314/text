@@ -219,11 +219,11 @@ export default {
         getCategory() {
             var that = this;
             that.$axios
-                .post(process.env.API_HOST+"category")
+                .post(process.env.API_HOST+"categoryInfo")
                 .then(function(res) {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
-                            var category = res.data.data.is_hot;
+                            var category = res.data.data;
                             category.unshift({
                                 category_id: "",
                                 game_name: "全部"

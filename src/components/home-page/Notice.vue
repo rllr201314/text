@@ -32,7 +32,7 @@
                 this.$router.push({name:'Affiche'})
             },
             go_detail(id,type){
-                this.$router.push({name:'Affiche_Details',query:{article:id,type:type}})
+                this.$router.push({name:'Affiche_Details',params:{article:id,type:type}})
             }
         }
     }

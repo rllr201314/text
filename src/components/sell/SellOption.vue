@@ -418,12 +418,12 @@ export default {
         getConfig(opt){
             var that = this;
             that.$axios
-                .post(process.env.API_HOST+"category")
+                .post(process.env.API_HOST+"categoryInfo")
                 .then(function(res) {
                     // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
-                            var resData = res.data.data.is_hot
+                            var resData = res.data.data;
                             for(var i in resData){
                                 if(opt == resData[i].category_id){
                                     that.sellOptData.gameLog = resData[i].game_logo;

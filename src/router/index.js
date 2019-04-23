@@ -22,14 +22,14 @@ export default new Router({
   mode: 'history',
   routes: [{
       path: '/',
-      redirect: {
-        name: 'HomePage'
-      }
+      name: 'HomePage',
+      component: (resolve) => require(['@/components/HomePage'], resolve)
     },
     {
       path: '/index', //首页
-      name: 'HomePage',
-      component: (resolve) => require(['@/components/HomePage'], resolve)
+      redirect: {
+        name: 'HomePage'
+      }
     },
     // {
     //   path:'/pc_index',
@@ -37,7 +37,7 @@ export default new Router({
     //   component:(resolve) => require(['@/components/PcIndex'],resolve)
     // },
     {
-      path: '/good-list', //商品列表
+      path: '/good-list/:opt', //商品列表
       name: 'GoodScreen',
       component: (resolve) => require(['@/components/GoodScreen'], resolve),
       meta:{
@@ -46,7 +46,7 @@ export default new Router({
       }
     },
     {
-      path: '/details', //商品详情
+      path: '/details/:goods_id', //商品详情
       name: 'Details',
       component: (resolve) => require(['@/components/Details'], resolve),
     },
@@ -259,7 +259,7 @@ export default new Router({
       name: 'ActiveArea',
       component: (resolve) => require(['@/components/action/ActiveArea'], resolve),
     }, {
-      path: '/special-area', //专区页
+      path: '/special-area/:type', //专区页
       name: 'SpecialArea',
       component: (resolve) => require(['@/components/action/SpecialArea'], resolve),
     }, {
@@ -345,7 +345,7 @@ export default new Router({
     },
     // 公告详细
     {
-      path: '/affiche',
+      path: '/affiche/:article/:type',
       name: 'Affiche_Details',
       component: (resolve) => require(['@/components/my-center/message/Affiche_details'], resolve),
     },
@@ -386,13 +386,13 @@ export default new Router({
     },
     // 出租发布一
     {
-      path:'/lease-option',
+      path:'/lease-option/:opt',
       name:'LeaseOption',
       component: (resolve) => require(['@/components/rent/rent-out/LeaseOption'],resolve)
     },
     // 出租发布二
     {
-      path:'/lease-info',
+      path:'/lease-info/:flag/:upData',
       name:'LeaseInfo',
       component: (resolve) => require(['@/components/rent/rent-out/LeaseInfo'],resolve)
     },
@@ -403,7 +403,7 @@ export default new Router({
     },
     // 租号列表
     {
-      path:'/rent-list',
+      path:'/rent-list/:opt',
       name:'RentSearch',
       component: (resolve) => require(['@/components/rent/RentSearch'],resolve),
       meta:{
@@ -413,7 +413,7 @@ export default new Router({
     },
     // 租号详情
     {
-      path:'/rent-details',
+      path:'/rent-details/:goods_id',
       name:'RentDetails',
       component: (resolve) => require(['@/components/rent/RentDetails'],resolve)
     },
@@ -430,21 +430,21 @@ export default new Router({
       component: (resolve) => require(['@/components/rent/RentState'],resolve)
     },
     //藏宝阁
-    // {
-    //   path:'/cbg-stage',
-    //   name:"CbgStage",
-    //   component:(resolve) => require(['@/components/cbg/CbgStage'],resolve)
-    // }, 
-    // {
-    //   path:'/cbg-order',
-    //   name:"CbgPlaceOrder",
-    //   component:(resolve) => require(['@/components/cbg/CbgPlaceOrder'],resolve)
-    // },
-    // {
-    //   path:'/cbg-state',
-    //   name:"CbgState",
-    //   component:(resolve) => require(['@/components/cbg/CbgState'],resolve)
-    // },
+    {
+      path:'/cbg-stage',
+      name:"CbgStage",
+      component:(resolve) => require(['@/components/cbg/CbgStage'],resolve)
+    }, 
+    {
+      path:'/cbg-order',
+      name:"CbgPlaceOrder",
+      component:(resolve) => require(['@/components/cbg/CbgPlaceOrder'],resolve)
+    },
+    {
+      path:'/cbg-state',
+      name:"CbgState",
+      component:(resolve) => require(['@/components/cbg/CbgState'],resolve)
+    },
     // 人工认证
     // {
     //   path:'/safe-aritificial',

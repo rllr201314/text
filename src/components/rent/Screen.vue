@@ -4,13 +4,13 @@
             <div class="screen-title-top">
                 <div class="title-top-cell" v-for="(item,index) in screenTop" :key="index" @click="topScreen(item.flag,index)" :class="item.ischeck?'sele-border':''">
                     <span :class="item.ischeck?'red-color':'black-color'" v-text="item.tit_top_text" ></span>
-                    <img class="title-top-img" :src="item.ischeck?'./static/img/goodscreen/upempty.png':'./static/img/goodscreen/downempty.png'" alt="">
+                    <img class="title-top-img" :src="item.ischeck?'../static/img/goodscreen/upempty.png':'../static/img/goodscreen/downempty.png'" alt="">
                 </div>
             </div>
             <div class="screen-title-bottom" v-if="show_extend">
                 <div class="title-bottom-cell" v-for="(item,index) in operation_attribute" :key="index" @click="bottomScreen(item.attribute_id)">
                     <span :class="item.ischeck?'red-color':'gray-color'" v-text="item.title"></span>
-                    <img class="title-bottom-img" :src="item.ischeck?'./static/img/goodscreen/upsolid.png':'./static/img/goodscreen/downsolid.png'" alt="">
+                    <img class="title-bottom-img" :src="item.ischeck?'../static/img/goodscreen/upsolid.png':'../static/img/goodscreen/downsolid.png'" alt="">
                 </div>
             </div>
         </div>
@@ -225,8 +225,8 @@ export default {
             // 筛选条件// 单选----选择价格排序
             sortPrice: {
                 sortSrc: {
-                    sortPriceOk: "./static/img/goodscreen/okcheck.png",
-                    sortPriceNo: "./static/img/goodscreen/nocheck.png"
+                    sortPriceOk: "../static/img/goodscreen/okcheck.png",
+                    sortPriceNo: "../static/img/goodscreen/nocheck.png"
                 },
                 ischeck: {
                     downSort: false,

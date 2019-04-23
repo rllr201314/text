@@ -128,6 +128,9 @@ export default {
         meta:[{
             name:'keywords',
             content:'手游号,梦幻号出租寄租,大话号出租寄租'
+        },{
+            name:'description',
+            content:'看个号(https://www.kangehao.com)是国内专业的手游交易平台，安全可靠专注手游的交易网站，提供手游账号交易、买号卖号交易的手游交易平台！'
         }]
     },
     data() {
@@ -465,18 +468,18 @@ export default {
                 return false;
             }else{
                 upData = JSON.stringify(upData);
-                that.$router.push({name:'LeaseInfo',query:{flag:1,upData:upData}});
+                that.$router.push({name:'LeaseInfo',params:{flag:1,upData:upData}});
             }
         },
         getConfig(opt){
             var that = this;
             that.$axios
-                .post(process.env.API_HOST+"category")
+                .post(process.env.API_HOST+"categoryInfo")
                 .then(function(res) {
                     // console.log(res);
                     if (res.status == 200) {
                         if (res.data.code == 200) {
-                            var resData = res.data.data.is_hot
+                            var resData = res.data.data;
                             for(var i in resData){
                                 if(opt == resData[i].category_id){
                                     that.sellOptData.gameLog = resData[i].game_logo;
@@ -516,8 +519,7 @@ export default {
     },
     mounted() {
         var that = this;
-        var opt = that.$route.query.opt;
-        // console.log(opt);
+        var opt = that.$route.params.opt;
         if(opt == undefined || opt == ''){
             that.$router.go(-1); 
         }else{

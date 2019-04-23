@@ -157,7 +157,7 @@ export default {
         goDetail(goods_id) {
             this.$router.push({
                 name: "Details",
-                query: { goods_id: goods_id }
+                params: { goods_id: goods_id }
             });
         },
         refresh() {

@@ -127,7 +127,7 @@ export default {
         // 跳转详情
         godetail(status,id){
             if(status == 3){
-                this.$router.push({name: "Details",query: {goods_id:id}});
+                this.$router.push({name: "Details",params: {goods_id:id}});
             }else if(status == 4){
                 mui.toast("该商品已下架", {duration: "short",type: "div"});
             }else if(status == 5){

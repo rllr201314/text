@@ -19,6 +19,11 @@ var options={
 }
 Vue.use(preview,options);
 Vue.use(Vuex)
+// 计算 html font-size 适配移动端
+var deviceWidth = document.documentElement.clientWidth;
+if (deviceWidth > 640) deviceWidth = 640;
+document.documentElement.style.fontSize = deviceWidth / 7.5 + 'px';
+
 
 
 // 添加请求拦截器
@@ -42,7 +47,6 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
-
 // http response 拦截器
 axios.interceptors.response.use(
   response => {
@@ -50,7 +54,7 @@ axios.interceptors.response.use(
       switch (response.data.code) {
         case 401:
           store.commit('del_token');
-          if(router.currentRoute.fullPath == '/index' && store.state.hint > 0){
+          if(router.currentRoute.fullPath == '/' && store.state.hint > 0){
             mui.toast(response.data.msg, {duration: "short", type: "div"});
           }else if(store.state.hint > 0){
             store.commit('sub_hint');
@@ -88,8 +92,19 @@ new Vue({
   components: {
     App
   },
+  metaInfo: {
+    title:'看个号_手游交易平台_账号装备道具交易_游戏充值_首充号_代练',
+    meta:[{
+        name:'keywords',
+        content:'看个号,手游交易,手游交易平台,手游账号交易,手游交易网,梦幻西游,大话西游,梦幻金币号,苹果充值,ios充值'
+    },{
+        name:'description',
+        content:'看个号(https://www.kangehao.com)是国内专业的手游交易平台，安全可靠专注手游的交易网站，提供手游账号交易、买号卖号交易的手游交易平台！'
+    }],
+  },
   template: '<App/>',
+  render: h => h(App),
   mounted () {
-    // document.dispatchEvent(new Event('render-event'));
+    document.dispatchEvent(new Event('render-event'));
   }
 })

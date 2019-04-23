@@ -432,7 +432,7 @@ export default {
                     //收藏
                     that_r.push({name: "Collect"});
                 } else if (flag == "commissionManage") {
-                    //佣金管理SafeUser
+                    //佣金管理
                     // that_r.push({ name: "CommissionManage" });
                     mui.toast('暂未开放', {duration: "short",type: "div"});
                 } else if (flag == "assetsManage") {

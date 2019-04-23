@@ -89,7 +89,7 @@
                         <span class="sell-lefttext">账号绑定</span>
                         <div class="strip-radio-right">
                             <div class="screen-sort" v-for="item in sellData.seleSafeData.safe" @click="seleSafe(item.value)">
-                                <img class="screen-sort-check" :src="item.ischeck?sellData.seleSafeData.imgSrc.Ok:sellData.seleSafeData.imgSrc.No" alt="">
+                                <img class="screen-sort-check" :src="item.ischeck?'../../../static/img/goodscreen/okcheck.png':'../../../static/img/goodscreen/nocheck.png'" alt="">
                                 <span v-text="item.name"></span>
                             </div>
                         </div>
@@ -108,7 +108,7 @@
                         <span class="sell-lefttext">是否可议价</span>
                         <div class="strip-radio-right">
                             <div class="opera" v-for="item in sellData.sellType.sell" @click="seleSell(item.value)">
-                                <img :src="item.ischeck?sellData.sellType.imgSrc.Ok:sellData.sellType.imgSrc.No" alt="">
+                                <img :src="item.ischeck?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">
                                 <span v-text="item.name"></span>
                             </div>
                         </div>
@@ -305,6 +305,9 @@ export default {
         meta:[{
             name:'keywords',
             content:'手游号,梦幻号出租寄租,大话号出租寄租'
+        },{
+            name:'description',
+            content:'看个号(https://www.kangehao.com)是国内专业的手游交易平台，安全可靠专注手游的交易网站，提供手游账号交易、买号卖号交易的手游交易平台！'
         }]
     },
     data() {
@@ -358,10 +361,6 @@ export default {
                 optSafe: true,
                 // 账号绑定
                 seleSafeData: {
-                    imgSrc: {
-                        Ok: "./static/img/goodscreen/okcheck.png",
-                        No: "./static/img/goodscreen/nocheck.png"
-                    },
                     safe: []
                 },
                 accountType: [], //账号类型
@@ -369,10 +368,6 @@ export default {
                 sex: [], //性别
                 rentWay:[],
                 sellType: {
-                    imgSrc: {
-                        Ok: "./static/img/order/okcheck.png",
-                        No: "./static/img/order/nocheck.png"
-                    },
                     sell: []
                 }
             },
@@ -1248,7 +1243,7 @@ export default {
             );
             return false;
         }
-        var opt = that.$route.query;
+        var opt = that.$route.params;
         // console.log(opt);
         // 判断有没有传参过来
 
@@ -1278,10 +1273,10 @@ export default {
                 }
             }else if(opt.flag == 2){
                 that.showLoading = true;
-                that.getRedact(opt.g);
+                that.getRedact(opt.upData);
                 that.comData.showTitle.title = "出租编辑";
                 that.editOrpublish = 2;
-                that.requestData.goods_id = opt.g;
+                that.requestData.goods_id = opt.upData;
             }else{
                 that.$router.go(-1); 
             }

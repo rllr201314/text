@@ -155,18 +155,6 @@ export default {
         //   this.$router.replace('/pc_index');
         // }
     },
-    metaInfo(){
-        return {
-            title:'手游交易平台|账号装备道具交易|游戏充值|首充号|代练-看个号',
-            meta:[{
-                name:'keywords',
-                content:'看个号,手游交易,手游交易平台,手游号交易,手游交易网,梦幻西游,大话西游,金币号,苹果充值,ios充值'
-            },{
-                name:'description',
-                content:'看个号(https://www.kangehao.com)是国内专业的手游交易平台，安全可靠专注手游的交易网站，提供手游账号交易、买号卖号交易的手机网游交易平台！'
-            }]
-        }
-    }
 }
 </script>
 

@@ -3,9 +3,10 @@
     <div class="wrap">
         <Header v-bind:showTitle="comData.showTitle"></Header>
         <div class="trad-content">
-            <div class="trad-cell" v-for="item in goodsData">
+            <div class="trad-cell" v-for="(item,index) in goodsData" :key="index">
                 <img class="badge" v-if="item.rent_method == 1" src="../../../../static/img/badge/product.png" alt="">
                 <img class="badge" v-if="item.rent_method == 2" src="../../../../static/img/badge/rent-badge.png" alt="">
+                <img class="badge" v-if="item.rent_method == 4" src="../../../../static/img/badge/cbg-badge.png" alt="">
                 <div class="gameLog">
                     <img :src="item.game_logo" alt="">
                 </div>
@@ -16,9 +17,9 @@
                     </div>
                     <div class="order-des" v-text="item.goods_title"></div>
                     <div class="price-status">
-                        <span class="good-price" v-if="item.rent_method == 1">￥<span v-text="item.goods_amount"></span></span>
+                        <span class="good-price" v-if="item.rent_method == 1 || item.rent_method == 4">￥<span v-text="item.goods_amount"></span></span>
                         <span class="good-price" v-if="item.rent_method == 2">￥<span v-text="item.order_amount"></span></span>
-                        <span class="order-status" v-if="item.rent_method == 1" v-text="item.bind_status"></span>
+                        <span class="order-status" v-if="item.rent_method == 1 || item.rent_method == 4" v-text="item.bind_status"></span>
                         <span class="order-status" v-else-if="item.rent_method == 2" v-text="item.rent_status"></span>
                         <span class="history-time" v-text="item.create_time"></span>
                     </div>
@@ -88,6 +89,8 @@ export default {
                 this.$router.push({name:'BuyTakeDelivery',query:{order:order_id}})
             }else if(status == 2){//租
                 this.$router.push({name:'RentState',query:{order:order_id}})
+            }else if(status == 4){//藏宝阁
+                this.$router.push({name:'CbgState',query:{order:order_id}})
             }
         }
     },

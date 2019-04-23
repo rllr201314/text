@@ -62,17 +62,24 @@ export default {
     },
     mounted(){
         var that = this;
-        var sign = that.$route.query.sign;
-        if(that.$route.query.article){
-            that.showTitle.title = that.$route.query.type;
-            that.getData(that.$route.query.article)
+        // var sign = that.$route.query.sign;
+        if(that.$route.params.article){
+            that.showTitle.title = that.$route.params.type;
+            that.getData(that.$route.params.article)
         }else{
             that.$router.go(-1);
         }
     },
     metaInfo(){
         return {
-            title:this.info.title+'_看个号'
+            title:this.info.title+'_看个号',
+            meta:[{
+                name:'keywords',
+                content:'看个号,手游交易,手游交易平台,手游账号交易,手游交易网,梦幻西游,大话西游,梦幻金币号,苹果充值,ios充值'
+            },{
+                name:'description',
+                content:'看个号(https://www.kangehao.com)是国内专业的手游交易平台，安全可靠专注手游的交易网站，提供手游账号交易、买号卖号交易的手游交易平台！'
+            }],
         }
     }
 }

@@ -3,19 +3,19 @@
     <div class="game-division">
       <!--金币号-->
         <div class="division-cell cell-mh" @click="goGold()">
-            <img src="../../../static/img/chunk/jbh.png" alt="">
+            <img src="../../../static/img/chunk/jbh.png" alt="金币号专区">
         </div>
       <!--寄租-->
         <div class="division-cell cell-dh" @click="goRentOut()">
-            <img src="../../../static/img/chunk/zh.png" alt="">
+            <img src="../../../static/img/chunk/zh.png" alt="账号寄租专区">
         </div>
       <!--藏宝阁-->
         <div class="division-cell cell-clx" @click="goArea('1')">
-            <img src="../../../static/img/chunk/cbg.png" alt="">
+            <img src="../../../static/img/chunk/cbg.png" alt="藏宝阁分期">
         </div>
       <!--充值-->
         <div class="division-cell expect-content" @click="goArea(2)">
-            <img src="../../../static/img/chunk/recharge.png" alt="">
+            <img src="../../../static/img/chunk/recharge.png" alt="app充值专区">
         </div>
     </div>
 </template>
@@ -26,7 +26,11 @@
         methods:{
           goArea(flag) {
             var that = this;
-            that.$router.push({name: 'SpecialArea', query: {type: flag}});
+            if(flag == 1){
+              that.$router.push({name: 'CbgStage'});
+            }else{
+              that.$router.push({name: 'SpecialArea', params: {type: flag}});
+            }
           },
           goGold() {
             var that = this;
