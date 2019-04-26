@@ -23,20 +23,23 @@
                                             <div class="goods-strip-title">
                                                 <div class="title-ico deal-ico" v-if="ind.rent_method == 1 || ind.rent_method == 3">成品号</div>
                                                 <div class="title-ico rent-ico" v-if="ind.rent_method == 2 || ind.rent_method == 3">租号</div>
-                                                <div class="account-type" v-if="ind.client_id == 1">安卓</div>
-                                                <div class="account-type" v-else-if="ind.client_id == 2">苹果</div>
-                                                <div class="account-type" v-else-if="ind.client_id == 3">安卓混服</div>
+                                                <img class="account-type" v-if="ind.client_id == 1 || ind.client_id == 3" src="../../../../static/img/rent/android.png" alt="安卓">
+                                                <img class="account-type" v-else-if="ind.client_id == 2" src="../../../../static/img/rent/ios.png" alt="苹果">
                                                 <div class="area" v-text="ind.platform_name"></div>
                                             </div>
                                             <div class="goods-strip-content">
                                                 <div class="goods-des" v-text="ind.goods_title"></div>
                                             </div>
-                                            <div class="goods-strip-bottom" v-if="ind.goods_price > 0">
-                                                <span class="goods-price">￥
+                                            <div class="goods-strip-bottom">
+                                                <span class="goods-price" v-if="ind.goods_price > 0">￥
                                                     <span v-text="ind.goods_price"></span>
                                                 </span>
+                                                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-if="ind.rent_method == 2 && ind.rent_package == 1" src="../../../../static/img/rent/A.png" alt="免租金">
+                                                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="ind.rent_method == 2 && ind.rent_package == 2" src="../../../../static/img/rent/B.png" alt="低租金">
+                                                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="ind.rent_method == 2 && ind.rent_package == 3" src="../../../../static/img/rent/C.png" alt="低押金">
+                                                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="ind.rent_method == 2 && ind.rent_package == 4" src="../../../../static/img/rent/D.png" alt="免押金">
                                             </div>
-                                        </div>
+                                            </div>
                                             <div class="rent-des" v-if="ind.rent_method == 2 || ind.rent_method == 3" v-text="ind.goods_description"></div>
                                         <div class="browse-cell-con-bot">
                                             <div class="con-bot-box">
@@ -62,6 +65,27 @@
             <img src="../../../../static/img/goods-details/right_solid.png" alt="">
         </div>
         <NoData class="nodata" v-if="showNoData"></NoData>
+        <div class="rent-package" v-show="isShowKind">
+            <div class="rent-tit">租号等级分类</div>
+            <div class="rent-hide" @click="showRentPackageFn(false)">x</div>
+            <div class="rent-item">
+                <span class="rent-item-left">A免租金：</span>
+                <span class="rent-item-right">租期活、号无损退全押，长期租等于免费租</span>
+            </div>
+            <div class="rent-item">
+                <span class="rent-item-left">B低租金：</span>
+                <span class="rent-item-right">超低租金、优质号，时间越长优惠越多</span>
+            </div>
+            <div class="rent-item">
+                <span class="rent-item-left">C抵押金：</span>
+                <span class="rent-item-right">大量优质号源、折扣等你来租</span>
+            </div>
+            <div class="rent-item">
+                <span class="rent-item-left">D免押金：</span>
+                <span class="rent-item-right">无押金、低租金，最低10天起租</span>
+            </div>
+        </div>
+        <div class="shade" v-show="isShowKind" @click="isShowKind?isShowKind = false:''"></div>
     </div>
 </template>
 <script>
@@ -88,10 +112,19 @@ export default {
             pages: null,
             showNoData: false,
             goodsInfo: [],
-            miniRefresh: null
+            miniRefresh: null,
+            isShowKind:false,
         };
     },
     methods: {
+        // 显示租号分类
+        showRentPackageFn(flag){
+            if(flag){
+                this.isShowKind = true;
+            }else{
+                this.isShowKind = false;
+            }
+        },
         clear(flag) {
             var that = this;
             if (flag == "null") {
@@ -313,39 +346,9 @@ export default {
     background: linear-gradient(to right, #feab49, #ffcc4b);
 }
 .account-type {
-    text-align: center;
-    width: 0.7rem;
-    height: 0.36rem;
-    background: -webkit-linear-gradient(
-        120deg,
-        rgba(104, 224, 218, 1),
-        rgba(104, 223, 222, 1),
-        rgba(132, 240, 178, 1),
-        rgba(73, 209, 202, 1)
-    );
-    background: -o-linear-gradient(
-        120deg,
-        rgba(104, 224, 218, 1),
-        rgba(104, 223, 222, 1),
-        rgba(132, 240, 178, 1),
-        rgba(73, 209, 202, 1)
-    );
-    background: -moz-linear-gradient(
-        120deg,
-        rgba(104, 224, 218, 1),
-        rgba(104, 223, 222, 1),
-        rgba(132, 240, 178, 1),
-        rgba(73, 209, 202, 1)
-    );
-    background: linear-gradient(
-        120deg,
-        rgba(104, 224, 218, 1),
-        rgba(104, 223, 222, 1),
-        rgba(132, 240, 178, 1),
-        rgba(73, 209, 202, 1)
-    );
-    display: inline-block;
-    margin-right: 0.1rem;
+    width:.42rem;
+    height:.42rem;
+    vertical-align: middle;
 }
 .area {
     font-size: 0.26rem;
@@ -371,6 +374,10 @@ export default {
 .goods-price {
     color: #fa5856;
     font-size: 0.36rem;
+}
+.rent_package{
+    width:.93rem;
+    height:.36rem;
 }
 .browse-cell-con-bot{
     line-height: .6rem;
@@ -447,5 +454,44 @@ export default {
 }
 .show-border{
     border-bottom: 1px solid #e5e5e5;
+}
+
+.shade {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 6;
+}
+.rent-package{
+    position:absolute;
+    z-index:10;
+    width:7.02rem;
+    height:3.78rem;
+    top:5.38rem;
+    font-size:.24rem;
+    left:calc(50% - 3.51rem);
+    background:#FFFFFF;
+    line-height: .6rem;
+}
+.rent-tit{
+    font-size:.26rem;
+    text-align: center;
+    padding-top:.4rem;
+}
+.rent-hide{
+    position: absolute;
+    top:.05rem;right:.05rem;
+    color:#666666;
+    padding:0 .2rem;
+}
+.rent-item-left{
+    color:#333333;
+    padding-left:.6rem;
+}
+.rent-item-right{
+    color:#999999;
 }
 </style>

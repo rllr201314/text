@@ -68,7 +68,7 @@
                     <div class="contact-cell" v-if="orderType">
                         <span class="celltext">押金</span>
                         <div class="cell-right">
-                            <span class="unit-price price">￥
+                            <span class=" price">￥
                                 <span v-text="goodsInfo.cash"></span>
                             </span>
                         </div>
@@ -76,15 +76,31 @@
                     <div class="contact-cell" @click="showTerm">
                         <span class="celltext">租期</span>
                         <div class="cell-right descount">
+                            <span class="hint orange">(租7天享9折，租30天享8折)</span>
                             <span class="grey-color" v-text="tenancy_term"></span><span class="grey-color" v-text="goodsInfo.rent_unit"></span>
                             <img src="../../../static/img/order/next.png" alt="">
+                        </div>
+                    </div>
+                    <div class="contact-cell" v-if="false">
+                        <span class="celltext">租金<span class="gray-color">(￥<span v-text="goodsInfo.day_rent"></span>/<span v-text="goodsInfo.rent_unit"></span>)</span></span>
+                        <div class="cell-right">
+                            <span class="price">￥
+                                <span v-text="tremPirce"></span>
+                            </span>
                         </div>
                     </div>
                     <div class="contact-cell">
                         <span class="celltext">租金<span class="gray-color">(￥<span v-text="goodsInfo.day_rent"></span>/<span v-text="goodsInfo.rent_unit"></span>)</span></span>
                         <div class="cell-right">
-                            <span class="unit-price price">￥
-                                <span v-text="tremPirce"></span>
+                            <span v-show="hint_text != ''">
+                                <span class="chunk gray-bg">原价</span>
+                                <span class="unit-price">￥
+                                    <span v-text="tremPirce"></span>
+                                </span>
+                                <span class="chunk  red-bg" v-text="hint_text"></span>
+                            </span>
+                            <span class="price">￥
+                                <span v-text="break_price"></span>
                             </span>
                         </div>
                     </div>
@@ -121,19 +137,6 @@
                 <div class="cancel" @click="cancelFn">取消</div>
             </div>
         </div>
-
-
-
-        <!-- <div v-show="showMenu" class="type-mu">
-            <div class="pop-view-tit option-gray">
-                <div>请选择租期</div>
-            </div>
-            <ul>
-                <li class="option-black" v-for="item in optionData" @click="seleTrem(item.value)" v-text="item.name"></li>
-            </ul>
-            <div class="pop-view-con"></div>
-            <div class="pop-view-bot" @click="hiddenFn">取消</div>
-        </div> -->
         <!-- 遮罩 -->
         <div class="orderShade" v-show="showOrderShade" @click="hiddenFn"></div>
         <Loading class="black-bg" v-if="showNoData"></Loading>
@@ -172,6 +175,8 @@ export default {
             },
 
             tenancy_term:'',//租期
+            hint_text:'',//几折
+            break_price:'',//折后钱数
             // showMenu:false,//显示租期选项
             // optionData:[{name:'7天',value:1},{name:'8天',value:2}],
             showPro:false,//是否显示协议
@@ -201,6 +206,26 @@ export default {
             show_attribute:false,
             extend_attribute:[],
         };
+    },
+    watch:{
+        tenancy_term(newVal,oldVal){
+            if(newVal >= 7 && newVal < 30){
+                this.hint_text = '9折';
+                this.break_price = parseInt(this.tremPirce * 0.9);
+                
+            }else if(newVal >= 30){
+                this.hint_text = '8折';
+                this.break_price = parseInt(this.tremPirce * 0.8);
+            }else{
+                this.hint_text = '';
+                this.break_price = this.tremPirce;
+            }
+            if(this.orderType){
+                this.totalPrice = this.break_price + Number(this.goodsInfo.cash);
+            }else{
+                this.totalPrice = this.break_price;
+            }
+        }
     },
     methods: {
         showAttributeFn(flag){
@@ -278,19 +303,19 @@ export default {
                 if(Number(val) >= Number(data.least_lease)){
                     that.tremPirce = Number(data.day_rent) * val;
                     that.tenancy_term = val;
-                    that.tremVal = val;
+                    // that.tremVal = val;
                     that.$refs.inp_time.value = '';
-                    that.totalPrice = that.tremPirce + Number(data.cash);
+                    // that.totalPrice = that.tremPirce + Number(data.cash);//租金 + 押金
                     that.hiddenFn();
                 }else{
                     mui.alert('租期不得小于最短租期','提示','确认','','div');
                 }
             }else{
-                that.tremPirce = Number(data.day_rent) * val;
+                that.tremPirce = Number(data.day_rent) * val;//租金/天 * 天数
                 that.tenancy_term = val;
-                that.tremVal = val;
+                // that.tremVal = val;
                 that.$refs.inp_time.value = '';
-                that.totalPrice = that.tremPirce;
+                // that.totalPrice = that.tremPirce;
                 that.hiddenFn();
             }
             
@@ -317,10 +342,10 @@ export default {
                         if (res.data.code == 200) {
                             that.goodsInfo = res.data.data;
                             that.tenancy_term = res.data.data.least_lease;
-                            that.tremVal = res.data.data.least_lease;
+                            // that.tremVal = res.data.data.least_lease;
                             that.tremPirce = Number(res.data.data.day_rent) * Number(res.data.data.least_lease);
                             that.showNoData = false;
-                            that.totalPrice = Number(that.tremPirce) + Number(res.data.data.cash);
+                            // that.totalPrice = Number(that.tremPirce) + Number(res.data.data.cash);
                             that.extend_attribute = that.goodsInfo.goods_attribute;
                         }else if(res.data.code == 400){
                             that.showNoData = true;
@@ -345,7 +370,7 @@ export default {
                     if (res.data.code == 200) {
                         that.goodsInfo = res.data.data;
                         that.tenancy_term = res.data.data.least_lease;
-                        that.tremVal = res.data.data.least_lease;
+                        // that.tremVal = res.data.data.least_lease;
                         that.tremPirce = Number(res.data.data.day_rent) * Number(res.data.data.least_lease);
                         that.showNoData = false;
                         that.totalPrice = Number(that.tremPirce);
@@ -398,7 +423,8 @@ export default {
                 mui.alert("请选择租期", "提示", "确认", "", "div");
                 return false;
             }else{
-                request.lease_time = that.tremVal;
+                console.log(that.tenancy_term)
+                request.lease_time = that.tenancy_term;
             }
             // 判断是否勾选协议
             if(!that.protocol){
@@ -421,7 +447,7 @@ export default {
             that.getData();
         }else if(that.$route.query.order_id != "" && that.$route.query.order_id != undefined){
             that.goRelect(that.$route.query.order_id);
-            that.orderType = false;//不显示联系方式和押金
+            that.orderType = false;//续租--不展示联系方式和押金
         } else {
             that.$router.go(-1);
         }
@@ -584,6 +610,13 @@ export default {
     display: inline-block;
     min-width: 1.35rem;
 }
+.hint{
+    font-size:.26rem;
+}
+.orange{
+    color:#FF9D1D;
+}
+
 
 .contact-bottom {
     padding: 0.17rem;
@@ -601,6 +634,26 @@ export default {
 .price {
     font-size: 0.26rem;
     color: #333333;
+}
+.chunk{
+    display: inline-block;
+    width:.65rem;
+    line-height:.35rem;
+    font-size:.26rem;
+    text-align:center;
+    color:#FFFFFF;
+}
+.gray-bg{
+    background:#bdbcbc;
+}
+.red-bg{
+    background:#ff2a2a;
+}
+.unit-price{
+    text-decoration: line-through;
+    color:#999999;
+    font-size:.26rem;
+    margin-right:.3rem;
 }
 
 /* 商品数量 */
@@ -744,11 +797,6 @@ export default {
     background: -moz-linear-gradient(#fd915f, #fc534a);
     background: linear-gradient(to right, #fd915f, #fc534a);
 }
-
-.hint {
-    font-size: 0.22rem;
-}
-
 .orderShade {
     position: fixed;
     left: 0;

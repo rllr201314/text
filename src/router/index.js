@@ -61,6 +61,11 @@ export default new Router({
       component: (resolve) => require(['@/components/buy/Pay'], resolve)
     },
     {
+      path: '/allinpay', //支付 -- 支付方式
+      name: 'Allinpay',
+      component: (resolve) => require(['@/components/buy/Allinpay'], resolve)
+    },
+    {
       path: '/arbitration', //仲裁
       name: 'Arbitration',
       component: (resolve) => require(['@/components/buy/Arbitration'], resolve)

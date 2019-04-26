@@ -71,13 +71,6 @@ axios.interceptors.response.use(
     return Promise.reject(error.response)
   });
 
-  // 刷新路由让页面回到顶部
-// router.afterEach((to, from, next) => {
-//   window.scrollTo(0, 0);
-//   document.documentElement.scrollTop = document.body.scrollTop = 0;
-// })
-
-
 Vue.prototype.$axios = axios;
 Vue.config.productionTip = false
 

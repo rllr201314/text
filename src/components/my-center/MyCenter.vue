@@ -520,6 +520,7 @@ export default {
         },
         logoutFn(){
             var that = this;
+            console.log(that.$store.state.time)
             that.$axios.post(process.env.API_HOST+"user_logout").then((res)=>{
                 // console.log(res);
                 if(res.status == 200){
@@ -527,7 +528,6 @@ export default {
                         that.$router.push({name:'HomePage'});
                         that.$store.commit('del_token');
                         that.$store.commit('del_mobile');
-                        that.$store.commit('del_time');
                     }
                     mui.toast(res.data.msg, {duration: "short",type: "div"});
                 }

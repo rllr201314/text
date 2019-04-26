@@ -215,7 +215,6 @@ export default {
             })
         },
         isProFn(data){
-            console.log(data);
             var that = this;
             that.$router.push({name:'RentPlaceOrder',query:{order_id:that.goodsInfo.order_id}})
             // 跳下单--------------------------------------------

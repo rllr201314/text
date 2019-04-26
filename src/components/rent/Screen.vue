@@ -138,12 +138,12 @@
                         <div class="screen-strip-box" v-for="(item,index) in screen_info.isInsurance" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('isInsurance',item.value)"></div>
                     </div>
                 </div>
-                <!-- <div class="screen-type-strip">
-                    <div class="screen-strip-left">等级</div>
+                <div class="screen-type-strip" v-if="screen_info.rent_package != ''">
+                    <div class="screen-strip-left">分类等级</div>
                     <div class="screen-strip-right">
-                        <div class="screen-strip-box-level" v-for="(item,index) in screen_info.levelType" :key="index" v-text="item.name" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('levelType',item.value)"></div>
+                        <div class="screen-strip-box" v-for="(item,index) in screen_info.rent_package" :key="index" v-text="item.name+item.alias" :class="item.ischeck?'red-bg':'black-bg'" @click="seleScreen('rent_package',item.value)"></div>
                     </div>
-                </div> -->
+                </div>
                 <div v-for="(item,index) in filtrate_extend" :key="index">
                     <div v-if="item.value_type == 3" class="screen-type-strip">
                         <div class="screen-strip-left" v-text="item.title"></div>
@@ -282,6 +282,7 @@ export default {
                 ],
                 // 等级
                 levelType: [],
+                rent_package:[],//租号类型
             },
             extend_attribute:[],//所有的属性
             operation_attribute:[],// 可操作的属性 is_menu == 1 最多显示三个
@@ -364,6 +365,7 @@ export default {
             that_r.role_level = that.role_level;
             that_r.person_sex = that.person_sex;
             that_r.faction_id = that.faction_id;
+            that_r.rent_package = that.is_rentPackage;
             that_r.page = 1;
             $('#minirefresh').scrollTop(0);
             that.$emit('getData',that_r,that.show_extend);
@@ -374,6 +376,7 @@ export default {
             var that_r = that.request;
             that_r.is_stage = null;
             that_r.is_safe = null;
+            that_r.rent_package = null;
             that_r.is_compact = null;
             that_r.sell_type = null;
             that_r.is_bind = null;
@@ -387,6 +390,7 @@ export default {
             that.request.faction_id = null;
             that.is_stage = null;
             that.is_safe = null;
+            that.is_rentPackage = null;
             that.is_compact = null;
             that.sell_type = null;
             that.is_bind = null;
@@ -458,6 +462,9 @@ export default {
                 }
                 that.extend_box = false;
             }
+            if(that.param.rent_status == 2 && that.$parent.showRentPackage){
+                that.$parent.showRentPackageFn(false)
+            }
         },
         // 下一栏刷新
         bottomScreen(id){
@@ -487,6 +494,9 @@ export default {
                     continue;
                 }
                 operation[i].ischeck = false;
+            }
+            if(that.param.rent_status == 2 && that.$parent.showRentPackage){
+                that.$parent.showRentPackageFn(false)
             }
         },
         // 隐藏---遮罩+筛选框
@@ -1018,10 +1028,9 @@ export default {
                 that.is_stage = that.setScreen(seleTag,that.screen_info.isStages);
             } else if (flag == "isInsurance") {//保险情况
                 that.is_safe = that.setScreen(seleTag,that.screen_info.isInsurance);
-            } 
-            // else if (flag == "levelType") {//等级
-            //     that.role_level = that.setScreen(seleTag,that.screen_info.levelType);
-            // }
+            } else if (flag == "rent_package"){
+                that.is_rentPackage = that.setScreen(seleTag,that.screen_info.rent_package);
+            }
         },
         setScreen(seleTag,data,val = 'value'){
             var result = null;
@@ -1082,9 +1091,11 @@ export default {
                             that.screen_info.faction = that.setConfig(res.data.data.faction);
                             that.screen_info.sellType = that.setConfig(res.data.data.sell_type);
                             that.screen_info.levelType = that.setConfig(res.data.data.role_level);
+                            if(that.param.rent_status == 2){
+                                that.screen_info.rent_package = that.setConfig(res.data.data.rent_package);
+                            }
 
                             that.extend_attribute = [],that.hide_attribute = [],that.operation_attribute = [],that.filtrate_extend = [];
-                            // debugger;
                             if(res.data.data.extend_attribute != ''){
                                 that.extend_attribute = res.data.data.extend_attribute;
                                 for(var i in that.extend_attribute){

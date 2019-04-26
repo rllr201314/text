@@ -18,9 +18,9 @@
                                 <div class="boutique" v-if="item.is_recommend == 1">精</div>
                                 <div class="title-ico deal-ico" v-if="item.rent_method == 1 || item.rent_method == 3">成品号</div>
                                 <div class="title-ico rent-ico" v-if="item.rent_method == 2 || item.rent_method == 3">出租</div>
-                                <div class="account-type" v-if="item.client_id == 1">安卓</div>
-                                <div class="account-ios" v-else-if="item.client_id == 2">苹果</div>
-                                <div class="account-type" v-else-if="item.client_id == 3">安卓混服</div>
+                                    <img class="account-type" v-if="item.client_id == 1 || item.client_id == 3" src="../../static/img/rent/android.png" alt="安卓">
+                                    <img class="account-type" v-else-if="item.client_id == 2" src="../../static/img/rent/ios.png" alt="苹果">
+
                                 <div class="area" v-text="item.area_name"></div>
                             </div>
                             <div class="goods-strip-content">
@@ -367,40 +367,9 @@ export default {
     background: linear-gradient(to right, #ff9090, #ff687a);
 }
 .account-type {
-    text-align: center;
-    /* width:.7rem; */
-    padding: 0 0.1rem;
-    height: 0.36rem;
-    background: -webkit-linear-gradient(
-        120deg,
-        rgba(104, 224, 218, 1),
-        rgba(104, 223, 222, 1),
-        rgba(132, 240, 178, 1),
-        rgba(73, 209, 202, 1)
-    );
-    background: -o-linear-gradient(
-        120deg,
-        rgba(104, 224, 218, 1),
-        rgba(104, 223, 222, 1),
-        rgba(132, 240, 178, 1),
-        rgba(73, 209, 202, 1)
-    );
-    background: -moz-linear-gradient(
-        120deg,
-        rgba(104, 224, 218, 1),
-        rgba(104, 223, 222, 1),
-        rgba(132, 240, 178, 1),
-        rgba(73, 209, 202, 1)
-    );
-    background: linear-gradient(
-        120deg,
-        rgba(104, 224, 218, 1),
-        rgba(104, 223, 222, 1),
-        rgba(132, 240, 178, 1),
-        rgba(73, 209, 202, 1)
-    );
-    display: inline-block;
-    margin-right: 0.1rem;
+    width:.42rem;
+    height:.42rem;
+    vertical-align:middle;
 }
 .account-ios {
     text-align: center;
