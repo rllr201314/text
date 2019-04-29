@@ -9,6 +9,7 @@ export default new Vuex.Store({
     isLogin: '',
     time: '',
     hint:1,
+    isRefresh:false,//判断是否强制刷新，列表调转详情缓存 刷新完要重新请求
     // 提交的数据
     list_request: {
       page: 1,
@@ -63,5 +64,8 @@ export default new Vuex.Store({
     sub_hint(state){
       state.hint = 0;
     },
+    set_refresh(state,opt){
+      state.isRefresh = opt;
+    }
   }
 })

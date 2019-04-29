@@ -146,8 +146,7 @@
                 order_sn.order_id = order_id;
                 order_sn.time = time;
                 order_sn = JSON.stringify(order_sn);
-                sessionStorage.s_order = order_sn;
-                this.$router.push({name:'PayInstallment',query:{order:order_sn}});
+                this.$router.push({name:'PayInstallment',params:{order_info:order_sn}});
             }
         },
         mounted(){

@@ -77,7 +77,7 @@
                 <span class="rent-item-right">超低租金、优质号，时间越长优惠越多</span>
             </div>
             <div class="rent-item">
-                <span class="rent-item-left">C抵押金：</span>
+                <span class="rent-item-left">C低押金：</span>
                 <span class="rent-item-right">大量优质号源、折扣等你来租</span>
             </div>
             <div class="rent-item">

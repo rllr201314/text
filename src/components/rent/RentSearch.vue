@@ -92,7 +92,7 @@
                     <span class="rent-item-right">超低租金、优质号，时间越长优惠越多</span>
                 </div>
                 <div class="rent-item">
-                    <span class="rent-item-left">C抵押金：</span>
+                    <span class="rent-item-left">C低押金：</span>
                     <span class="rent-item-right">大量优质号源、折扣等你来租</span>
                 </div>
                 <div class="rent-item">
@@ -290,50 +290,33 @@ export default {
             }]
         }
     },
-    mounted() {
-        var that = this;
-        var opt = sessionStorage.getItem("opt");
-        if(that.$route.params.opt){
-            that.request = JSON.parse(JSON.stringify(that.$store.state.list_request));
-            that.request.rent_status = 2;
-            if (opt == that.$route.params.opt) {
-                that.request.category_id = opt;
-                that.$refs.mychild.getConfig(opt,that.request);
-            } else {
-                that.$router.go(-1);
-            }
-        }else{
-            that.$router.go(-1);
-        }
-    },
     activated(){
         var that = this;
-        if(!that.$route.meta.isBack){
+        // 判断是否从详情返回 或者 是否强制刷新过
+        if(!that.$route.meta.isBack || !that.$store.state.isRefresh){
             that.request = JSON.parse(JSON.stringify(that.$store.state.list_request));
             that.request.rent_status = 2;
-            var opt = sessionStorage.getItem("opt");
-            if(that.$route.params.opt){
-                if (opt == that.$route.params.opt) {
-                    that.request.category_id = opt;
-                    that.$refs.mychild.getConfig(opt,that.request);
-                } else {
-                    that.$router.go(-1);
-                }
-            }
+            that.request.category_id = that.$route.params.opt;
+            that.$refs.mychild.getConfig(that.$route.params.opt,that.request);
         }else{
             $('#minirefresh').scrollTop(that.$route.meta.scroll_top);
         }
         that.$route.meta.isBack = false;
     },
     beforeRouteLeave(to,from,next){
-        from.meta.scroll_top = $('#minirefresh').scrollTop();
-        next();
         if(this.showRentPackage){
             this.showRentPackage = false;
         }
+        // 跳转详情页的话存储当前页面浏览位置 并且改变存储页面是否强制刷新属性
+        if(to.name == 'Details'){
+            from.meta.scroll_top = $('#minirefresh').scrollTop();
+            this.$store.commit('set_refresh',true)
+        }
+        next();
     },
     beforeRouteEnter(to,from,next){
-        if(from.path.indexOf('/details/') > -1){
+        // 从详情页面返回
+        if(from.name == 'Details'){
             to.meta.isBack=true;
         }
         next();

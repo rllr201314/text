@@ -362,7 +362,7 @@
                 <span class="rent-item-right">超低租金、优质号，时间越长优惠越多</span>
             </div>
             <div class="rent-item">
-                <span class="rent-item-left">C抵押金：</span>
+                <span class="rent-item-left">C低押金：</span>
                 <span class="rent-item-right">大量优质号源、折扣等你来租</span>
             </div>
             <div class="rent-item">
@@ -631,11 +631,6 @@ export default {
             }
             that.bargain_price = "";
             that.showShade = false;
-            // var mo = function(e) {
-            //     e.preventDefault();
-            // };
-            // document.body.style.overflow = ""; //出现滚动条
-            // document.removeEventListener("touchmove", mo, false);
         },
         // 购买
         buyFn() {

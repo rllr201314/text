@@ -151,6 +151,7 @@
                     stages = JSON.stringify(stages);
                     sessionStorage.stage = stages;
                     that.$router.push({name:'Pay',query:{stage:stages}})
+                    // that.$router.push({name:'PayTest',query:{stage:stages}})
                 }
             },
             // 判断是不是JSON字符串
@@ -170,21 +171,11 @@
         },
         mounted(){
             var that = this;
-            if(that.$route.query.order){
-                var order_sn = sessionStorage.s_order;
-                var sn_order = that.$route.query.order;
-                if(sn_order == order_sn){
-                    if(that.isobjStr(sn_order)){
-                        that.order_info = JSON.parse(sn_order)
-                        that.time = that.order_info.time;
-                        that.flag = that.order_info.type;
-                        that.getData();
-                    }else{
-                        that.$router.go(-1);
-                    }
-                }else{
-                    that.$router.go(-1);
-                }
+            if(that.$route.params.order_info){
+                that.order_info = JSON.parse(that.$route.params.order_info)
+                that.time = that.order_info.time;
+                that.flag = that.order_info.type;
+                that.getData();
             }else{
                 that.$router.go(-1);
             }

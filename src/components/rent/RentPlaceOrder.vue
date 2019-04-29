@@ -342,10 +342,8 @@ export default {
                         if (res.data.code == 200) {
                             that.goodsInfo = res.data.data;
                             that.tenancy_term = res.data.data.least_lease;
-                            // that.tremVal = res.data.data.least_lease;
                             that.tremPirce = Number(res.data.data.day_rent) * Number(res.data.data.least_lease);
                             that.showNoData = false;
-                            // that.totalPrice = Number(that.tremPirce) + Number(res.data.data.cash);
                             that.extend_attribute = that.goodsInfo.goods_attribute;
                         }else if(res.data.code == 400){
                             that.showNoData = true;
@@ -370,9 +368,9 @@ export default {
                     if (res.data.code == 200) {
                         that.goodsInfo = res.data.data;
                         that.tenancy_term = res.data.data.least_lease;
-                        // that.tremVal = res.data.data.least_lease;
                         that.tremPirce = Number(res.data.data.day_rent) * Number(res.data.data.least_lease);
                         that.showNoData = false;
+                        that.extend_attribute = that.goodsInfo.goods_attribute;
                         that.totalPrice = Number(that.tremPirce);
                     }else if(res.data.code == 400){
                         that.showNoData = true;
@@ -419,11 +417,10 @@ export default {
                 request.order_id = that.$route.query.order_id;
             }
 
-            if(that.tremVal == ''){
+            if(that.tenancy_term == ''){
                 mui.alert("请选择租期", "提示", "确认", "", "div");
                 return false;
             }else{
-                console.log(that.tenancy_term)
                 request.lease_time = that.tenancy_term;
             }
             // 判断是否勾选协议

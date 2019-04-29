@@ -119,18 +119,15 @@
         <div class="share" v-show="show_pop"></div>
         <div class="nextBtn" @click="goPayFn" v-text="ok_text" v-if="showBtn"></div>
         <Loading v-if="showLoading"></Loading>
-        <!-- <div id="pay_card"></div> -->
-        <!-- <PaySuccess v-if="showPaySuccess"></PaySuccess> -->
         <LinkServer v-bind:is_line="is_line" class="fixedRight"></LinkServer>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
 import Loading from "@/components/multi/Loading";
-// import PaySuccess from "@/components/multi/PaySuccess";
 import LinkServer from "@/components/common/LinkServer";
 export default {
-    name: "Pay",
+    name: "PayTest",
     data() {
         return {
             componentsData: {
@@ -213,7 +210,6 @@ export default {
         Header,
         Loading,
         LinkServer,
-        // PaySuccess
     },
     methods: {
         Balace(flag){
@@ -537,10 +533,14 @@ export default {
                                     break;
                                 }
                             }
+                            // console.log(type_id);
                             if(type_id == 3){
                                 // 跳转页面 第三方接口
-                                $('#pay_card').html(res.data.data.pay_url);//银联
-                                $('#pay_form').submit();//银联
+                                // $('#pay_card').html(res.data.data.pay_url);//银联
+                                // $('#pay_form').submit();//银联
+                                // 通联支付
+                                console.log(that.$route.query)
+                                // that.$router.push({name:'AllinpaySelect',query:that.$route.query})
                             }else if(type_id == 2){
                                 // 支付宝
                                 that.$router.push({name:'AliPay',query:{url:res.data.data.pay_url}})
@@ -571,6 +571,12 @@ export default {
                                 that.$router.push({name:'BuyTradingStatus'});
                             },'div');
                         }
+                    }else if(res.data.code == 220){//通联支付 没有签约 没绑定银行卡
+                        mui.toast(res.data.msg, { duration: "short", type: "div" });
+                        that.$router.push({name:'AllinpayAddInfo',query:that.$route.query})
+                    }else if(res.data.code == 221){//通联支付 签约 选择银行卡
+                        mui.toast(res.data.msg, { duration: "short", type: "div" });
+                        that.$router.push({name:'AllinpaySelect',query:that.$route.query})
                     }else if(res.data.code == 202){
                         // 未实名认证
                         mui.alert(res.data.msg,'提示','确认',function(){
@@ -627,7 +633,15 @@ export default {
             var that = this;
             if(!that.is_line && !that.off_line){
                 that.$router.push({name: "BuyOrderAll" });//未支付
-            }else{
+            }
+            else if(that.is_line && that.payment_num == 3){//判断线上支付 && 银联支付
+                if(that.fee_info.bank_sign == 1){//已签约选卡
+                    that.$router.push({name:'AllinpaySelect',query:that.$route.query})
+                }else if(that.fee_info.bank_sign == 2){//未签约 添加信息
+                    that.$router.push({name:'AllinpayAddInfo',query:that.$route.query})
+                }
+            }
+            else{
                 // 调支付
                 that.showLoading = true;
                 that.getData();

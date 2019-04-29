@@ -72,6 +72,7 @@ axios.interceptors.response.use(
   });
 
 Vue.prototype.$axios = axios;
+Vue.prototype.baseURL = process.env.API_HOST;
 Vue.config.productionTip = false
 
 import common from '../static/js/common.js'

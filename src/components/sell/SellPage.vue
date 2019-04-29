@@ -16,15 +16,15 @@
                     <img src="../../../static/img/delete_ico.png" alt="">
                 </div>
                 <div class="search-history-content">
-                    <div class="search-history-tag" v-for="(item,index) in historyNameList" v-text="item.name"></div>
+                    <div class="search-history-tag" v-for="(item,index) in historyNameList" v-text="item.name" :key="index"></div>
                 </div>
             </div>
             <div class="game-classfiy-wrap">
                 <div class="game-classfiy-top">
-                    <div class="game-classfiy-top-cell" v-for="item in gameClassfiy" v-text="item.name" :class="item.sele?'red-bg':''" @click="seleGameClass(item.name)"></div>
+                    <div class="game-classfiy-top-cell" v-for="(item,index) in gameClassfiy" v-text="item.name" :class="item.sele?'red-bg':''" @click="seleGameClass(item.name)" :key="index"></div>
                 </div>
                 <div class="game-classfiy-bottom">
-                    <div class="game-classfiy-bottom-list" v-for="item in gameList" @click="goSellOption(item.category_id)">
+                    <div class="game-classfiy-bottom-list" v-for="(item,index) in gameList" @click="goSellOption(item.category_id)" :key="index">
                         <div class="list-left">
                             <img :src="item.game_logo" :alt="item.game_name">
                         </div>
@@ -158,46 +158,34 @@ export default {
             if (that.user_type == "/buy" || that.user_type == "/buy/") {
                 //买
                 that.$router.push({ name: "GoodScreen", params: { opt:opt } });
-                sessionStorage.opt = opt;
             } else if (that.user_type == "/sell") {
                 //卖
                 if (token == undefined || token == "") {
-                    mui.confirm(
-                        "请先登陆",
-                        "提示",
-                        ["取消", "确认"],
+                    mui.confirm("请先登陆","提示",["取消", "确认"],
                         function(e) {
                             if (e.index == 1) {
                                 that.$router.push({
                                     name: "AccountLogin"
                                 });
                             }
-                        },
-                        "div"
-                    );
+                        },"div");
                 } else {
                     that.$router.push({ name: "SellOption", query: { opt } });
                 }
             } else if (that.user_type == "/rent") {
                 //租
                 that.$router.push({ name: "RentSearch", params: { opt:opt } });
-                sessionStorage.opt = opt;
             } else if (that.user_type == "/rent-out" || that.user_type == "/rent-out/") {
                 //出租
                 if (token == undefined || token == "") {
-                    mui.confirm(
-                        "请先登陆",
-                        "提示",
-                        ["取消", "确认"],
+                    mui.confirm("请先登陆","提示",["取消", "确认"],
                         function(e) {
                             if (e.index == 1) {
                                 that.$router.push({
                                     name: "AccountLogin"
                                 });
                             }
-                        },
-                        "div"
-                    );
+                        },"div");
                 } else {
                     that.$axios
                         .post(process.env.API_HOST + "contract_rent")

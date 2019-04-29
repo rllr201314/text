@@ -683,8 +683,9 @@ export default {
             request.goods_id = that.$route.query.goods_id;
             // console.log(request);
             var request = JSON.stringify(request)
-            that.$router.push({name:'Pay',query:{request}})
             sessionStorage.order_info = request;
+            that.$router.push({name:'Pay',query:{request}})
+            // that.$router.push({name:'PayTest',query:{request}})
         }
     },
     mounted() {

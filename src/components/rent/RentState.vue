@@ -30,13 +30,9 @@
                                 <div class="text-right" v-if="goodsInfo.server_name != null" v-text=" goodsInfo.area_name+'>'+goodsInfo.server_name"></div>
                                 <div class="text-right" v-else v-text="goodsInfo.area_name"></div>
                             </div>
-                            <div class="goods-info-strip">
-                                <div class="text-left">等级</div>
-                                <div class="text-right"><span v-text="goodsInfo.role_level"></span>级</div>
-                            </div>
-                            <div class="goods-info-strip">
-                                <div class="text-left">门派</div>
-                                <div class="text-right" v-text="goodsInfo.faction_name"></div>
+                            <div class="goods-info-strip" v-for="(item,index) in goodsInfo.goods_attribute" :key="index">
+                                <div class="text-left" v-text="item.title"></div>
+                                <div class="text-right" v-text="item.value"></div>
                             </div>
                             <div class="goods-info-strip">
                                 <div class="text-left">商品类型</div>
