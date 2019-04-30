@@ -16,13 +16,12 @@
                     </div>
                     <div class="opt-cell" v-show="is_line">
                         <div class="showPay">
-                            <div class="pay-strip" v-for="item in online" @click="selePayFun(item.key)" :class="item.issele?'red-border':'black-border'">
+                            <div class="pay-strip" v-for="(item,index) in online" :key="index" @click="selePayFun(item.key)" :class="item.issele?'red-border':'black-border'">
                                 <img :src="item.imgsrc" alt="">
                             </div>
                         </div>
                         <div class="online-hint">
                             因<span v-text="charge.name"></span>支付渠道规定收取<span v-text="charge.rate"></span>手续费，故加收<span class="red-color" v-text="charge.price"></span><span class="red-color">元</span>
-                            <!-- 由<span v-text="charge.name"></span>加收<span class="red-color" v-text="charge.price"></span><span class="red-color">元</span>手续费 -->
                         </div>
                     </div>
                     <div class="opt-cell remind" v-show="!is_line && off_line">
@@ -119,18 +118,15 @@
         <div class="share" v-show="show_pop"></div>
         <div class="nextBtn" @click="goPayFn" v-text="ok_text" v-if="showBtn"></div>
         <Loading v-if="showLoading"></Loading>
-        <!-- <div id="pay_card"></div> -->
-        <!-- <PaySuccess v-if="showPaySuccess"></PaySuccess> -->
         <LinkServer v-bind:is_line="is_line" class="fixedRight"></LinkServer>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
 import Loading from "@/components/multi/Loading";
-// import PaySuccess from "@/components/multi/PaySuccess";
 import LinkServer from "@/components/common/LinkServer";
 export default {
-    name: "Pay",
+    name: "PayTest",
     data() {
         return {
             componentsData: {
@@ -163,7 +159,6 @@ export default {
             showPaySuccess:false,
             old_price:0,//价格
             deposit_sum:0,//押金
-            remaining_sum:0,//余额
             deposit_price:0,//扣除押金
             remaining_price:0,//扣除余额
             showBtn:true,
@@ -181,25 +176,25 @@ export default {
             price:null,
             is_line: true, //线上true 线下false
             off_line:true,//未选择线下true 选择线下false
-            payment_num:3,//默认银联
+            payment_method:3,//默认银联
             showOffline:true,//显示线下付款
             online: [
                 {
                     key: 3,
                     issele: true,
-                    imgsrc: "./static/img/order/visa-1.png",
+                    imgsrc: "../../../static/img/order/visa-1.png",
                     name:'银联'
                 },
                 {
                     key: 2,
                     issele: false,
-                    imgsrc: "./static/img/order/zfbpay.png",
+                    imgsrc: "../../../static/img/order/zfbpay.png",
                     name:'支付宝'
                 },
                 {
                     key: 1,
                     issele: false,
-                    imgsrc: "./static/img/order/wxpay.png",
+                    imgsrc: "../../../static/img/order/wxpay.png",
                     name:'微信'
                 }
             ],
@@ -213,7 +208,6 @@ export default {
         Header,
         Loading,
         LinkServer,
-        // PaySuccess
     },
     methods: {
         Balace(flag){
@@ -351,7 +345,7 @@ export default {
             for (var i in payAll) {
                 if (opt == payAll[i].key) {
                     payAll[i].issele = true;
-                    that.payment_num = opt;
+                    that.payment_method = opt;
                     that.charge.name = payAll[i].name;
                     continue;
                 }
@@ -416,82 +410,27 @@ export default {
             var request = {};
             var url;
             // 判断是下单过来还是订单过来
-            if(that.goods_info && !that.order_id){//详情
+            if(that.goods_info && !that.order_id){//成品号下单
                 url = 'order_confirm';
-                var data = that.goods_info;
-                request.goods_id = data.goods_id;
-                request.mobile = data.phone;
-                request.wx = data.wx;
-                request.is_compact = data.compact;
-                request.is_safe = data.safe;
-                if(that.is_line){
-                    request.payment_method = that.payment_num;
-                }else{
-                    request.payment_method = 4;//选择线下支付
-                }
-                if(data.down_price){
-                    request.stage_method = data.down_price;
-                    request.stage_number = data.stage_num;
-                    if(data.down_price == 3){
-                        request.down_payment = data.down_payment;
-                    }
-                }
-            }else if(!that.goods_info && that.order_id){//待支付订单
+                request = that.returnRequest(url,that.goods_info);
+            }else if(!that.goods_info && that.order_id){//待支付订单 成品号 && 藏宝阁
                 url = 'order_trading';
-                request.order_id = that.order_id;
-                if(that.is_line){
-                    request.payment_method = that.payment_num;
-                }else{
-                    request.payment_method = 4;//选择线下支付
-                }
+                request = that.returnRequest(url,that.order_id);
             }else if(that.stage_info){//分期支付
-                url = 'do_stage'
-                request.order_id = that.stage_info.order;
-                request.stage_method = that.stage_info.way;
-                request.stage_money = that.stage_info.stage_money?that.stage_info.stage_money:0;
-                if(that.is_line){
-                    request.payment_method = that.payment_num;
-                }else{
-                    request.payment_method = 4;//选择线下支付
-                }
+                url = 'do_stage';
+                request = that.returnRequest(url,that.stage_info);
             }else if(that.rent_info){//租号下单
-                var data = that.rent_info
                 url = 'rent_order';
-                request.mobile = data.phone;
-                request.wx = data.wx;
-                request.lease_time = data.lease_time;
-                request.goods_id = data.goods_id;
-                if(that.is_line){
-                    request.payment_method = that.payment_num;
-                }else{
-                    request.payment_method = 4;//选择线下支付
-                }
+                request = that.returnRequest(url,that.rent_info);
             }else if(that.rent_unpaid_o){//租号未支付
                 url = 'rent_trading';
-                request.order_id = that.rent_unpaid_o;
-                if(that.is_line){
-                    request.payment_method = that.payment_num;
-                }else{
-                    request.payment_method = 4;//选择线下支付
-                }
+                request = that.returnRequest(url,that.rent_unpaid_o);
             }else if(that.relet_info){//续租
-                var data = that.relet_info;
                 url = "relet_order";
-                request.order_id = data.order_id;
-                request.lease_time = data.lease_time;
-                if(that.is_line){
-                    request.payment_method = that.payment_num;
-                }else{
-                    request.payment_method = 4;//选择线下支付
-                }
-            }else if(that.relet_unpaid_o){//续租
+                request = that.returnRequest(url,that.relet_info);
+            }else if(that.relet_unpaid_o){//续租未支付
                 url = 'relet_trading';
-                request.order_id = that.relet_unpaid_o;
-                if(that.is_line){
-                    request.payment_method = that.payment_num;
-                }else{
-                    request.payment_method = 4;//选择线下支付
-                }
+                request = that.returnRequest(url,that.relet_unpaid_o);
             }
             // 判断有没有用余额支付
             if(that.isbalace &&　Number(that.remaining_price) > 0){
@@ -537,10 +476,14 @@ export default {
                                     break;
                                 }
                             }
+                            // console.log(type_id);
                             if(type_id == 3){
                                 // 跳转页面 第三方接口
-                                $('#pay_card').html(res.data.data.pay_url);//银联
-                                $('#pay_form').submit();//银联
+                                // $('#pay_card').html(res.data.data.pay_url);//银联
+                                // $('#pay_form').submit();//银联
+                                // 通联支付
+                                console.log(that.$route.query)
+                                // that.$router.push({name:'AllinpaySelect',query:that.$route.query})
                             }else if(type_id == 2){
                                 // 支付宝
                                 that.$router.push({name:'AliPay',query:{url:res.data.data.pay_url}})
@@ -571,6 +514,12 @@ export default {
                                 that.$router.push({name:'BuyTradingStatus'});
                             },'div');
                         }
+                    }else if(res.data.code == 220){//通联支付 没有签约 没绑定银行卡
+                        mui.toast(res.data.msg, { duration: "short", type: "div" });
+                        that.$router.push({name:'AllinpayAddInfo',query:that.$route.query})
+                    }else if(res.data.code == 221){//通联支付 签约 选择银行卡
+                        mui.toast(res.data.msg, { duration: "short", type: "div" });
+                        that.$router.push({name:'AllinpaySelect',query:that.$route.query})
                     }else if(res.data.code == 202){
                         // 未实名认证
                         mui.alert(res.data.msg,'提示','确认',function(){
@@ -589,58 +538,85 @@ export default {
                 console.log(err);
             })
         },
-        // 订单过来调取余额和需要支付的价格 和订单时间 第三方手续费
-        initTime(order_id){
-            var that = this;
-            that.$axios.post(process.env.API_HOST+"payment_info",{
-                order_id:order_id
-            }).then((res)=>{
-                if(res.status == 200){
-                    if(res.data.code == 200){
-                        that.fee_info = res.data.data;
-                        var data = that.online;
-                        for(var i in data){
-                            if(data[i].issele == true){
-                                if(data[i].name == "银联"){
-                                    that.price = that.fee_info.chinapay_amount;
-                                    that.old_price = that.fee_info.chinapay_amount;
-                                    that.charge.name = data[i].name;
-                                    that.charge.price = that.fee_info.chinapay_charge;
-                                    that.charge.rate = that.fee_info.chinapay_rate;
-                                    break;
-                                }
-                            }
-                        }
-                        that.remaining_sum = Number(res.data.data.remain_amount);
-                        that.hint = '（'+res.data.msg+'）';
-                    }else{
-                        mui.alert(res.data.msg,'提示','确认',function(){
-                            that.$router.go(-1);
-                        },'div')
-                    }
-                }
-            }).catch((err)=>{
-                console.log(err)
-            })
-        },
+        
         goPayFn(){
             var that = this;
             if(!that.is_line && !that.off_line){
                 that.$router.push({name: "BuyOrderAll" });//未支付
-            }else{
+            }
+            // else if(that.is_line && that.payment_method == 3){//判断线上支付 && 银联支付
+            //     if(that.fee_info.bank_sign == 1){//已签约选卡
+            //         that.$router.push({name:'AllinpaySelect',query:that.$route.query})
+            //     }else if(that.fee_info.bank_sign == 2){//未签约 添加信息
+            //         that.$router.push({name:'AllinpayAddInfo',query:that.$route.query})
+            //     }
+            // }
+            else{
                 // 调支付
                 that.showLoading = true;
                 that.getData();
             }
         },
-        // 分期手续费
-        getStageFee(request){
-            var that = this;
-            that.$axios.post(process.env.API_HOST+'stage_fee',{
-                order_id:request.order,
-                stage_method:request.way,
-                stage_money:request.stage_money?request.stage_money:0,
-            }).then((res)=>{
+        returnRequest(url,request){
+            let that = this;
+            let data = {};
+            //选择线上还是线下支付
+            if(url == 'fee_info' || url == 'order_confirm'){//成品号get金额 || 成品号下单***
+                data.goods_id = request.goods_id;
+                data.is_compact = request.is_compact;
+                data.is_safe = request.is_safe;
+                // 判断是否分期 不分期就没传值过来
+                if(request.stage_method){
+                    data.stage_method = request.stage_method;
+                    data.stage_number = request.stage_number;
+                    if(data.stage_method == 3){//自定义分期
+                        data.down_payment = request.down_payment;//自定义分期金额
+                    }
+                }
+                if(url == 'order_confirm'){//成品号下单 加参数
+                    data.mobile = request.mobile;
+                    data.wx = request.wx;
+                }
+            }else if(url == 'payment_info' || url == 'order_trading'){//成品号未支付get金额 || 成品号未支付下单***
+                data.order_id = request.order_id;
+            }else if(url == 'stage_fee' || url == 'do_stage'){//分期支付get金额 || 分期支付下单***
+                data.order_id = request.order_id;
+                data.stage_method = request.stage_method;//还款方式 
+                // 日分期 还款金额
+                if(request.stage_money){
+                    data.stage_money = request.stage_money;
+                }
+            }else if(url == 'rent_fee' || url == 'rent_order'){//租号get金额 || 租号下单***
+                data.goods_id = request.goods_id;
+                data.lease_time = request.lease_time;
+                if(url == 'rent_order'){//成品号下单 加参数
+                    data.mobile = request.mobile;
+                    data.wx = request.wx;
+                }
+            }else if(url == 'rent_payment' || url == 'rent_trading' ||  url == 'relet_trading'){//租号&&续租 未支付get金额 || 租号&&续租未支付下单***
+                data.order_id = request.order_id;
+            }else if(url == 'relet_fee' || url == 'relet_order'){//续租get金额 ||续租下单***
+                data.order_id = request.order_id;
+                data.lease_time = request.lease_time;
+                if(url == 'relet_order'){//续租下单 加参数
+                    data.mobile = request.mobile;
+                    data.wx = request.wx;
+                }
+            }
+
+            // 支付方式 ***
+            if(that.is_line){
+                data.payment_method = that.payment_method;
+            }else{
+                data.payment_method = 4;//选择线下支付
+            }
+            return data;
+        },
+        Fee(url,request){
+            let that = this;
+            var data = that.returnRequest(url,request);
+            that.$axios.post(`${that.baseURL+url}`,data).then((res) => {
+                console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
                         that.fee_info = res.data.data;
@@ -656,6 +632,10 @@ export default {
                                     break;
                                 }
                             }
+                        }
+                        //成品号未支付 租号未支付 
+                        if(request.pay_type == 2 || request.pay_type == 5){
+                            that.hint = '（'+res.data.msg+'）';
                         }
                     }else{
                         mui.alert(res.data.msg,'提示','确认',function(){
@@ -667,149 +647,43 @@ export default {
                 console.log(err)
             })
         },
-        // 获取线上支付手续费
-        getFee(request){
-            var that = this;
-            // console.log(request);
-            var down_payment,stage_number,stage_method;
-            if(request.down_payment){//首付金额
-                down_payment = request.down_payment;
-            }
-            if(request.stage_num){//分期期数
-                stage_number = request.stage_num;
-            }
-            if(request.down_price){//下单方式
-                stage_method = request.down_price;
-            }
-            that.$axios.post(process.env.API_HOST+'fee_info',{
-                goods_id:request.goods_id,
-                is_compact:request.compact,
-                is_safe:request.safe,
-                stage_method:stage_method,
-                stage_number:stage_number,
-                down_payment:down_payment
-            }).then((res)=>{
-                // console.log(res);
-                if(res.status == 200){
-                    if(res.data.code == 200){
-                        that.fee_info = res.data.data;
-                        var data = that.online;
-                        for(var i in data){
-                            if(data[i].issele == true){
-                                if(data[i].name == "银联"){
-                                    that.price = that.fee_info.chinapay_amount;
-                                    that.old_price = that.fee_info.chinapay_amount;
-                                    that.charge.name = data[i].name;
-                                    that.charge.price = that.fee_info.chinapay_charge;
-                                    that.charge.rate = that.fee_info.chinapay_rate;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+    },
+    mounted() {
+        var that = this;
+        let info =sessionStorage.getItem('info');
+        if(that.$route.params.info == info){
+            if(that.isobjStr(info)){
+                let info_type = JSON.parse(info);
+                console.log(info_type)
+                if(info_type.pay_type == 1){//成品号下单
+                    that.goods_info = info_type;
+                    that.Fee('fee_info',info_type)
+                }else if(info_type.pay_type == 2 || info_type.pay_type == 8){//未支付订单 成品号 && 藏宝阁
+                    that.order_id = info_type;
+                    that.Fee('payment_info',info_type);
+                }else if(info_type.pay_type == 3){//分期支付
+                    that.stage_info = info_type;
+                    that.Fee('stage_fee',info_type)
+                }else if(info_type.pay_type == 4){//租号
+                    that.rent_info = info_type;
+                    that.Fee('rent_fee',info_type)
+                }else if(info_type.pay_type == 5){//租号未支付
+                    that.rent_unpaid_o = info_type;
+                    that.Fee('rent_payment',info_type)
+                }else if(info_type.pay_type == 6){//续租
+                    that.relet_info = info_type;
+                    that.Fee('relet_fee',info_type);
+                }else if(info_type.pay_type == 7){//续租未支付
+                    that.relet_unpaid_o = info_type;
+                    that.Fee('rent_payment',info_type);
+                }else if(!info_type.pay_type){
+                    that.$router.go(-1);
                 }
-            }).catch((err)=>{
-                console.log(err)
-            })
-        },
-        // 租号下单
-        getRentFee(data){
-            var that = this;
-            that.$axios.post(process.env.API_HOST+'rent_fee',{
-                goods_id:data.goods_id,
-                lease_time:data.lease_time
-            }).then((res)=>{
-                if(res.status == 200){
-                    if(res.data.code == 200){
-                        that.fee_info = res.data.data;
-                        var data = that.online;
-                        for(var i in data){
-                            if(data[i].issele == true){
-                                if(data[i].name == "银联"){
-                                    that.price = that.fee_info.chinapay_amount;
-                                    that.old_price = that.fee_info.chinapay_amount;
-                                    that.charge.name = data[i].name;
-                                    that.charge.price = that.fee_info.chinapay_charge;
-                                    that.charge.rate = that.fee_info.chinapay_rate;
-                                    break;
-                                }
-                            }
-                        }
-                    }else if(res.data.code == 400){
-                            mui.alert(res.data.msg,'提示','确认',function(){
-                                that.$router.go(-1);
-                            },'div')
-                    }
-                }
-            }).catch((err)=>{
-                console.log(err);
-            })
-        },
-        // 租号订单未支付
-        getRentPayment(id){
-            var that =this;
-            that.$axios.post(process.env.API_HOST+'rent_payment',{
-                order_id:id
-            }).then((res)=>{
-                if(res.data.code == 200){
-                        that.fee_info = res.data.data;
-                        var data = that.online;
-                        for(var i in data){
-                            if(data[i].issele == true){
-                                if(data[i].name == "银联"){
-                                    that.price = that.fee_info.chinapay_amount;
-                                    that.old_price = that.fee_info.chinapay_amount;
-                                    that.charge.name = data[i].name;
-                                    that.charge.price = that.fee_info.chinapay_charge;
-                                    that.charge.rate = that.fee_info.chinapay_rate;
-                                    break;
-                                }
-                            }
-                        }
-                        that.remaining_sum = Number(res.data.data.remain_amount);
-                        that.hint = '（'+res.data.msg+'）';
-                    }else{
-                        mui.alert(res.data.msg,'提示','确认',function(){
-                            that.$router.go(-1);
-                        },'div')
-                    }
-            }).catch((err)=>{
-                console.log(err);
-            })
-        },
-        // 租号续租
-        getReletFee(data){
-            var that = this;
-            that.$axios.post(process.env.API_HOST+'relet_fee',{
-                order_id:data.order_id,
-                lease_time:data.lease_time
-            }).then((res)=>{
-                if(res.status == 200){
-                    if(res.data.code == 200){
-                        that.fee_info = res.data.data;
-                        var data = that.online;
-                        for(var i in data){
-                            if(data[i].issele == true){
-                                if(data[i].name == "银联"){
-                                    that.price = that.fee_info.chinapay_amount;
-                                    that.old_price = that.fee_info.chinapay_amount;
-                                    that.charge.name = data[i].name;
-                                    that.charge.price = that.fee_info.chinapay_charge;
-                                    that.charge.rate = that.fee_info.chinapay_rate;
-                                    break;
-                                }
-                            }
-                        }
-                    }else if(res.data.code == 400){
-                            mui.alert(res.data.msg,'提示','确认',function(){
-                                that.$router.go(-1);
-                            },'div')
-                    }
-                }
-            }).catch((err)=>{
-                console.log(err);
-            })
+            }
+        }else{
+            that.$router.go(-1);
         }
+        
     },
     beforeRouteLeave(to, from, next) {
         if(to.path == '/place-order' || to.path == '/rent-orders'){
@@ -820,88 +694,6 @@ export default {
             next(); 
         }
     },
-    mounted() {
-        var that = this;
-        if(that.$route.query.request){//详情
-            var b = sessionStorage.getItem("order_info");
-            var request = that.$route.query.request;
-            if (request == b) {
-                if (that.isobjStr(request)) {
-                    that.goods_info = JSON.parse(request);
-                    that.getFee(that.goods_info);
-                    that.remaining_sum = Number(that.goods_info.remaining_sum);
-                } else {
-                    that.$router.go(-1);
-                }
-            } else {
-                that.$router.go(-1);
-            }
-        }else if(that.$route.query.order_info){//未支付订单
-            var unpaid_o = sessionStorage.getItem('unpaid_o');
-            var order_id = that.$route.query.order_info;
-            if(order_id == unpaid_o){
-                if(that.isobjStr(order_id)){
-                    that.order_id = JSON.parse(order_id).order_id;
-                    that.initTime(that.order_id);
-                }else{
-                    that.$router.go(-1);
-                }
-            }else{
-                that.$router.go(-1);
-            }
-        }else if(that.$route.query.stage){// 分期支付
-            that.showOffline = false;
-            var s_stages = sessionStorage.getItem('stage');
-            var stages = that.$route.query.stage;
-            if(s_stages == stages){
-                if(that.isobjStr(stages)){
-                    that.stage_info = JSON.parse(stages);
-                    that.getStageFee(that.stage_info);
-                    that.remaining_sum = Number(that.stage_info.remaining_sum);
-
-                }else{
-                    that.$router.go(-1);
-                }
-            }else{
-                that.$router.go(-1);
-            }
-        }else if(that.$route.query.rent){//租号
-            var lease_time = sessionStorage.getItem('lease_time');
-            var rent = that.$route.query.rent;
-            if(rent == lease_time){
-                if(that.isobjStr(rent)){
-                    that.rent_info = JSON.parse(rent);
-                    that.getRentFee(that.rent_info);
-                }
-            }
-        }else if(that.$route.query.rent_unpaid_o){//未支付租号
-            var order_id = that.$route.query.rent_unpaid_o;
-            var rent_unpaid_o = sessionStorage.getItem('rent_unpaid_o');
-            if(order_id == rent_unpaid_o){
-                that.rent_unpaid_o = rent_unpaid_o;
-                that.getRentPayment(rent_unpaid_o);
-            }
-        }else if(that.$route.query.relet){//续租
-            var lease_time = sessionStorage.getItem('lease_time');
-            var relet = that.$route.query.relet;
-            if(relet == lease_time){
-                if(that.isobjStr(relet)){
-                    that.relet_info = JSON.parse(relet);
-                    that.getReletFee(that.relet_info);
-                }
-            }
-        }else if(that.$route.query.relet_unpaid_o){//续租未支付
-            var relet_unpaid_o = sessionStorage.getItem('relet_unpaid_o');
-            var order_id = that.$route.query.relet_unpaid_o;
-            if(order_id == relet_unpaid_o){
-                that.relet_unpaid_o = relet_unpaid_o;
-                that.getRentPayment(relet_unpaid_o);
-            }
-        }else{
-            that.$router.go(-1);
-        }
-        
-    }
 };
 </script>
 <style scoped>

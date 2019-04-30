@@ -410,7 +410,7 @@ export default {
                         mui.alert("您输入的手机号不正确","提示","确定","","div");
                         return false;
                     }
-                    request.phone = that.phone;
+                    request.mobile = that.phone;
                 }
                 request.goods_id = that.$route.query.goods_id;//下单的goods_id
             }else{
@@ -428,13 +428,14 @@ export default {
                 mui.alert("请阅读并同意《看个号平台交易协议》","提示","确定","","div");
                 return false;
             }
-            request = JSON.stringify(request)
             if(that.orderType){
-                that.$router.push({name:'Pay',query:{rent:request}})
+                request.pay_type = 4;//租号下单****
             }else{
-                that.$router.push({name:'Pay',query:{relet:request}})
+                request.pay_type = 6;//续租下单***
             }
-            sessionStorage.lease_time = request;
+            request = JSON.stringify(request)
+            sessionStorage.info = request;
+            that.$router.push({name:'Pay',params:{info:request}})
             
         }
     },

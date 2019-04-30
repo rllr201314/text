@@ -122,21 +122,25 @@ export default {
             this.showUnpaidShare = true;
         },
         goPayFn(order_id,price,flag,status){
+            let that = this;
             if(flag == 1){
                 var all = {}
                 all.order_id = order_id;
-                all.price = price;
+                all.pay_type = 2;//成品号未支付
                 var order_info = JSON.stringify(all);
-                sessionStorage.unpaid_o = order_info;
-                this.$router.push({name:'Pay',query:{order_info}})
+                sessionStorage.info = order_info;//改
+                that.$router.push({name:'Pay',params:{info:order_info}})
             }else if(flag == 2){
+                var pay_info = {};
+                pay_info.order_id = order_id;
                 if(status == 1){//续租未支付
-                    sessionStorage.relet_unpaid_o = order_id;
-                    this.$router.push({name:'Pay',query:{relet_unpaid_o:order_id}});
+                    pay_info.pay_type = 7;//续租未支付下单 ****
                 }else if(status == 2){//租号未支付
-                    sessionStorage.rent_unpaid_o = order_id;
-                    this.$router.push({name:'Pay',query:{rent_unpaid_o:order_id}});
+                    pay_info.pay_type = 5;//租号未支付下单****
                 }
+                pay_info = JSON.stringify(pay_info)
+                sessionStorage.info = pay_info;//改
+                that.$router.push({name:'Pay',params:{info:pay_info}})
             }else if(flag == 4){
                 this.$router.push({name:'CbgPlaceOrder',query:{order_id:order_id}})
             }

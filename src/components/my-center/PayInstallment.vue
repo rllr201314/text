@@ -117,41 +117,37 @@
                 })
             },
             goPay(){
-                var that = this;
+                let that = this;
+                let stages = {};
+                stages.pay_type = 3;//分期支付
                 if(that.flag == 1){
                     // that.repayment_amount
+
                     if(that.repayment_amount != ''){
                         if(that.repayment_amount > that.payData.money){
                             mui.alert('还款金额大于剩余本金','提示','确认','','div')
                         }else{
-                            var stages = {};
-                            stages.way = 3;
+                            stages.stage_method = 3;
                             stages.stage_money = that.repayment_amount;//还款金额
-                            stages.order = that.order_info.order_id;
-                            stages.remaining_sum = that.allData.remaining_sum;
+                            stages.order_id = that.order_info.order_id;
                             stages = JSON.stringify(stages);
-                            sessionStorage.stage = stages;
-                            that.$router.push({name:'Pay',query:{stage:stages}})
+                            sessionStorage.info = stages;
+                            that.$router.push({name:'Pay',params:{info:stages}})
                         }
                     }else{
                         mui.alert('请输入还款金额','提示','确认','','div')
                     }
                 }else if(that.flag == 2){
                     // 分期支付
-                    var stages = {};
                     if(that.isCurrent){//支付方式
-                        stages.way = 1;
-                        stages.price = that.allData.next_stage.total_money;
+                        stages.stage_method = 1;
                     }else{
-                        stages.way = 2;
-                        stages.price = that.allData.end_stage.total_money;
+                        stages.stage_method = 2;
                     }
-                    stages.order = that.order_info.order_id;
-                    stages.remaining_sum = that.allData.remaining_sum;
+                    stages.order_id = that.order_info.order_id;
                     stages = JSON.stringify(stages);
-                    sessionStorage.stage = stages;
-                    that.$router.push({name:'Pay',query:{stage:stages}})
-                    // that.$router.push({name:'PayTest',query:{stage:stages}})
+                    sessionStorage.info = stages;
+                    that.$router.push({name:'Pay',params:{info:stages}})
                 }
             },
             // 判断是不是JSON字符串

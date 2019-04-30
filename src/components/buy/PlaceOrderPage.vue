@@ -235,7 +235,6 @@ export default {
             },
             protocol: true, //阅读协议
             showNoData:true,
-            remaining_sum:'',
             goodsInfo: {},
             stage: {},
             num: 1,
@@ -576,7 +575,6 @@ export default {
                             that.showNoData = false;
                             that.goodsInfo = res.data.data.goods_info;
                             that.stage = res.data.data.stage;
-                            that.remaining_sum = res.data.data.remaining_sum;
                             that.extend_attribute = res.data.data.goods_info.goods_attribute;
                             // 可以选择分期的话默认 首付30% 分一期 判断可购合同还是保险
                             that.stageInfo = that.stage.first_one_interest;
@@ -638,7 +636,7 @@ export default {
                     mui.alert("您输入的手机号不正确","提示","确定","","div");
                     return false;
                 }
-                 request.phone = that.phone;
+                 request.mobile = that.phone;
             }
             // 判断是否勾选协议
             if(!that.protocol){
@@ -647,45 +645,43 @@ export default {
             }
             // 分期还是一口价 true分期
             if(that.operaStage.stage){
-                request.down_price = that.down_price;//选择 首付金额
-                if(request.down_price == 3){//自定义金额
+                request.stage_method = that.down_price;//选择 首付金额
+                if(request.stage_method == 3){//自定义金额
                     if(!that.show_periods){
                         mui.alert("请确认你输入的自定义价格","提示","确定","","div");
                         return false;
                     }
                     request.down_payment = that.custom_price;
                 }
-                request.stage_num = that.stage_num;
+                request.stage_number = that.stage_num;
             }
             // 是否购买合同或者保险
             if(that.showSafe){
                 if(that.operaSafe.safe){//买保险
-                    request.safe = 1;
-                    request.compact = 2;
+                    request.is_safe = 1;
+                    request.is_compact = 2;
                 }else{
-                    request.safe = 2;
-                    request.compact = 2;
+                    request.is_safe = 2;
+                    request.is_compact = 2;
                 }
             }else if(that.showCompact){
                 if(that.operaSafe.safe){//买合同
-                    request.safe = 2;
-                    request.compact = 1;
+                    request.is_safe = 2;
+                    request.is_compact = 1;
                 }else{
-                    request.safe = 2;
-                    request.compact = 2;
+                    request.is_safe = 2;
+                    request.is_compact = 2;
                 }
             }else{
-                request.safe = 2;
-                request.compact = 2;
+                request.is_safe = 2;
+                request.is_compact = 2;
             }
-            request.price = that.totalPrice;
-            request.remaining_sum = that.remaining_sum;
             request.goods_id = that.$route.query.goods_id;
-            // console.log(request);
+            request.pay_type = 1;//成品号 改
+
             var request = JSON.stringify(request)
-            sessionStorage.order_info = request;
-            that.$router.push({name:'Pay',query:{request}})
-            // that.$router.push({name:'PayTest',query:{request}})
+            sessionStorage.info = request;//改
+            that.$router.push({name:'Pay',params:{info:request}})
         }
     },
     mounted() {

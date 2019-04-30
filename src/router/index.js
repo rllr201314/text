@@ -56,15 +56,10 @@ export default new Router({
       component: (resolve) => require(['@/components/buy/PlaceOrderPage'], resolve)
     },
     {
-      path: '/pay', //支付 -- 支付方式
+      path: '/pay/:info', //支付 -- 支付方式
       name: 'Pay',
       component: (resolve) => require(['@/components/buy/Pay'], resolve)
     },
-    // {
-    //   path: '/pay-test/:info', //支付 -- 支付方式
-    //   name: 'PayTest',
-    //   component: (resolve) => require(['@/components/buy/PayTest'], resolve)
-    // },
     // {
     //    path: '/allinpay-addinfo', //通联支付 -- 添加信息/银行卡
     //    name: 'AllinpayAddInfo',

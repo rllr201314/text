@@ -839,10 +839,17 @@ export default {
 }
 .left-strip {
     display: inline-block;
+    position: relative;
+    min-width: 4rem;
 }
-.left-strip img {
+/* .left-strip img {
     margin-right: 0.1rem;
+} */
+.left-strip span{
+    position:absolute;
+    left:.5rem;
 }
+
 .right-opt {
     float: right;
 }

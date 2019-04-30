@@ -187,10 +187,13 @@ export default {
                 mui.alert("请阅读并同意《看个号平台交易协议》","提示","确定","","div");
                 return false;
             }
-            var all = {};all.order_id = that.$route.query.order_id;
+            var all = {};
+            all.pay_type = 8;//藏宝阁
+            all.order_id = that.$route.query.order_id;
             var order_info = JSON.stringify(all);
-            sessionStorage.unpaid_o = order_info;
-            this.$router.push({name:'Pay',query:{order_info}})
+            sessionStorage.info = order_info;
+            that.$router.push({name:'Pay',params:{info:order_info}});
+
         }
     },
     mounted() {
