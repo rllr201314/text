@@ -34,10 +34,12 @@
                                                 <span class="goods-price" v-if="ind.goods_price > 0">￥
                                                     <span v-text="ind.goods_price"></span>
                                                 </span>
-                                                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-if="ind.rent_method == 2 && ind.rent_package == 1" src="../../../../static/img/rent/A.png" alt="免租金">
-                                                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="ind.rent_method == 2 && ind.rent_package == 2" src="../../../../static/img/rent/B.png" alt="低租金">
-                                                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="ind.rent_method == 2 && ind.rent_package == 3" src="../../../../static/img/rent/C.png" alt="低押金">
-                                                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="ind.rent_method == 2 && ind.rent_package == 4" src="../../../../static/img/rent/D.png" alt="免押金">
+                                                <div class="rent-package-wrap" v-for="(x,i) in ind.package_info" :key="i"  @click.stop="showRentPackageFn(true)">
+                                                    <img class="rent_package" v-if="x.value == 1" src="../../../../static/img/rent/A.png" :alt="x.alias">
+                                                    <img class="rent_package" v-else-if="x.value == 2" src="../../../../static/img/rent/B.png" :alt="x.alias">
+                                                    <img class="rent_package" v-else-if="x.value == 3" src="../../../../static/img/rent/C.png" :alt="x.alias">
+                                                    <img class="rent_package" v-else-if="x.value == 4" src="../../../../static/img/rent/D.png" :alt="x.alias">
+                                                </div>
                                             </div>
                                             </div>
                                             <div class="rent-des" v-if="ind.rent_method == 2 || ind.rent_method == 3" v-text="ind.goods_description"></div>
@@ -375,9 +377,14 @@ export default {
     color: #fa5856;
     font-size: 0.36rem;
 }
+.rent-package-wrap{
+    display: inline-block;
+    vertical-align: middle;
+}
 .rent_package{
     width:.93rem;
     height:.36rem;
+    margin-right:.1rem;
 }
 .browse-cell-con-bot{
     line-height: .6rem;

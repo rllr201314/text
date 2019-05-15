@@ -303,9 +303,7 @@ export default {
                 if(Number(val) >= Number(data.least_lease)){
                     that.tremPirce = Number(data.day_rent) * val;
                     that.tenancy_term = val;
-                    // that.tremVal = val;
                     that.$refs.inp_time.value = '';
-                    // that.totalPrice = that.tremPirce + Number(data.cash);//租金 + 押金
                     that.hiddenFn();
                 }else{
                     mui.alert('租期不得小于最短租期','提示','确认','','div');
@@ -313,9 +311,7 @@ export default {
             }else{
                 that.tremPirce = Number(data.day_rent) * val;//租金/天 * 天数
                 that.tenancy_term = val;
-                // that.tremVal = val;
                 that.$refs.inp_time.value = '';
-                // that.totalPrice = that.tremPirce;
                 that.hiddenFn();
             }
             
@@ -334,7 +330,8 @@ export default {
             var that = this;
             that.$axios
                 .post(process.env.API_HOST+"rent_info", {
-                    goods_id: that.$route.query.goods_id
+                    goods_id: that.$route.query.goods_id,
+                    package_id:that.$route.query.package_id?that.$route.query.package_id:'',
                 })
                 .then(res => {
                     // console.log(res);
@@ -415,6 +412,9 @@ export default {
                 request.goods_id = that.$route.query.goods_id;//下单的goods_id
             }else{
                 request.order_id = that.$route.query.order_id;
+            }
+            if(that.$route.query.package_id){
+                request.package_id = that.$route.query.package_id;
             }
 
             if(that.tenancy_term == ''){

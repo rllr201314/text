@@ -56,7 +56,7 @@
             <div class="pay-item" v-show="!choose">
                 <div class="item-left">CVV2：</div>
                 <div class="item-right">
-                    <input type="number" class="center-input" placeholder="银行卡背面后三位数" v-model="request.cvv">
+                    <input type="number" class="center-input" placeholder="银行卡背面后三位数" v-model="cvv">
                     <span class="show-legeng" @click="imgCvv2 = !imgCvv2">图例</span>
                 </div>
             </div>
@@ -76,23 +76,41 @@
                     <div class="code-price" v-if="false">￥<span v-text="codePrice"></span></div>
                     <input type="number" v-model="code" placeholder="请输入验证码"><span class="code-get-btn" v-text="codeText" @click="getCode()"></span>
                     <div class="code-hint">验证码已发送至<span v-text="codePhone"></span>手机上</div>
-                    <div class="btn-all code-enter-btn" @click="enCodeFn()">确认</div>
+                    <div class="code-enter-btn" @click="enCodeFn()">确认</div>
                 </div>
                 <div class="code-bot">
                     <img src="../../../static/img/pay/close.png" alt="关闭" @click="closeCodeFn()">
                 </div>
             </div>
         </div>
+        <Loading class="loading" v-show="showLoad"></Loading>
     </div>
 </template>
 <script>
 import Header from "@/components/home-page/Header";
+import Loading from "@/components/multi/Loading"
 export default {
     name: "AllinpayAddInfo",
     components: {
-        Header
+        Header,Loading
     },
     watch:{
+        code(newVal,oldVal){
+            if(newVal.length >= 10){
+                this.code = newVal.slice(0,10)
+            }
+        },
+        cvv(newVal,oldVal){
+            if(newVal.length > 4){
+                this.cvv = newVal.slice(0,3);
+            }
+        }
+    },
+    mounted(){
+        let info = this.$route.query.p_method;
+        if(info != sessionStorage.p_method){
+            this.$router.go(-1);
+        }
     },
     methods:{
         // 关闭输入验证码页面
@@ -102,18 +120,31 @@ export default {
         // 确认验证码
         enCodeFn(){
             var that = this;
-            that.request.is_info = that.is_info;
             if(!that.code){
                 mui.alert("请输入验证码","提示","确认","","div");
                 return false;
             }
-            that.request.is_info = that.is_info;
+            that.showLoad = true;
+            that.request.sign_info = that.sign_info;
             that.request.sms_code = that.code;
             that.$axios.post(`${that.baseURL}confirm_sign`,that.request).then((res)=>{
                 if(res.status == 200){
+                    that.showLoad = false;
                     if(res.data.code == 200){
-                        that.$router.push({path:'/pay',query:that.$route.query})
+                        var data = res.data.data;
+                        // 签约完成有返回银行卡id就直接跳支付 调用支付接口
+                        if(data.bank_id){
+                            var info = JSON.parse(that.$route.query.p_method);
+                            info.request.bank_id = data.bank_id;
+                            info.bank_name = data.bank_name;//不在提交数据里,所以放在提交数据外
+                            info = JSON.stringify(info);
+                            sessionStorage.p_method = info;
+                            that.$router.push({name:'Pay',params:{info:info}});
+                        }else{
+                            that.$router.push({name:'AllinpaySelect',query:that.$route.query})
+                        }
                     }else if(res.data.code == 400 || res.data.code == 211){
+                        that.code = '';
                         mui.alert(res.data.msg,"提示","确认","","div");
                     }
                 }
@@ -124,12 +155,14 @@ export default {
         getCode(){
             var that = this;
             if(that.isGetCode){
-                that.request.is_info = that.is_info;
+                that.request.sign_info = that.sign_info;
                 that.$axios.post(`${that.baseURL}sign_sms`,that.request).then((res) => {
                     if(res.status == 200){
                         if(res.data.code == 200){
                             that.timeFn();
                             mui.toast(res.data.msg, { duration: "short", type: "div" });
+                        }else if(res.data.code == 400){
+                            mui.alert(res.data.msg,"提示","确认","","div");
                         }
                     }
                 }).catch((err) => {
@@ -158,10 +191,6 @@ export default {
             var that = this;
             that.valid_time = ['',''];//清空信用卡有效期
             for(var i in that.request){
-                if(i == 'valid_time'){
-                    that.request[i] = '';
-                    continue;
-                }
                 that.request[i] = '';
             }
             if(flag == 'credit'){
@@ -200,36 +229,44 @@ export default {
                 return false;
             }
             for(var i in that.request){
-                if(i == 'valid_time' || i == 'cvv' || i == 'is_info' || i == 'sms_code'){
+                if(i == 'valid_time' || i == 'cvv'|| i == 'sms_code'){
                     delete that.request[i];
                 }
             }
             // 信用卡判断填写这些信息
             if(!that.choose){
                 // 有效期
-                if(that.request.valid_time[0] == '' || that.request.valid_time[1] == ''){
+                if(that.valid_time[0] == '' || that.valid_time[1] == ''){
                     mui.alert("请输入有效期","提示","确认","","div");
                     return false;
                 }else{
-                    that.request.valid_time = that.valid_time.join('')
+                    if(that.valid_time[0].length < 2 || that.valid_time[1].length < 2 || Number(that.valid_time[0]) > 12){
+                        mui.alert("信用卡有效期不正确","提示","确认","","div");
+                        return false;
+                    }else{
+                        that.request.valid_time = that.valid_time.join('');
+                    }
                 }
                 // 信用卡安全码
-                if(!that.request.cvv){
+                if(that.cvv){
+                    that.request.cvv = that.cvv;
+                }else{
                     mui.alert("请输入CVV2","提示","确认","","div");
                     return false;
                 }
             }
-
+            that.showLoad = true;
             that.$axios.post(`${that.baseURL}apply_sign`,that.request).then((res) => {
                 if(res.status == 200){
+                    that.showLoad = false;
                     if(res.data.code == 200){
-                        that.is_info = res.data.data.is_info;
+                        that.sign_info = res.data.data.sign_info;
                         that.codePhone = String(that.request.mobile).substr(0,3)+'****'+String(that.request.mobile).substr(7);
                         that.code = '';
                         that.showCode = true;
                         that.timeFn();
                         mui.toast(res.data.msg, { duration: "short", type: "div" });
-                    }else if(res.data.code == 400){
+                    }else if(res.data.code == 210 || res.data.code == 400){
                         mui.alert(res.data.msg,'提示','确认','','div');
                     }
                 }
@@ -248,25 +285,25 @@ export default {
                 title: "支付",
                 goBack: ""
             },
+            showLoad:false,//显示loading
             choose:true,//true 借记卡 false 信用卡
             
-            imgCvv2:false,imgDate:false,
             showCode:false,
+            imgCvv2:false,imgDate:false,
             codePrice:'2000',
             code:'',//验证码
             isGetCode:true,
             codeText:'获取验证码',//获取验证码按钮文字显示
             codePhone:'',
-            valid_time:['',''],//信用卡有效期
-            is_info:'',
+            valid_time:['',''],//信用卡有效期x
+            cvv:'',//信用卡安全码
+            sign_info:'',
             request:{
                 card_type:'',//类型
-                id_no:'610524199601014567',//身份证号
-                bank_no:'6212833600001427456',//银行卡号
-                true_name:'1',//开户行
-                mobile:'15615611111',//银行预留号码
-                valid_time:'',
-                cvv:'',//信用卡安全码
+                id_no:'',//身份证号
+                bank_no:'',//银行卡号
+                true_name:'',//开户行
+                mobile:'',//银行预留号码
             },
         };
     }
@@ -354,14 +391,12 @@ export default {
     }
     .btn{
         width:5.18rem;
-        // height:.67rem;
-        font-size:.32rem;
+        height:1.04rem;
+        font-size:.28rem;
         color:#F5F5F5;
         text-align:center;
-        line-height: .67rem;
-        margin: .5rem auto 0;
-        background: url(../../../static/img/pay/btn.png) no-repeat;
-        background-size:  5.18rem .67rem;
+        line-height: .89rem;
+        margin: .5rem auto 0;background:url(../../../static/img/pay/code-btn-bg.png) no-repeat;background-size:5.22rem 1.04rem;
         
     }
     .pop{
@@ -416,26 +451,36 @@ export default {
                 }
             }
             input{
-                width:3.77rem;
-                height:.89rem;
-                margin: 0 .16rem 0 .3rem;
+                width:2.54rem;
+                height:.60rem;
+                margin: 0 .66rem 0 .67rem;
                 vertical-align: middle;
+                background:#F0F0F0;
+                border:0;font-size:.24rem;
+            }
+            input::placeholder{
+                color:#BCBCBC;
             }
             .code-get-btn{
-                width:2rem;line-height: .89rem;
-                font-size:.32rem;
+                width:1.96rem;line-height: .6rem;
+                font-size:.22rem;
                 text-align:center;
                 display:inline-block;
-                background:#ff4e3a;
-                color:#FFFFFF;
+                background:#ffffff;
+                color:#FE7649;
                 vertical-align: middle;
-                border-radius: .02rem;
+                border-radius: .15rem;
+                border:1px solid #FE7649;
             }
             .code-hint{
-                padding-left:.3rem;font-size:.24rem;color:#5E5E5E;line-height: .6rem;
+                padding-left:.67rem;font-size:.24rem;color:#999999;line-height: .6rem;
+                span{
+                    color:#666666;
+                }
             }
             .code-enter-btn{
-                color:#FFFFFF;font-size:.32rem;background:url(../../../static/img/pay/code-btn-bg.png) no-repeat;background-size:5.22rem .89rem;border-radius: .02rem;margin-top:.8rem;
+                color:#FFFFFF;font-size:.28rem;background:url(../../../static/img/pay/code-btn-bg.png) no-repeat;background-size:5.22rem 1.04rem;border-radius: .02rem;margin-top:.8rem;
+                width:5.22rem;height:1.04rem;text-align:center;line-height:.89rem;margin:.2rem auto 0;
             }
         }
         .code-bot{
@@ -446,9 +491,6 @@ export default {
             }
         }
     }
-    .btn-all{
-        width:5.22rem;height:.89rem;text-align:center;line-height:.89rem;margin:0 auto;
-    }
 }
 input{
     margin:0;
@@ -458,6 +500,9 @@ input{
 input::placeholder{
     color:#AAAAAA;
     font-size:.2rem;
+}
+.loading{
+    z-index:4;
 }
 </style>
 

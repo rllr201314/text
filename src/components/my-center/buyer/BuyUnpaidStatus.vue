@@ -72,7 +72,7 @@ export default {
                     showShare: 3, //1搜索2分享3菜单
                     showBg: true, //是否显示背景
                     title: "未支付订单",
-                    
+                    goBack:2,
                 }
             },
             showUnpaidBox: false, //分期选项显示

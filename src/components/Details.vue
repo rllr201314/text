@@ -8,10 +8,6 @@
                 <div class="title-boutique" v-if="detailData.is_recommend == 1">精</div>
                 <div class="title-ico deal-ico" v-if="detailData.rent_method == 1">成品号</div>
                 <div class="title-ico rent-ico" v-if="detailData.rent_method == 2">租号</div>
-                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-if="detailData.rent_method == 2 && detailData.rent_package == 1" src="../../static/img/rent/A.png" alt="免租金">
-                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="detailData.rent_method == 2 && detailData.rent_package == 2" src="../../static/img/rent/B.png" alt="低租金">
-                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="detailData.rent_method == 2 && detailData.rent_package == 3" src="../../static/img/rent/C.png" alt="低押金">
-                <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="detailData.rent_method == 2 && detailData.rent_package == 4" src="../../static/img/rent/D.png" alt="免押金">
                 <div class="title-view-history">
                     <img src="../../static/img/goods-details/view_count_ico.png" alt="">
                     <span>浏览次数</span>
@@ -27,18 +23,25 @@
                     <div>
                         <img src="../../static/img/rent/rent-ico.png" alt="">
                         <span>租金</span>
-                        <span class="red-color">￥</span><span class="goods_price" v-text="detailData.day_rent"></span>/<span v-text="detailData.rent_unit"></span>
+                        <span class="red-color">￥</span><span class="goods_price" v-text="day_rent"></span>/<span v-text="detailData.rent_unit"></span>
                     </div>
                     <div>
                         <img src="../../static/img/rent/pledge-ico.png" alt="">
                         <span>押金</span>
-                        <span>￥</span><span v-text="detailData.cash"></span>
+                        <span>￥</span><span v-text="cash"></span>
                     </div>
                     <div>
                         <img src="../../static/img/rent/short-ico.png" alt="">
                         <span>最短租期</span>
-                        <span v-text="detailData.least_lease"></span>
+                        <span v-text="least_lease"></span>
                     </div>
+                </div>
+                <div class="top-hint">请选择套餐类型：</div>
+                <div class="rent-package-wrap" v-for="(item,index) in package_info" :key="index">
+                    <img v-if="item.name == 'A'" :src="item.isSele?'../../static/img/rent/A.png':'../../static/img/rent/nA.png'" :alt="item.alias" class="rent_package" @click="seleRentFn(item.name)">
+                    <img v-else-if="item.name == 'B'" :src="item.isSele?'../../static/img/rent/B.png':'../../static/img/rent/nB.png'" :alt="item.alias" class="rent_package" @click="seleRentFn(item.name)">
+                    <img v-else-if="item.name == 'C'" :src="item.isSele?'../../static/img/rent/C.png':'../../static/img/rent/nC.png'" :alt="item.alias" class="rent_package" @click="seleRentFn(item.name)">
+                    <img v-else-if="item.name == 'D'" :src="item.isSele?'../../static/img/rent/D.png':'../../static/img/rent/nD.png'" :alt="item.alias" class="rent_package" @click="seleRentFn(item.name)">
                 </div>
                 <div class="upTime">
                     <span>发布时间：</span>
@@ -266,10 +269,12 @@
                     <div class="goods-des" v-text="item.goods_title"></div>
                     <div class="goods-price" >
                         <span v-if="item.rent_method == 1">￥<span v-text="item.goods_price"></span></span>
-                        <img class="rent_package" @click.stop="showRentPackageFn(true)" v-if="detailData.rent_method == 2 && detailData.rent_package == 1" src="../../static/img/rent/A.png" alt="免租金">
-                        <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="detailData.rent_method == 2 && detailData.rent_package == 2" src="../../static/img/rent/B.png" alt="低租金">
-                        <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="detailData.rent_method == 2 && detailData.rent_package == 3" src="../../static/img/rent/C.png" alt="低押金">
-                        <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="detailData.rent_method == 2 && detailData.rent_package == 4" src="../../static/img/rent/D.png" alt="免押金">
+                        <div class="rent-package-wrap" v-for="(x,i) in item.package_info" :key="i"  @click.stop="showRentPackageFn(true)">
+                            <img class="rent_package" v-if="x.value == 1" src="../../static/img/rent/A.png" :alt="x.alias">
+                            <img class="rent_package" v-else-if="x.value == 2" src="../../static/img/rent/B.png" :alt="x.alias">
+                            <img class="rent_package" v-else-if="x.value == 3" src="../../static/img/rent/C.png" :alt="x.alias">
+                            <img class="rent_package" v-else-if="x.value == 4" src="../../static/img/rent/D.png" :alt="x.alias">
+                        </div>
                     </div>
                     <div v-if="item.rent_method == 2">
                         <div class="goods-strip-bottom">
@@ -424,6 +429,9 @@ export default {
             title:'',
             keywords:'',
             isShowKind:false,//点击显示租号套餐列表
+
+            package_info:[],package_id:'',
+            day_rent:'',cash:'',least_lease:'',
         };
     },
     components: {
@@ -431,7 +439,46 @@ export default {
         Swiper,
         Loading
     },
+    watch:{
+        '$route':'getData',
+        package_info:{
+            handler(newVal, oldVal) {
+                let type = false;
+                let that = this;
+                for(var i in newVal){
+                    if(newVal[i].isSele){
+                        // 设置金额
+                        type = true;
+                        that.day_rent = newVal[i].day_rent;
+                        that.cash= newVal[i].cash;
+                        that.least_lease= newVal[i].least_lease+newVal[i].rent_unit;
+                        that.package_id = newVal[i].package_id;
+                        break;
+                    }
+                }
+                // 不选
+                if(!type){
+                    that.day_rent = that.detailData.day_rent;
+                    that.cash= that.detailData.cash;
+                    that.least_lease= that.detailData.least_lease;
+                    that.package_id = '';//选择套餐的值
+                }
+            },
+            deep: true
+        }
+    },
     methods: {
+        //选择租号类型
+        seleRentFn(name){
+            var that = this;
+            for(var i in that.package_info){
+                if(that.package_info[i].name == name){
+                    that.$set(that.package_info[i], 'isSele', !that.package_info[i].isSele)
+                    continue;
+                }
+                    that.$set(that.package_info[i], 'isSele', false)
+            }
+        },
         // 显示租号分类
         showRentPackageFn(flag){
             if(flag){
@@ -649,10 +696,11 @@ export default {
         rentFn() {
             var that = this;
             if (that.$store.state.token) {
-                that.$router.push({
-                    name: "RentPlaceOrder",
-                    query: { goods_id: that.goods_id }
-                });
+                if(that.package_id != ''){
+                    that.$router.push({name: "RentPlaceOrder",query: { goods_id: that.goods_id,package_id:that.package_id}});
+                }else{
+                    that.$router.push({name: "RentPlaceOrder",query: { goods_id: that.goods_id}});
+                }
             } else {
                 mui.toast("请先登陆", { duration: "short", type: "div" });
                 that.$router.push({ name: "AccountLogin" });
@@ -684,6 +732,9 @@ export default {
                                 that.showNoData = true;
                             } else {
                                 that.showNoData = false;
+                                for(var i in data.goods_info.package_info){
+                                    data.goods_info.package_info[i].isSele = false;
+                                }
                                 that.detailData = data.goods_info;
                                 that.recommendData = data.recommendInfo;
                                 if(that.detailData.goods_images != ""){
@@ -692,6 +743,11 @@ export default {
                                     that.imgList = [];
                                     that.imgList.push({img_url:'./static/img/goods-details/detail_img.png'});
                                 }
+                                that.cash = data.goods_info.cash;//押金
+                                that.least_lease = data.goods_info.least_lease;//最短租期
+                                that.day_rent = data.goods_info.day_rent;//租金
+                                
+                                that.package_info = that.detailData.package_info;
                                 that.$previewRefresh();
                                 that.extend_attribute = data.goods_info.goods_attribute;
                                 for (var i in data.goods_info.account_bind) {
@@ -735,9 +791,6 @@ export default {
                 });
         },
     },
-    watch:{
-        '$route':'getData'
-    },
     mounted() {
         var that = this;
         if (
@@ -774,7 +827,7 @@ export default {
 /* 商品标题 */
 .goods-details-title {
     background: #ffffff;
-    padding: 0.26rem 0.2rem;
+    padding: 0.26rem 0.2rem 0.1rem;
     margin-bottom: 0.2rem;
 }
 .goods-datails-title-top {
@@ -810,10 +863,14 @@ export default {
     background: -moz-linear-gradient(#ff9090, #ff687a);
     background: linear-gradient(to right, #ff9090, #ff687a);
 }
-.rent_package{
+.rent-package-wrap{
+    display: inline-block;
     vertical-align: middle;
+}
+.rent_package{
     width:.93rem;
     height:.36rem;
+    margin-right:.1rem;
 }
 .title-view-history {
     color: #999999;
@@ -856,7 +913,7 @@ export default {
 }
 /* 底部 */
 .goods-strip-bottom {
-    line-height: 0.8rem;
+    line-height: 0.6rem;
     border-top: 1px solid #dcdcdc;
     color: #999999;
     font-size: 0.26rem;
@@ -882,11 +939,15 @@ export default {
     text-overflow:ellipsis;
     white-space: nowrap;
 }
-
+.top-hint{
+    color:#666666;
+    font-size:.2rem;
+    line-height: .6rem;
+}
 .upTime {
     font-size: 0.24rem;
     color: #999999;
-    line-height: 0.4rem;
+    line-height: 0.5rem;
 }
 .title-sellNum {
     font-size: 0.2rem;

@@ -114,13 +114,14 @@ export default {
         seleLink(flag) {
             var that = this;
             if (flag == "rollback") {
+                
                 if (window.history.length <= 1) {
                     that.$router.push({ path: "/" });
                 } else {
                     if (that.showTitle.goBack == 1) {
                         that.$router.push({ name: "HomePage" });
                     } else if (that.showTitle.goBack == 2) {
-                        that.$router.go(-1);
+                        that.$router.push({ name: "MyCenter" });
                     } else {
                         that.$router.go(-1);
                     }

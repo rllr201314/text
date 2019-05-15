@@ -89,10 +89,7 @@ export default {
                 }
                 x++;
             }
-            this.$router.push({
-                name: "Details",
-                params: { goods_id: goods_id }
-            });
+            this.$router.push({name: "Details",params: { goods_id: goods_id }});
         },
         //一键清空
         emptyFun() {
@@ -138,7 +135,11 @@ export default {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var data = res.data.data.data;
-                            that.title = res.data.data.game_name+'交易平台_看个号';
+                            if(res.data.data.game_name == "波克捕鱼"){
+                               that.title = '波克捕鱼_租号_卖号_弹头_机械号_救济金_道具交易_账号出租_官方版_看个号'
+                            }else{
+                                that.title = res.data.data.game_name+'交易平台_看个号';
+                            }
                             that.keywords = res.data.data.game_name+'账号交易'
                             // 上拉加载
                             if (flag == "push") {

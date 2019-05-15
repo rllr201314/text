@@ -117,8 +117,30 @@
         </div>
         <div class="share" v-show="show_pop"></div>
         <div class="nextBtn" @click="goPayFn" v-text="ok_text" v-if="showBtn"></div>
-        <Loading v-if="showLoading"></Loading>
+        <div class="pop" v-show="showCode">
+            <div class="code-box">
+                <div class="code-tit">
+                    <div class="code-tit-top">通联支付</div>
+                    <div class="code-tit-bot" v-text="bank_name"></div>
+                </div>
+                <div class="code-con">
+                    <div class="code-price">￥<span v-text="codePrice"></span></div>
+                    <input type="number" v-model="code" placeholder="请输入验证码"><span class="code-get-btn" v-text="codeText" @click="getCode()"></span>
+                    <div class="code-hint">验证码已发送至<span v-text="codePhone"></span>手机上</div>
+                    <div class="code-enter-btn" @click="enCodeFn()">确认</div>
+                </div>
+                <div class="code-bot">
+                    <img src="../../../static/img/pay/close.png" alt="关闭" @click="closeCodeFn()">
+                </div>
+            </div>
+        </div>
+        <Loading class="loading" v-show="showLoading"></Loading>
         <LinkServer v-bind:is_line="is_line" class="fixedRight"></LinkServer>
+        <div class="pop" v-show="judge_pay">
+            <div class="en-time">
+                支付结果确认中（<span v-text="en_time"></span>）
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -171,7 +193,7 @@ export default {
             ok_text:'前往支付',
             order_num:null,
             order_info:null,
-            showLoading:false,
+            showLoading:true,
             goods_info:null,
             price:null,
             is_line: true, //线上true 线下false
@@ -182,8 +204,8 @@ export default {
                 {
                     key: 3,
                     issele: true,
-                    imgsrc: "../../../static/img/order/visa-1.png",
-                    name:'银联'
+                    imgsrc: "../../../static/img/order/allinpay.png",
+                    name:'通联'
                 },
                 {
                     key: 2,
@@ -202,6 +224,12 @@ export default {
             deposit:false,
             link:null,
             submitData:null,
+            info_type:null,
+            showCode:false,//显示短信的弹框
+            bank_name:'',//选择银行卡和签约银行卡页面返回
+            codePrice:'',code:'',codeText:'获取验证码',codePhone:'',isGetCode:true,
+            judge_pay:false,//判断支付结果
+            en_time:10,//确认支付结果
         };
     },
     components: {
@@ -209,7 +237,118 @@ export default {
         Loading,
         LinkServer,
     },
+    watch:{
+        code(newVal,oldVal){
+            if(newVal.length >= 10){
+                this.code = newVal.slice(0,10)
+            }
+        }
+    },
     methods: {
+        // 关闭输入验证码页面
+        closeCodeFn(){
+            this.showCode = false;
+            this.timeFn();
+            this.$router.replace({path:'/buy-unpaid'})
+        },
+        // 重新获取验证码
+        getCode(){
+            var that = this;
+            if(that.isGetCode){
+                let request = {};
+                request.order_sn = that.order_sn;//订单编号
+                request.bank_id = that.bank_id;
+                request.pay_info = that.pay_info;//返回的支付信息
+                that.$axios.post(`${that.baseURL}pay_sms`,request).then((res) => {
+                    if(res.status == 200){
+                        if(res.data.code == 200){
+                            that.timeFn(true);
+                            that.pay_info = res.data.data.pay_info;
+                            mui.toast(res.data.msg, { duration: "short", type: "div" });
+                        }else if(res.data.code == 400){
+                            mui.alert(res.data.msg,"提示","确认","","div");
+                        }
+                    }
+                }).catch((err) => {
+                    console.log(err)
+                })
+            }
+        },
+        // 确认验证码 银联支付
+        enCodeFn(){
+            var that = this;
+            if(!that.code){
+                mui.alert("请输入验证码","提示","确认","","div");
+                return false;
+            }
+            that.showLoading = true;
+            let request = {};
+            request.bank_id = that.bank_id;
+            request.pay_info = that.pay_info;
+            request.sms_code = that.code;
+            request.order_sn = that.order_sn;
+            that.$axios.post(`${that.baseURL}confirm_pay`,request).then((res)=>{
+                if(res.status == 200){
+                    that.showLoading = false;
+                    if(res.data.code == 200){
+                        that.$router.push({name:'AllinpaySuccess',query:{sum:that.codePrice}});
+                    }else if(res.data.code == 212){
+                        that.pay_info = res.data.data.pay_info;//更新支付信息
+                        mui.alert(res.data.msg,"提示","确认","","div");
+                    }else if(res.data.code == 213){
+                        mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                        that.showCode = false;
+                        that.judge_pay = true;
+                        let time = setInterval(function(){
+                            that.en_time--;
+                            if(that.en_time <= 0){
+                                clearInterval(time);
+                            }
+                        },1000)
+                        setTimeout(function(){
+                            that.$axios.post(`${that.baseURL}pay_search`,{order_sn:res.data.data.order_sn}).then((res) => {
+                                if(res.status == 200){
+                                    if(res.data.code == 200){
+                                        that.$router.push({name:'AllinpaySuccess',query:{sum:that.codePrice}});
+                                    }else if(res.data.code == 400){
+                                        that.$router.push({name:'AllinpayFailed',query:{msg:res.data.msg}})
+                                    }
+                                }
+                            }).catch((err) => {
+                                console.log(err)
+                            })
+                        },6000)
+                    }else if(res.data.code == 214){
+                        that.code = '';
+                        mui.alert(res.data.msg,"提示","确认","","div");
+                    }else if(res.data.code == 400){
+                        that.$router.push({name:'AllinpayFailed',query:{msg:res.data.msg}})
+                    }
+                }
+            }).catch((err)=>{
+                console.log(err)
+            })
+        },
+        // 倒计时
+        timeFn(flag){
+            var that = this;
+            let timer = setInterval(() => {}, 1);
+            for(let i=0;i<timer;i++){
+                clearInterval(i)
+            }
+            if(flag){
+                that.codeText = 60;
+                that.isGetCode = false;
+                let time = setInterval(function() {
+                    that.codeText--;
+                    if (that.codeText <= 0) {
+                        clearInterval(time);
+                        that.isGetCode = true;
+                        that.codeText = "获取验证码";
+                    }
+                }, 1000);
+            }
+        },
         Balace(flag){
             var that = this;
             if(that.selePrice){//判断可不可以选余额或者押金支付，确认支付后不可再点击
@@ -237,7 +376,7 @@ export default {
                             for(var i in data){
                                 if(data[i].issele == true){
                                     switch(data[i].name){
-                                        case "银联":
+                                        case "通联":
                                             that.charge.price = that.fee_info.chinapay_remaining_charge;
                                             that.price = that.fee_info.chinapay_remaining_amount;
                                             that.charge.rate = that.fee_info.chinapay_rate;
@@ -264,7 +403,7 @@ export default {
                             for(var i in data){
                                 if(data[i].issele == true){
                                     switch(data[i].name){
-                                        case "银联":
+                                        case "通联":
                                             that.charge.price = that.fee_info.chinapay_charge;
                                             that.price = that.fee_info.chinapay_amount;
                                             that.charge.rate = that.fee_info.chinapay_rate;
@@ -300,7 +439,7 @@ export default {
                 var data = that.online;
                 for(var i in data){
                     if(data[i].issele == true){
-                        if(data[i].name == "银联"){
+                        if(data[i].name == "通联"){
                             that.price = that.fee_info.chinapay_amount;
                             that.old_price = that.fee_info.chinapay_amount;
                             that.charge.name = data[i].name;
@@ -353,7 +492,7 @@ export default {
             }
             for(var i in payAll){
                 if(payAll[i].issele == true){
-                    if(payAll[i].name == "银联"){
+                    if(payAll[i].name == "通联"){
                         that.price = that.fee_info.chinapay_amount;
                         that.old_price = that.fee_info.chinapay_amount;
                         that.charge.name = payAll[i].name;
@@ -405,6 +544,144 @@ export default {
                 return false;
             }
         },
+        // 提交安全交易密码
+        subPass(){
+            var that = this;
+            that.submitData.password = that.password;
+            that.subData(that.link,that.submitData);
+            that.show_pop = false;
+            that.password = '';
+        },
+        // 取消交易密码弹窗
+        hiddenPop(){
+            var that = this;
+            that.show_pop = false;
+            that.password = '';
+            that.showLoading = false;
+        },
+        // 提交信息
+        subData(url,request){
+            var that = this;
+            // 如果选择余额支付 支付金额够 可以不用选择银行卡 is_remaining_sum==1//余额支付
+            //判断线上支付 && 银联支付 && 没有银行卡id 
+            if(request.is_remaining_sum == 1&&that.price == 0){
+                that.payFn(url,request)
+            }else if(that.is_line && that.payment_method == 3&&!request.bank_id){
+                let p_method = {};
+                p_method.url = url;
+                p_method.request = request;
+                p_method.codePrice = that.price;
+                p_method.info_type = that.info_type;
+                p_method = JSON.stringify(p_method);
+                sessionStorage.p_method = p_method;
+                if(that.fee_info.bank_sign == 1){//已签约选卡
+                    that.$router.push({name:'AllinpaySelect',query:{p_method:p_method}})
+                }else if(that.fee_info.bank_sign == 2){//未签约 添加信息
+                    that.$router.push({name:'AllinpayAddInfo',query:{p_method:p_method}})
+                }
+            }else{
+                that.payFn(url,request)
+            }
+        },
+        payFn(url,request){
+            let that = this;
+            that.$axios.post(process.env.API_HOST+url,request).then((res)=>{
+            that.showLoading = false;
+            if(res.status == 200){
+                if(res.data.code == 200){
+                    mui.alert(res.data.msg,'提示','确认','','div');
+                    that.componentsData.showTitle.goBack = 2;
+                    if(that.is_line){
+                        var type = that.online;
+                        var type_id = '';
+                        for(var i in type){
+                            if(type[i].issele == true){
+                                type_id = type[i].key;
+                                break;
+                            }
+                        }
+                        if(type_id == 3){
+                            that.$router.push({name:'AllinpaySuccess',query:{sum:that.codePrice}})
+                        }else if(type_id == 2){
+                            // 支付宝
+                            that.$router.push({name:'AliPay',query:{url:res.data.data.pay_url}})
+                        }else if(type_id == 1){
+                            // 微信
+                            that.$router.push({name:'WechatPay',query:{url:res.data.data.pay_url}})
+                        }
+                    }else{//线下
+                        var data = res.data.data;
+                        that.off_line = false;
+                        that.order_num = data.order_sn;
+                        that.order_info = data.bank_account;
+                        that.selePrice = false;//点击下单不可以再选择余额支付
+                        if(url == 'do_stage'){
+                            that.showBtn = false;
+                        }else{
+                            that.ok_text = "查看订单";
+                        }
+                    }
+                }else if(res.data.code == 212){//银联支付 输入验证码
+                    that.order_sn = res.data.data.order_sn;
+                    that.pay_info = res.data.data.pay_info;
+                    that.codePhone = res.data.data.mobile;
+                    that.showCode = true;
+                    that.timeFn(true);
+                    mui.toast(res.data.msg, { duration: "short", type: "div" });
+                }else if(res.data.code == 201){//余额支付完成
+                    // mui.toast(res.data.msg,{ duration:'short', type:'div' });
+                    if(that.stage_info){
+                         mui.alert(res.data.msg,'提示','确认',function(){
+                            that.$router.go(-1);
+                        },'div');
+                    }else{
+                         mui.alert(res.data.msg,'提示','确认',function(){
+                            that.$router.replace({name: "BuyTradingStatus"});
+                        },'div');
+                    }
+                }else if(res.data.code == 220 || res.data.code == 221){//通联支付
+                    mui.toast(res.data.msg, { duration: "short", type: "div" });
+                    let p_method = {};
+                    p_method.url = url;
+                    p_method.request = request;
+                    // p_method.info_type = that.info_type;//注释同 mounted 从选择银行卡或添加银行卡返回
+                    p_method = JSON.stringify(p_method);
+                    sessionStorage.p_method = p_method;
+                    if(res.data.code == 220){//通联支付 没有签约 没绑定银行卡
+                        that.$router.push({name:'AllinpayAddInfo',query:{p_method:p_method}})
+                    }else{//通联支付 签约 选择银行卡
+                        that.$router.push({name:'AllinpaySelect',query:{p_method:p_method}})
+                    }
+                }else if(res.data.code == 202){
+                    // 未实名认证
+                    mui.alert(res.data.msg,'提示','确认',function(){
+                            that.$router.push({name:'UserAuthentication',query:{type:2,status:1}})
+                        },'div');
+                }else if(res.data.code == 203){
+                    // 未设置安全交易密码
+                    mui.alert(res.data.msg,'提示','确认',function(){
+                            that.$router.push({name:'Safety_Center',query:{type:1}});//type:1，已实名认证
+                        },'div');
+                }else if(res.data.code == 400){
+                    mui.alert(res.data.msg,'提示','确认','','div');
+                    
+                }
+            }
+        }).catch((err)=>{
+            console.log(err);
+        })
+        },
+        // 点击支付按钮
+        goPayFn(){
+            var that = this;
+            if(!that.is_line && !that.off_line){
+                that.$router.push({name: "BuyOrderAll" });//未支付
+            }else{
+                // 调支付
+                that.showLoading = true;
+                that.getData();
+            }
+        },
         getData(){
             var that = this;
             var request = {};
@@ -443,120 +720,6 @@ export default {
                 that.subData(url,request);
             }
         },
-        // 提交安全交易密码
-        subPass(){
-            var that = this;
-            that.submitData.password = that.password;
-            that.subData(that.link,that.submitData);
-            that.show_pop = false;
-            that.password = '';
-        },
-        // 取消交易密码弹窗
-        hiddenPop(){
-            var that = this;
-            that.show_pop = false;
-            that.password = '';
-            that.showLoading = false;
-        },
-        // 提交信息
-        subData(url,request){
-            var that = this;
-            that.$axios.post(process.env.API_HOST+url,request).then((res)=>{
-                that.showLoading = false;
-                if(res.status == 200){
-                    if(res.data.code == 200){
-                        mui.alert(res.data.msg,'提示','确认','','div');
-                        that.componentsData.showTitle.goBack = 2;
-                        if(that.is_line){
-                            var type = that.online;
-                            var type_id = '';
-                            for(var i in type){
-                                if(type[i].issele == true){
-                                    type_id = type[i].key;
-                                    break;
-                                }
-                            }
-                            // console.log(type_id);
-                            if(type_id == 3){
-                                // 跳转页面 第三方接口
-                                // $('#pay_card').html(res.data.data.pay_url);//银联
-                                // $('#pay_form').submit();//银联
-                                // 通联支付
-                                console.log(that.$route.query)
-                                // that.$router.push({name:'AllinpaySelect',query:that.$route.query})
-                            }else if(type_id == 2){
-                                // 支付宝
-                                that.$router.push({name:'AliPay',query:{url:res.data.data.pay_url}})
-                            }else if(type_id == 1){
-                                // 微信
-                                that.$router.push({name:'WechatPay',query:{url:res.data.data.pay_url}})
-                            }
-                        }else{//线下
-                            var data = res.data.data;
-                            that.off_line = false;
-                            that.order_num = data.order_sn;
-                            that.order_info = data.bank_account;
-                            that.selePrice = false;//点击下单不可以再选择余额支付
-                            if(url == 'do_stage'){
-                                that.showBtn = false;
-                            }else{
-                                that.ok_text = "查看订单";
-                            }
-                        }
-                    }else if(res.data.code == 201){//余额支付完成
-                        // mui.toast(res.data.msg,{ duration:'short', type:'div' });
-                        if(that.$route.query.stage){
-                             mui.alert(res.data.msg,'提示','确认',function(){
-                                that.$router.go(-1);
-                            },'div');
-                        }else{
-                             mui.alert(res.data.msg,'提示','确认',function(){
-                                that.$router.push({name:'BuyTradingStatus'});
-                            },'div');
-                        }
-                    }else if(res.data.code == 220){//通联支付 没有签约 没绑定银行卡
-                        mui.toast(res.data.msg, { duration: "short", type: "div" });
-                        that.$router.push({name:'AllinpayAddInfo',query:that.$route.query})
-                    }else if(res.data.code == 221){//通联支付 签约 选择银行卡
-                        mui.toast(res.data.msg, { duration: "short", type: "div" });
-                        that.$router.push({name:'AllinpaySelect',query:that.$route.query})
-                    }else if(res.data.code == 202){
-                        // 未实名认证
-                        mui.alert(res.data.msg,'提示','确认',function(){
-                                that.$router.push({name:'UserAuthentication',query:{type:2,status:1}})
-                            },'div');
-                    }else if(res.data.code == 203){
-                        // 未设置安全交易密码
-                        mui.alert(res.data.msg,'提示','确认',function(){
-                                that.$router.push({name:'Safety_Center',query:{type:1}});//type:1，已实名认证
-                            },'div');
-                    }else if(res.data.code == 400){
-                        mui.alert(res.data.msg,'提示','确认','','div');
-                    }
-                }
-            }).catch((err)=>{
-                console.log(err);
-            })
-        },
-        
-        goPayFn(){
-            var that = this;
-            if(!that.is_line && !that.off_line){
-                that.$router.push({name: "BuyOrderAll" });//未支付
-            }
-            // else if(that.is_line && that.payment_method == 3){//判断线上支付 && 银联支付
-            //     if(that.fee_info.bank_sign == 1){//已签约选卡
-            //         that.$router.push({name:'AllinpaySelect',query:that.$route.query})
-            //     }else if(that.fee_info.bank_sign == 2){//未签约 添加信息
-            //         that.$router.push({name:'AllinpayAddInfo',query:that.$route.query})
-            //     }
-            // }
-            else{
-                // 调支付
-                that.showLoading = true;
-                that.getData();
-            }
-        },
         returnRequest(url,request){
             let that = this;
             let data = {};
@@ -589,6 +752,9 @@ export default {
             }else if(url == 'rent_fee' || url == 'rent_order'){//租号get金额 || 租号下单***
                 data.goods_id = request.goods_id;
                 data.lease_time = request.lease_time;
+                if(request.package_id){
+                    data.package_id = request.package_id;
+                }
                 if(url == 'rent_order'){//成品号下单 加参数
                     data.mobile = request.mobile;
                     data.wx = request.wx;
@@ -607,23 +773,29 @@ export default {
             // 支付方式 ***
             if(that.is_line){
                 data.payment_method = that.payment_method;
+                // 判断支付方式为银联支付 && 有选银行卡
+                if(data.payment_method == 3 && request.bank_id){
+                    data.bank_id = request.bank_id;
+                }
             }else{
                 data.payment_method = 4;//选择线下支付
             }
             return data;
         },
+        // 计算手续费和金额
         Fee(url,request){
             let that = this;
             var data = that.returnRequest(url,request);
             that.$axios.post(`${that.baseURL+url}`,data).then((res) => {
-                console.log(res);
+                // console.log(res);
                 if(res.status == 200){
                     if(res.data.code == 200){
+                        that.showLoading = false;
                         that.fee_info = res.data.data;
                         var data = that.online;
                         for(var i in data){
                             if(data[i].issele == true){
-                                if(data[i].name == "银联"){
+                                if(data[i].name == "通联"){
                                     that.price = that.fee_info.chinapay_amount;
                                     that.old_price = that.fee_info.chinapay_amount;
                                     that.charge.name = data[i].name;
@@ -637,7 +809,7 @@ export default {
                         if(request.pay_type == 2 || request.pay_type == 5){
                             that.hint = '（'+res.data.msg+'）';
                         }
-                    }else{
+                    }else if(res.data.code != 401){
                         mui.alert(res.data.msg,'提示','确认',function(){
                             that.$router.go(-1);
                         },'div')
@@ -647,38 +819,54 @@ export default {
                 console.log(err)
             })
         },
+        judgeFee(info_type){
+            let that = this;
+            if(info_type.pay_type == 1){//成品号下单
+                that.goods_info = info_type;
+                that.Fee('fee_info',info_type)
+            }else if(info_type.pay_type == 2 || info_type.pay_type == 8){//未支付订单 成品号 && 藏宝阁
+                that.order_id = info_type;
+                that.Fee('payment_info',info_type);
+            }else if(info_type.pay_type == 3){//分期支付
+                that.stage_info = info_type;
+                that.Fee('stage_fee',info_type)
+            }else if(info_type.pay_type == 4){//租号
+                that.rent_info = info_type;
+                that.Fee('rent_fee',info_type)
+            }else if(info_type.pay_type == 5){//租号未支付
+                that.rent_unpaid_o = info_type;
+                that.Fee('rent_payment',info_type)
+            }else if(info_type.pay_type == 6){//续租
+                that.relet_info = info_type;
+                that.Fee('relet_fee',info_type);
+            }else if(info_type.pay_type == 7){//续租未支付
+                that.relet_unpaid_o = info_type;
+                that.Fee('rent_payment',info_type);
+            }else if(!info_type.pay_type){
+                that.$router.go(-1);
+            }
+        }
     },
     mounted() {
         var that = this;
         let info =sessionStorage.getItem('info');
+        let p_method = sessionStorage.getItem('p_method');
         if(that.$route.params.info == info){
             if(that.isobjStr(info)){
                 let info_type = JSON.parse(info);
-                console.log(info_type)
-                if(info_type.pay_type == 1){//成品号下单
-                    that.goods_info = info_type;
-                    that.Fee('fee_info',info_type)
-                }else if(info_type.pay_type == 2 || info_type.pay_type == 8){//未支付订单 成品号 && 藏宝阁
-                    that.order_id = info_type;
-                    that.Fee('payment_info',info_type);
-                }else if(info_type.pay_type == 3){//分期支付
-                    that.stage_info = info_type;
-                    that.Fee('stage_fee',info_type)
-                }else if(info_type.pay_type == 4){//租号
-                    that.rent_info = info_type;
-                    that.Fee('rent_fee',info_type)
-                }else if(info_type.pay_type == 5){//租号未支付
-                    that.rent_unpaid_o = info_type;
-                    that.Fee('rent_payment',info_type)
-                }else if(info_type.pay_type == 6){//续租
-                    that.relet_info = info_type;
-                    that.Fee('relet_fee',info_type);
-                }else if(info_type.pay_type == 7){//续租未支付
-                    that.relet_unpaid_o = info_type;
-                    that.Fee('rent_payment',info_type);
-                }else if(!info_type.pay_type){
-                    that.$router.go(-1);
-                }
+                that.info_type = info_type;
+                that.judgeFee(info_type)
+            }
+        }else if(that.$route.params.info == p_method){//选择银行卡或者签约完银行卡回来
+            if(that.isobjStr(p_method)){
+                let p_request = JSON.parse(p_method);
+                // that.info_type = p_request.info_type;
+                that.bank_name = p_request.bank_name;
+                that.codePrice = p_request.codePrice;
+                that.bank_id = p_request.request.bank_id;
+                that.subData(p_request.url,p_request.request);//直接调用支付方法。
+                //暂时需求不需要，因下单完成直接扣除余额，再调获取金额接口会产生手续费以扣除bug,因此info_type对象暂时不需用传递
+                // that.judgeFee(p_request.info_type);
             }
         }else{
             that.$router.go(-1);
@@ -687,8 +875,12 @@ export default {
     },
     beforeRouteLeave(to, from, next) {
         if(to.path == '/place-order' || to.path == '/rent-orders'){
+            sessionStorage.removeItem('p_method');
+            sessionStorage.removeItem('info');
             this.$router.go(-3);//跳转到选择游戏类型
         }else if(to.path == '/installment'){
+            sessionStorage.removeItem('p_method');
+            sessionStorage.removeItem('info');
             this.$router.go(-1);
         }else{
             next(); 
@@ -696,7 +888,7 @@ export default {
     },
 };
 </script>
-<style scoped>
+<style scoped lang="scss">
 .pay-content {
     padding: 0.2rem 0.2rem 0;
 }
@@ -923,10 +1115,6 @@ export default {
     margin:.28rem 0 0 .4rem;
 }
 
-
-
-
-
 .pop-view{
     width:5rem;
     height:3.28rem;
@@ -983,6 +1171,111 @@ export default {
     .fixedRight{
         right:50% !important;
         margin-right: -307px;
+    }
+}
+.loading{
+    z-index:4;
+}
+.pop{
+    position: absolute;
+    top:0;bottom:0;left:0;right:0;
+    background:rgba(0,0,0,.7);
+    z-index:2;
+    .pop-img{
+        width:4.2rem;
+        height:2.6rem;
+        position:absolute;
+        top:calc(50% - 1.3rem);
+        left:calc(50% - 2.1rem);
+    }
+}
+.en-time{
+    width:6rem;
+    position: absolute;
+    top:4rem;
+    left:calc(50% - 3rem);
+    line-height: 2rem;
+    background:#ffffff;
+    text-align: center;
+
+}
+.code-box{
+    width:6.54rem;
+    position: absolute;
+    left:calc(50% - 3.27rem);
+    // font-size:0;
+    top:2rem;
+    .code-tit{
+        width:100%;
+        height:1.45rem;
+        color:#FFFFFF;
+        text-align:center;
+        border-top-left-radius: .05rem;
+        border-top-right-radius: .05rem;
+        background:url(../../../static/img/pay/code-tit-bg.png);
+        background-size:6.54rem 1.45rem;
+        .code-tit-top{
+            font-size: .4rem;
+            line-height: .8rem;
+        }
+        .code-tit-bot{
+            font-size:.32rem;
+        }
+    }
+    .code-con{
+        background:#FFFFFF;
+        padding-bottom:.7rem;
+        border-bottom-left-radius: .05rem;
+        border-bottom-right-radius: .05rem;
+        padding-top:.56rem ;
+        .code-price{
+            color:#FF3735;
+            font-size:.26rem;
+            text-align: center;
+            padding:0 0 .41rem;
+            span{
+                font-size:.64rem;
+            }
+        }
+        input{
+            width:2.54rem;
+            height:.60rem;
+            margin: 0 .66rem 0 .67rem;
+            vertical-align: middle;
+            background:#F0F0F0;
+            border:0;font-size:.24rem;
+        }
+        input::placeholder{
+            color:#BCBCBC;
+        }
+        .code-get-btn{
+            width:1.96rem;line-height: .6rem;
+            font-size:.22rem;
+            text-align:center;
+            display:inline-block;
+            background:#ffffff;
+            color:#FE7649;
+            vertical-align: middle;
+            border-radius: .15rem;
+            border:1px solid #FE7649;
+        }
+        .code-hint{
+            padding-left:.67rem;font-size:.24rem;color:#999999;line-height: .6rem;
+            span{
+                color:#666666;
+            }
+        }
+        .code-enter-btn{
+            color:#FFFFFF;font-size:.28rem;background:url(../../../static/img/pay/code-btn-bg.png) no-repeat;background-size:5.22rem 1.04rem;border-radius: .02rem;margin-top:.8rem;
+            width:5.22rem;height:1.04rem;text-align:center;line-height:.89rem;margin:.2rem auto 0;
+        }
+    }
+    .code-bot{
+        margin-top:.6rem;
+        text-align: center;
+        img{
+            width:.55rem;height:.55rem;
+        }
     }
 }
 </style>

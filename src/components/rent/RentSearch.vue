@@ -51,10 +51,12 @@
                                         <div class="yet" v-if="item.rent_status == 1">
                                             <span class="yet-ico">已租出</span><span class="yet-text" v-if="item.rent_time != ''"><span v-text="item.rent_time"></span>后回收</span>
                                         </div>
-                                        <img class="rent_package" @click.stop="showRentPackageFn(true)" v-if="item.rent_package == 1" src="../../../static/img/rent/A.png" alt="免租金">
-                                        <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="item.rent_package == 2" src="../../../static/img/rent/B.png" alt="低租金">
-                                        <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="item.rent_package == 3" src="../../../static/img/rent/C.png" alt="低押金">
-                                        <img class="rent_package" @click.stop="showRentPackageFn(true)" v-else-if="item.rent_package == 4" src="../../../static/img/rent/D.png" alt="免押金">
+                                        <div class="rent-package-wrap" v-for="(x,i) in item.package_info" :key="i"  @click.stop="showRentPackageFn(true)">
+                                            <img class="rent_package" v-if="x.value == 1" src="../../../static/img/rent/A.png" :alt="x.alias">
+                                            <img class="rent_package" v-else-if="x.value == 2" src="../../../static/img/rent/B.png" :alt="x.alias">
+                                            <img class="rent_package" v-else-if="x.value == 3" src="../../../static/img/rent/C.png" :alt="x.alias">
+                                            <img class="rent_package" v-else-if="x.value == 4" src="../../../static/img/rent/D.png" :alt="x.alias">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="goods-strip-bottom">
@@ -209,7 +211,11 @@ export default {
                     if (res.status == 200) {
                         if (res.data.code == 200) {
                             var data = res.data.data.data;
-                            that.title = res.data.data.game_name+'租号平台_看个号';
+                            if(res.data.data.game_name == "波克捕鱼"){
+                               that.title = '波克捕鱼_租号_卖号_弹头_机械号_救济金_道具交易_账号出租_官方版_看个号'
+                            }else{
+                                that.title = res.data.data.game_name+'租号平台_看个号';
+                            }
                             that.keywords = res.data.data.game_name + '账号出租，'+res.data.data.game_name + '账号寄租'
                             // 上拉加载
                             // debugger;
@@ -533,10 +539,14 @@ export default {
 .yet-text{
     color:#999999;
 }
-.rent_package{
+.rent-package-wrap{
+    display: inline-block;
     vertical-align: middle;
+}
+.rent_package{
     width:.93rem;
     height:.36rem;
+    margin-right:.1rem;
 }
 /* 底部 */
 .goods-strip-bottom {

@@ -60,26 +60,26 @@ export default new Router({
       name: 'Pay',
       component: (resolve) => require(['@/components/buy/Pay'], resolve)
     },
-    // {
-    //    path: '/allinpay-addinfo', //通联支付 -- 添加信息/银行卡
-    //    name: 'AllinpayAddInfo',
-    //    component: (resolve) => require(['@/components/allinpay/AddCard'], resolve)
-    // },
-    // {
-    //   path: '/allinpay-select', //通联支付 -- 选择银行卡
-    //   name: 'AllinpaySelect',
-    //   component: (resolve) => require(['@/components/allinpay/SeleCard'], resolve)
-    // },
-    // {
-    //   path: '/allinpay-success', //通联支付 -- 支付成功
-    //   name: 'AllinpaySuccess',
-    //   component: (resolve) => require(['@/components/allinpay/PaySuccess'], resolve)
-    // },
-    // {
-    //   path: '/allinpay-failed', //通联支付 -- 支付失败
-    //   name: 'AllinpayFailed',
-    //   component: (resolve) => require(['@/components/allinpay/PayFailed'], resolve)
-    // },
+    {
+       path: '/allinpay-addinfo', //通联支付 -- 添加信息/银行卡
+       name: 'AllinpayAddInfo',
+       component: (resolve) => require(['@/components/allinpay/AddCard'], resolve)
+    },
+    {
+      path: '/allinpay-select', //通联支付 -- 选择银行卡
+      name: 'AllinpaySelect',
+      component: (resolve) => require(['@/components/allinpay/SeleCard'], resolve)
+    },
+    {
+      path: '/allinpay-success', //通联支付 -- 支付成功
+      name: 'AllinpaySuccess',
+      component: (resolve) => require(['@/components/allinpay/PaySuccess'], resolve)
+    },
+    {
+      path: '/allinpay-failed', //通联支付 -- 支付失败
+      name: 'AllinpayFailed',
+      component: (resolve) => require(['@/components/allinpay/PayFailed'], resolve)
+    },
     {
       path: '/arbitration', //仲裁
       name: 'Arbitration',
