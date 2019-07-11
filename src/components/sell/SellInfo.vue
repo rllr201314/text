@@ -465,6 +465,7 @@ export default {
             var that = this;
             var imgSrcArr = that.sellData.upimgAll.imgSrc;
             var imgLen = imgSrcArr.length;
+            console.log(event.target.files)
             if (imgLen >= 9) {
                mui.toast("图片选择到达上限", { duration: "short", type: "div" });
             } else if (imgLen < 9) {
@@ -869,12 +870,13 @@ export default {
             var force_compact = chargeInfo.force_compact;
             var force_safe = chargeInfo.force_safe;
             var bind = chargeInfo.is_bind;
+            var stage = chargeInfo.is_stage;
             var is_compact = chargeInfo.is_compact;
             var is_safe = chargeInfo.is_safe;
             var max_compact = chargeInfo.max_compact;
             var max_safe = chargeInfo.max_safe;
             var safe_rate = chargeInfo.safe_rate;
-            if(bind == '1'){
+            if(bind == '1' && stage != 1){
                 that.forceCompact = true;
             }else{
                 that.forceCompact = false;
@@ -995,6 +997,20 @@ export default {
                                 that.sellData.faction = data.faction; //职业
                                 that.sellData.accountType = data.account_type; //账号类型
                                 that.judgeInfo(data.chargeInfo);//判断合同还是保险
+                                if(that.safeOrCompact.showCompact){
+                                    if(that.oldData.is_compact==1){
+                                        that.sellData.optSafe = true;
+                                    }else{
+                                        that.sellData.optSafe = false;
+                                    }
+                                }
+                                if(that.safeOrCompact.showSafe){
+                                    if(that.oldData.is_safe==1){
+                                        that.sellData.optSafe = true;
+                                    }else{
+                                        that.sellData.optSafe = false;
+                                    }
+                                }
                             }
                         }
                     }

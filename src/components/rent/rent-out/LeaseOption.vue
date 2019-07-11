@@ -113,7 +113,7 @@
                 </div>
             </div>
         </div>
-        <div class="share" v-show="showMenu_way || showMenu_type || showMenu_mobile || showMenu_area" @click="hiddenFn"></div>
+        <div class="share" v-show="showMenu_way || showMenu_type || showMenu_mobile || showMenu_area" @click="hiddenFn"></div>  
     </div>
 </template>
 <script>

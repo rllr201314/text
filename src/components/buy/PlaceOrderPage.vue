@@ -148,7 +148,7 @@
                                 <span class="red-color">(￥
                                     <span class="red-color" v-text="goodsInfo.other_fee"></span>)</span>
                             </div>
-                            <div class="opera" @click="seleOpera('nosafe')">
+                            <div class="opera" @click="seleOpera('nosafe')" v-show="!forceSafe">
                                 <img :src="operaSafe.noSafe?'../../../static/img/order/okcheck.png':'../../../static/img/order/nocheck.png'" alt="">
                                 <span>不购买</span>
                             </div>
@@ -300,6 +300,7 @@ export default {
                 safe: true,
                 noSafe: false
             },
+            forceSafe:false,//是否强制保险
             show_attribute:false,
             extend_attribute:[],
         };
@@ -368,12 +369,24 @@ export default {
                         that.totalPrice = Number(that.goodsInfo.goods_price);
                     }
                 }
+                if(that.showSafe){
+                    if(that.goodsInfo.force_safe == 1){
+                        that.forceSafe = false;
+                    }
+                }
             } else if (flag == "stage") {
                 that.operaStage.stage = true;
                 that.operaStage.noStage = false;
                 that.down_price = 1;
                 that.stage_num = 1;
-                that.sumFn()
+                if(that.showSafe){
+                    if(that.goodsInfo.force_safe == 1){
+                        that.forceSafe = true;
+                        that.operaSafe.noSafe = false;
+                        that.operaSafe.safe = true;
+                    }
+                }
+                that.sumFn();
             } else if (flag == "nosafe") {
                 if(!that.operaSafe.noSafe){
                     that.operaSafe.noSafe = true;

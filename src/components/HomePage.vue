@@ -145,7 +145,7 @@ export default {
         UserHelp,//用户帮助
         Footer,
     },
-    mounted(e){
+    mounted(){
         this.getData();
     },
     created(){

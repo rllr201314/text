@@ -169,10 +169,10 @@
         <!-- 自定义属性 -->
         <div class="bottom-screen-box" :class="show_extend?'show_extend':'screen-box'" v-show="extend_box">
             <div v-if="show_attribute.value_type == 5">
-                <div class="screen-strip-box" v-for="(item,index) in show_attribute.option" v-text="item.option_name" :key="index" :class="item.checked?'red-bg':'black-bg'" @click="selectExtentFn(item.option_value,item.attribute_id,show_attribute.value_type)"></div>
+                <div class="screen-strip-box" v-for="(item,index) in show_attribute.option" v-text="item.option_name" :key="index" :class="item.checked?'red-bg':'black-bg'" @click="selectExtentFn(item.option_value,item.attribute_id,show_attribute.value_type,show_attribute.is_checkbox)"></div>
             </div>
             <div v-if="show_attribute.value_type == 6">
-                <div class="screen-strip-box" v-for="(item,index) in show_attribute.option" v-text="item.option_name" :key="index" :class="item.checked?'red-bg':'black-bg'" @click="selectExtentFn(item.option_value,item.attribute_id,show_attribute.value_type)"></div>
+                <div class="screen-strip-box" v-for="(item,index) in show_attribute.option" v-text="item.option_name" :key="index" :class="item.checked?'red-bg':'black-bg'" @click="selectExtentFn(item.option_value,item.attribute_id,show_attribute.value_type,show_attribute.is_checkbox)"></div>
             </div>
         </div>
         <!-- 遮罩 -->
@@ -519,11 +519,12 @@ export default {
             }
         },
         // 下栏筛选方法
-        selectExtentFn(value,id,type){
+        selectExtentFn(value,id,type,checkbox){
+            console.log(checkbox)
             var that = this;
             var option = that.show_attribute.option;
             var all_extend = that.request.extend_attribute;
-            if(type == 6){
+            if(type == 6 || (checkbox == 1 && type == 5)){
                 for(var i in option){
                     if(option[i].option_value == value){
                         option[i].checked = !option[i].checked;
@@ -567,7 +568,7 @@ export default {
                         break;
                     }
                 }
-            }else if(type == 5){
+            }else if(type == 5 && checkbox != 1){
                 for(var i in option){
                     if(option[i].option_value == value){
                         option[i].checked = !option[i].checked;
@@ -1094,7 +1095,6 @@ export default {
                             if(that.param.rent_status == 2){
                                 that.screen_info.rent_package = that.setConfig(res.data.data.rent_package);
                             }
-
                             that.extend_attribute = [],that.hide_attribute = [],that.operation_attribute = [],that.filtrate_extend = [];
                             if(res.data.data.extend_attribute != ''){
                                 that.extend_attribute = res.data.data.extend_attribute;
@@ -1107,6 +1107,7 @@ export default {
                                         hide_obj.attribute_id = that.extend_attribute[i].attribute_id;//属性id
                                         hide_obj.option = that.extend_attribute[i].option;//属性选项
                                         hide_obj.value_type = that.extend_attribute[i].value_type;//属性类型
+                                        hide_obj.is_checkbox = that.extend_attribute[i].is_checkbox;//属性类型
                                         that.operation_attribute.push(operation_obj);
                                         that.hide_attribute.push(hide_obj);
                                     }else if((that.extend_attribute[i].value_type == 5 && that.extend_attribute[i].option != '')|| (that.extend_attribute[i].value_type == 6 && that.extend_attribute[i].option != "")){//筛选页显示属性 现只判断多选和单选 

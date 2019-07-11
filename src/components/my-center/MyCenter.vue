@@ -47,24 +47,27 @@
                     <div class="operation-title">
                         <div class="user-type" @click="seleUserType('buy')" :class="myData.userTypeOpt.usertype?'red-color':''">
                             我是买家
-                            <span v-show="buyer_msg == 1" class="red-circle"></span>
+                            <span class="red_circle" v-show="tipAll.buy_tip == 1"></span>
                         </div>
                         <div class="user-type" @click="seleUserType('sell')" :class="myData.userTypeOpt.usertype?'':'red-color'">
                             我是卖家
-                            <span v-show="seller_msg == 1" class="red-circle"></span>
+                            <span class="red-circle" v-show="tipAll.sell_tip == 1"></span>
                         </div>
                     </div>
                     <div class="operation-content" v-show="myData.userTypeOpt.usertype">
-                        <div class="cell" v-for="item in myData.userTypeOpt.buyTit" :class="item.name" @click="goSele(item.link)">
+                        <div class="cell buy-tit" v-for="item in myData.userTypeOpt.buyTit" :class="item.name" @click="goSele(item.link)">
                             <img :src="item.imgSrc" alt="">
                             <div v-text="item.val"></div>
+                            <span class="red-circle" v-show="item.msg"></span>
                         </div>
                     </div>
                     <div class="operation-content" v-show="!myData.userTypeOpt.usertype">
-                        <div class="cell" v-for="item in myData.userTypeOpt.sellTit" :class="item.name" @click="goSele(item.link)">
+                        <div class="cell buy-tit" v-for="item in myData.userTypeOpt.sellTit" :class="item.name" @click="goSele(item.link)">
                             <img :src="item.imgSrc" alt="">
                             <div v-text="item.val"></div>
+                            <span class="red-circle" v-show="item.msg"></span>
                         </div>
+                            
                     </div>
                 </div>
                 <img class="l-loop" src="../../../static/img/my-center/lloop.png" alt="">
@@ -74,14 +77,14 @@
                         <div class="cell" v-for="item in myData.userTypeOpt.buyCon" :class="item.name" @click="goSele(item.link)">
                             <img :src="item.imgSrc" alt="">
                             <span v-text="item.val"></span>
-                            <span v-if="item.msg" class="red-circle" v-show="buyer_msg == 1"></span>
+                            <span class="red-circle" v-show="item.msg && tipAll.buyer_discuss_msg == 1"></span>
                         </div>
                     </div>
                     <div class="operation-content" v-show="!myData.userTypeOpt.usertype">
                         <div class="cell" v-for="item in myData.userTypeOpt.sellCon" :class="item.name" @click="goSele(item.link)">
                             <img :src="item.imgSrc" alt="">
                             <span v-text="item.val"></span>
-                            <span v-if="item.msg" class="red-circle" v-show="seller_msg == 1"></span>
+                            <span class="red-circle" v-show="item.msg && tipAll.seller_discuss_msg == 1"></span>
                         </div>
                     </div>
                 </div>
@@ -232,6 +235,21 @@ export default {
             },
             buyer_msg:null,
             seller_msg:null,
+            tipAll:{
+                buy_tip:null,
+                sell_tip:null,
+                buyer_discuss_msg:null,
+                seller_discuss_msg:null,
+                buyer_tip_info:{
+                    buyer_confirm_tip:null,
+                    buyer_trading_tip:null,
+                    buyer_wait_tip:null,
+                },
+                seller_tip_info:{
+                    seller_confirm_tip:null,
+                    seller_trading_tip:null,
+                },
+            },
             head_img:null,
             myData: {
                 is_identify:'',is_bank:null,//实名认证-是否绑定银行卡
@@ -244,7 +262,7 @@ export default {
                             name: "unpaid",
                             imgSrc: "./static/img/my-center/unpaid.png",
                             val: "待支付",
-                            link: "b_unpaid"
+                            link: "b_unpaid",
                         },
                         {
                             key: 2,
@@ -555,6 +573,39 @@ export default {
                         that.myData.pactNews = data.user_info.compact_count;
                         that.seller_msg = data.user_info.seller_discuss_msg;
                         that.head_img = data.user_info.head_img;
+
+
+                        that.tipAll.sell_tip = data.user_info.seller_tip;
+                        that.tipAll.buy_tip = data.user_info.buyer_tip;
+                        that.tipAll.buyer_discuss_msg = data.user_info.buyer_discuss_msg;
+                        that.tipAll.seller_discuss_msg = data.user_info.seller_discuss_msg;
+                        
+                        for(var i in that.myData.userTypeOpt.buyTit){
+                            if(that.myData.userTypeOpt.buyTit[i].name == "unpaid"){
+                                if(data.buyer_tip_info.buyer_wait_tip == 1){
+                                    that.myData.userTypeOpt.buyTit[i].msg = true;
+                                }
+                            }else if(that.myData.userTypeOpt.buyTit[i].name == "trading"){
+                                if(data.buyer_tip_info.buyer_trading_tip == 1){
+                                    that.myData.userTypeOpt.buyTit[i].msg = true;
+                                }
+                            }else if(that.myData.userTypeOpt.buyTit[i].name == "receiv"){
+                                if(data.buyer_tip_info.buyer_confirm_tip == 1){
+                                    that.myData.userTypeOpt.buyTit[i].msg = true;
+                                }
+                            }
+                        }
+                        for(var i in that.myData.userTypeOpt.sellTit){
+                            if(that.myData.userTypeOpt.sellTit[i].name == "trading"){
+                                if(data.seller_tip_info.seller_trading_tip == 1){
+                                    that.myData.userTypeOpt.sellTit[i].msg = true;
+                                }
+                            }else if(that.myData.userTypeOpt.sellTit[i].name == "deliver"){
+                                if(data.seller_tip_info.seller_confirm_tip == 1){
+                                    that.myData.userTypeOpt.sellTit[i].msg = true;
+                                }
+                            }
+                        }
                     }
                 }
             }).catch((err)=>{
@@ -682,6 +733,18 @@ export default {
 .cell div {
     margin-top: 0.05rem;
 }
+.buy-tit,.sell-tit{
+    position: relative;
+}
+.buy-tit .red-circle{
+    position:absolute;
+    top:0;
+    right:.15rem;
+}
+.deliver .red-circle{
+    right: .05rem;
+}
+
 .unpaid img {
     width: 0.37rem;
     height: 0.37rem;

@@ -567,18 +567,22 @@ export default {
             if(request.is_remaining_sum == 1&&that.price == 0){
                 that.payFn(url,request)
             }else if(that.is_line && that.payment_method == 3&&!request.bank_id){
-                let p_method = {};
-                p_method.url = url;
-                p_method.request = request;
-                p_method.codePrice = that.price;
-                p_method.info_type = that.info_type;
-                p_method = JSON.stringify(p_method);
-                sessionStorage.p_method = p_method;
-                if(that.fee_info.bank_sign == 1){//已签约选卡
-                    that.$router.push({name:'AllinpaySelect',query:{p_method:p_method}})
-                }else if(that.fee_info.bank_sign == 2){//未签约 添加信息
-                    that.$router.push({name:'AllinpayAddInfo',query:{p_method:p_method}})
-                }
+                // let p_method = {};
+                // p_method.url = url;
+                // p_method.request = request;
+                // p_method.codePrice = that.price;
+                // p_method.info_type = that.info_type;
+                // p_method = JSON.stringify(p_method);
+                // sessionStorage.p_method = p_method;
+                // if(that.fee_info.bank_sign == 1){//已签约选卡
+                //     that.$router.push({name:'AllinpaySelect',query:{p_method:p_method}})
+                // }else if(that.fee_info.bank_sign == 2){//未签约 添加信息
+                //     that.$router.push({name:'AllinpayAddInfo',query:{p_method:p_method}})
+                // }
+
+                // 以上保留 暂时升级
+                mui.alert("快捷支付升级中，请选择其他支付方式",'提示','确认','','div');
+                that.showLoading = false;
             }else{
                 that.payFn(url,request)
             }

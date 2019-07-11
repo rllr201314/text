@@ -77,7 +77,7 @@
             <div class="gray-color">四、本站承诺实名认证的过程不进行信息采集，保障用户信息安全；</div>
             <div class="gray-color">五、协议签署具有法律效应，可在“云合同”<a class="orange-color" target="_blank" href="https:www.yunhetong.com">www.yunhetong.com</a>进行查询或在线验签。</div>
         </div>
-        <div class="shade" v-show="showAlert"></div>
+        <div class="shade" @click="hiddenPro" v-show="showAlert"></div>
     </div>
 </template>
 <script>

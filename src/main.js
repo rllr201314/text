@@ -10,6 +10,9 @@ import qs from 'qs'
 import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
 import MetaInfo from 'vue-meta-info'
+import Vant from 'vant';
+import 'vant/lib/index.css';
+Vue.use(Vant);
 Vue.use(MetaInfo)
 var options={
   fullscreenEl:false, //关闭全屏按钮
@@ -39,15 +42,13 @@ axios.interceptors.request.use(config => {
     }
     config.data = qs.stringify(config.data);
   }
-
-
   return config;
 }, error => {
   // 对请求错误做些什么
   return Promise.reject(error);
 });
 
-// http response 拦截器
+// http response 响应拦截器
 axios.interceptors.response.use(
   response => {
     if (response) {
@@ -62,6 +63,7 @@ axios.interceptors.response.use(
               router.push({name: "AccountLogin",});
             },'div');
           }
+          break;
       }
     }
     return response;

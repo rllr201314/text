@@ -13,9 +13,9 @@
             </a>
         </div>
         <div class="vertical"></div>
-        <div class="sell" @click="toLink('sell')">
-            <img src="../../../static/img/sell_ico.png" alt="">
-            <span>我要卖</span>
+        <div class="sell" @click="toLink('counter')">
+            <img src="../../../static/img/counter.png" alt="">
+            <span>分期计算器</span>
         </div>
     </div>
 </template>
@@ -28,9 +28,8 @@
                 var that = this;
                 if(flag == 'authent'){
                     that.$router.push({name:'Authenticity'})
-                }else if(flag == 'sell'){
-                    that.$router.push({name:'Sell'});
-                    sessionStorage.buyOrsell = 2;
+                }else if(flag == 'counter'){
+                    that.$router.push({name:'StageCounter'});
                 }
             }
         }

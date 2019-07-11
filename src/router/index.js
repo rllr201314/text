@@ -476,6 +476,18 @@ export default new Router({
     //   name:'SafeState',
     //   component:(resolve) => require(['@/components/my-center/safety/SafeState'],resolve),
     // },
+    //换绑
+    {
+      path:"/change-register/:bind_str",
+      name:"ChangeRegister",
+      component:(resolve) => require(['@/components/common/ChangeRegister'],resolve)
+    },
+    //分期计算器
+    {
+      path:"/stage-counter",
+      name:"StageCounter",
+      component:(resolve) => require(['@/components/tool/StageCounter'],resolve)
+    },
     {
       path: '*',
       component: (resolve) => require(['@/components/multi/NoData'], resolve)
