@@ -76,7 +76,7 @@
                     <div class="contact-cell" @click="showTerm">
                         <span class="celltext">租期</span>
                         <div class="cell-right descount">
-                            <span class="hint orange">(租7天享9折，租30天享8折)</span>
+                            <span class="hint orange" v-if="false">(租7天享9折，租30天享8折)</span>
                             <span class="grey-color" v-text="tenancy_term"></span><span class="grey-color" v-text="goodsInfo.rent_unit"></span>
                             <img src="../../../static/img/order/next.png" alt="">
                         </div>
