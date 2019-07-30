@@ -16,8 +16,8 @@
                     <div class="goods-info">
                         <div class="goods-info-title" v-text="goodsInfo.goods_title"></div>
                         <div class="goods-info-box">
-                            <div  class="goods-info-left">交易链接</div>
-                            <a class="t_link" target="view_window" :href="goodsInfo.link_href" v-text="goodsInfo.link_href" ></a>
+                            <div class="goods-info-left">交易链接</div>
+                            <a class="t_link" target="view_window" :href="goodsInfo.link_href" v-text="goodsInfo.link_href"></a>
                         </div>
                         <div class="goods-info-box">
                             <div class="goods-info-left">
@@ -39,8 +39,8 @@
                 </div>
                 <div class="stage-info">
                     <div class="stage-box" v-for="(item,index) in goodsInfo.stage_info" :key="index">
-                            <span class="calputer-bot-left" v-text="item.stage_title"></span>
-                            <span class="calputer-bot-right" v-text="item.stage_value"></span>
+                        <span class="calputer-bot-left" v-text="item.stage_title"></span>
+                        <span class="calputer-bot-right" v-text="item.stage_value"></span>
                     </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                             </span>
                         </div>
                     </div>
-                     <div class="contact-cell">
+                    <div class="contact-cell">
                         <span class="celltext">首付金额</span>
                         <div class="cell-right">
                             <span class="unit-price price">￥
@@ -63,7 +63,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="contact-cell" >
+                    <div class="contact-cell">
                         <div class="cell-right">
                             <div class="total-price price">
                                 实际支付：<span class="red-color" v-text="goodsInfo.payment_amount"></span>
@@ -116,51 +116,51 @@ export default {
                 btn: "确认已读",
                 val: ""
             },
-            
-            showPro:false,//是否显示协议
-            protocalText:'',//协议
+
+            showPro: false,//是否显示协议
+            protocalText: '',//协议
             protocol: true, //阅读协议
-            showNoData:true,
+            showNoData: true,
             showOrderShade: false, //遮罩
-            totalPrice:null,
-            goodsInfo:{}
+            totalPrice: null,
+            goodsInfo: {}
         };
     },
     methods: {
         // 隐藏遮罩
-        hiddenFn(){
+        hiddenFn() {
             this.showOrderShade = false;
         },
         // 协议
-        getProtocol(){
+        getProtocol() {
             var that = this;
-            that.$axios.post(process.env.API_HOST+'protocol_safe').then((res)=>{
+            that.$axios.post(process.env.API_HOST + 'protocol_safe').then((res) => {
                 // console.log(res);
-                if(res.status == 200){
-                    if(res.data.code == 200){
+                if (res.status == 200) {
+                    if (res.data.code == 200) {
                         that.proData.isShow = true;
                         that.proData.con = res.data.data;
                         that.proData.val = true;
                     }
                 }
-            }).catch((err)=>{
+            }).catch((err) => {
                 console.log(err)
             })
         },
-        isProFn(flag){
+        isProFn(flag) {
             var that = this;
-            if(flag){
+            if (flag) {
                 that.protocol = true;
             }
         },
         // 阅读协议
-        lookFn(){
+        lookFn() {
             this.protocol = !this.protocol;
         },
         getData() {
             var that = this;
             that.$axios
-                .post(process.env.API_HOST+"store_info", {
+                .post(process.env.API_HOST + "store_info", {
                     order_id: that.$route.query.order_id
                 })
                 .then(res => {
@@ -168,23 +168,23 @@ export default {
                         if (res.data.code == 200) {
                             that.goodsInfo = res.data.data;
                             that.showNoData = false;
-                        }else if(res.data.code == 400){
+                        } else if (res.data.code == 400) {
                             that.showNoData = true;
-                            mui.alert(res.data.msg,'提示','确认',function(){
+                            mui.alert(res.data.msg, '提示', '确认', function () {
                                 that.$router.go(-1);
-                            },'div')
-                        } 
+                            }, 'div')
+                        }
                     }
                 })
                 .catch(err => {
                     console.log(err);
                 });
         },
-        goPayFn(){
+        goPayFn() {
             var that = this;
             // 判断是否勾选协议
-            if(!that.protocol){
-                mui.alert("请阅读并同意《看个号平台交易协议》","提示","确定","","div");
+            if (!that.protocol) {
+                mui.alert("请阅读并同意《看个号平台交易协议》", "提示", "确定", "", "div");
                 return false;
             }
             var all = {};
@@ -192,8 +192,7 @@ export default {
             all.order_id = that.$route.query.order_id;
             var order_info = JSON.stringify(all);
             sessionStorage.info = order_info;
-            that.$router.push({name:'Pay',params:{info:order_info}});
-
+            that.$router.push({ name: 'Pay', params: { info: order_info } });
         }
     },
     mounted() {
@@ -223,11 +222,11 @@ export default {
     margin-bottom: 0.2rem;
     position: relative;
 }
-.badge{
-    width:1.03rem;
-    height:1rem;
+.badge {
+    width: 1.03rem;
+    height: 1rem;
     position: absolute;
-    top:0;
+    top: 0;
     right: 0;
 }
 .goods-info-top {
@@ -273,7 +272,7 @@ export default {
 .goods-info-box {
     display: flex;
 }
-.goods-info-left{
+.goods-info-left {
     width: 40%;
     overflow: hidden;
 }
@@ -360,7 +359,7 @@ export default {
     height: 0.24rem;
     vertical-align: middle;
 }
-.grey-color{
+.grey-color {
     color: #666666;
     font-size: 0.24rem;
 }
@@ -368,9 +367,9 @@ export default {
     color: #999999;
     font-size: 0.24rem;
 }
-.periodsNum{
-    min-width:.8rem;
-    color:#333333;
+.periodsNum {
+    min-width: 0.8rem;
+    color: #333333;
     display: inline-block;
 }
 /* 选项 */
@@ -396,7 +395,8 @@ export default {
 .downPay-left {
     margin-top: 0.1rem;
 }
-.downPay-left,.downPay-right {
+.downPay-left,
+.downPay-right {
     vertical-align: top;
 }
 .downPay-right input {
@@ -405,15 +405,15 @@ export default {
     margin: 0;
     padding: 0 0.1rem;
 }
-.custom{
-    color: #FFFFFF;
+.custom {
+    color: #ffffff;
     font-size: 0.26rem;
-    background:#fc5f4e;
+    background: #fc5f4e;
     display: inline-block;
-    margin-left:.5rem;
-    width:.8rem;
+    margin-left: 0.5rem;
+    width: 0.8rem;
 
-    text-align:center;
+    text-align: center;
 }
 .sele-downPay {
     line-height: 0.5rem;
@@ -510,7 +510,7 @@ input[type="number"] {
     font-size: 0.24rem;
 }
 ::-moz-placeholder {
-    color: #999999; 
+    color: #999999;
     font-size: 0.24rem;
 }
 :-ms-input-placeholder {
@@ -518,30 +518,28 @@ input[type="number"] {
     font-size: 0.24rem;
 }
 
-.black-bg{
-    background:rgba(255, 255,255, 1);
+.black-bg {
+    background: rgba(255, 255, 255, 1);
 }
-.stage-info{
-    padding:0 .2rem .2rem;
+.stage-info {
+    padding: 0 0.2rem 0.2rem;
 }
 
-.stage-box{
-    background:#F6F6F6;
-    line-height: .5rem;
-    font-size:.24rem;
-    color:#999999;
-    display:flex;
+.stage-box {
+    background: #f6f6f6;
+    line-height: 0.5rem;
+    font-size: 0.24rem;
+    color: #999999;
+    display: flex;
     justify-content: space-around;
-    line-height: .5rem;
+    line-height: 0.5rem;
 }
-.t_link{
-    color:#999999;
+.t_link {
+    color: #999999;
     text-decoration: underline;
     max-width: 3rem;
-    overflow:hidden; /*超出的部分隐藏起来。*/ 
-    white-space:nowrap;/*不显示的地方用省略号...代替*/
-    text-overflow:ellipsis;/* 支持 IE */
-
-} 
-
+    overflow: hidden; /*超出的部分隐藏起来。*/
+    white-space: nowrap; /*不显示的地方用省略号...代替*/
+    text-overflow: ellipsis; /* 支持 IE */
+}
 </style>

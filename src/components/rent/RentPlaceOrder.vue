@@ -92,7 +92,7 @@
                     <div class="contact-cell">
                         <span class="celltext">租金<span class="gray-color">(￥<span v-text="goodsInfo.day_rent"></span>/<span v-text="goodsInfo.rent_unit"></span>)</span></span>
                         <div class="cell-right">
-                            <span v-show="hint_text != ''">
+                            <span v-show="hint_text != ''" v-if="false">
                                 <span class="chunk gray-bg">原价</span>
                                 <span class="unit-price">￥
                                     <span v-text="tremPirce"></span>
@@ -100,7 +100,7 @@
                                 <span class="chunk  red-bg" v-text="hint_text"></span>
                             </span>
                             <span class="price">￥
-                                <span v-text="break_price"></span>
+                                <span v-text="tremPirce"></span>
                             </span>
                         </div>
                     </div>
@@ -221,9 +221,9 @@ export default {
                 this.break_price = this.tremPirce;
             }
             if(this.orderType){
-                this.totalPrice = this.break_price + Number(this.goodsInfo.cash);
+                this.totalPrice = this.tremPirce + Number(this.goodsInfo.cash);
             }else{
-                this.totalPrice = this.break_price;
+                this.totalPrice = this.tremPirce;
             }
         }
     },
