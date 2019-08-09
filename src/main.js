@@ -82,13 +82,13 @@ axios.interceptors.response.use(
 
 
 
-router.afterEach((to, from) => {
-  const u = navigator.userAgent.toLowerCase()
-  if (u.indexOf("like mac os x") < 0 || u.match(/MicroMessenger/i) != 'micromessenger') return
-  if (to.path !== global.location.pathname) {
-    location.assign(to.fullPath)
-  }
-})
+// router.afterEach((to, from) => {
+//   const u = navigator.userAgent.toLowerCase()
+//   if (u.indexOf("like mac os x") < 0 || u.match(/MicroMessenger/i) != 'micromessenger') return
+//   if (to.path !== global.location.pathname) {
+//     location.assign(to.fullPath)
+//   }
+// })
 
 Vue.prototype.$axios = axios;
 Vue.prototype.baseURL = process.env.API_HOST;
