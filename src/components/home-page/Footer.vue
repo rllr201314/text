@@ -1,7 +1,6 @@
 <template>
     <div class="footer">
         <div>看个号7*24小时为您提供安全快捷的服务</div>
-        <div>浙网文（2018）9053-741号</div>
         <div>陕ICP备19006831号-1</div>
         <div><img src="../../../static/img/footer/beian.png" alt=""><span>陕公网安备61011102000141号</span></div>
         <div>增值电信业务经营许可证：浙B2-20180197</div>

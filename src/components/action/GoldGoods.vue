@@ -71,7 +71,6 @@
 </script>
 
 <style scoped>
-
   .gold-top {
     width: 100%;
     height: auto;
@@ -82,7 +81,7 @@
     padding: 0.2rem;
     background-image: url(../../../static/img/home-page/gold_bottom.png);
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: 100% 100%;
     height: auto;
     min-height: 7.5rem;
   }

@@ -5,6 +5,7 @@
           <Header v-bind:showTitle="showTitle"></Header>
           <SwiperContent v-bind:swiperSrc="swiperSrc"></SwiperContent>
       </div>
+      <div class="hint">本站严禁未成年人进行游戏账号买卖</div>
       <div class="content">
           <LastSale v-bind:flow="{sale:true,safe:false,order_info,count_info}"></LastSale>
           <UserOperation></UserOperation>
@@ -166,7 +167,7 @@ export default {
         background-size: 100% 2.8rem;
     }
     .content{
-        padding:.2rem;
+        padding:0 .2rem .2rem;
     }
     /*活动按钮*/
     .open-active{
@@ -246,5 +247,16 @@ export default {
         bottom:0;
         background:rgba(0,0,0,.5);
         z-index: 5;
+    }
+    /* 提示 */
+    .hint{
+        width: 6.04rem;height: .32rem;
+        background: url(../../static/img/home-page/hint-bg.png) no-repeat;
+        background-size:  6.04rem .32rem;
+        margin:.05rem auto;
+        text-align: center;
+        line-height: .32rem;
+        color:#FB6F60;
+        font-size: .2rem;
     }
 </style>
