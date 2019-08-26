@@ -10,6 +10,7 @@ export default new Vuex.Store({
     time: '',
     hint:1,
     isRefresh:false,//判断是否强制刷新，列表调转详情缓存 刷新完要重新请求
+    groupMessageMap: {}, // 聊天信息集合
     // 提交的数据
     list_request: {
       page: 1,
@@ -66,6 +67,42 @@ export default new Vuex.Store({
     },
     set_refresh(state,opt){
       state.isRefresh = opt;
-    }
+    },
+    PUSH_IM_CHART_DIALOG_GROUP_MESSAGE(state, {message, groupId}) { // 用户聊天信息
+      let chart = state.groupMessageMap[groupId] || []
+      chart.push(message)
+      Vue.set(state.groupMessageMap, groupId, chart)
+    },
+    UN_SHIFT_IM_CHART_DIALOG_GROUP_MESSAGE(state, {message, groupId}) { // 用户聊天信息
+      let chart = state.groupMessageMap[groupId] || []
+      chart.unshift(message)
+      Vue.set(state.groupMessageMap, groupId, chart)
+    },
+  },
+  actions:{
+    // 添加消息
+    PUSH_IM_CHART_DIALOG_GROUP_MESSAGE({commit}, message) { // 聊天信息组
+      const groupId =message.groupId;
+      const ext =message.ext;
+      delete message.ext
+      commit('PUSH_IM_CHART_DIALOG_GROUP_MESSAGE', {groupId, message})
+      // commit('SET_IM_CHART_EXT_MAP', {groupId, ext}) // 设置附加消息
+    },
+    
+    UN_SHIFT_IM_CHART_DIALOG_GROUP_MESSAGE({commit}, message) { // 聊天信息组
+      const groupId = message.groupId;
+      const ext = message.ext;
+      delete message.ext
+      commit('UN_SHIFT_IM_CHART_DIALOG_GROUP_MESSAGE', {groupId, message})
+      // commit('SET_IM_CHART_EXT_MAP', {groupId, ext}) // 设置附加消息
+    },
+  },
+  getters:{
+    GET_IM_CHART_DIALOG_GROUP_MESSAGE: (state) => (groupId) => { // 获取消息组
+      if (groupId) {
+        return state.groupMessageMap[groupId] || []
+      }
+      return []
+    },
   }
 })

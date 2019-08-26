@@ -12,6 +12,8 @@ import 'vue-photo-preview/dist/skin.css'
 import MetaInfo from 'vue-meta-info'
 import Vant from 'vant';
 import 'vant/lib/index.css';
+// import websdk from 'easemob-websdk'
+
 Vue.use(Vant);
 Vue.use(MetaInfo)
 var options = {

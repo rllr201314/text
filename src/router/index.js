@@ -490,6 +490,12 @@ export default new Router({
       name:"StageCounter",
       component:(resolve) => require(['@/components/tool/StageCounter'],resolve)
     },
+    //客服
+    {
+      path:"/service",
+      name:"Service",
+      component:(resolve) => require(['@/components/service/Service'],resolve)
+    },
     {
       path: '*',
       component: (resolve) => require(['@/components/multi/NoData'], resolve)
