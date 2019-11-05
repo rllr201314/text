@@ -1,4 +1,4 @@
-'use strict'
+﻿'use strict'
 // Template version: 1.3.1
 // see http://vuejs-templates.github.io/webpack for documentation.
 // var proxyConfig = require('./proxyConfig')//自己写的
@@ -24,7 +24,7 @@ module.exports = {
 
 
     // Various Dev Server settings
-    host: '192.168.1.176', // can be overwritten by process.env.HOST
+    host: '192.168.1.123', // can be overwritten by process.env.HOST
     port: 8800, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

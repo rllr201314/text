@@ -226,7 +226,7 @@
 <script>
 import Header from "@/components/home-page/Header";
 import Loading from '@/components/multi/Loading';
-  import LinkServer from "@/components/common/LinkServer";
+import LinkServer from "@/components/common/LinkServer";
 export default {
     inject: ["reload"],
     name: "CbgStage",
